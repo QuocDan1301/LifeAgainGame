@@ -10,13 +10,13 @@
   "theme_color": "#fff1ad",
   "icons": [
     {
-      "src": "./img/icon/android-icon-192x192.png",
+      "src": "./img/Icon/android-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./img/icon/android-icon-512x512.png",
+      "src": "./img/Icon/android-icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
