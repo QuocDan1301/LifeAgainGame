@@ -1,21 +1,25 @@
 {
-  "name": "Chủ tịch Hồ Chí Minh",
-  "short_name": "Bác Hồ",
+  "name": "Life Again",
+  "short_name": "Life Again",
+  "description": "Game mô phỏng cuộc đời — mỗi lựa chọn là một câu chuyện mới.",
+  "lang": "vi",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f3e6d0",
-  "theme_color": "#6b241c",
+  "background_color": "#fff8dc",
+  "theme_color": "#fff1ad",
   "icons": [
     {
       "src": "./img/icon/android-icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "./img/icon/android-icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
