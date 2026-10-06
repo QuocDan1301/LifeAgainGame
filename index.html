@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="theme-color" content="#fff1ad" />
+
+    <title>Life Again</title>
+
+    <!-- Biểu tượng -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
+    />
+
+    <!-- Font chữ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Francois+One&family=Patrick+Hand&family=Sriracha&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS của game: chỉ liên kết một lần -->
+    <link rel="stylesheet" href="./style.css" />
+
+    <!-- Chạy JavaScript sau khi HTML được phân tích xong -->
+    <script src="./script.js" defer></script>
+    <link
+      rel="apple-touch-icon"
+      sizes="57x57"
+      href="./img/Icon/apple-icon-57x57.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="60x60"
+      href="./img/Icon/apple-icon-60x60.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="./img/Icon/apple-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="./img/Icon/apple-icon-76x76.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="./img/Icon/apple-icon-114x114.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="120x120"
+      href="./img/Icon/apple-icon-120x120.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="144x144"
+      href="./img/Icon/apple-icon-144x144.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="./img/Icon/apple-icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./img/Icon/apple-icon-180x180.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="./img/Icon/android-icon-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./img/Icon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="./img/Icon/favicon-96x96.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./img/Icon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+    <meta name="theme-color" content="#ffffff" />
+  </head>
+
+  <body>
+    <div class="game">
+      <!-- Thanh tiêu đề -->
+      <header class="game-header">
+        <button
+          type="button"
+          class="menu-button"
+          id="menu-button"
+          aria-label="Mở menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <img id="logo" src="./img/Logo.png" alt="Life Again" />
+
+        <button
+          type="button"
+          class="achievement-button"
+          id="achievements"
+          aria-label="Xem thành tựu"
+          title="Thành tựu"
+        >
+          <span aria-hidden="true">🏆</span>
+        </button>
+      </header>
+
+      <!-- Nhật ký: cuộn riêng -->
+      <main class="journal" aria-label="Nhật ký cuộc đời" tabindex="0">
+        <div class="fortune-wrapper">
+          <button type="button" class="fortune-button" id="fortune-button">
+            <span aria-hidden="true">🔮</span>
+
+            <span id="fortune-text" aria-live="polite" aria-atomic="true">
+              Xem vận mệnh
+            </span>
+          </button>
+        </div>
+
+        <div id="journal-content" role="log" aria-label="Sự kiện cuộc đời">
+          <article class="life-event">
+            <h3>0 tuổi</h3>
+            <p>
+              Tôi chào đời tại Đà Nẵng. Ba mẹ đặt tên tôi là Minh An và chào đón
+              tôi bằng thật nhiều yêu thương.
+            </p>
+          </article>
+
+          <article class="life-event">
+            <h3>1 tuổi</h3>
+            <p>
+              Tôi bắt đầu tập đi. Mỗi lần tôi chập chững bước về phía mẹ, cả nhà
+              lại vỗ tay cổ vũ.
+            </p>
+          </article>
+          <article class="life-event">
+            <h3>1 tuổi</h3>
+            <p>
+              Tôi bắt đầu tập đi. Mỗi lần tôi chập chững bước về phía mẹ, cả nhà
+              lại vỗ tay cổ vũ.
+            </p>
+          </article>
+          <article class="life-event">
+            <h3>1 tuổi</h3>
+            <p>
+              Tôi bắt đầu tập đi. Mỗi lần tôi chập chững bước về phía mẹ, cả nhà
+              lại vỗ tay cổ vũ.
+            </p>
+          </article>
+          <article class="life-event">
+            <h3>1 tuổi</h3>
+            <p>
+              Tôi bắt đầu tập đi. Mỗi lần tôi chập chững bước về phía mẹ, cả nhà
+              lại vỗ tay cổ vũ.
+            </p>
+          </article>
+
+          <article class="life-event">
+            <h3>2 tuổi</h3>
+            <p>
+              Hôm nay, tôi theo ba mẹ đến công viên. Tôi làm quen với một người
+              bạn mới, cùng chơi cầu trượt và chia sẻ đồ chơi.
+            </p>
+          </article>
+        </div>
+      </main>
+
+      <!-- Các nút chức năng -->
+      <nav class="game-actions" aria-label="Chức năng game">
+        <button type="button" class="action-button" id="assets">
+          <span class="action-icon" aria-hidden="true">💳</span>
+          <span>Tài sản</span>
+        </button>
+
+        <button type="button" class="action-button" id="relationships">
+          <span>Quan hệ</span>
+          <span class="action-icon" aria-hidden="true">👥</span>
+        </button>
+
+        <button type="button" class="action-button" id="education">
+          <span class="action-icon" aria-hidden="true">🎓</span>
+          <span>Học vấn</span>
+        </button>
+
+        <button type="button" class="action-button" id="activities">
+          <span>Hoạt động</span>
+          <span class="action-icon" aria-hidden="true">🏃</span>
+        </button>
+
+        <button
+          type="button"
+          class="age-button"
+          id="age-up"
+          aria-label="Tăng thêm một tuổi"
+          title="Tăng thêm một tuổi"
+        >
+          <span class="plus" aria-hidden="true">
+            <i class="fa-solid fa-plus"></i>
+          </span>
+        </button>
+      </nav>
+
+      <!-- Hồ sơ nhân vật -->
+      <section class="character" aria-label="Thông tin nhân vật">
+        <div class="character-card">
+          <div class="avatar" role="img" aria-label="Chân dung em bé">
+            <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
+          </div>
+
+          <h2 id="character-name">Minh An</h2>
+        </div>
+
+        <div class="character-details">
+          <!-- Chỉ số nhân vật -->
+          <div class="stats">
+            <div class="stat-row">
+              <label for="health">
+                <span aria-hidden="true">💪</span>Sức khỏe
+              </label>
+
+              <progress id="health" max="100" value="90">90%</progress>
+
+              <span>90%</span>
+            </div>
+
+            <div class="stat-row">
+              <label for="smarts">
+                <span aria-hidden="true">🧠</span>Trí tuệ
+              </label>
+
+              <progress id="smarts" max="100" value="85">85%</progress>
+
+              <span>85%</span>
+            </div>
+
+            <div class="stat-row">
+              <label for="happiness">
+                <span aria-hidden="true">❤️</span>Hạnh phúc
+              </label>
+
+              <progress id="happiness" max="100" value="70">70%</progress>
+
+              <span>70%</span>
+            </div>
+
+            <div class="stat-row">
+              <label for="looks">
+                <span aria-hidden="true">👁️</span>Ngoại hình
+              </label>
+
+              <progress id="looks" max="100" value="65">65%</progress>
+
+              <span>65%</span>
+            </div>
+          </div>
+
+          <!-- Ví tiền -->
+          <div class="wallet">
+            <span class="wallet-icon" aria-hidden="true">
+              <i class="fa-solid fa-sack-dollar"></i>
+            </span>
+
+            <div>
+              <p>Ví tiền</p>
+              <strong id="money">10.000.000 VNĐ</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
