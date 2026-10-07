@@ -148,12 +148,7 @@
           </button>
         </div>
 
-        <div
-          id="life-log"
-          id="journal-content"
-          role="log"
-          aria-label="Sự kiện cuộc đời"
-        ></div>
+        <div id="life-log" role="log" aria-label="Sự kiện cuộc đời"></div>
       </main>
 
       <!-- Các nút chức năng -->
@@ -188,6 +183,7 @@
           <span class="plus" aria-hidden="true">
             <i class="fa-solid fa-plus"></i>
           </span>
+          <span class="age-label">Tuổi</span>
         </button>
       </nav>
 
@@ -200,6 +196,7 @@
 
           <h2 id="player-name">Minh An</h2>
           <p>Tuổi: <span id="player-age">0</span></p>
+          <p id="character-status">Chưa đi học</p>
         </div>
 
         <div class="character-details">
@@ -255,12 +252,109 @@
 
             <div>
               <p>Ví tiền</p>
-              <strong id="money">10.000.000 VNĐ</strong>
+              <strong id="money"><span id="money-value">0</span> VNĐ</strong>
             </div>
           </div>
         </div>
       </section>
     </div>
     <script type="module" src="./js/main.js"></script>
+    <dialog id="name-dialog">
+      <form id="name-form" novalidate>
+        <h2>Đặt tên nhân vật</h2>
+
+        <label for="character-name-input">
+          Nhập tên nhân vật (tối đa 2 từ)
+        </label>
+
+        <input
+          id="character-name-input"
+          type="text"
+          placeholder="Ví dụ: Quốc Dân"
+          aria-describedby="name-error"
+          autocomplete="off"
+          autofocus
+        />
+
+        <p id="name-error" role="alert"></p>
+
+        <button type="submit">Bắt đầu cuộc đời</button>
+      </form>
+    </dialog>
+    <dialog id="restart-dialog">
+      <h2>Bắt đầu cuộc đời mới?</h2>
+      <p>Tiến trình hiện tại sẽ bị xóa.</p>
+
+      <div class="restart-actions">
+        <button type="button" id="cancel-restart" autofocus>Hủy</button>
+
+        <button type="button" id="confirm-restart">Chơi lại</button>
+      </div>
+    </dialog>
+    <dialog id="activities-dialog">
+      <div class="activities-heading">
+        <h2>Hoạt động</h2>
+
+        <button type="button" id="close-activities" aria-label="Đóng hoạt động">
+          ✕
+        </button>
+      </div>
+
+      <p>Chọn việc bạn muốn làm:</p>
+
+      <div class="activities-list">
+        <button type="button" id="activity-read">📚 Đọc sách</button>
+
+        <button type="button" id="activity-walk">🚶 Đi dạo</button>
+
+        <button type="button" id="activity-play">🎮 Giải trí</button>
+      </div>
+    </dialog>
+    <dialog id="event-dialog" aria-labelledby="event-title">
+      <h2 id="event-title">Sự kiện</h2>
+
+      <img id="event-image" src="" alt="" hidden />
+
+      <p id="event-content"></p>
+
+      <!-- Các lựa chọn ở bước đầu -->
+      <div id="event-choices"></div>
+
+      <!-- Nút xác nhận ở bước kết quả -->
+      <button type="button" id="event-confirm" hidden>Xác nhận</button>
+    </dialog>
+    <!-- Danh sách thành tựu -->
+    <dialog id="achievements-dialog" aria-labelledby="achievements-title">
+      <div class="achievements-heading">
+        <h2 id="achievements-title">🏆 Thành tựu</h2>
+
+        <button
+          type="button"
+          id="close-achievements"
+          aria-label="Đóng thành tựu"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p class="achievements-summary">
+        Đã mở khóa:
+        <strong id="achievements-count">0/12</strong>
+      </p>
+
+      <div id="achievements-list"></div>
+    </dialog>
+
+    <!-- Thông báo vừa mở khóa -->
+    <dialog id="achievement-unlock-dialog" aria-labelledby="unlock-heading">
+      <p id="unlock-heading">🎉 Thành tựu mới!</p>
+
+      <div id="unlock-icon" aria-hidden="true"></div>
+
+      <h2 id="unlock-title"></h2>
+      <p id="unlock-description"></p>
+
+      <button type="button" id="achievement-unlock-confirm">Tuyệt quá!</button>
+    </dialog>
   </body>
 </html>

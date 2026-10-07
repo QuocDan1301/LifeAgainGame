@@ -1,5 +1,6 @@
 import { state } from "./state.js";
 import { ageEvents } from "./events.js";
+import { initAchievements, checkAchievements } from "./achievements.js";
 
 const statNames = {
   health: "Sức khỏe",
@@ -9,7 +10,9 @@ const statNames = {
 };
 
 const savedGame = localStorage.getItem("lifeAgainSave");
+let hasLoadedGame = false;
 
+// Khôi phục bản lưu nếu có
 if (savedGame) {
   try {
     const savedState = JSON.parse(savedGame);
@@ -17,40 +20,41 @@ if (savedGame) {
     if (savedState?.player && Array.isArray(savedState.logs)) {
       Object.assign(state.player, savedState.player);
       state.logs = savedState.logs;
+      state.pendingEvent = savedState.pendingEvent ?? null;
+
+      hasLoadedGame = true;
     }
   } catch (error) {
     console.warn("Không đọc được dữ liệu lưu:", error);
   }
 }
 
-if (!savedGame) {
-  const enteredName = prompt("Nhập tên nhân vật của bạn:");
+// Chỉ tạo cuộc đời mới nếu chưa khôi phục được bản lưu
+if (!hasLoadedGame) {
+  state.player.name = await askCharacterName();
+  state.player.age = 0;
+  state.logs = [];
+  state.pendingEvent = null;
 
-  if (enteredName !== null && enteredName.trim() !== "") {
-    state.player.name = enteredName.trim();
-  }
-  // Tạo chỉ số riêng cho cuộc đời mới
+  // Tạo chỉ số ban đầu
   state.player.health = randomStat();
   state.player.intelligence = randomStat();
   state.player.happiness = randomStat();
   state.player.appearance = randomStat();
-  // Những câu chuyện mở đầu
+
   const birthStories = [
     "Bạn chào đời trong vòng tay yêu thương của gia đình.",
     "Tiếng khóc đầu tiên của bạn khiến cả nhà xúc động.",
     "Bạn chào đời vào một buổi sáng yên bình.",
   ];
 
-  // Chọn ngẫu nhiên một câu chuyện
   const randomIndex = Math.floor(Math.random() * birthStories.length);
 
-  // Tạo nhật ký đầu tiên
   state.logs.push({
     age: 0,
     content: `Bạn tên là ${state.player.name}. ${birthStories[randomIndex]}`,
   });
 
-  // Lưu cuộc đời mới
   localStorage.setItem("lifeAgainSave", JSON.stringify(state));
 }
 
@@ -68,95 +72,12 @@ const logElement = document.getElementById("life-log");
 logElement.replaceChildren();
 
 state.logs.forEach((log) => {
-  const logItem = document.createElement("section");
-  logItem.classList.add("log-entry");
-
-  const title = document.createElement("h3");
-  title.textContent = `${log.age} tuổi`;
-
-  const content = document.createElement("p");
-  renderLogContent(content, log.content);
-
-  logItem.append(title, content);
-  logElement.append(logItem);
+  renderLogEntry(log);
 });
 // Sau khi khôi phục xong nhật ký, cuộn xuống cuối
 requestAnimationFrame(() => {
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
-});
-
-ageButton.addEventListener("click", () => {
-  // Tăng tuổi và cập nhật màn hình
-  state.player.age += 1;
-  ageElement.textContent = state.player.age;
-  state.player.health;
-  state.player.intelligence;
-  state.player.happiness;
-  state.player.appearance;
-
-  const stories = ageEvents[state.player.age];
-
-  let message = "Một năm nữa đã trôi qua.";
-  if (stories && stories.length > 0) {
-    const randomIndex = Math.floor(Math.random() * stories.length);
-    const story = stories[randomIndex];
-
-    message = story.text;
-
-    const changes = [];
-
-    for (const stat in story.effects) {
-      const oldValue = state.player[stat];
-      const change = story.effects[stat];
-
-      const newValue = Math.max(0, Math.min(100, oldValue + change));
-
-      state.player[stat] = newValue;
-
-      // Tính mức thay đổi thực tế
-      const actualChange = newValue - oldValue;
-
-      if (actualChange !== 0) {
-        const sign = actualChange > 0 ? "+" : "";
-
-        changes.push(`${statNames[stat]} ${sign}${actualChange}`);
-      }
-    }
-
-    // Thêm một dòng mô tả thay đổi vào nội dung nhật ký
-    if (changes.length > 0) {
-      message += "\n" + changes.join(" · ");
-    }
-  }
-
-  // Cập nhật chỉ số sau khi xử lý sự kiện
-  renderStats();
-
-  // Lưu tuổi và nội dung cùng nhau
-  state.logs.push({
-    age: state.player.age,
-    content: message,
-  });
-
-  // Tạo khối nhật ký cho một năm
-  const logItem = document.createElement("section");
-  logItem.classList.add("log-entry");
-
-  // Tiêu đề tuổi
-  const title = document.createElement("h3");
-  title.textContent = `${state.player.age} tuổi`;
-
-  // Nội dung bên dưới
-  const content = document.createElement("p");
-  renderLogContent(content, message);
-
-  // Ghép tiêu đề và nội dung vào khối nhật ký
-  logItem.append(title, content);
-  logElement.append(logItem);
-  const logContainer = logElement.parentElement;
-  logContainer.scrollTop = logContainer.scrollHeight;
-  localStorage.setItem("lifeAgainSave", JSON.stringify(state));
 });
 
 const menuToggle = document.getElementById("menu-button");
@@ -189,18 +110,25 @@ document.addEventListener("keydown", (event) => {
 });
 
 const restartButton = document.getElementById("restart-button");
+const restartDialog = document.getElementById("restart-dialog");
+const cancelRestart = document.getElementById("cancel-restart");
+const confirmRestart = document.getElementById("confirm-restart");
 
+// Mở hộp xác nhận
 restartButton.addEventListener("click", () => {
-  const confirmed = confirm(
-    "Bạn muốn bắt đầu cuộc đời mới? Tiến trình hiện tại sẽ bị xóa.",
-  );
+  setMenuOpen(false);
+  restartDialog.showModal();
+});
 
-  if (!confirmed) return;
+// Hủy: giữ nguyên tiến trình
+cancelRestart.addEventListener("click", () => {
+  restartDialog.close();
+  menuToggle.focus();
+});
 
-  // Xóa bản lưu của game
+// Xác nhận: xóa bản lưu rồi bắt đầu lại
+confirmRestart.addEventListener("click", () => {
   localStorage.removeItem("lifeAgainSave");
-
-  // Tải lại trang để lấy dữ liệu ban đầu trong state.js
   window.location.reload();
 });
 
@@ -243,10 +171,10 @@ function renderLogContent(element, text) {
   element.replaceChildren();
 
   // Tách các số có dấu + hoặc - ra khỏi nội dung
-  const parts = text.split(/([+-]\d+)/g);
+  const parts = text.split(/([+-]\d+(?:\.\d{3})*)/g);
 
   parts.forEach((part) => {
-    if (/^[+-]\d+$/.test(part)) {
+    if (/^[+-]\d+(?:\.\d{3})*$/.test(part)) {
       const number = document.createElement("span");
 
       number.textContent = part;
@@ -280,3 +208,366 @@ function updateStatColor(id, value) {
 
   bar.style.setProperty("--stat-color", color);
 }
+function renderMoney() {
+  const moneyElement = document.getElementById("money-value");
+
+  moneyElement.textContent = state.player.money.toLocaleString("vi-VN");
+}
+
+// Hiển thị tiền khi mở game
+renderMoney();
+function renderEducation() {
+  const age = state.player.age;
+  let status;
+
+  // Khi đã có công việc, hiển thị tên công việc
+  if (state.player.job) {
+    status = state.player.job;
+  } else if (age < 3) {
+    status = "Chưa đi học";
+  } else if (age < 6) {
+    status = "Học mẫu giáo";
+  } else if (age < 11) {
+    status = "Học sinh tiểu học";
+  } else if (age < 15) {
+    status = "Học sinh THCS";
+  } else if (age < 18) {
+    status = "Học sinh THPT";
+  } else {
+    status = "Chưa có việc làm";
+  }
+
+  document.getElementById("character-status").textContent = status;
+}
+
+// Hiển thị khi mở hoặc tải lại game
+renderEducation();
+
+function askCharacterName() {
+  const dialog = document.getElementById("name-dialog");
+  const form = document.getElementById("name-form");
+  const input = document.getElementById("character-name-input");
+  const error = document.getElementById("name-error");
+
+  return new Promise((resolve) => {
+    // Yêu cầu nhập tên hợp lệ trước khi bắt đầu
+    function preventCancel(event) {
+      event.preventDefault();
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const name = input.value.trim();
+      const words = name.split(/\s+/);
+
+      if (name === "" || words.length > 2) {
+        error.textContent =
+          name === ""
+            ? "Bạn chưa nhập tên nhân vật."
+            : "Tên chỉ được tối đa 2 từ. Bạn hãy nhập lại.";
+
+        input.setAttribute("aria-invalid", "true");
+        input.focus();
+        return;
+      }
+
+      // Mỗi từ chỉ gồm chữ cái, có hỗ trợ tiếng Việt
+      const validWord = /^\p{L}[\p{L}\p{M}]*$/u;
+
+      if (!words.every((word) => validWord.test(word))) {
+        error.textContent =
+          "Tên chỉ được chứa chữ cái, không có số hoặc ký tự đặc biệt.";
+        input.setAttribute("aria-invalid", "true");
+        input.focus();
+        return;
+      }
+
+      error.textContent = "";
+      input.removeAttribute("aria-invalid");
+
+      form.removeEventListener("submit", handleSubmit);
+      dialog.removeEventListener("cancel", preventCancel);
+      dialog.close();
+
+      resolve(words.join(" "));
+    }
+
+    form.addEventListener("submit", handleSubmit);
+    dialog.addEventListener("cancel", preventCancel);
+    dialog.showModal();
+  });
+}
+
+function renderLogEntry(log) {
+  const logItem = document.createElement("section");
+  logItem.classList.add("log-entry");
+
+  const title = document.createElement("h3");
+  title.textContent = `${log.age} tuổi`;
+
+  const content = document.createElement("p");
+
+  // Giữ màu xanh/đỏ cho các số tăng, giảm
+  renderLogContent(content, log.content);
+
+  logItem.append(title, content);
+  logElement.append(logItem);
+}
+const activitiesButton = document.getElementById("activities");
+const activitiesDialog = document.getElementById("activities-dialog");
+const closeActivities = document.getElementById("close-activities");
+
+activitiesButton.addEventListener("click", () => {
+  activitiesDialog.showModal();
+});
+
+closeActivities.addEventListener("click", () => {
+  activitiesDialog.close();
+});
+const eventDialog = document.getElementById("event-dialog");
+const eventTitle = document.getElementById("event-title");
+const eventImage = document.getElementById("event-image");
+const eventContent = document.getElementById("event-content");
+const eventChoices = document.getElementById("event-choices");
+const eventConfirm = document.getElementById("event-confirm");
+
+// Lưu toàn bộ tiến trình, gồm cả bước sự kiện đang mở
+function saveEventProgress() {
+  localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+}
+
+// Đặt ảnh cho từng bước
+function setEventImage(src, alt = "") {
+  eventImage.hidden = !src;
+
+  if (src) {
+    eventImage.alt = alt;
+    eventImage.src = src;
+  } else {
+    eventImage.removeAttribute("src");
+  }
+}
+
+// Hiển thị bước chọn hành động hoặc bước kết quả
+function showPendingEvent() {
+  const pending = state.pendingEvent;
+  if (!pending) return;
+
+  ageButton.disabled = true;
+  eventChoices.replaceChildren();
+
+  eventTitle.textContent = `${pending.title}`;
+
+  setEventImage(pending.image, pending.imageAlt);
+
+  if (pending.stage === "choice") {
+    // Bước 1: tình huống và các lựa chọn
+    eventContent.textContent = pending.text;
+    eventConfirm.hidden = true;
+
+    pending.choices.forEach((choice, index) => {
+      const button = document.createElement("button");
+
+      button.type = "button";
+      button.className = "event-choice";
+      button.textContent = choice.label;
+
+      button.addEventListener("click", () => {
+        chooseEventAction(index);
+      });
+
+      eventChoices.append(button);
+    });
+  } else {
+    // Bước 2: nội dung kết quả và chỉ số thay đổi
+    renderLogContent(eventContent, pending.content);
+
+    eventConfirm.textContent = pending.confirmText ?? "Xác nhận";
+
+    eventConfirm.hidden = false;
+  }
+
+  if (!eventDialog.open) {
+    eventDialog.showModal();
+  }
+
+  // Đưa nội dung mới về đầu hộp thoại
+  eventDialog.scrollTop = 0;
+
+  if (pending.stage === "choice") {
+    eventChoices.querySelector("button")?.focus({
+      preventScroll: true,
+    });
+  } else {
+    eventConfirm.focus({ preventScroll: true });
+  }
+}
+
+// Tính kết quả sau khi người chơi chọn hành động
+function chooseEventAction(index) {
+  const pending = state.pendingEvent;
+
+  // Không cho chọn lại khi đã chuyển sang bước kết quả
+  if (!pending || pending.stage !== "choice") return;
+
+  const choice = pending.choices[index];
+  if (!choice) return;
+
+  const updates = { age: pending.age };
+  const changes = [];
+
+  // Tính mức thay đổi của bốn chỉ số
+  for (const stat in choice.effects ?? {}) {
+    if (!Object.hasOwn(statNames, stat)) continue;
+
+    const oldValue = state.player[stat];
+    const newValue = Math.max(
+      0,
+      Math.min(100, oldValue + choice.effects[stat]),
+    );
+
+    updates[stat] = newValue;
+
+    const actualChange = newValue - oldValue;
+
+    if (actualChange !== 0) {
+      const sign = actualChange > 0 ? "+" : "";
+
+      changes.push(`${statNames[stat]} ${sign}${actualChange}`);
+    }
+  }
+
+  // Tiền được xử lý riêng, không giới hạn ở 100
+  if (choice.money) {
+    const oldMoney = state.player.money;
+    const newMoney = Math.max(0, oldMoney + choice.money);
+    const actualChange = newMoney - oldMoney;
+
+    updates.money = newMoney;
+
+    if (actualChange !== 0) {
+      const sign = actualChange > 0 ? "+" : "";
+
+      changes.push(`Tiền ${sign}${actualChange.toLocaleString("vi-VN")} VNĐ`);
+    }
+  }
+
+  const resultContent =
+    choice.text + (changes.length ? "\n" + changes.join(" · ") : "");
+
+  // Chuyển sang bước kết quả và giữ lại hành động đã chọn
+  state.pendingEvent = {
+    stage: "result",
+    age: pending.age,
+    title: choice.title ?? "Kết quả",
+    image: choice.image ?? "",
+    imageAlt: choice.imageAlt ?? "",
+    confirmText: choice.confirmText ?? "Xác nhận",
+    content: resultContent,
+
+    // Nhật ký ghi cả tình huống, lựa chọn và kết quả
+    logContent:
+      `${pending.text}\n` + `Bạn chọn: ${choice.label}\n` + resultContent,
+
+    updates: updates,
+  };
+
+  saveEventProgress();
+  showPendingEvent();
+}
+
+// Bấm tăng tuổi: tạo tình huống, chưa áp dụng kết quả
+ageButton.addEventListener("click", () => {
+  if (state.pendingEvent) return;
+
+  const nextAge = state.player.age + 1;
+  const stories = ageEvents[nextAge];
+
+  const story = stories?.length
+    ? stories[Math.floor(Math.random() * stories.length)]
+    : {
+        title: "Một năm mới",
+        text: "Một năm nữa đã trôi qua.",
+        effects: {},
+      };
+
+  // Sự kiện cũ chưa có choices vẫn chạy với một nút Tiếp tục
+  const choices = story.choices?.length
+    ? story.choices
+    : [
+        {
+          label: "Tiếp tục",
+          title: story.title ?? "Kết quả",
+          text: story.text,
+          effects: story.effects ?? {},
+          money: story.money ?? 0,
+          image: story.image ?? "",
+          imageAlt: story.imageAlt ?? "",
+          confirmText: story.confirmText ?? "Xác nhận",
+        },
+      ];
+
+  state.pendingEvent = {
+    stage: "choice",
+    age: nextAge,
+    title: story.title ?? "Sự kiện",
+    text: story.text,
+    image: story.image ?? "",
+    imageAlt: story.imageAlt ?? "",
+    choices: choices,
+  };
+
+  saveEventProgress();
+  showPendingEvent();
+});
+
+// Xác nhận kết quả: cập nhật nhân vật và ghi nhật ký
+eventConfirm.addEventListener("click", () => {
+  const pending = state.pendingEvent;
+
+  if (!pending || pending.stage === "choice") return;
+
+  Object.assign(state.player, pending.updates);
+
+  const log = {
+    age: pending.age,
+    content: pending.logContent ?? pending.content,
+  };
+
+  state.logs.push(log);
+  state.pendingEvent = null;
+
+  saveEventProgress();
+
+  ageElement.textContent = state.player.age;
+  renderStats();
+  renderMoney();
+  renderEducation();
+  renderLogEntry(log);
+
+  eventDialog.close();
+  ageButton.disabled = false;
+  ageButton.focus({ preventScroll: true });
+
+  const logContainer = logElement.parentElement;
+  logContainer.scrollTop = logContainer.scrollHeight;
+  checkAchievements();
+});
+
+// Ảnh hỏng không ngăn người chơi tiếp tục
+eventImage.addEventListener("error", () => {
+  eventImage.hidden = true;
+});
+
+// Phải giải quyết sự kiện, không bỏ qua bằng Escape
+eventDialog.addEventListener("cancel", (event) => {
+  event.preventDefault();
+});
+
+// Tải lại trang sẽ mở đúng bước đang chờ
+if (state.pendingEvent) {
+  showPendingEvent();
+}
+initAchievements(state);
+checkAchievements();
