@@ -1,6 +1,8 @@
 import { renderAvatar } from "./avatar.js";
 import { state } from "./state.js";
 import { ageEvents } from "./events.js";
+import { careerEvent } from "./career-event.js";
+import { createSchoolEvent } from "./career-schools.js";
 import {
   initAchievements,
   checkAchievements,
@@ -151,6 +153,9 @@ function renderEducation() {
   // Khi đã có công việc, hiển thị tên công việc
   if (state.player.job) {
     status = state.player.job;
+  } else if (state.player.careerPath) {
+    const careerPath = state.player.careerPath;
+    status = careerPath.school ? `Học ${careerPath.field}` : careerPath.status;
   } else if (age < 3) {
     status = "Chưa đi học";
   } else if (age < 6) {
@@ -256,7 +261,23 @@ function chooseEventAction(index) {
   if (!pending || pending.stage !== "choice") return;
   const choice = pending.choices[index];
   if (!choice) return;
+  // Cả lựa chọn cũ đã lưu cũng chuyển sang chọn trường nếu chưa chọn trường/hướng huấn luyện.
+  if (choice.careerPath && !Object.hasOwn(choice.careerPath, "school")) {
+    const schoolEvent = createSchoolEvent(choice.careerPath);
+    state.pendingEvent = {
+      stage: "choice",
+      age: pending.age,
+      title: schoolEvent.title,
+      text: schoolEvent.text,
+      choices: schoolEvent.choices,
+      logPrefix: `${pending.logPrefix ?? ""}${pending.text}\nBạn chọn: ${choice.label}\n`,
+    };
+    saveEventProgress();
+    showPendingEvent();
+    return;
+  }
   const updates = { age: pending.age };
+  if (choice.careerPath) updates.careerPath = choice.careerPath;
   if (choice.death === true) updates.isAlive = false;
   const changes = [];
   // Tính mức thay đổi của bốn chỉ số
@@ -299,7 +320,9 @@ function chooseEventAction(index) {
     achievementIds: choice.achievementIds ?? [],
     // Nhật ký ghi cả tình huống, lựa chọn và kết quả
     logContent:
-      `${pending.text}\n` + `Bạn chọn: ${choice.label}\n` + resultContent,
+      `${pending.logPrefix ?? ""}${pending.text}\n` +
+      `Bạn chọn: ${choice.label}\n` +
+      resultContent,
     updates: updates,
   };
   saveEventProgress();
@@ -321,7 +344,10 @@ ageButton.addEventListener("click", () => {
   const eventChance = 0.6;
 
   const hasEvent =
-    Array.isArray(stories) && stories.length > 0 && Math.random() < eventChance;
+    nextAge === 18 ||
+    (Array.isArray(stories) &&
+      stories.length > 0 &&
+      Math.random() < eventChance);
 
   if (!hasEvent) {
     state.player.age = nextAge;
@@ -350,13 +376,16 @@ ageButton.addEventListener("click", () => {
     // Kết thúc lượt, không mở popup sự kiện.
     return;
   }
-  const story = stories?.length
-    ? stories[Math.floor(Math.random() * stories.length)]
-    : {
-        title: "Một năm mới",
-        text: "Một năm nữa đã trôi qua.",
-        effects: {},
-      };
+  const story =
+    nextAge === 18
+      ? careerEvent
+      : stories?.length
+        ? stories[Math.floor(Math.random() * stories.length)]
+        : {
+            title: "Một năm mới",
+            text: "Một năm nữa đã trôi qua.",
+            effects: {},
+          };
   // Sự kiện cũ chưa có choices vẫn chạy với một nút Tiếp tục
   const choices = story.choices?.length
     ? story.choices

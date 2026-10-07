@@ -12,6 +12,7 @@ export function createInitialState() {
       intelligence: 0,
       appearance: 0,
       job: null,
+      careerPath: null,
       fortune: null,
       isAlive: true,
       achievementFlags: {},

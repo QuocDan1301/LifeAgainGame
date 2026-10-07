@@ -85,8 +85,6 @@ export function initLobby(enterGame) {
         return;
       }
       expectedSave = localStorage.getItem(SAVE_KEY);
-      get("replace-life-note").hidden = !expectedSave;
-      get("replace-life-confirm").checked = false;
       form.hidden = true;
       form.reset();
       error.textContent = "";
@@ -112,11 +110,6 @@ export function initLobby(enterGame) {
   });
   async function commit(name, province, gender) {
     if (busy) return;
-    if (expectedSave && !get("replace-life-confirm").checked) {
-      error.textContent =
-        "Hãy xác nhận thay thế cuộc đời cũ trước khi khởi hành.";
-      return;
-    }
     const values = validateCharacter(name, province);
     if (values.error) {
       error.textContent = values.error;

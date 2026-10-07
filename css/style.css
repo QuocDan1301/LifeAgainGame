@@ -907,6 +907,13 @@ body::before {
 #event-image[hidden] {
   display: none;
 }
+#event-image[src*="/events/stickers/"] {
+  width: 144px;
+  height: 144px;
+  margin: 0 auto 8px;
+  border-radius: 0;
+  filter: drop-shadow(0 5px 3px rgb(23 50 71 / 12%));
+}
 #event-content {
   margin: 0 0 20px;
   font-family: "Patrick Hand", cursive;

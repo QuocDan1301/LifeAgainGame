@@ -3,8 +3,7 @@
 #lobby-screen[hidden],
 #continue-button[hidden],
 #create-character-form[hidden],
-#character-options[hidden],
-#replace-life-note[hidden] {
+#character-options[hidden] {
   display: none !important;
 }
 #lobby-screen {
@@ -213,7 +212,7 @@
   display: grid;
   gap: 12px;
 }
-.lobby-dialog input:not([type="checkbox"]) {
+.lobby-dialog input {
   box-sizing: border-box;
   width: 100%;
   min-width: 0;
@@ -223,19 +222,6 @@
   background: white;
   color: #17394b;
   font: inherit;
-}
-.lobby-dialog input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-}
-#replace-life-note {
-  display: block;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  background: #ffe9d5;
-  font-size: 18px;
 }
 .lobby-primary,
 .lobby-secondary {
