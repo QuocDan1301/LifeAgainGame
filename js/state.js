@@ -8,6 +8,7 @@ export const state = {
     intelligence: 90,
     appearance: 50,
     job: null,
+    fortune: null,
   },
   logs: [],
 };

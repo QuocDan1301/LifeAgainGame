@@ -18,14 +18,14 @@
     <!-- Font chữ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
     <link
-      href="https://fonts.googleapis.com/css2?family=Francois+One&family=Patrick+Hand&family=Sriracha&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Francois+One&family=Oswald:wght@200..700&family=Patrick+Hand&family=Sriracha&display=swap"
       rel="stylesheet"
     />
 
     <!-- CSS của game: chỉ liên kết một lần -->
-    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/achievements.css" />
 
     <link
       rel="apple-touch-icon"
@@ -194,7 +194,7 @@
             <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
           </div>
 
-          <h2 id="player-name">Minh An</h2>
+          <h2 id="player-name"></h2>
           <p>Tuổi: <span id="player-age">0</span></p>
           <p id="character-status">Chưa đi học</p>
         </div>
@@ -252,7 +252,7 @@
 
             <div>
               <p>Ví tiền</p>
-              <strong id="money"><span id="money-value">0</span> VNĐ</strong>
+              <strong id="money"><span id="money-value"></span> VNĐ</strong>
             </div>
           </div>
         </div>
@@ -323,11 +323,9 @@
       <!-- Nút xác nhận ở bước kết quả -->
       <button type="button" id="event-confirm" hidden>Xác nhận</button>
     </dialog>
-    <!-- Danh sách thành tựu -->
     <dialog id="achievements-dialog" aria-labelledby="achievements-title">
       <div class="achievements-heading">
         <h2 id="achievements-title">🏆 Thành tựu</h2>
-
         <button
           type="button"
           id="close-achievements"
@@ -336,25 +334,37 @@
           ✕
         </button>
       </div>
-
       <p class="achievements-summary">
-        Đã mở khóa:
-        <strong id="achievements-count">0/12</strong>
+        Đã mở khóa: <strong id="achievements-count">0/60</strong>
       </p>
-
       <div id="achievements-list"></div>
+      <button type="button" id="reset-achievements">Đặt lại thành tựu</button>
     </dialog>
 
-    <!-- Thông báo vừa mở khóa -->
-    <dialog id="achievement-unlock-dialog" aria-labelledby="unlock-heading">
+    <dialog
+      id="achievement-unlock-dialog"
+      aria-labelledby="unlock-heading unlock-title"
+    >
       <p id="unlock-heading">🎉 Thành tựu mới!</p>
-
       <div id="unlock-icon" aria-hidden="true"></div>
-
       <h2 id="unlock-title"></h2>
       <p id="unlock-description"></p>
-
       <button type="button" id="achievement-unlock-confirm">Tuyệt quá!</button>
+    </dialog>
+    <dialog id="fortune-dialog" aria-labelledby="fortune-title">
+      <div class="fortune-icon" aria-hidden="true">🔮</div>
+
+      <h2 id="fortune-title">Vận mệnh của bạn</h2>
+
+      <p id="fortune-name"></p>
+      <p id="fortune-content"></p>
+
+      <p class="fortune-note">
+        Lời tiên đoán chỉ mang tính giải trí. Cuộc đời vẫn nằm trong những lựa
+        chọn của bạn.
+      </p>
+
+      <button type="button" id="close-fortune">Để xem có đúng không!</button>
     </dialog>
   </body>
 </html>

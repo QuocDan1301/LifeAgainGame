@@ -1,6 +1,10 @@
 import { state } from "./state.js";
 import { ageEvents } from "./events.js";
-import { initAchievements, checkAchievements } from "./achievements.js";
+import {
+  initAchievements,
+  checkAchievements,
+  recordAchievementFlags,
+} from "./achievements.js";
 
 const statNames = {
   health: "Sức khỏe",
@@ -465,7 +469,7 @@ function chooseEventAction(index) {
     imageAlt: choice.imageAlt ?? "",
     confirmText: choice.confirmText ?? "Xác nhận",
     content: resultContent,
-
+    achievementIds: choice.achievementIds ?? [],
     // Nhật ký ghi cả tình huống, lựa chọn và kết quả
     logContent:
       `${pending.text}\n` + `Bạn chọn: ${choice.label}\n` + resultContent,
@@ -529,6 +533,7 @@ eventConfirm.addEventListener("click", () => {
   if (!pending || pending.stage === "choice") return;
 
   Object.assign(state.player, pending.updates);
+  recordAchievementFlags(state, pending.achievementIds ?? []);
 
   const log = {
     age: pending.age,
@@ -571,3 +576,72 @@ if (state.pendingEvent) {
 }
 initAchievements(state);
 checkAchievements();
+const fortunePredictions = [
+  "Thuở nhỏ có chút nghịch ngợm, lớn lên lại rất biết lo xa. Một cơ hội bất ngờ có thể đưa bạn đến cuộc sống sung túc.",
+
+  "Đường tình duyên đến hơi chậm, nhưng người ở lại sẽ khiến bạn hiểu rằng chờ đợi cũng đáng giá.",
+
+  "Bạn có duyên với học hành và khám phá. Một điều tưởng như vô dụng hôm nay có thể trở thành tài năng nổi bật mai sau.",
+
+  "Cuộc đời bạn có vài lần đổi hướng bất ngờ. Đừng vội buồn khi một cánh cửa đóng lại, có thể bạn đang đứng nhầm nhà.",
+
+  "Bạn có số kiếm được tiền, nhưng ví tiền cũng rất thích đi du lịch. Hãy giữ nó ở nhà thường xuyên hơn.",
+
+  "Bạn dễ được quý mến nhờ sự chân thành. Trong lúc khó khăn, một người bạn cũ có thể mang đến điều bất ngờ.",
+
+  "Tuổi trẻ nhiều trải nghiệm, trung niên dần ổn định, về già có người cùng uống trà và kể chuyện cũ.",
+
+  "Bạn có một tài năng đang ngủ quên. Biết đâu chỉ một lần thử điều mới cũng đủ đánh thức nó.",
+
+  "Tình yêu có thể xuất hiện vào lúc bạn bận rộn nhất. Nhớ thỉnh thoảng ngẩng đầu lên, đừng chỉ nhìn vào công việc.",
+
+  "Bạn có duyên với việc kinh doanh. Tuy nhiên, quả cầu chưa nhìn rõ bạn sẽ làm chủ nhà hàng hay làm chủ một xe hủ tiếu.",
+
+  "Cuộc đời bạn không thiếu tiếng cười. Đôi khi chính sự hài hước sẽ giúp bạn vượt qua một năm đầy thử thách.",
+
+  "Một chuyến đi xa có thể thay đổi cách bạn nhìn cuộc sống. Hãy nhớ mang hành lý, lòng can đảm và cả sạc điện thoại.",
+
+  "Bạn có số gặp những chuyện kỳ lạ. Nếu một ngày có ai rủ tìm kho báu, hãy suy nghĩ kỹ trước khi xách ba lô.",
+
+  "Thành công có thể đến sau vài lần vấp ngã. Người kiên trì đi tiếp thường có nhiều chuyện hay để kể hơn.",
+
+  "Gia đình sẽ là một phần ấm áp trong cuộc đời bạn. Những ngày bình thường đôi khi lại là những ngày đáng nhớ nhất.",
+
+  "Quả cầu nhìn thấy một tương lai sáng lạn… nhưng hơi mờ vì bạn chưa lau kính. Hãy tự viết tiếp vận mệnh của mình!",
+];
+
+const fortuneButton = document.getElementById("fortune-button");
+const fortuneDialog = document.getElementById("fortune-dialog");
+const fortuneName = document.getElementById("fortune-name");
+const fortuneContent = document.getElementById("fortune-content");
+const closeFortuneButton = document.getElementById("close-fortune");
+
+fortuneButton.addEventListener("click", () => {
+  // Không mở chồng lên popup khác.
+  if (document.querySelector("dialog[open]")) return;
+
+  // Chỉ chọn lời tiên đoán nếu nhân vật chưa từng xem.
+  if (
+    typeof state.player.fortune !== "string" ||
+    state.player.fortune.trim() === ""
+  ) {
+    const randomIndex = Math.floor(Math.random() * fortunePredictions.length);
+
+    state.player.fortune = fortunePredictions[randomIndex];
+
+    // Lưu cùng nhân vật để tải lại trang vẫn giữ nguyên.
+    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  }
+
+  fortuneName.textContent = `Dành cho ${state.player.name}`;
+  fortuneContent.textContent = state.player.fortune;
+
+  // Đóng menu ba gạch bằng hàm bạn đang có.
+  setMenuOpen(false);
+
+  fortuneDialog.showModal();
+});
+
+closeFortuneButton.addEventListener("click", () => {
+  fortuneDialog.close();
+});

@@ -1,0 +1,210 @@
+/* Chỉ tác động đến hai hộp thành tựu. Nạp file này SAU CSS chính. */
+#achievements-dialog,
+#achievement-unlock-dialog {
+  box-sizing: border-box;
+  width: min(94vw, 540px);
+  max-height: 85vh;
+  max-height: 85dvh;
+  margin: auto;
+  padding: 20px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  border: 3px solid #ffdb58;
+  border-radius: 22px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#achievements-dialog *,
+#achievement-unlock-dialog * {
+  box-sizing: border-box;
+}
+#achievements-dialog::-webkit-scrollbar,
+#achievement-unlock-dialog::-webkit-scrollbar {
+  display: none;
+}
+#achievements-dialog::backdrop,
+#achievement-unlock-dialog::backdrop {
+  background: rgb(9 24 40 / 60%);
+}
+#achievements-dialog .achievements-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+#achievements-dialog .achievements-heading h2 {
+  margin: 0;
+  font-size: 24px;
+}
+#close-achievements {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #e4c974;
+  border-radius: 50%;
+  background: #fff1ad;
+  color: inherit;
+  font-size: 22px;
+  cursor: pointer;
+}
+#achievements-dialog .achievements-summary {
+  margin: 14px 0 20px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #fff0ac;
+  font-size: 16px;
+}
+#achievements-count {
+  color: #805700;
+}
+#achievements-list {
+  display: grid;
+  gap: 16px;
+}
+#achievements-list .achievement-group {
+  border: 1px solid #e4c974;
+  border-radius: 15px;
+  background: #fffdf2;
+  overflow: hidden;
+}
+#achievements-list .achievement-group-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 12px;
+  background: #ffe89b;
+  font-size: 19px;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+#achievements-list .achievement-group-heading::-webkit-details-marker {
+  display: none;
+}
+#achievements-list .achievement-group-heading::before {
+  content: "▸";
+}
+#achievements-list details[open] > summary::before {
+  content: "▾";
+}
+#achievements-list .achievement-group-count {
+  margin-left: auto;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #fff8dc;
+  font-size: 14px;
+  white-space: nowrap;
+}
+#achievements-list .achievement-subgroup {
+  padding: 14px 12px;
+}
+#achievements-list .achievement-subgroup + .achievement-subgroup {
+  border-top: 1px solid #efe4bc;
+}
+#achievements-list .achievement-subgroup-title {
+  margin: 0 0 10px;
+  color: #65532b;
+  font-size: 15px;
+  line-height: 1.4;
+}
+#achievements-list .achievement-cards {
+  display: grid;
+  gap: 10px;
+}
+#achievements-list .achievement-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 13px;
+  border: 1px solid #d6b24b;
+  border-radius: 12px;
+  background: #fff1ad;
+  opacity: 1;
+  filter: none;
+}
+#achievements-list .achievement-card.is-locked {
+  opacity: 0.58;
+  filter: grayscale(1);
+  background: #eeeee8;
+  border-color: #b7b7ad;
+}
+#achievements-list .achievement-icon {
+  flex: 0 0 38px;
+  font-size: 32px;
+  text-align: center;
+}
+#achievements-list .achievement-card-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#achievements-list .achievement-card h4 {
+  margin: 0 0 5px;
+  font-size: 17px;
+  line-height: 1.4;
+}
+#achievements-list .achievement-card p {
+  margin: 0 0 7px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+#achievements-list .achievement-status {
+  font-size: 12px;
+  font-weight: 700;
+}
+#achievement-unlock-dialog {
+  width: min(92vw, 390px);
+  text-align: center;
+}
+#unlock-heading {
+  margin: 0 0 16px;
+  color: #805700;
+  font-size: 20px;
+  font-weight: 700;
+}
+#unlock-icon {
+  font-size: 64px;
+}
+#unlock-title {
+  margin: 12px 0;
+  font-size: 24px;
+  line-height: 1.3;
+}
+#unlock-description {
+  font-size: 16px;
+  line-height: 1.6;
+}
+#achievement-unlock-confirm {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: #ffe481;
+  color: #173247;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+#achievements-dialog :focus-visible,
+#achievement-unlock-dialog :focus-visible {
+  outline: 3px solid #146ab3;
+  outline-offset: 3px;
+}
+@media (max-width: 380px) {
+  #achievements-dialog {
+    padding: 12px;
+  }
+  #achievements-list .achievement-card {
+    padding: 10px;
+    gap: 8px;
+  }
+  #achievements-list .achievement-group-heading {
+    font-size: 17px;
+  }
+}

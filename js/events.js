@@ -123,13 +123,26 @@ export const ageEvents = {
 
   6: [
     {
-      title: "Món quà đầu năm",
-      image: "./img/events/li-xi.gif",
-      imageAlt: "Phong bao lì xì",
-      text: "Bạn được ông bà lì xì và ba mẹ cất vào ví tiết kiệm cho bạn.",
-      effects: { happiness: 3 },
-      money: 200000,
-      confirmText: "Mừng quá!",
+      title: "Ngày đầu đến trường",
+      text: "Hôm nay là ngày đầu tiên bạn vào lớp 1.",
+      choices: [
+        {
+          label: "Hào hứng bước vào lớp",
+          title: "Một khởi đầu mới",
+          text: "Bạn chính thức trở thành học sinh tiểu học và làm quen với bạn mới.",
+          effects: { intelligence: 2, happiness: 3 },
+          achievementIds: ["primary-school"],
+          confirmText: "Đi học thôi!",
+        },
+        {
+          label: "Nắm tay mẹ đi vào lớp",
+          title: "Đã bớt bỡ ngỡ",
+          text: "Nhờ mẹ động viên, bạn bước vào lớp và bắt đầu buổi học đầu tiên.",
+          effects: { happiness: 2 },
+          achievementIds: ["primary-school"],
+          confirmText: "Mình làm được rồi!",
+        },
+      ],
     },
   ],
 };

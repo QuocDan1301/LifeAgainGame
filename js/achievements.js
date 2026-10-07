@@ -1,232 +1,217 @@
-// Danh sách thành tựu
-const achievements = [
-  {
-    id: "primary-school",
-    icon: "🎒",
-    title: "Ngày đầu đến trường",
-    description: "Đạt 6 tuổi, bước vào giai đoạn tiểu học.",
-    test: (player) => player.age >= 6,
-  },
-  {
-    id: "secondary-school",
-    icon: "📚",
-    title: "Bước vào cấp hai",
-    description: "Đạt 11 tuổi, bước vào giai đoạn THCS.",
-    test: (player) => player.age >= 11,
-  },
-  {
-    id: "high-school",
-    icon: "🏫",
-    title: "Tuổi học trò",
-    description: "Đạt 15 tuổi, bước vào giai đoạn THPT.",
-    test: (player) => player.age >= 15,
-  },
-  {
-    id: "adult",
-    icon: "🌱",
-    title: "Đã trưởng thành",
-    description: "Đạt 18 tuổi.",
-    test: (player) => player.age >= 18,
-  },
-  {
-    id: "age-30",
-    icon: "🌳",
-    title: "Ba mươi năm cuộc đời",
-    description: "Đạt 30 tuổi.",
-    test: (player) => player.age >= 30,
-  },
-  {
-    id: "age-60",
-    icon: "🌅",
-    title: "Sáu mươi mùa xuân",
-    description: "Đạt 60 tuổi.",
-    test: (player) => player.age >= 60,
-  },
-  {
-    id: "health-100",
-    icon: "💪",
-    title: "Tràn đầy sức sống",
-    description: "Đạt 100% sức khỏe.",
-    test: (player) => player.health >= 100,
-  },
-  {
-    id: "intelligence-100",
-    icon: "🧠",
-    title: "Trí tuệ xuất chúng",
-    description: "Đạt 100% trí tuệ.",
-    test: (player) => player.intelligence >= 100,
-  },
-  {
-    id: "happiness-100",
-    icon: "❤️",
-    title: "Hạnh phúc trọn vẹn",
-    description: "Đạt 100% hạnh phúc.",
-    test: (player) => player.happiness >= 100,
-  },
-  {
-    id: "appearance-100",
-    icon: "✨",
-    title: "Ngoại hình nổi bật",
-    description: "Đạt 100% ngoại hình.",
-    test: (player) => player.appearance >= 100,
-  },
-  {
-    id: "money-100k",
-    icon: "🐷",
-    title: "Ống heo đầu tiên",
-    description: "Có ít nhất 100.000 VNĐ trong ví.",
-    test: (player) => player.money >= 100000,
-  },
-  {
-    id: "money-1m",
-    icon: "💰",
-    title: "Triệu đồng đầu tiên",
-    description: "Có ít nhất 1.000.000 VNĐ trong ví.",
-    test: (player) => player.money >= 1000000,
-  },
-];
+import {
+  achievements,
+  achievementGroups,
+  meetsAchievement,
+} from "./achievements-data.js";
+export { recordAchievementFlags } from "./achievements-data.js";
 
 const STORAGE_KEY = "lifeAgainAchievements";
-
+const QUEUE_KEY = "lifeAgainAchievementQueue";
 let gameState;
 let unlocked = {};
-let popupQueue = [];
+let queue = [];
+let activeId = null;
+let initialized = false;
+let listDialog, listElement, countElement, unlockDialog;
+const groupOpen = new Map();
 
-let listDialog;
-let listElement;
-let countElement;
-let unlockDialog;
+const get = (id) => {
+  const element = document.getElementById(id);
+  if (!element)
+    throw new Error(`Thiếu phần tử HTML id="${id}" cho hệ thống thành tựu.`);
+  return element;
+};
+const known = (id) => achievements.some((entry) => entry.id === id);
+const achieved = (id) => Object.hasOwn(unlocked, id) && Boolean(unlocked[id]);
+const create = (tag, className, text) => {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+};
 
-// Khởi tạo giao diện và đọc thành tựu đã lưu
+function readJSON(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
+  } catch (error) {
+    console.warn(`Không đọc được ${key}:`, error);
+    return fallback;
+  }
+}
+
+function persist() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(unlocked));
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+  } catch (error) {
+    console.warn("Không lưu được thành tựu trên thiết bị:", error);
+  }
+}
+
 export function initAchievements(state) {
   gameState = state;
-
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-    if (saved && typeof saved === "object" && !Array.isArray(saved)) {
-      unlocked = saved;
-    }
-  } catch (error) {
-    console.warn("Không đọc được thành tựu đã lưu:", error);
+  // Ngăn gắn sự kiện trùng nếu vô tình gọi khởi tạo lần thứ hai.
+  if (initialized) {
+    renderAchievements();
+    return;
   }
+  listDialog = get("achievements-dialog");
+  listElement = get("achievements-list");
+  countElement = get("achievements-count");
+  unlockDialog = get("achievement-unlock-dialog");
+  const openButton = get("achievements");
+  const closeButton = get("close-achievements");
+  const confirmButton = get("achievement-unlock-confirm");
+  get("unlock-icon");
+  get("unlock-title");
+  get("unlock-description");
 
-  listDialog = document.getElementById("achievements-dialog");
-  listElement = document.getElementById("achievements-list");
-  countElement = document.getElementById("achievements-count");
-  unlockDialog = document.getElementById("achievement-unlock-dialog");
+  const saved = readJSON(STORAGE_KEY, {});
+  unlocked =
+    saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+  const savedQueue = readJSON(QUEUE_KEY, []);
+  queue = Array.isArray(savedQueue)
+    ? [...new Set(savedQueue.filter((id) => known(id) && achieved(id)))]
+    : [];
 
-  document.getElementById("achievements").addEventListener("click", () => {
+  openButton.addEventListener("click", () => {
+    if (document.querySelector("dialog[open]")) return;
+
+    groupOpen.clear();
     renderAchievements();
     listDialog.showModal();
   });
+  closeButton.addEventListener("click", () => listDialog.close());
+  confirmButton.addEventListener("click", () => unlockDialog.close());
+  const resetButton = get("reset-achievements");
 
-  document
-    .getElementById("close-achievements")
-    .addEventListener("click", () => {
-      listDialog.close();
-    });
+  resetButton.addEventListener("click", () => {
+    const confirmed = window.confirm(
+      "Bạn muốn xóa toàn bộ thành tựu đã đạt? Không thể hoàn tác.",
+    );
 
-  document
-    .getElementById("achievement-unlock-confirm")
-    .addEventListener("click", () => {
-      unlockDialog.close();
-    });
+    if (!confirmed) return;
 
-  // Khi một hộp thoại đóng, thử hiện thông báo đang chờ.
-  // Nhờ vậy thông báo thành tựu không chồng lên hộp sự kiện.
+    // Đặt lại thành tựu và thông báo đang chờ.
+    unlocked = {};
+    queue = [];
+    activeId = null;
+
+    // Xóa dấu ghi nhận thành tựu của nhân vật.
+    gameState.player.achievementFlags = {};
+
+    // Lưu dữ liệu sau khi reset.
+    persist();
+    localStorage.setItem("lifeAgainSave", JSON.stringify(gameState));
+
+    // Hiển thị lại các thẻ mờ và bộ đếm 0/60.
+    renderAchievements();
+  });
   document.addEventListener(
     "close",
-    () => {
+    (event) => {
+      if (event.target === unlockDialog && activeId) {
+        queue = queue.filter((id) => id !== activeId);
+        activeId = null;
+        persist();
+      }
+      // Nhường cho code xác nhận sự kiện hoàn tất trước khi mở thông báo tiếp.
       queueMicrotask(showNextAchievement);
     },
     true,
   );
 
+  initialized = true;
   renderAchievements();
-}
-
-// Kiểm tra các thành tựu chưa mở khóa
-export function checkAchievements() {
-  if (!gameState) return;
-
-  let hasNewAchievement = false;
-
-  for (const achievement of achievements) {
-    if (unlocked[achievement.id]) continue;
-    if (!achievement.test(gameState.player)) continue;
-
-    unlocked[achievement.id] = {
-      unlockedAt: new Date().toISOString(),
-    };
-
-    popupQueue.push(achievement);
-    hasNewAchievement = true;
-  }
-
-  if (hasNewAchievement) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(unlocked));
-    renderAchievements();
-  }
-
   showNextAchievement();
 }
 
-// Hiển thị toàn bộ danh sách, kể cả mục chưa đạt
-function renderAchievements() {
-  listElement.replaceChildren();
-
-  const unlockedCount = achievements.filter(
-    (achievement) => unlocked[achievement.id],
-  ).length;
-
-  countElement.textContent = `${unlockedCount}/${achievements.length}`;
-
+export function checkAchievements() {
+  if (!initialized || !gameState?.player) return;
+  let changed = false;
   for (const achievement of achievements) {
-    const isUnlocked = Boolean(unlocked[achievement.id]);
-
-    const card = document.createElement("article");
-    card.className = "achievement-card";
-    card.classList.toggle("is-locked", !isUnlocked);
-
-    const icon = document.createElement("span");
-    icon.className = "achievement-icon";
-    icon.textContent = achievement.icon;
-    icon.setAttribute("aria-hidden", "true");
-
-    const details = document.createElement("div");
-
-    const title = document.createElement("h3");
-    title.textContent = achievement.title;
-
-    const description = document.createElement("p");
-    description.textContent = achievement.description;
-
-    const status = document.createElement("span");
-    status.className = "achievement-status";
-    status.textContent = isUnlocked ? "✓ Đã đạt" : "🔒 Chưa đạt";
-
-    details.append(title, description, status);
-    card.append(icon, details);
-    listElement.append(card);
+    if (
+      achieved(achievement.id) ||
+      !meetsAchievement(achievement, gameState.player)
+    )
+      continue;
+    unlocked[achievement.id] = { unlockedAt: new Date().toISOString() };
+    queue.push(achievement.id);
+    changed = true;
   }
+  if (changed) {
+    persist();
+    renderAchievements();
+  }
+  showNextAchievement();
 }
 
-// Nếu mở khóa nhiều mục cùng lúc, hiện lần lượt
+function makeCard(achievement) {
+  const isUnlocked = achieved(achievement.id);
+  const card = create("article", "achievement-card");
+  card.classList.toggle("is-locked", !isUnlocked);
+  const icon = create("span", "achievement-icon", achievement.icon);
+  icon.setAttribute("aria-hidden", "true");
+  const body = create("div", "achievement-card-body");
+  body.append(
+    create("h4", "", achievement.title),
+    create("p", "", achievement.description),
+    create(
+      "span",
+      "achievement-status",
+      isUnlocked ? "✓ Đã đạt" : "🔒 Chưa đạt",
+    ),
+  );
+  card.append(icon, body);
+  return card;
+}
+
+function renderAchievements() {
+  const scrollTop = listDialog.scrollTop;
+  const total = achievements.filter((entry) => achieved(entry.id)).length;
+  countElement.textContent = `${total}/${achievements.length}`;
+  listElement.replaceChildren();
+  for (const group of achievementGroups) {
+    const entries = achievements.filter((entry) => entry.group === group.id);
+    const count = entries.filter((entry) => achieved(entry.id)).length;
+    const details = create("details", "achievement-group");
+    details.open = groupOpen.get(group.id) ?? false;
+    const summary = create("summary", "achievement-group-heading");
+    summary.append(
+      create("span", "", group.title),
+      create("span", "achievement-group-count", `${count}/${entries.length}`),
+    );
+    details.append(summary);
+    details.addEventListener("toggle", () => {
+      if (details.isConnected) groupOpen.set(group.id, details.open);
+    });
+    for (const section of group.sections) {
+      const wrapper = create("section", "achievement-subgroup");
+      wrapper.append(create("h3", "achievement-subgroup-title", section));
+      const cards = create("div", "achievement-cards");
+      for (const entry of entries.filter(
+        (entry) => entry.section === section,
+      )) {
+        cards.append(makeCard(entry));
+      }
+      wrapper.append(cards);
+      details.append(wrapper);
+    }
+    listElement.append(details);
+  }
+  listDialog.scrollTop = scrollTop;
+}
+
 function showNextAchievement() {
-  if (popupQueue.length === 0) return;
-
-  // Chờ các hộp thoại khác đóng trước
-  if (document.querySelector("dialog[open]")) return;
-
-  const achievement = popupQueue.shift();
-
-  document.getElementById("unlock-icon").textContent = achievement.icon;
-
-  document.getElementById("unlock-title").textContent = achievement.title;
-
-  document.getElementById("unlock-description").textContent =
-    achievement.description;
-
+  if (!initialized || queue.length === 0 || activeId) return;
+  // Sự kiện đang chờ phải được giải quyết trước; không mở chồng hộp thoại.
+  if (gameState.pendingEvent || document.querySelector("dialog[open]")) return;
+  const achievement = achievements.find((entry) => entry.id === queue[0]);
+  if (!achievement) return;
+  activeId = achievement.id;
+  get("unlock-icon").textContent = achievement.icon;
+  get("unlock-title").textContent = achievement.title;
+  get("unlock-description").textContent = achievement.description;
   unlockDialog.showModal();
+  get("achievement-unlock-confirm").focus({ preventScroll: true });
 }
