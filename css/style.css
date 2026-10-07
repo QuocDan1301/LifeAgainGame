@@ -946,7 +946,9 @@ body::before {
   border-radius: 12px;
   background: #fff1ad;
   color: #173247;
-  font: inherit;
+  font-family: "Patrick Hand", cursive;
+  font-weight: 400;
+  font-style: normal;
   line-height: 1.4;
   text-align: left;
   cursor: pointer;
