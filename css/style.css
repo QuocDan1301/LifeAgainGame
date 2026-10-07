@@ -9,15 +9,12 @@
   --panel-bg: #a7e6f7;
   --green: #b9f238;
 }
-
 * {
   box-sizing: border-box;
 }
-
 html {
   font-size: 62.5%;
 }
-
 body {
   margin: 0;
   height: 100vh;
@@ -31,41 +28,34 @@ body {
   font-family: "Trebuchet MS", Arial, sans-serif;
   font-size: 1.6rem;
 }
-
 button,
 progress {
   font: inherit;
 }
-
 button {
   color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-
 button:focus-visible,
 .journal:focus-visible {
   outline: 3px solid #7347cf;
   outline-offset: -4px;
 }
-
 button {
   transition:
     filter 0.15s ease,
     transform 0.15s ease;
 }
-
 button:active {
   transform: scale(0.97);
 }
-
 @media (hover: hover) {
   button:hover {
     filter: brightness(1.06);
   }
 }
-
 /* ===== Khung game ===== */
 .game {
   width: 100%;
@@ -87,7 +77,6 @@ button:active {
   gap: 0.6rem;
   background: #ffffff;
 }
-
 /* ===== Thanh tiêu đề ===== */
 .game-header {
   position: relative;
@@ -99,9 +88,8 @@ button:active {
   background: var(--cream);
   border: 3px solid var(--yellow-border);
   border-radius: 1.8rem;
-  background: #fff8dc url("./img/nendau.png") center / cover no-repeat;
+  background: #fff8dc url("../img/nendau.png") center / cover no-repeat;
 }
-
 .menu-button {
   position: absolute;
   left: 0.5rem;
@@ -118,18 +106,15 @@ button:active {
   border: 0;
   border-radius: 1rem;
 }
-
 .menu-button span {
   width: 100%;
   height: 0.4rem;
   background: var(--text);
   border-radius: 999px;
 }
-
 .menu-button:active {
   transform: translateY(-50%) scale(0.95);
 }
-
 #logo {
   display: block;
   width: auto;
@@ -141,7 +126,6 @@ button:active {
   background: transparent;
   filter: drop-shadow(0 2px 5px rgba(16, 40, 63, 0.5));
 }
-
 /* ===== Nhật ký ===== */
 .journal {
   /* Cho phép phần tử co lại và cuộn trong CSS Grid */
@@ -171,11 +155,9 @@ button:active {
   margin: 0 0 2rem;
   font-size: clamp(2rem, 5vw, 2.5rem);
 }
-
 .life-event + .life-event {
   margin-top: 1rem;
 }
-
 .life-event h3 {
   margin: 0 0 0.6rem;
   font-size: 2.2rem;
@@ -183,7 +165,6 @@ button:active {
   font-weight: bold;
   font-style: normal;
 }
-
 .life-event p {
   margin: 0;
   font-size: 2rem;
@@ -193,16 +174,13 @@ button:active {
   font-weight: 400;
   font-style: normal;
 }
-
 .journal::-webkit-scrollbar {
   width: 0.6rem;
 }
-
 .journal::-webkit-scrollbar-thumb {
   background: #c0ae60;
   border-radius: 999px;
 }
-
 /* ===== Cụm nút chức năng ===== */
 .game-actions {
   --age-size: clamp(8rem, 22vw, 10rem);
@@ -214,7 +192,6 @@ button:active {
   margin-top: 1.2rem;
   flex-shrink: 0;
 }
-
 /* Icon nằm ở mép ngoài, chữ căn giữa vùng còn lại */
 .action-button {
   --icon-size: 3.8rem;
@@ -237,19 +214,16 @@ button:active {
   line-height: 1.2;
   white-space: nowrap;
 }
-
 #assets,
 #education {
   padding: 0.4rem calc(var(--age-size) / 2 + 0.4rem) 0.4rem
     calc(var(--icon-size) + var(--icon-edge) + 0.5rem);
 }
-
 #relationships,
 #activities {
   padding: 0.4rem calc(var(--icon-size) + var(--icon-edge) + 0.5rem) 0.4rem
     calc(var(--age-size) / 2 + 0.4rem);
 }
-
 .action-icon {
   position: absolute;
   top: 50%;
@@ -264,17 +238,14 @@ button:active {
   font-size: 2.6rem;
   line-height: 1;
 }
-
 #assets .action-icon,
 #education .action-icon {
   left: var(--icon-edge);
 }
-
 #relationships .action-icon,
 #activities .action-icon {
   right: var(--icon-edge);
 }
-
 .age-button {
   position: absolute;
   z-index: 1;
@@ -296,16 +267,13 @@ button:active {
   font-weight: 900;
   line-height: 1.1;
 }
-
 .plus {
   font-size: 7rem;
   line-height: 0.95;
 }
-
 .age-button:active {
   transform: translate(-50%, -50%) scale(0.95);
 }
-
 /* ===== Hồ sơ nhân vật ===== */
 .character {
   min-width: 0;
@@ -323,7 +291,6 @@ button:active {
   );
   border-radius: 1.7rem;
 }
-
 .character-card {
   min-width: 0;
   padding: 0.6rem 0.3rem;
@@ -336,7 +303,6 @@ button:active {
   border-radius: 1.4rem;
   text-align: center;
 }
-
 .avatar {
   display: grid;
   place-items: center;
@@ -344,18 +310,15 @@ button:active {
   font-size: clamp(4.4rem, 13vw, 6.5rem);
   line-height: 1.15;
 }
-
 .character-card h2 {
   margin: 0.4rem 0 0;
   font-size: 1.5rem;
   overflow-wrap: anywhere;
 }
-
 .character-card p {
   margin: 0.3rem 0 0;
   font-size: 1.3rem;
 }
-
 .character-details {
   min-width: 0;
   display: flex;
@@ -363,13 +326,11 @@ button:active {
   justify-content: space-between;
   gap: 0.7rem;
 }
-
 /* ===== Chỉ số ===== */
 .stats {
   display: grid;
   gap: 0.5rem;
 }
-
 .stat-row {
   display: grid;
   grid-template-columns: 7.2rem minmax(0, 1fr) 3rem;
@@ -378,12 +339,10 @@ button:active {
   font-size: 1.1rem;
   font-weight: bold;
 }
-
 .stat-row > span {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-
 progress {
   --bar-color: #98e733;
   appearance: none;
@@ -396,21 +355,17 @@ progress {
   border: 2px solid var(--blue-border);
   border-radius: 999px;
 }
-
 progress::-webkit-progress-bar {
   background: var(--cream);
 }
-
 progress::-webkit-progress-value {
   background: var(--bar-color);
   border-radius: 999px;
 }
-
 progress::-moz-progress-bar {
   background: var(--bar-color);
   border-radius: 999px;
 }
-
 /* ===== Ví tiền ===== */
 .wallet {
   min-width: 0;
@@ -422,14 +377,12 @@ progress::-moz-progress-bar {
   background: var(--cream);
   border: 2px solid #15b5e4;
   border-radius: 1.2rem;
-  background: #fff8dc url("./img/nenwallet.png") center / cover no-repeat;
+  background: #fff8dc url("../img/nenwallet.png") center / cover no-repeat;
 }
-
 .wallet-icon {
   font-size: 3rem;
   transform: translate(-0.5rem);
 }
-
 .wallet p {
   margin: 0;
   font-size: 1.5rem;
@@ -437,13 +390,11 @@ progress::-moz-progress-bar {
   font-style: normal;
   text-align: center;
 }
-
 .wallet strong {
   display: block;
   font-size: 2rem;
   overflow-wrap: anywhere;
 }
-
 /* Tên game và 4 nút chức năng */
 .game-header,
 .action-button {
@@ -451,13 +402,11 @@ progress::-moz-progress-bar {
   font-weight: 400;
   font-style: normal;
 }
-
 .fortune-wrapper {
   display: flex;
   justify-content: center;
   margin-bottom: 2rem;
 }
-
 .fortune-button {
   max-width: 100%;
   min-height: 4.4rem;
@@ -478,12 +427,10 @@ progress::-moz-progress-bar {
   text-align: center;
   white-space: normal;
 }
-
 .fortune-button > span:first-child {
   flex-shrink: 0;
   font-size: 2.8rem;
 }
-
 #fortune-text {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -492,12 +439,10 @@ progress::-moz-progress-bar {
 body {
   position: relative;
   isolation: isolate;
-
   background:
     radial-gradient(circle at 15% 20%, #fff3bd 0%, transparent 45%),
     radial-gradient(circle at 85% 80%, #bdeeff 0%, transparent 45%), #edf7fa;
 }
-
 /* Lớp logo viền chuyển động */
 body::before {
   content: "";
@@ -505,38 +450,30 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-
-  background-image: url("./logobg.png");
+  background-image: url("../img/logobg.png");
   background-repeat: repeat;
   background-size: 220px 170px;
   background-position: 0 0;
-
   opacity: 0.08;
-
   animation: move-background 45s linear infinite;
 }
-
 /* Khung game nằm trên nền và che logo phía sau */
 .game {
   position: relative;
   background: #ffffff;
-
   box-shadow:
     -8px 0 30px rgba(16, 40, 63, 0.06),
     8px 0 30px rgba(16, 40, 63, 0.06);
 }
-
 /* Di chuyển đúng một ô để vòng lặp liền mạch */
 @keyframes move-background {
   from {
     background-position: 0 0;
   }
-
   to {
     background-position: 220px 170px;
   }
 }
-
 /* Dừng chuyển động nếu thiết bị yêu cầu giảm hiệu ứng */
 @media (prefers-reduced-motion: reduce) {
   body::before {
@@ -548,7 +485,6 @@ body::before {
     background: #e5d0ff;
   }
 }
-
 .achievement-button {
   position: absolute;
   right: 0.5rem;
@@ -565,14 +501,12 @@ body::before {
   font-size: 2.8rem;
   line-height: 1;
 }
-
 .achievement-button:active {
   transform: translateY(-50%) scale(0.95);
 }
 .game {
   background: transparent;
 }
-
 /* Icon và chữ trên điện thoại hẹp */
 @media (max-width: 420px) {
   .action-button {
@@ -584,7 +518,6 @@ body::before {
     font-size: 2.1rem;
   }
 }
-
 @media (max-width: 360px) {
   .action-button {
     --icon-size: 2.6rem;
@@ -617,7 +550,6 @@ body::before {
     font-size: 1.1rem;
   }
 }
-
 /* Màn hình thấp: thu gọn phần cố định để ưu tiên nhật ký */
 @media (max-height: 700px) {
   .game-header {
@@ -642,7 +574,6 @@ body::before {
     padding: 0.3rem 0.8rem;
   }
 }
-
 /* Khi xoay ngang điện thoại, cho phép toàn trang cuộn */
 @media (max-height: 480px) {
   body {
@@ -658,7 +589,6 @@ body::before {
     grid-template-rows: auto minmax(24rem, 1fr) auto auto;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   button {
     transition: none;
@@ -667,7 +597,6 @@ body::before {
 .log-entry + .log-entry {
   margin-top: 1rem;
 }
-
 .log-entry h3 {
   margin: 0 0 0.6rem;
   font-size: 2.2rem;
@@ -675,7 +604,6 @@ body::before {
   font-weight: bold;
   font-style: normal;
 }
-
 .log-entry p {
   margin: 0;
   font-size: 2rem;
@@ -689,14 +617,12 @@ body::before {
 .log-entry .stat-increase {
   color: #218739;
 }
-
 .log-entry .stat-decrease {
   color: #c62828;
 }
 .game-header {
   position: relative;
 }
-
 #menu-panel {
   position: absolute;
   top: calc(100% + 8px);
@@ -710,11 +636,9 @@ body::before {
   box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
   z-index: 100;
 }
-
 #menu-panel[hidden] {
   display: none;
 }
-
 #restart-button {
   width: 100%;
   padding: 12px;
@@ -733,19 +657,16 @@ body::before {
   overflow: hidden;
   background: #e5e7eb;
 }
-
 /* Nền thanh trên Chrome, Edge, Safari */
 .stats progress::-webkit-progress-bar {
   background: #e5e7eb;
   border-radius: 999px;
 }
-
 /* Phần đã đầy trên Chrome, Edge, Safari */
 .stats progress::-webkit-progress-value {
   background: var(--stat-color, #43a047);
   border-radius: 999px;
 }
-
 /* Phần đã đầy trên Firefox */
 .stats progress::-moz-progress-bar {
   background: var(--stat-color, #43a047);
@@ -757,18 +678,15 @@ body::before {
   padding-top: 38px;
   box-sizing: border-box;
 }
-
 /* Ô tiêu đề nằm phía trên bốn thanh */
 .stats-title {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-
   margin: 0;
   padding: 4px 22px;
   white-space: nowrap;
-
   font-family: "Sriracha", cursive;
   font-weight: 400;
   font-style: normal;
@@ -776,7 +694,6 @@ body::before {
   font-weight: 700;
   line-height: 1.2;
   color: #10334a;
-
   background: linear-gradient(135deg, #fffbea, #ffe481);
   border: 2px solid #fff8cf;
   border-radius: 999px;
@@ -807,22 +724,18 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
-
 #name-dialog::backdrop {
   background: rgb(0 0 0 / 45%);
 }
-
 #name-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 #name-form h2 {
   margin: 0 0 8px;
   font-size: 24px;
 }
-
 #name-form input {
   min-width: 0;
   padding: 12px;
@@ -830,21 +743,17 @@ body::before {
   border-radius: 8px;
   font: inherit;
 }
-
 #name-form input[aria-invalid="true"] {
   border-color: #c62828;
 }
-
 #name-error {
   margin: 0;
   color: #c62828;
   font-size: 14px;
 }
-
 #name-error:empty {
   display: none;
 }
-
 #name-form button {
   padding: 12px;
   border: none;
@@ -871,26 +780,21 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
-
 #restart-dialog::backdrop {
   background: rgb(0 0 0 / 45%);
 }
-
 #restart-dialog h2 {
   margin: 0 0 12px;
   font-size: 22px;
 }
-
 #restart-dialog p {
   margin: 0 0 20px;
   line-height: 1.5;
 }
-
 .restart-actions {
   display: flex;
   gap: 12px;
 }
-
 .restart-actions button {
   flex: 1;
   padding: 12px;
@@ -899,12 +803,10 @@ body::before {
   font: inherit;
   cursor: pointer;
 }
-
 #cancel-restart {
   background: #e5e7eb;
   color: #173247;
 }
-
 #confirm-restart {
   background: #c62828;
   color: white;
@@ -916,11 +818,9 @@ body::before {
   justify-content: center;
   gap: 2px;
 }
-
 .age-button .plus {
   line-height: 1;
 }
-
 .age-label {
   font-family: "Patrick Hand", cursive;
   font-weight: 400;
@@ -942,23 +842,19 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
-
 #activities-dialog::backdrop {
   background: rgb(0 0 0 / 45%);
 }
-
 .activities-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-
 .activities-heading h2 {
   margin: 0;
   font-size: 24px;
 }
-
 #close-activities {
   border: none;
   background: transparent;
@@ -966,12 +862,10 @@ body::before {
   font-size: 24px;
   cursor: pointer;
 }
-
 .activities-list {
   display: grid;
   gap: 12px;
 }
-
 .activities-list button {
   padding: 14px;
   border: 1px solid #e0c878;
@@ -994,17 +888,14 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
-
 #event-dialog::backdrop {
   background: rgb(0 0 0 / 55%);
 }
-
 #event-title {
   margin: 0 0 16px;
   text-align: center;
   font-size: 24px;
 }
-
 #event-image {
   display: block;
   width: 100%;
@@ -1013,11 +904,9 @@ body::before {
   border-radius: 12px;
   margin-bottom: 16px;
 }
-
 #event-image[hidden] {
   display: none;
 }
-
 #event-content {
   margin: 0 0 20px;
   font-family: "Patrick Hand", cursive;
@@ -1026,15 +915,12 @@ body::before {
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
-
 #event-content .stat-increase {
   color: #218739;
 }
-
 #event-content .stat-decrease {
   color: #c62828;
 }
-
 #event-confirm {
   width: 100%;
   padding: 13px;
@@ -1050,11 +936,9 @@ body::before {
   display: grid;
   gap: 10px;
 }
-
 #event-choices:empty {
   display: none;
 }
-
 .event-choice {
   width: 100%;
   padding: 13px 16px;
@@ -1067,16 +951,13 @@ body::before {
   text-align: left;
   cursor: pointer;
 }
-
 .event-choice:hover {
   background: #ffe481;
 }
-
 .event-choice:disabled {
   opacity: 0.6;
   cursor: default;
 }
-
 #event-confirm[hidden],
 #event-image[hidden] {
   display: none;
@@ -1094,26 +975,23 @@ body::before {
   color: #173247;
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: 400;
   font-style: normal;
 }
 #achievements-dialog::backdrop,
 #achievement-unlock-dialog::backdrop {
   background: rgb(0 0 0 / 55%);
 }
-
 .achievements-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
-
 .achievements-heading h2 {
   margin: 0;
   font-size: 24px;
 }
-
 #close-achievements {
   border: none;
   background: transparent;
@@ -1121,21 +999,17 @@ body::before {
   font-size: 24px;
   cursor: pointer;
 }
-
 .achievements-summary {
   margin: 16px 0;
   font-size: 16px;
 }
-
 #achievements-count {
   color: #886000;
 }
-
 #achievements-list {
   display: grid;
   gap: 12px;
 }
-
 .achievement-card {
   display: flex;
   align-items: center;
@@ -1145,7 +1019,6 @@ body::before {
   border-radius: 14px;
   background: #fff1ad;
 }
-
 /* Chưa đạt: vẫn hiện nhưng mờ và mất màu */
 .achievement-card.is-locked {
   opacity: 0.5;
@@ -1153,53 +1026,43 @@ body::before {
   border-color: #b7b7b7;
   background: #eeeeea;
 }
-
 .achievement-icon {
   flex-shrink: 0;
   font-size: 36px;
 }
-
 .achievement-card h3 {
   margin: 0 0 5px;
   font-size: 18px;
 }
-
 .achievement-card p {
   margin: 0 0 7px;
   font-size: 14px;
   line-height: 1.5;
 }
-
 .achievement-status {
   font-size: 13px;
   font-weight: 700;
 }
-
 #achievement-unlock-dialog {
   text-align: center;
 }
-
 #unlock-heading {
   margin: 0 0 16px;
   color: #886000;
   font-size: 20px;
   font-weight: 700;
 }
-
 #unlock-icon {
   font-size: 64px;
 }
-
 #unlock-title {
   margin: 12px 0;
   font-size: 24px;
 }
-
 #unlock-description {
   font-size: 16px;
   line-height: 1.5;
 }
-
 #achievement-unlock-confirm {
   width: 100%;
   margin-top: 12px;
@@ -1210,7 +1073,7 @@ body::before {
   color: #173247;
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: 400;
   font-style: normal;
   font-weight: 700;
   cursor: pointer;
@@ -1219,7 +1082,6 @@ body::before {
 #achievement-unlock-dialog {
   scrollbar-width: none;
 }
-
 #achievements-dialog::-webkit-scrollbar,
 #achievement-unlock-dialog::-webkit-scrollbar {
   display: none;
@@ -1235,17 +1097,15 @@ body::before {
   color: #a5281b;
   font-family: "Oswald", sans-serif;
   font-optical-sizing: auto;
-  font-weight: <weight>;
+  font-weight: 400;
   font-style: normal;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
 }
-
 #reset-achievements:hover {
   background: #ffe0da;
 }
-
 #reset-achievements:active {
   transform: translateY(1px);
 }
@@ -1254,21 +1114,18 @@ body::before {
   font-family: "Sriracha", cursive;
   font-size: 18px;
 }
-
 /* Tên thành tựu: Ngày đầu đến trường */
 #achievements-list .achievement-card h4 {
   font-family: "Sriracha", cursive;
   font-size: 22px;
   font-weight: 400;
 }
-
 /* Hướng dẫn bên dưới tên */
 #achievements-list .achievement-card p {
   font-family: "Patrick Hand", cursive;
   font-size: 20px;
   line-height: 1.5;
 }
-
 /* Chữ Đã đạt / Chưa đạt */
 #achievements-list .achievement-status {
   font-family: "Patrick Hand", cursive;
@@ -1288,32 +1145,26 @@ body::before {
   text-align: center;
   scrollbar-width: none;
 }
-
 #fortune-dialog::-webkit-scrollbar {
   display: none;
 }
-
 #fortune-dialog::backdrop {
   background: rgb(20 10 35 / 65%);
 }
-
 #fortune-dialog .fortune-icon {
   font-size: 64px;
 }
-
 #fortune-title {
   margin: 10px 0;
   font-family: "Sriracha", cursive;
   font-size: 28px;
   font-weight: 400;
 }
-
 #fortune-name {
   margin: 0 0 16px;
   font-family: "Patrick Hand", cursive;
   font-size: 21px;
 }
-
 #fortune-content {
   margin: 0;
   padding: 18px;
@@ -1325,7 +1176,6 @@ body::before {
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
-
 #fortune-dialog .fortune-note {
   margin: 16px 0;
   font-family: "Patrick Hand", cursive;
@@ -1333,7 +1183,6 @@ body::before {
   line-height: 1.5;
   color: #74637e;
 }
-
 #close-fortune {
   width: 100%;
   padding: 12px;
@@ -1345,7 +1194,6 @@ body::before {
   font-size: 18px;
   cursor: pointer;
 }
-
 #close-fortune:hover {
   background: #62408f;
 }

@@ -2,19 +2,14 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <meta name="theme-color" content="#fff1ad" />
-
     <title>Life Again</title>
-
     <!-- Biểu tượng -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
     />
-
     <!-- Font chữ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,11 +17,10 @@
       href="https://fonts.googleapis.com/css2?family=Francois+One&family=Oswald:wght@200..700&family=Patrick+Hand&family=Sriracha&display=swap"
       rel="stylesheet"
     />
-
     <!-- CSS của game: chỉ liên kết một lần -->
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/achievements.css" />
-
+    <link rel="stylesheet" href="./css/lobby.css" />
     <link
       rel="apple-touch-icon"
       sizes="57x57"
@@ -101,9 +95,156 @@
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
   </head>
-
   <body>
-    <div class="game">
+    <section id="lobby-screen" aria-labelledby="lobby-title">
+      <header class="lobby-brand">
+        <img src="./img/Logo.png" alt="Life Again" /><span
+          >MỖI CUỘC ĐỜI, MỘT HÀNH TRÌNH</span
+        >
+      </header>
+      <div class="lobby-center">
+        <p class="lobby-eyebrow">BẾN XE KHỞI ĐẦU</p>
+        <h1 id="lobby-title">Bạn sẽ đi về đâu<br />trong cuộc đời này?</h1>
+        <p class="lobby-intro">Một tấm vé. Một khởi đầu. Vô vàn lựa chọn.</p>
+        <div class="lobby-actions">
+          <button type="button" id="new-life-button">Chuyến Xe Cuộc Đời</button>
+          <button type="button" id="continue-button" hidden>Chơi tiếp</button>
+        </div>
+        <p class="lobby-ticket-count">
+          🎟️ Vé còn lại: <strong id="ticket-count" aria-live="polite">0</strong>
+        </p>
+        <p id="lobby-message" role="status"></p>
+      </div>
+      <footer class="lobby-footer">
+        <button
+          type="button"
+          id="ticket-seller"
+          aria-label="Nhận vé miễn phí tại quầy"
+        >
+          <span class="seller-speech">Ở đây có bán vé</span>
+          <img
+            src="./img/ticket-seller.png"
+            alt="Nhân viên bán vé đang mỉm cười"
+          />
+        </button>
+        <p>Vé miễn phí<br /><span>Mỗi lượt nhận tối đa 30 vé</span></p>
+      </footer>
+    </section>
+    <dialog
+      id="tickets-dialog"
+      class="lobby-dialog"
+      aria-labelledby="tickets-title"
+    >
+      <div class="lobby-dialog-heading">
+        <h2 id="tickets-title">🎟️ Quầy vé cuộc đời</h2>
+        <button type="button" id="close-tickets" aria-label="Đóng quầy vé">
+          ✕
+        </button>
+      </div>
+      <p>
+        Vé ở đây hoàn toàn miễn phí. Bạn có thể ghé lại bao nhiêu lần cũng được!
+      </p>
+      <form id="ticket-form" novalidate>
+        <label for="ticket-quantity">Số lượng vé (1–30)</label>
+        <input
+          id="ticket-quantity"
+          type="number"
+          min="1"
+          max="30"
+          step="1"
+          value="1"
+          inputmode="numeric"
+          required
+        />
+        <p id="ticket-error" class="lobby-error" role="alert"></p>
+        <button type="submit" class="lobby-primary">Nhận vé miễn phí</button>
+      </form>
+    </dialog>
+    <dialog
+      id="create-character-dialog"
+      class="lobby-dialog"
+      aria-labelledby="create-character-title"
+    >
+      <div class="lobby-dialog-heading">
+        <h2 id="create-character-title">Một cuộc đời mới</h2>
+        <button
+          type="button"
+          id="close-create-character"
+          aria-label="Hủy tạo nhân vật"
+        >
+          ✕
+        </button>
+      </div>
+      <p>Chọn cách bắt đầu hành trình của bạn. Tạo thành công dùng 1 vé.</p>
+      <label id="replace-life-note" hidden
+        ><input id="replace-life-confirm" type="checkbox" /> Tôi đồng ý thay thế
+        cuộc đời đang lưu bằng nhân vật mới.</label
+      >
+      <div id="character-options">
+        <button
+          type="button"
+          id="random-character-button"
+          class="lobby-primary"
+        >
+          🎲 Tạo nhân vật ngẫu nhiên
+        </button>
+        <button
+          type="button"
+          id="custom-character-button"
+          class="lobby-secondary"
+        >
+          ✍️ Tạo nhân vật tùy chỉnh
+        </button>
+      </div>
+      <form id="create-character-form" hidden novalidate>
+        <label for="new-character-gender">Giới tính</label>
+
+        <select id="new-character-gender">
+          <option value="male">Nam</option>
+          <option value="female">Nữ</option>
+        </select>
+        <label for="new-character-name">Tên nhân vật (1–2 từ)</label>
+        <input
+          id="new-character-name"
+          maxlength="30"
+          autocomplete="off"
+          placeholder="Ví dụ: Quốc Dân"
+          aria-describedby="create-character-error"
+        />
+        <label for="new-character-province">Tỉnh / thành phố</label>
+        <input
+          id="new-character-province"
+          list="province-options"
+          maxlength="60"
+          autocomplete="off"
+          placeholder="Ví dụ: Hà Nội"
+          aria-describedby="create-character-error"
+        />
+        <datalist id="province-options"></datalist>
+        <button type="submit" class="lobby-primary">Khởi hành · 1 vé</button>
+        <button
+          type="button"
+          id="back-character-options"
+          class="lobby-secondary"
+        >
+          Quay lại
+        </button>
+      </form>
+      <p id="create-character-error" class="lobby-error" role="alert"></p>
+    </dialog>
+    <dialog
+      id="death-dialog"
+      class="lobby-dialog"
+      aria-labelledby="death-title"
+    >
+      <h2 id="death-title">Hành trình đã khép lại</h2>
+      <p id="death-content"></p>
+      <button type="button" id="return-after-death" class="lobby-primary">
+        Về bến xe
+      </button>
+    </dialog>
+
+    <div class="game" id="game-screen" hidden>
       <!-- Thanh tiêu đề -->
       <header class="game-header">
         <button
@@ -118,13 +259,10 @@
           <span></span>
           <span></span>
         </button>
-
         <div id="menu-panel" hidden>
-          <button type="button" id="restart-button">Chơi lại</button>
+          <button type="button" id="restart-button">Về bến xe</button>
         </div>
-
         <img id="logo" src="./img/Logo.png" alt="Life Again" />
-
         <button
           type="button"
           class="achievement-button"
@@ -135,44 +273,36 @@
           <span aria-hidden="true">🏆</span>
         </button>
       </header>
-
       <!-- Nhật ký: cuộn riêng -->
       <main class="journal" aria-label="Nhật ký cuộc đời" tabindex="0">
         <div class="fortune-wrapper">
           <button type="button" class="fortune-button" id="fortune-button">
             <span aria-hidden="true">🔮</span>
-
             <span id="fortune-text" aria-live="polite" aria-atomic="true">
               Xem vận mệnh
             </span>
           </button>
         </div>
-
         <div id="life-log" role="log" aria-label="Sự kiện cuộc đời"></div>
       </main>
-
       <!-- Các nút chức năng -->
       <nav class="game-actions" aria-label="Chức năng game">
         <button type="button" class="action-button" id="assets">
           <span class="action-icon" aria-hidden="true">💳</span>
           <span>Tài sản</span>
         </button>
-
         <button type="button" class="action-button" id="relationships">
           <span>Quan hệ</span>
           <span class="action-icon" aria-hidden="true">👥</span>
         </button>
-
         <button type="button" class="action-button" id="education">
           <span class="action-icon" aria-hidden="true">🎓</span>
           <span>Học vấn</span>
         </button>
-
         <button type="button" class="action-button" id="activities">
           <span>Hoạt động</span>
           <span class="action-icon" aria-hidden="true">🏃</span>
         </button>
-
         <button
           type="button"
           class="age-button"
@@ -186,19 +316,17 @@
           <span class="age-label">Tuổi</span>
         </button>
       </nav>
-
       <!-- Hồ sơ nhân vật -->
       <section class="character" aria-label="Thông tin nhân vật">
         <div class="character-card">
           <div class="avatar" role="img" aria-label="Chân dung em bé">
             <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
           </div>
-
           <h2 id="player-name"></h2>
           <p>Tuổi: <span id="player-age">0</span></p>
+          <p id="player-province"></p>
           <p id="character-status">Chưa đi học</p>
         </div>
-
         <div class="character-details">
           <!-- Chỉ số nhân vật -->
           <div class="stats">
@@ -207,49 +335,36 @@
               <label for="health">
                 <span aria-hidden="true">💪</span>Sức khỏe
               </label>
-
               <progress id="health" max="100" value="90">90%</progress>
-
               <span id="health-value">90%</span>
             </div>
-
             <div class="stat-row">
               <label for="smarts">
                 <span aria-hidden="true">🧠</span>Trí tuệ
               </label>
-
               <progress id="smarts" max="100" value="85">85%</progress>
-
               <span id="smarts-value">85%</span>
             </div>
-
             <div class="stat-row">
               <label for="happiness">
                 <span aria-hidden="true">❤️</span>Hạnh phúc
               </label>
-
               <progress id="happiness" max="100" value="70">70%</progress>
-
               <span id="happiness-value">70%</span>
             </div>
-
             <div class="stat-row">
               <label for="looks">
                 <span aria-hidden="true">👁️</span>Ngoại hình
               </label>
-
               <progress id="looks" max="100" value="65">65%</progress>
-
               <span id="looks-value">65%</span>
             </div>
           </div>
-
           <!-- Ví tiền -->
           <div class="wallet">
             <span class="wallet-icon" aria-hidden="true">
               <i class="fa-solid fa-sack-dollar"></i>
             </span>
-
             <div>
               <p>Ví tiền</p>
               <strong id="money"><span id="money-value"></span> VNĐ</strong>
@@ -258,68 +373,39 @@
         </div>
       </section>
     </div>
-    <script type="module" src="./js/main.js"></script>
-    <dialog id="name-dialog">
-      <form id="name-form" novalidate>
-        <h2>Đặt tên nhân vật</h2>
+    <script type="module" src="./js/boot.js"></script>
 
-        <label for="character-name-input">
-          Nhập tên nhân vật (tối đa 2 từ)
-        </label>
-
-        <input
-          id="character-name-input"
-          type="text"
-          placeholder="Ví dụ: Quốc Dân"
-          aria-describedby="name-error"
-          autocomplete="off"
-          autofocus
-        />
-
-        <p id="name-error" role="alert"></p>
-
-        <button type="submit">Bắt đầu cuộc đời</button>
-      </form>
-    </dialog>
     <dialog id="restart-dialog">
-      <h2>Bắt đầu cuộc đời mới?</h2>
-      <p>Tiến trình hiện tại sẽ bị xóa.</p>
-
+      <h2>Về bến xe?</h2>
+      <p>
+        Tiến trình được giữ lại. Bạn có thể chơi tiếp hoặc dùng vé để tạo cuộc
+        đời mới.
+      </p>
       <div class="restart-actions">
         <button type="button" id="cancel-restart" autofocus>Hủy</button>
-
-        <button type="button" id="confirm-restart">Chơi lại</button>
+        <button type="button" id="confirm-restart">Về bến xe</button>
       </div>
     </dialog>
     <dialog id="activities-dialog">
       <div class="activities-heading">
         <h2>Hoạt động</h2>
-
         <button type="button" id="close-activities" aria-label="Đóng hoạt động">
           ✕
         </button>
       </div>
-
       <p>Chọn việc bạn muốn làm:</p>
-
       <div class="activities-list">
         <button type="button" id="activity-read">📚 Đọc sách</button>
-
         <button type="button" id="activity-walk">🚶 Đi dạo</button>
-
         <button type="button" id="activity-play">🎮 Giải trí</button>
       </div>
     </dialog>
     <dialog id="event-dialog" aria-labelledby="event-title">
       <h2 id="event-title">Sự kiện</h2>
-
       <img id="event-image" src="" alt="" hidden />
-
       <p id="event-content"></p>
-
       <!-- Các lựa chọn ở bước đầu -->
       <div id="event-choices"></div>
-
       <!-- Nút xác nhận ở bước kết quả -->
       <button type="button" id="event-confirm" hidden>Xác nhận</button>
     </dialog>
@@ -340,7 +426,6 @@
       <div id="achievements-list"></div>
       <button type="button" id="reset-achievements">Đặt lại thành tựu</button>
     </dialog>
-
     <dialog
       id="achievement-unlock-dialog"
       aria-labelledby="unlock-heading unlock-title"
@@ -353,17 +438,13 @@
     </dialog>
     <dialog id="fortune-dialog" aria-labelledby="fortune-title">
       <div class="fortune-icon" aria-hidden="true">🔮</div>
-
       <h2 id="fortune-title">Vận mệnh của bạn</h2>
-
       <p id="fortune-name"></p>
       <p id="fortune-content"></p>
-
       <p class="fortune-note">
         Lời tiên đoán chỉ mang tính giải trí. Cuộc đời vẫn nằm trong những lựa
         chọn của bạn.
       </p>
-
       <button type="button" id="close-fortune">Để xem có đúng không!</button>
     </dialog>
   </body>

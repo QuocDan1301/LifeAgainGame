@@ -1,14 +1,23 @@
-export const state = {
-  player: {
-    name: "Dân",
-    age: 0,
-    money: 10000,
-    health: 80,
-    happiness: 80,
-    intelligence: 90,
-    appearance: 50,
-    job: null,
-    fortune: null,
-  },
-  logs: [],
-};
+// Mỗi lần tạo nhân vật dùng một object mới, tránh mang dữ liệu đời trước sang.
+export function createInitialState() {
+  return {
+    player: {
+      name: "Dân",
+      gender: "male",
+      province: "",
+      age: 0,
+      money: 0,
+      health: 0,
+      happiness: 0,
+      intelligence: 0,
+      appearance: 0,
+      job: null,
+      fortune: null,
+      isAlive: true,
+      achievementFlags: {},
+    },
+    logs: [],
+    pendingEvent: null,
+  };
+}
+export const state = createInitialState();
