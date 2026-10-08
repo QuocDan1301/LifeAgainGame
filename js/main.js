@@ -452,7 +452,9 @@ function chooseEventAction(index) {
     state.player.employmentStatus = "declined";
     const log = {
       age: pending.age,
-      content: pending.skipLogContent ?? "Bạn quyết định không tiếp tục đăng ký thử việc.",
+      content:
+        pending.skipLogContent ??
+        "Bạn quyết định không tiếp tục đăng ký thử việc.",
       summary: pending.skipLogSummary ?? "Không tiếp tục đăng ký thử việc.",
     };
     state.logs.push(log);
@@ -611,7 +613,7 @@ ageButton.addEventListener("click", () => {
     showStudyBlocks();
     return;
   }
-  const nextAge = state.player.age + 4;
+  const nextAge = state.player.age + 1;
 
   // Kiểm tra tuổi thọ trước khi chọn có/không có sự kiện.
   if (checkOldAgeDeath(nextAge)) {
