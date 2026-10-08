@@ -1,4 +1,21 @@
 /* Chỉ tác động đến hai hộp thành tựu. Nạp file này SAU CSS chính. */
+.achievement-confetti {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+.achievement-confetti-piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .achievement-confetti { display: none; }
+}
 #achievements-dialog,
 #achievement-unlock-dialog {
   box-sizing: border-box;
@@ -167,6 +184,73 @@
 }
 #unlock-icon {
   font-size: 64px;
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 10px 24px;
+  transform-origin: 50% 80%;
+  filter: drop-shadow(0 5px 3px rgb(128 87 0 / 12%));
+}
+#achievement-unlock-dialog[open] #unlock-icon {
+  animation: achievement-pop 650ms cubic-bezier(0.22, 1, 0.36, 1) both,
+    achievement-bob 3s ease-in-out 650ms infinite;
+}
+#unlock-icon::before,
+#unlock-icon::after {
+  content: "✦";
+  position: absolute;
+  color: #e8a900;
+  font-size: 22px;
+  pointer-events: none;
+}
+#unlock-icon::before {
+  top: 4px;
+  left: 0;
+}
+#unlock-icon::after {
+  right: 0;
+  bottom: 10px;
+  font-size: 16px;
+}
+#achievement-unlock-dialog[open] #unlock-icon::before,
+#achievement-unlock-dialog[open] #unlock-icon::after {
+  animation: achievement-sparkle 2.4s ease-in-out infinite;
+}
+#achievement-unlock-dialog[open] #unlock-icon::after {
+  animation-delay: 1.2s;
+}
+#achievements-list .achievement-card:not(.is-locked) .achievement-icon {
+  transition: transform 250ms ease;
+}
+#achievements-list .achievement-card:not(.is-locked):hover .achievement-icon {
+  transform: translateY(-3px) rotate(-8deg) scale(1.1);
+}
+@keyframes achievement-pop {
+  0% { opacity: 0; transform: translateY(14px) rotate(-12deg) scale(0.55); }
+  60% { opacity: 1; transform: translateY(-8px) rotate(7deg) scale(1.15); }
+  80% { transform: translateY(2px) rotate(-4deg) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+}
+@keyframes achievement-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(3deg); }
+}
+@keyframes achievement-sparkle {
+  0%, 100% { opacity: 0.35; transform: scale(0.75) rotate(-10deg); }
+  50% { opacity: 1; transform: scale(1.15) rotate(10deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #achievement-unlock-dialog[open] #unlock-icon,
+  #achievement-unlock-dialog[open] #unlock-icon::before,
+  #achievement-unlock-dialog[open] #unlock-icon::after {
+    animation: none;
+  }
+  #achievements-list .achievement-card:not(.is-locked) .achievement-icon {
+    transition: none;
+  }
+  #achievements-list .achievement-card:not(.is-locked):hover .achievement-icon {
+    transform: none;
+  }
 }
 #unlock-title {
   margin: 12px 0;

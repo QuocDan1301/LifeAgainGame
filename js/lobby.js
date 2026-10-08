@@ -11,6 +11,7 @@ import {
   recoverTicketPurchase,
   getTickets,
   addTickets,
+  MAX_TICKETS_PER_PURCHASE,
   readSavedGame,
   canContinue,
   startLife,
@@ -23,6 +24,7 @@ export function initLobby(enterGame) {
   const continueButton = get("continue-button");
   const ticketsDialog = get("tickets-dialog");
   const createDialog = get("create-character-dialog");
+  const randomGenderDialog = get("random-gender-dialog");
   const form = get("create-character-form");
   const error = get("create-character-error");
   let expectedSave = null;
@@ -49,20 +51,31 @@ export function initLobby(enterGame) {
       showError("Không đọc được dữ liệu lưu. " + e.message);
     }
   }
-  for (const province of provinces) {
-    const option = document.createElement("option");
-    option.value = province;
-    get("province-options").append(option);
-  }
   function close(dialog) {
     if (dialog.open) dialog.close();
   }
   get("ticket-seller").addEventListener("click", () => {
     if (!storageReady || busy) return;
+    try {
+      const remaining = getTickets();
+      if (remaining > 0) {
+        showError(`Bạn còn ${remaining} vé. Hãy dùng hết vé hiện có trước khi nhận thêm.`);
+        return;
+      }
+    } catch (e) {
+      showError(e.message);
+      return;
+    }
     get("ticket-error").textContent = "";
     ticketsDialog.showModal();
   });
   get("close-tickets").addEventListener("click", () => close(ticketsDialog));
+  get("ticket-quantity").max = MAX_TICKETS_PER_PURCHASE;
+  get("ticket-max").addEventListener("click", () => {
+    get("ticket-quantity").value = MAX_TICKETS_PER_PURCHASE;
+    get("ticket-error").textContent = "";
+    get("ticket-quantity").dispatchEvent(new Event("input", { bubbles: true }));
+  });
   get("ticket-form").addEventListener("submit", (event) => {
     event.preventDefault();
     try {
@@ -143,9 +156,14 @@ export function initLobby(enterGame) {
           ]),
       });
       startLife(next, expectedSave);
+      close(randomGenderDialog);
       close(createDialog);
       await enterGame(next);
     } catch (e) {
+      if (randomGenderDialog.open) {
+        close(randomGenderDialog);
+        createDialog.showModal();
+      }
       error.textContent = e.message;
       showError("Chưa vào được game: " + e.message);
       refresh();
@@ -154,13 +172,27 @@ export function initLobby(enterGame) {
     }
   }
   get("random-character-button").addEventListener("click", () => {
-    // Cơ hội nam/nữ bằng nhau.
-    const gender = Math.random() < 0.5 ? "male" : "female";
-
-    const nameList = gender === "female" ? femaleNames : maleNames;
-
-    commit(pick(nameList), pick(provinces), gender);
+    if (busy) return;
+    close(createDialog);
+    randomGenderDialog.showModal();
   });
+  function backToCharacterCreation() {
+    if (busy) return;
+    close(randomGenderDialog);
+    createDialog.showModal();
+    get("random-character-button").focus();
+  }
+  get("close-random-gender").addEventListener("click", backToCharacterCreation);
+  randomGenderDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    backToCharacterCreation();
+  });
+  for (const gender of ["male", "female"]) {
+    get(`random-gender-${gender}`).addEventListener("click", () => {
+      const nameList = gender === "female" ? femaleNames : maleNames;
+      commit(pick(nameList), pick(provinces), gender);
+    });
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -168,7 +200,7 @@ export function initLobby(enterGame) {
     commit(
       get("new-character-name").value,
       get("new-character-province").value,
-      get("new-character-gender").value,
+      form.querySelector('input[name="character-gender"]:checked').value,
     );
   });
   continueButton.addEventListener("click", async () => {

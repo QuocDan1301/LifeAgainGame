@@ -1,3 +1,4 @@
+const interactiveAvatars = new WeakSet();
 const avatarStages = [
   { maxAge: 3, file: "0-3" },
   { maxAge: 5, file: "4-5" },
@@ -40,7 +41,25 @@ export function renderAvatar(player) {
   const container = image.closest(".avatar");
 
   if (container) {
-    container.setAttribute("aria-label", description);
+    container.setAttribute("aria-label", `${description}, nhấn để chào`);
+    container.dataset.young = String(age <= 5);
+    container.dataset.alive = String(player.isAlive !== false);
+    container.disabled = player.isAlive === false;
+    if (!interactiveAvatars.has(container)) {
+      interactiveAvatars.add(container);
+      let greeting;
+      container.addEventListener("click", () => {
+        if (container.disabled || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        greeting?.cancel();
+        greeting = image.animate([
+          { transform: "translateY(0) rotate(0) scale(1)" },
+          { transform: "translateY(-10px) rotate(-9deg) scale(1.08)", offset: 0.3 },
+          { transform: "translateY(-6px) rotate(9deg) scale(1.05)", offset: 0.55 },
+          { transform: "translateY(-3px) rotate(-5deg) scale(1.02)", offset: 0.8 },
+          { transform: "translateY(0) rotate(0) scale(1)" },
+        ], { duration: 750, easing: "ease-in-out" });
+      });
+    }
     image.alt = "";
   } else {
     image.alt = description;

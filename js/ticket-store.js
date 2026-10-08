@@ -18,11 +18,16 @@ export function recoverTicketPurchase() {
   }
 }
 export function getTickets() { return readProfile().tickets; }
+export const MAX_TICKETS_PER_PURCHASE = 20;
 export function addTickets(quantity) {
-  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 30) {
-    throw new Error("Mỗi lượt chỉ được nhận từ 1 đến 30 vé nguyên.");
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_TICKETS_PER_PURCHASE) {
+    throw new Error(`Mỗi lượt chỉ được nhận từ 1 đến ${MAX_TICKETS_PER_PURCHASE} vé nguyên.`);
   }
-  const total = getTickets() + quantity;
+  const remaining = getTickets();
+  if (remaining > 0) {
+    throw new Error(`Bạn còn ${remaining} vé. Hãy dùng hết vé hiện có trước khi nhận thêm.`);
+  }
+  const total = quantity;
   if (!Number.isSafeInteger(total)) throw new Error("Số vé vượt khả năng lưu trữ của trình duyệt.");
   localStorage.setItem(PROFILE_KEY, JSON.stringify({ tickets: total }));
   return total;

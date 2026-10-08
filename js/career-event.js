@@ -14,6 +14,14 @@ const careerPaths = [
   ["esports", "🎮", "Liên Quân Mobile"],
   ["tiktok", "📱", "Sáng tạo nội dung TikTok"],
   ["youtube", "📹", "Sáng tạo nội dung YouTube"],
+  ["business", "💼", "Kinh doanh"],
+  ["finance", "💰", "Tài chính"],
+  ["mechanical", "⚙️", "Cơ khí"],
+  ["architecture", "🏛️", "Kiến trúc"],
+  ["fashion", "👗", "Thiết kế thời trang"],
+  ["marketing", "📣", "Marketing"],
+  ["tourism", "🧳", "Du lịch"],
+  ["culinary", "👨‍🍳", "Ẩm thực"],
 ];
 
 export const careerEvent = {

@@ -1,3 +1,4 @@
+import { celebrateAchievement } from "./achievement-confetti.js";
 import {
   achievements,
   achievementGroups,
@@ -11,6 +12,7 @@ let gameState;
 let unlocked = {};
 let queue = [];
 let activeId = null;
+let stopConfetti = () => {};
 let initialized = false;
 let listDialog, listElement, countElement, unlockDialog;
 const groupOpen = new Map();
@@ -96,6 +98,7 @@ export function initAchievements(state) {
     unlocked = {};
     queue = [];
     activeId = null;
+    stopConfetti();
 
     // Xóa dấu ghi nhận thành tựu của nhân vật.
     gameState.player.achievementFlags = {};
@@ -104,16 +107,19 @@ export function initAchievements(state) {
     persist();
     localStorage.setItem("lifeAgainSave", JSON.stringify(gameState));
 
-    // Hiển thị lại các thẻ mờ và bộ đếm 0/60.
+    // Hiển thị lại các thẻ mờ và bộ đếm thành tựu.
     renderAchievements();
   });
   document.addEventListener(
     "close",
     (event) => {
+      if (event.target === unlockDialog) stopConfetti();
       if (event.target === unlockDialog && activeId) {
+        const closedId = activeId;
         queue = queue.filter((id) => id !== activeId);
         activeId = null;
         persist();
+        document.dispatchEvent(new CustomEvent("achievement-closed", { detail: closedId }));
       }
       // Nhường cho code xác nhận sự kiện hoàn tất trước khi mở thông báo tiếp.
       queueMicrotask(showNextAchievement);
@@ -203,6 +209,10 @@ function renderAchievements() {
 }
 
 function showNextAchievement() {
+  if (initialized && queue.length === 0 && !activeId && !gameState.pendingEvent &&
+      (gameState.player.age < 15 || achieved("high-school")) && !document.querySelector("dialog[open]")) {
+    document.dispatchEvent(new Event("achievement-flow-idle"));
+  }
   if (!initialized || queue.length === 0 || activeId) return;
   // Sự kiện đang chờ phải được giải quyết trước; không mở chồng hộp thoại.
   if (gameState.pendingEvent || document.querySelector("dialog[open]")) return;
@@ -213,5 +223,7 @@ function showNextAchievement() {
   get("unlock-title").textContent = achievement.title;
   get("unlock-description").textContent = achievement.description;
   unlockDialog.showModal();
+  stopConfetti();
+  stopConfetti = celebrateAchievement(unlockDialog);
   get("achievement-unlock-confirm").focus({ preventScroll: true });
 }

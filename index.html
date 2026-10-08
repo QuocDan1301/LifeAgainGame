@@ -127,7 +127,7 @@
             alt="Nhân viên bán vé đang mỉm cười"
           />
         </button>
-        <p>Vé miễn phí<br /><span>Mỗi lượt nhận tối đa 30 vé</span></p>
+        <p>Vé miễn phí không giới hạn<br /><span>Mỗi lượt nhận tối đa 20 vé</span></p>
       </footer>
     </section>
     <dialog
@@ -142,20 +142,23 @@
         </button>
       </div>
       <p>
-        Vé ở đây hoàn toàn miễn phí. Bạn có thể ghé lại bao nhiêu lần cũng được!
+        Vé ở đây hoàn toàn miễn phí. Dùng hết vé hiện có rồi quay lại nhận thêm nhé!
       </p>
       <form id="ticket-form" novalidate>
-        <label for="ticket-quantity">Số lượng vé (1–30)</label>
+        <label for="ticket-quantity">Số lượng vé (1–20)</label>
+        <div class="ticket-quantity-controls">
         <input
           id="ticket-quantity"
           type="number"
           min="1"
-          max="30"
+          max="20"
           step="1"
           value="1"
           inputmode="numeric"
           required
         />
+          <button type="button" id="ticket-max" aria-label="Chọn tối đa 20 vé">Max</button>
+        </div>
         <p id="ticket-error" class="lobby-error" role="alert"></p>
         <button type="submit" class="lobby-primary">Nhận vé miễn phí</button>
       </form>
@@ -193,12 +196,11 @@
         </button>
       </div>
       <form id="create-character-form" hidden novalidate>
-        <label for="new-character-gender">Giới tính</label>
-
-        <select id="new-character-gender">
-          <option value="male">Nam</option>
-          <option value="female">Nữ</option>
-        </select>
+        <fieldset class="character-gender-options">
+          <legend>Giới tính</legend>
+          <label><input type="radio" name="character-gender" value="male" checked /> Nam</label>
+          <label><input type="radio" name="character-gender" value="female" /> Nữ</label>
+        </fieldset>
         <label for="new-character-name">Tên nhân vật (1–2 từ)</label>
         <input
           id="new-character-name"
@@ -210,13 +212,11 @@
         <label for="new-character-province">Tỉnh / thành phố</label>
         <input
           id="new-character-province"
-          list="province-options"
           maxlength="60"
           autocomplete="off"
           placeholder="Ví dụ: Hà Nội"
           aria-describedby="create-character-error"
         />
-        <datalist id="province-options"></datalist>
         <button type="submit" class="lobby-primary">Khởi hành · 1 vé</button>
         <button
           type="button"
@@ -227,6 +227,17 @@
         </button>
       </form>
       <p id="create-character-error" class="lobby-error" role="alert"></p>
+    </dialog>
+    <dialog id="random-gender-dialog" class="lobby-dialog" aria-labelledby="random-gender-title">
+      <div class="lobby-dialog-heading">
+        <h2 id="random-gender-title">Chọn giới tính nhân vật</h2>
+        <button type="button" id="close-random-gender" aria-label="Quay lại tạo nhân vật">✕</button>
+      </div>
+      <p>Bạn chọn giới tính; tên và tỉnh/thành sẽ được tạo ngẫu nhiên.</p>
+      <div class="random-gender-choices">
+        <button type="button" id="random-gender-male" class="lobby-primary">👦 Nam</button>
+        <button type="button" id="random-gender-female" class="lobby-secondary">👧 Nữ</button>
+      </div>
     </dialog>
     <dialog
       id="death-dialog"
@@ -315,9 +326,9 @@
       <!-- Hồ sơ nhân vật -->
       <section class="character" aria-label="Thông tin nhân vật">
         <div class="character-card">
-          <div class="avatar" role="img" aria-label="Chân dung em bé">
+          <button type="button" class="avatar" aria-label="Chân dung em bé, nhấn để chào">
             <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
-          </div>
+          </button>
           <h2 id="player-name"></h2>
           <p>Tuổi: <span id="player-age">0</span></p>
           <p id="player-province"></p>
@@ -396,10 +407,16 @@
         <button type="button" id="activity-play">🎮 Giải trí</button>
       </div>
     </dialog>
+    <dialog id="study-block-dialog" aria-labelledby="study-block-title">
+      <h2 id="study-block-title">📚 Chọn khối học cấp 3</h2>
+      <p>Chọn khối học để định hướng ngành ở tuổi 18.</p>
+      <div id="study-block-choices" class="study-block-choices"></div>
+    </dialog>
     <dialog id="event-dialog" aria-labelledby="event-title">
       <h2 id="event-title">Sự kiện</h2>
       <img id="event-image" src="" alt="" hidden />
       <p id="event-content"></p>
+      <p id="career-eligibility-feedback" role="alert" hidden></p>
       <!-- Các lựa chọn ở bước đầu -->
       <div id="event-choices"></div>
       <!-- Nút xác nhận ở bước kết quả -->
@@ -417,7 +434,7 @@
         </button>
       </div>
       <p class="achievements-summary">
-        Đã mở khóa: <strong id="achievements-count">0/60</strong>
+        Đã mở khóa: <strong id="achievements-count">0/68</strong>
       </p>
       <div id="achievements-list"></div>
       <button type="button" id="reset-achievements">Đặt lại thành tựu</button>
