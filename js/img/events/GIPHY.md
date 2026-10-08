@@ -1,27 +1,24 @@
-# GIF minh họa sự kiện
+# Minh họa sự kiện tuổi 1–29
 
-Game xen OpenMoji cục bộ với một bộ GIF GIPHY chọn sẵn trong
-`js/event-gifs.js`. Thư viện có thêm 100 GIF mức nội dung G, chia thành 10
-nhóm cảm xúc và tình huống. Các GIF tải trực tiếp từ GIPHY, không tìm kiếm
-động lúc chơi và không cần khóa API. Dùng phiên bản rộng 200px để giảm dung
-lượng tải.
+Các tình huống đời thường dùng OpenMoji cục bộ. Kết quả lựa chọn dùng GIF phù hợp nội dung và có OpenMoji dự phòng riêng. Chọn ngành, chọn trường, sự kiện khám phá bản thân và hẹn hò cũng đã có minh họa.
 
-Mỗi GIF có mô tả tiếng Việt và liên kết nguồn lưu trong `js/event-gifs.js`.
-Đây là nội dung từ GIPHY, không thuộc giấy phép
-OpenMoji trong thư mục `stickers`.
+- `js/event-media-data.js`: ảnh tình huống và ảnh dự phòng tuổi 1–17.
+- `js/event-gifs.js`: thư viện GIF, mô tả tiếng Việt và cách chọn theo nội dung.
+- `js/events-19-21.js`: tình huống theo ngành học và huấn luyện.
+- `js/events-23-29.js`: ảnh OpenMoji riêng cho từng tình huống/kết quả.
 
-Để đổi hoặc thêm GIF, sửa `giphyGifs` và gán tên GIF vào `eventGifs`:
+GIF được chọn từ những nhóm có cùng ý nghĩa: buồn ngủ, suy nghĩ, buồn, vui, thư giãn, làm việc hoặc chăm cây. Không trộn GIF gõ máy tính với GIF ăn mừng, hoặc GIF thư giãn với GIF phấn khích.
 
-```js
-"teen-16-1": {
-  scene: "typing",
-  choices: { 0: "success", 1: "chaos" },
-},
+## Bộ GIF lưu cục bộ
+
+`gifs/` chứa 21 GIF đã tải và kiểm tra định dạng. `gif-download-list.json` ghi ID nguồn; mỗi ID có trang nguồn tại `https://giphy.com/gifs/<ID>`. `js/cached-event-gifs.js` là danh sách đã tải thành công. Các GIF này không cần gọi GIPHY trong lúc chơi.
+
+Chạy lại công cụ tải sau khi sửa danh sách:
+
+```powershell
+python scripts/cache-event-gifs.py
 ```
 
-`scene` là ảnh tình huống; `choices` là ảnh kết quả theo chỉ số lựa chọn
-bắt đầu từ 0. Vị trí không được gán GIF vẫn dùng OpenMoji.
+GIF ngoài danh sách lưu cục bộ vẫn dùng URL GIPHY trong thư viện. Nếu tải lỗi hoặc quá 8 giây, game chuyển sang OpenMoji tương ứng. Khi bật giảm chuyển động, game dùng OpenMoji ngay.
 
-GIF cần kết nối Internet. Nếu tải lỗi hoặc quá 8 giây, game dùng nhãn dán
-của chính tình huống/kết quả đó. Khi thiết bị bật giảm chuyển động, game
-dùng OpenMoji ngay từ đầu.
+GIF giữ liên kết nguồn GIPHY trong `giphyGifs`; chúng không thuộc giấy phép OpenMoji. Nguồn và giấy phép OpenMoji nằm trong thư mục `stickers/`.

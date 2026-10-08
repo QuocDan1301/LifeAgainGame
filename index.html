@@ -298,13 +298,13 @@
           <span class="action-icon" aria-hidden="true">💳</span>
           <span>Tài sản</span>
         </button>
-        <button type="button" class="action-button" id="relationships">
+        <button type="button" class="action-button" id="relationships" aria-haspopup="dialog" aria-controls="relationships-dialog">
           <span>Quan hệ</span>
           <span class="action-icon" aria-hidden="true">👥</span>
         </button>
-        <button type="button" class="action-button" id="education">
-          <span class="action-icon" aria-hidden="true">🎓</span>
-          <span>Học vấn</span>
+        <button type="button" class="action-button" id="education" aria-haspopup="dialog" aria-controls="education-dialog">
+          <span class="action-icon" id="education-icon" aria-hidden="true">🎓</span>
+          <span id="education-status">Học vấn</span>
         </button>
         <button type="button" class="action-button" id="activities">
           <span>Hoạt động</span>
@@ -330,9 +330,9 @@
             <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
           </button>
           <h2 id="player-name"></h2>
-          <p>Tuổi: <span id="player-age">0</span></p>
+          <p id="player-gender" class="character-gender"></p>
+          <p class="character-age"><span id="player-age">0</span> tuổi</p>
           <p id="player-province"></p>
-          <p id="character-status">Chưa đi học</p>
         </div>
         <div class="character-details">
           <!-- Chỉ số nhân vật -->
@@ -392,6 +392,18 @@
         <button type="button" id="cancel-restart" autofocus>Hủy</button>
         <button type="button" id="confirm-restart">Về bến xe</button>
       </div>
+    </dialog>
+    <dialog id="relationships-dialog" aria-labelledby="relationships-title">
+      <h2 id="relationships-title">💞 Nhật ký quan hệ</h2>
+      <p id="relationship-current"></p>
+      <h3>Các mốc tình cảm</h3>
+      <ol id="relationship-history" aria-label="Các mốc hẹn hò"></ol>
+      <button type="button" id="close-relationships">Đóng</button>
+    </dialog>
+    <dialog id="education-dialog" aria-labelledby="education-title">
+      <h2 id="education-title">🎓 Học tập và việc làm</h2>
+      <ol id="education-history" aria-label="Các mốc học tập và việc làm"></ol>
+      <button type="button" id="close-education">Đóng</button>
     </dialog>
     <dialog id="activities-dialog">
       <div class="activities-heading">

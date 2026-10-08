@@ -1,6 +1,10 @@
-// A small curated selection: fixed GIFs, no API key or random search results.
+import { cachedEventGifIds } from "./cached-event-gifs.js";
+const cachedIds = new Set(cachedEventGifIds);
+// Local audited GIFs, with remote URLs for the rest of the library.
 const gif = (id, alt) => ({
-  url: `https://media.giphy.com/media/${id}/200w.gif`,
+  url: cachedIds.has(id)
+    ? new URL(`./img/events/gifs/${id}.gif`, import.meta.url).href
+    : `https://media.giphy.com/media/${id}/200w.gif`,
   source: `https://giphy.com/gifs/${id}`,
   alt,
 });
@@ -87,7 +91,7 @@ export const giphyGifs = {
   mischievous: gif("xUOxfpjFfGq6ra2UuI", "Phản ứng thích thú và tinh nghịch"),
   teamCelebration: gif("BYlRdbXG1uPSjd687J", "Cả nhóm cùng ăn mừng thành công"),
   puzzledCrowd: gif("l0K45fwBufXrJM2jK", "Mọi người ngơ ngác suy nghĩ"),
-  puzzled: gif("aRC1wi718lF9tvpQr9", "Nhân vật bối rối và suy nghĩ"),
+  puzzled: gif("aRC1wi718lF9tvpQr9", "Chú chó hoạt hình buồn, mắt rưng rưng"),
   unsure: gif("vH68MhfG17CNp1U4fs", "Phản ứng chưa chắc chắn và cân nhắc"),
   nervous: gif("Njxl6gCPWVSoIYh9Ft", "Phản ứng hồi hộp và căng thẳng"),
   cuteSurprise: gif("cvTf155wwXmGxH9HMM", "Nhân vật hoạt hình bất ngờ tròn mắt"),
@@ -95,27 +99,23 @@ export const giphyGifs = {
   amazedStar: gif("3o8dFn5CXJlCV9ZEsg", "Phản ứng kinh ngạc và ấn tượng"),
   sleepyFace: gif("xAEom6Vs8yqaaaPQXX", "Phản ứng mệt rũ và buồn ngủ"),
   dozing: gif("3o7bu51UtfDTU8OEG4", "Nhân vật ngủ gật vì kiệt sức"),
-  cozyCat: gif("sseU7pBJm4fF5rpYal", "Mèo thư giãn ấm áp bên ánh lửa"),
+  cozyCat: gif("sseU7pBJm4fF5rpYal", "Căn phòng ấm áp, yên tĩnh bên ánh lửa"),
   plantGrowing: gif("rq4uFXgYbiT5RawwWm", "Cây non lớn lên từ chậu đất"),
   ...extraGifs,
 };
 
-const extras = (group) =>
-  extraGifGroups[group].map((_, index) => `${group}Extra${index + 1}`);
-
 const gifPools = {
-  typing: ["typing", "success", "chaos", ...extras("work")],
-  cozy: ["cozy", "cozyCat", ...extras("cheer")],
-  sleepy: ["sleepy", "sleepyFace", "dozing", ...extras("sleepy")],
-  amazed: ["amazed", "cuteSurprise", "techSurprise", "amazedStar", ...extras("amaze")],
-  chaos: ["chaos", "nervous", "blink", ...extras("nervous")],
-  success: ["success", "applause", "teamCelebration", ...extras("celebrate")],
-  blink: ["blink", "nervous", "puzzledCrowd", ...extras("confuse"), ...extras("nervous"), ...extras("sad")],
-  thinking: ["thinking", "puzzled", "unsure", "puzzledCrowd", ...extras("think"), ...extras("confuse")],
-  applause: ["applause", "teamCelebration", "success", ...extras("celebrate")],
+  typing: ["typing"],
+  cozy: ["cozy", "cozyCat"],
+  sleepy: ["sleepy", "dozing"],
+  amazed: ["cuteSurprise", "amazedStar"],
+  chaos: ["chaos"],
+  success: ["success", "teamCelebration"],
+  blink: ["blink", "puzzledCrowd"],
+  thinking: ["thinking", "unsure"],
+  applause: ["applause", "teamCelebration"],
   cheering: [
-    "cheering", "excited", "laughEmoji", "cuteLaugh", "bigLaugh", "mischievous",
-    ...extras("cheer"), ...extras("laugh"), ...extras("celebrate"),
+    "excited", "applause",
   ],
 };
 
@@ -189,13 +189,17 @@ export function ensureEventGif(target) {
   if (findGiphyGif(target.image)) return target;
   const text = `${target.title ?? ""} ${target.text ?? target.content ?? ""} ${target.label ?? ""}`.toLocaleLowerCase("vi");
   let key = "thinking";
-  if (/ngủ|thiếu ngủ|mệt|kiệt sức/u.test(text)) key = "sleepy";
+  if (/thiếu ngủ|ngủ muộn|ngủ trưa|ngủ ngon|ngủ sớm|đi ngủ|buồn ngủ|mệt|kiệt sức|uể oải|hết pin/u.test(text)) key = "sleepy";
+  else if (/tưới|gieo hạt|chăm cây|cây lớn|cây xanh|làm vườn|rễ|chậu cây/u.test(text)) key = "plantGrowing";
+  else if (/buồn|tủi|tiếc/u.test(text)) key = "puzzled";
+  else if (/hồi hộp|căng thẳng|áp lực|khó tin|chưa thể tin/u.test(text)) key = "unsure";
   else if (/tin đồn|tranh cãi|hiểu lầm|thất lạc|để quên|khó chịu|tạch/u.test(text)) key = "blink";
   else if (/bất ngờ|thí nghiệm|khám phá/u.test(text)) key = "amazed";
-  else if (/máy tính|lập trình|dòng mã|website|bàn phím|dựng video/u.test(text)) key = "typing";
+  else if (/lập trình|dòng mã|website|bàn phím|dựng video/u.test(text)) key = "typing";
+  else if (/bật cười|cười vui|cười nghiêng|cười khanh|hài hước|ngộ nghĩnh|tiếng cười/u.test(text)) key = "cuteLaugh";
   else if (/ăn mừng|ngày hội|biểu diễn|sân khấu|chiến thắng/u.test(text)) key = "cheering";
-  else if (/thành công|hoàn thành|làm được|ghép đúng|vỗ tay|khen|giải được/u.test(text)) key = "applause";
-  else if (/thư giãn|nghỉ ngơi|ấm áp|yêu thương|ôm gấu/u.test(text)) key = "cozy";
+  else if (/thành công|hoàn thành|làm được|ghép đúng|vỗ tay|khen|giải được|tự hào/u.test(text)) key = "applause";
+  else if (/thư giãn|nghỉ ngơi|ấm áp|yêu thương|gia đình|bình an/u.test(text)) key = "cozy";
   else if ((target.effects?.happiness ?? 0) < 0) key = "blink";
   else if ((target.effects?.happiness ?? 0) > 0) key = "applause";
 

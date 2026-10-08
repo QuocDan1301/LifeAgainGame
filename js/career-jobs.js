@@ -10,22 +10,22 @@ const art = (code, alt) => ({
 
 const profiles = {
   acting: {
-    ranks: ["🎭 Diễn viên tập sự", "🎬 Diễn viên chính", "🌟 Diễn viên chuyên nghiệp"],
+    ranks: ["🎭 Diễn viên quần chúng", "🎬 Diễn viên triển vọng", "🌟 Minh tinh màn bạc"],
     achievement: "career-actor",
     strength: "khả năng nhập vai, biết nghe bạn diễn và chịu sửa cảnh",
   },
   military: {
-    ranks: ["🪖 Chiến sĩ mới", "🎖️ Quân nhân kỳ cựu", "⭐ Chuyên gia quân sự"],
+    ranks: ["🪖 Tân binh", "🎖️ Quân nhân kỳ cựu", "⭐ Chuyên gia quân sự"],
     achievement: "career-military",
     strength: "tính kỷ luật, tinh thần đồng đội và thói quen xác nhận nhiệm vụ",
   },
   singing: {
-    ranks: ["🎙️ Ca sĩ mới", "🎵 Ca sĩ nổi bật", "🌟 Ca sĩ chuyên nghiệp"],
+    ranks: ["🎙️ Ca sĩ nghiệp dư", "🎵 Ca sĩ triển vọng", "🌟 Ngôi sao ca nhạc"],
     achievement: "career-singer",
     strength: "khả năng giữ nhịp, lắng nghe cả nhóm và luyện đến khi đúng tông",
   },
   painting: {
-    ranks: ["🖌️ Họa sĩ học việc", "🖼️ Họa sĩ sáng tác", "🎨 Họa sĩ chuyên nghiệp"],
+    ranks: ["🖌️ Họa sĩ học việc", "🖼️ Họa sĩ triển vọng", "🎨 Danh họa"],
     achievement: "career-painter",
     strength: "óc quan sát, ý tưởng hình ảnh và sự kiên nhẫn với từng bản phác thảo",
   },
@@ -35,17 +35,17 @@ const profiles = {
     strength: "sự cẩn trọng, tinh thần học hỏi và trách nhiệm với người bệnh",
   },
   programming: {
-    ranks: ["💻 Lập trình viên sơ cấp", "🧑‍💻 Lập trình viên cao cấp", "⭐ Chuyên gia lập trình"],
+    ranks: ["💻 Lập trình viên tập sự", "🧑‍💻 Lập trình viên chính", "⭐ Chuyên gia lập trình"],
     achievement: "career-programmer",
     strength: "tư duy logic, khả năng tìm lỗi và bình tĩnh khi hệ thống đỏ màn hình",
   },
   accounting: {
-    ranks: ["🧾 Nhân viên kế toán", "📊 Kế toán tổng hợp", "💼 Chuyên gia kế toán"],
+    ranks: ["🧾 Nhân viên kế toán", "📊 Kế toán tổng hợp", "💼 Kế toán trưởng"],
     achievement: "career-accountant",
     strength: "sự kỹ tính với con số, biết đối chiếu chứng từ và không sợ bảng tính dài",
   },
   law: {
-    ranks: ["📚 Chuyên viên pháp lý", "⚖️ Luật sư", "🏛️ Chuyên gia pháp lý"],
+    ranks: ["📚 Luật sư tập sự", "⚖️ Luật sư", "🏛️ Chuyên gia pháp lí"],
     achievement: "career-law",
     strength: "khả năng đọc kỹ hồ sơ, lập luận rõ ràng và tôn trọng chứng cứ",
   },
@@ -55,52 +55,52 @@ const profiles = {
     strength: "sự kiên nhẫn, cách giải thích dễ hiểu và khả năng lắng nghe học sinh",
   },
   football: {
-    ranks: ["⚽ Cầu thủ trẻ", "🥅 Cầu thủ đội một", "🏆 Cầu thủ chuyên nghiệp"],
+    ranks: ["⚽ Cầu thủ đội trẻ", "🥅 Cầu thủ đội dự bị", "🏆 Siêu sao sân cỏ"],
     achievement: "career-football",
     strength: "thể lực, tư duy phối hợp và biết chuyền khi đồng đội có vị trí đẹp hơn",
   },
   psychology: {
-    ranks: ["💬 Trợ lý tham vấn", "🧠 Chuyên viên tâm lý", "🌿 Chuyên gia tâm lý"],
+    ranks: ["💬 Trợ lí tâm lí", "🧠 Chuyên viên tâm lí", "🌿 Chuyên gia tâm lí"],
     achievement: "career-psychologist",
     strength: "khả năng lắng nghe, tôn trọng cảm xúc và giữ bình tĩnh trước khoảng lặng",
   },
   esports: {
-    ranks: ["🛡️ Tuyển thủ đội 1", "🔥 Tuyển thủ trụ cột", "🏆 Game thủ chuyên nghiệp"],
+    ranks: ["🛡️ Game thủ chuyên nghiệp", "🔥 Game thủ xuất sắc", "🏆 Siêu sao thể thao điện tử"],
     achievement: "career-gamer",
     strength: "phản xạ, giao tiếp trong đội và thói quen xem lại trận thay vì đổ lỗi",
   },
   tiktok: {
-    ranks: ["📱 Nhà sáng tạo mới", "🔥 Nhà sáng tạo nổi bật", "🌟 TikToker chuyên nghiệp"],
+    ranks: ["📱 Nhà sáng tạo mới", "🔥 TikToker triển vọng", "🌟 Ngôi sao TikTok"],
     achievement: "career-tiktok",
     strength: "ý tưởng nội dung, khả năng bắt nhịp xu hướng và biết kiểm tra thông tin",
   },
   youtube: {
-    ranks: ["📹 Nhà sáng tạo mới", "🎞️ YouTuber nổi bật", "🌟 YouTuber chuyên nghiệp"],
+    ranks: ["📹 Nhà sáng tạo mới", "🎞️ YouTuber triển vọng", "🌟 YouTuber triệu người theo dõi"],
     achievement: "career-youtube",
     strength: "khả năng kể chuyện, dựng video và tôn trọng nguồn tư liệu",
   },
   business: {
-    ranks: ["🧑‍💼 Nhân viên kinh doanh", "📈 Quản lý kinh doanh", "💼 Chuyên gia kinh doanh"],
+    ranks: ["🧑‍💼 Nhân viên kinh doanh", "📈 Trưởng nhóm kinh doanh", "💼 Giám đốc kinh doanh"],
     achievement: "career-business",
     strength: "khả năng hiểu khách hàng, thương lượng rõ ràng và theo sát mục tiêu",
   },
   finance: {
-    ranks: ["💵 Chuyên viên tài chính", "📊 Chuyên viên tài chính cao cấp", "💎 Chuyên gia tài chính"],
+    ranks: ["💵 Nhân viên tài chính", "📊 Chuyên viên phân tích", "💎 Chuyên gia tài chính"],
     achievement: "career-finance",
     strength: "tư duy số liệu, khả năng đánh giá rủi ro và sự cẩn trọng với dòng tiền",
   },
   mechanical: {
-    ranks: ["🔧 Kỹ thuật viên cơ khí", "⚙️ Kỹ sư cơ khí", "🏅 Chuyên gia cơ khí"],
+    ranks: ["🔧 Thợ cơ khí học việc", "⚙️ Kĩ thuật viên cơ khí", "🏅 Chuyên gia cơ khí"],
     achievement: "career-mechanical",
     strength: "khả năng đọc bản vẽ, kiểm tra sai số và kiên trì tìm nguyên nhân hỏng hóc",
   },
   architecture: {
-    ranks: ["📐 Trợ lý kiến trúc sư", "🏗️ Kiến trúc sư", "🏛️ Kiến trúc sư tài ba"],
+    ranks: ["📐 Kiến trúc sư tập sự", "🏗️ Kiến trúc sư chính", "🏛️ Kiến trúc sư tài ba"],
     achievement: "career-architect",
     strength: "tư duy không gian, khả năng trình bày ý tưởng và cân bằng thẩm mỹ với công năng",
   },
   fashion: {
-    ranks: ["🧵 Trợ lý thiết kế", "👗 Nhà thiết kế thời trang", "✨ Chuyên gia thời trang"],
+    ranks: ["🧵 Trợ lí thiết kế", "👗 Nhà thiết kế thời trang", "✨ Nhà thiết kế danh tiếng"],
     achievement: "career-fashion",
     strength: "cảm nhận chất liệu, óc thẩm mỹ và sự kiên nhẫn với từng đường may",
   },
@@ -110,12 +110,12 @@ const profiles = {
     strength: "khả năng hiểu khách hàng, tạo thông điệp và đọc số liệu thay vì đoán bằng cảm giác",
   },
   tourism: {
-    ranks: ["🧳 Nhân viên điều hành tour", "🗺️ Quản lý tour", "🌏 Chuyên gia du lịch"],
+    ranks: ["🧳 Hướng dẫn viên tập sự", "🗺️ Hướng dẫn viên chính", "🌏 Chuyên gia du lịch"],
     achievement: "career-tourism",
     strength: "khả năng tổ chức lịch trình, giao tiếp linh hoạt và bình tĩnh khi kế hoạch thay đổi",
   },
   culinary: {
-    ranks: ["🔪 Phụ bếp", "👨‍🍳 Bếp trưởng", "👑 Vua đầu bếp"],
+    ranks: ["🔪 Phụ bếp", "👨‍🍳 Đầu bếp", "👑 Vua đầu bếp"],
     achievement: "career-chef",
     strength: "khả năng giữ gian bếp gọn gàng, cân bằng hương vị và làm đúng quy trình an toàn",
   },
@@ -303,6 +303,7 @@ const careerInterviewTopics = {
 };
 
 const employmentContexts = {
+  esports: { place: "đội tuyển Liên Quân Mobile", interviewer: "ban huấn luyện", leader: "huấn luyện viên", round: "đánh giá năng lực", apply: "đăng ký đánh giá tại đội tuyển Liên Quân Mobile" },
   acting: { place: "đoàn phim", interviewer: "đạo diễn", leader: "đạo diễn", round: "thử vai", apply: "mang hồ sơ đến thử vai tại một đoàn phim" },
   military: { place: "đơn vị", interviewer: "hội đồng đơn vị", leader: "chỉ huy", round: "đánh giá nhận nhiệm vụ", apply: "tham gia đợt đánh giá để nhận nhiệm vụ chuyên môn tại đơn vị" },
   singing: { place: "hãng âm nhạc", interviewer: "nhà sản xuất âm nhạc", leader: "nhà sản xuất", round: "thử giọng", apply: "gửi bản thu và đăng ký thử giọng tại một hãng âm nhạc" },
@@ -334,7 +335,7 @@ const fallbackEmploymentContext = {
   apply: "gửi hồ sơ ứng tuyển",
 };
 
-function getEmploymentContext(careerId) {
+export function getEmploymentContext(careerId) {
   return employmentContexts[careerId] ?? fallbackEmploymentContext;
 }
 
@@ -590,15 +591,56 @@ export function createInterviewRetryPrompt(player) {
   };
 }
 
-export function createPromotionEvent(player, random = Math.random) {
+// Lần đầu ở tuổi 27; lần cuối cách lần nâng bậc thành công đầu tiên 10 năm.
+export function getPromotionUpdates(player, age, correct) {
+  const level = Number(player.careerLevel) || 1;
+  if (!correct) {
+    const retryAge = age + 2;
+    return { nextPromotionAge: level === 2 && retryAge > 39 ? null : retryAge };
+  }
+  const finalAge = age + 10;
+  return { nextPromotionAge: level === 1 && finalAge <= 39 ? finalAge : null };
+}
+
+const promotionScenarios = {
+  1: [
+    {
+      title: "📋 Công việc sát hạn",
+      text: "Một nhiệm vụ trong ngành {field} gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+      answers: ["🧭 Xác định vấn đề, chia việc và phối hợp cả nhóm", "🔥 Ôm hết việc, khỏi cần hỏi ai", "🤫 Giấu trục trặc, mong mọi chuyện tự ổn"],
+    },
+    {
+      title: "🔎 Sai sót bất ngờ",
+      text: "Bạn phát hiện một sai sót trong công việc ngành {field}. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+      answers: ["✅ Kiểm tra, báo người phụ trách và cùng sửa sai", "🙈 Bỏ qua vì chắc không ai nhận ra", "👉 Đổ lỗi cho đồng nghiệp trước đã"],
+    },
+  ],
+  2: [
+    {
+      title: "🚀 Dẫn dắt nhiệm vụ lớn",
+      text: "Bạn được cân nhắc cho bậc cao nhất của ngành {field}. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+      answers: ["🤝 Lắng nghe, đối chiếu dữ kiện và thống nhất kế hoạch", "👑 Bắt mọi người làm theo ý mình", "🏃 Bỏ mặc cả nhóm tự giải quyết"],
+    },
+    {
+      title: "⚖️ Quyết định quan trọng",
+      text: "Một kế hoạch lớn trong ngành {field} hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+      answers: ["🛡️ Đánh giá rủi ro, kiểm tra và chuẩn bị phương án dự phòng", "🎲 Triển khai ngay, thành công nhờ may mắn", "🤐 Giấu rủi ro để kế hoạch được duyệt"],
+    },
+  ],
+};
+
+export function createPromotionEvent(player, random = Math.random, age = player.age + 1) {
   const career = player.careerPath ?? { id: "general", field: "ngành đã chọn" };
   const profile = getCareerProfile(career.id);
   const level = Math.max(1, Math.min(2, Number(player.careerLevel) || 1));
   const targetLevel = level + 1;
   const finalPromotion = targetLevel === 3;
+  const scenarios = promotionScenarios[level];
+  const scenarioIndex = Math.floor(random() * scenarios.length);
+  const scenario = scenarios[scenarioIndex];
   const options = [
     {
-      label: "🧭 Làm rõ việc, chia bước và phối hợp cả nhóm",
+      label: scenario.answers[0],
       correct: true,
       title: finalPromotion ? `🏆 Chạm tới bậc ${profile.ranks[2]}` : `📈 Tiến lên bậc ${profile.ranks[1]}`,
       text: `Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.`,
@@ -611,35 +653,42 @@ export function createPromotionEvent(player, random = Math.random) {
       ...art(finalPromotion ? "1F3C6" : "1F4C5", "Thăng tiến trong công việc"),
     },
     {
-      label: "🔥 Ôm hết việc để chứng minh mình giỏi",
+      label: scenario.answers[1],
+      correct: false,
       title: "🥱 Có cố gắng, chưa đúng cách",
-      text: "Bạn làm rất nhiều nhưng thiếu trao đổi khiến kết quả phải sửa lại. Cấp trên ghi nhận nỗ lực, tuy nhiên bạn chưa được nâng bậc lần này.",
+      text: "Cách xử lý chưa phù hợp nên bạn chưa được nâng bậc. Bạn sẽ có cơ hội thử lại sau 2 năm, nếu còn trong giới hạn tuổi của lần nâng bậc này.",
       effects: { intelligence: 1, health: -3, happiness: -1 },
       achievementIds: [],
-      confirmText: "Năm sau làm tốt hơn!",
+      confirmText: "Lần sau làm tốt hơn!",
       ...art("1F4DA", "Mệt mỏi vì ôm quá nhiều việc"),
     },
     {
-      label: "🤫 Giấu vấn đề, mong mọi chuyện tự ổn",
+      label: scenario.answers[2],
+      correct: false,
       title: "⚠️ Bài học về trách nhiệm",
-      text: "Vấn đề không tự biến mất và cả nhóm phải xử lý gấp vào phút cuối. Bạn giữ nguyên bậc hiện tại và cần chứng minh lại năng lực ở cơ hội sau.",
+      text: "Quyết định của bạn chưa giải quyết được vấn đề. Bạn giữ nguyên bậc và sẽ được thử lại sau 2 năm, nếu còn trong giới hạn tuổi của lần nâng bậc này.",
       effects: { happiness: -3 },
       achievementIds: [],
       confirmText: "Rút kinh nghiệm!",
       ...art("26A1", "Công việc gặp cảnh báo"),
     },
   ];
+  for (const option of options) {
+    if (option.correct) continue;
+    const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
+    option.text = retryAge === null
+      ? "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Cơ hội nâng bậc cuối đã kết thúc vì lần thử lại sẽ vượt quá 39 tuổi."
+      : `Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi ${retryAge}.`;
+  }
   for (let index = options.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
     [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
   }
   return {
-    id: `career-promotion-${career.id}-${level}`,
+    id: `career-promotion-${career.id}-${level}-${scenarioIndex + 1}`,
     kind: "career-promotion",
-    title: level === 1 ? "📋 Thử thách đầu tiên ở nơi làm việc" : "🚀 Cơ hội bước lên bậc cao nhất",
-    text: level === 1
-      ? `Một đầu việc quan trọng trong lĩnh vực ${career.field} gặp trục trặc sát hạn. Đồng nghiệp đang chờ bạn đề xuất cách xử lý.`
-      : `Bạn được cân nhắc cho bậc cuối của ngành ${career.field}, nhưng phải dẫn dắt một nhiệm vụ khó đang có nhiều ý kiến trái chiều.`,
+    title: scenario.title,
+    text: scenario.text.replace("{field}", career.field),
     ...art(level === 1 ? "1F4CA" : "1F3AF", "Cơ hội thăng tiến nghề nghiệp"),
     choices: options,
   };
@@ -653,8 +702,14 @@ export function createEmploymentEvent(player, age) {
   if (age > 22 && player.employmentStatus === "unemployed") {
     return createInterviewRetryPrompt(player);
   }
-  if (age > 22 && player.employmentStatus === "employed" && (Number(player.careerLevel) || 0) < 3) {
-    return createPromotionEvent(player);
+  const level = Number(player.careerLevel) || 0;
+  const dueAge = player.nextPromotionAge === undefined
+    ? (level === 1 ? 27 : null)
+    : player.nextPromotionAge;
+  if (player.employmentStatus === "employed" && level >= 1 && level < 3 &&
+      Number.isInteger(dueAge) && age >= 27 && age >= dueAge &&
+      (level === 1 || age <= 39)) {
+    return createPromotionEvent(player, Math.random, age);
   }
   return null;
 }

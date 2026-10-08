@@ -4,6 +4,9 @@ export function createInitialState() {
     player: {
       name: "Dân",
       gender: "male",
+      orientation: null,
+      partner: null,
+      relationshipHistory: [],
       province: "",
       age: 0,
       money: 0,
@@ -14,6 +17,7 @@ export function createInitialState() {
       job: null,
       employmentStatus: null,
       careerLevel: 0,
+      nextPromotionAge: 27,
       careerPath: null,
       studyBlock: null,
       fortune: null,

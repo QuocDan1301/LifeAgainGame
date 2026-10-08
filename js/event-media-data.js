@@ -27,8 +27,8 @@ export const eventMedia = {
         "alt": "Cơn mưa tí hon"
       },
       {
-        "code": "1FAE7",
-        "alt": "Sạch sẽ nhưng hơi phụng phịu"
+        "code": "1F9FC",
+        "alt": "Tắm sạch bằng xà phòng"
       }
     ]
   },
@@ -119,12 +119,12 @@ export const eventMedia = {
     },
     "choices": [
       {
-        "code": "1F3A2",
-        "alt": "Đến lượt mình rồi!"
+        "code": "1F6DD",
+        "alt": "Chờ lượt chơi cầu trượt"
       },
       {
-        "code": "1F50B",
-        "alt": "Vui đến quên nghỉ"
+        "code": "1F971",
+        "alt": "Mệt sau khi chạy chơi"
       }
     ]
   },
@@ -151,12 +151,12 @@ export const eventMedia = {
     },
     "choices": [
       {
-        "code": "1F308",
-        "alt": "Họa sĩ gọn gàng"
+        "code": "1F3A8",
+        "alt": "Bức tranh nhiều màu"
       },
       {
-        "code": "1F3AD",
-        "alt": "Sáng tạo hết mình"
+        "code": "1F58D",
+        "alt": "Vẽ sáng tạo bằng màu"
       }
     ]
   },
@@ -263,8 +263,8 @@ export const eventMedia = {
     },
     "choices": [
       {
-        "code": "1F49D",
-        "alt": "Một lời nhờ giúp đỡ"
+        "code": "270F",
+        "alt": "Mượn bút chì và cảm ơn"
       },
       {
         "code": "1F4CB",
@@ -391,12 +391,12 @@ export const eventMedia = {
     },
     "choices": [
       {
-        "code": "1F33C",
-        "alt": "Một tấm ảnh tươi tắn"
+        "code": "1F4F8",
+        "alt": "Ảnh lớp tươi tắn"
       },
       {
-        "code": "1F39E",
-        "alt": "Nụ cười rất thật"
+        "code": "1F92A",
+        "alt": "Biểu cảm chụp ảnh vui nhộn"
       }
     ]
   },
@@ -411,8 +411,8 @@ export const eventMedia = {
         "alt": "Diện mạo mới"
       },
       {
-        "code": "1F344",
-        "alt": "Chưa quen với mái tóc"
+        "code": "1FA9E",
+        "alt": "Làm quen mái tóc trong gương"
       }
     ]
   },
@@ -459,8 +459,8 @@ export const eventMedia = {
         "alt": "Sai để hiểu hơn"
       },
       {
-        "code": "2615",
-        "alt": "Có người đồng hành"
+        "code": "1F91D",
+        "alt": "Cùng bạn chữa bài"
       }
     ]
   },
@@ -491,8 +491,8 @@ export const eventMedia = {
         "alt": "Một trải nghiệm mới"
       },
       {
-        "code": "1F4AA",
-        "alt": "Điều bạn nhận ra"
+        "code": "1F971",
+        "alt": "Mỏi vai vì mang cặp nặng"
       }
     ]
   },
@@ -663,8 +663,8 @@ export const eventMedia = {
     },
     "choices": [
       {
-        "code": "1FA96",
-        "alt": "Một trải nghiệm mới"
+        "code": "1F6B2",
+        "alt": "Đạp xe vừa sức"
       },
       {
         "code": "1F6CC",
@@ -747,8 +747,8 @@ export const eventMedia = {
         "alt": "Một trải nghiệm mới"
       },
       {
-        "code": "1F3C3",
-        "alt": "Điều bạn nhận ra"
+        "code": "1F37D",
+        "alt": "Bỏ bữa sáng, bụng đói"
       }
     ]
   },
@@ -779,8 +779,8 @@ export const eventMedia = {
         "alt": "Một trải nghiệm mới"
       },
       {
-        "code": "2615",
-        "alt": "Điều bạn nhận ra"
+        "code": "1F634",
+        "alt": "Thiếu ngủ sau khi ôn khuya"
       }
     ]
   },
@@ -807,8 +807,8 @@ export const eventMedia = {
     },
     "choices": [
       {
-        "code": "1FA9E",
-        "alt": "Một trải nghiệm mới"
+        "code": "1F4F8",
+        "alt": "Tấm ảnh cùng nhóm bạn"
       },
       {
         "code": "1F92A",

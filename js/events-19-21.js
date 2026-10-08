@@ -1,4 +1,4 @@
-import { getEventGif, mixEventMedia } from "./event-gifs.js";
+import { getEventGif, ensureEventGif } from "./event-gifs.js";
 import { createEsportsAgeEvents } from "./events-esports-19-21.js";
 
 // Chi tiết chuyên ngành dùng trong 8 tình huống tuổi 19–21.
@@ -194,38 +194,12 @@ export function createCareerAgeEvents(careerPath) {
     ...generalStory, field: careerPath?.field ?? generalStory.field,
   };
   const careerId = careerStories[careerPath?.id] ? careerPath.id : "general";
-  const usesComputer = ["programming", "accounting", "tiktok", "youtube", "esports", "business", "finance", "architecture", "marketing"].includes(careerId);
-  const gifSlots = {
-    "19-1": { scene: usesComputer ? "typing" : undefined, choices: { 0: "applause" } },
-    "19-2": { scene: "blink", choices: { 0: "thinking" } },
-    "19-3": { scene: "amazed", choices: { 1: usesComputer ? "typing" : undefined } },
-    "20-1": { scene: "thinking", choices: { 0: "applause" } },
-    "20-2": { scene: "amazed", choices: { 1: "thinking" } },
-    "21-1": { scene: usesComputer ? "chaos" : "amazed" },
-    "21-2": { scene: "blink" },
-    "21-3": { scene: "applause", choices: { 0: "cheering", 1: "blink" } },
-  };
-  const event = (age, index, title, text, code, choices, gifKey) => {
-    const gifs = gifSlots[`${age}-${index}`];
-    const story = {
-      id: `career-${careerId}-${age}-${index}`,
-      title, text,
-      ...illustration(code, title, gifKey ?? gifs?.scene),
-      choices: choices.map((branch, choiceIndex) => {
-        const gif = getEventGif(gifs?.choices?.[choiceIndex], {
-          ...branch,
-          id: `career-${careerId}-${age}-${index}-${choiceIndex}`,
-        });
-        return gif ? { ...branch, image: gif.url, imageAlt: gif.alt } : branch;
-      }),
-    };
-    const sceneGif = getEventGif(gifKey ?? gifs?.scene, story);
-    if (sceneGif) {
-      story.image = sceneGif.url;
-      story.imageAlt = sceneGif.alt;
-    }
-    return mixEventMedia(story);
-  };
+  const event = (age, index, title, text, code, choices) => ({
+    id: `career-${careerId}-${age}-${index}`,
+    title, text,
+    ...illustration(code, title),
+    choices: choices.map(branch => ensureEventGif(branch)),
+  });
 
   if (careerId === "esports") return createEsportsAgeEvents(event, choice);
 

@@ -4,14 +4,26 @@ import { studyBlocks, canChooseCareer } from "./study-blocks.js";
 import { createEventLogSummary, summarizeLifeLog } from "./log-summary.js";
 import { createEventImageRenderer } from "./event-image.js";
 import { state } from "./state.js";
+import { initEducation } from "./education.js";
+import {
+  createDatingEvent,
+  getDatingUpdates,
+  initRelationships,
+} from "./relationships.js";
 import { getAgeEvents } from "./events.js";
 import { careerEvent } from "./career-event.js";
 import { academyLogos, createSchoolEvent } from "./career-schools.js";
 import { createDiamondSpecialStep } from "./special-event-20.js";
+import { createLostChildSpecialStep } from "./special-event-10.js";
+import {
+  createOrientationEvent,
+  getOrientationLabel,
+} from "./special-event-24.js";
 import {
   createEmploymentEvent,
   createInterviewResult,
   createJobInterview,
+  getPromotionUpdates,
 } from "./career-jobs.js";
 import {
   initAchievements,
@@ -157,37 +169,10 @@ function renderMoney() {
 }
 // Hiển thị tiền khi mở game
 renderMoney();
-function renderEducation() {
-  const age = state.player.age;
-  let status;
-  // Khi đã có công việc, hiển thị tên công việc
-  if (state.player.job) {
-    status = state.player.job;
-  } else if (state.player.careerPath) {
-    const careerPath = state.player.careerPath;
-    status =
-      careerPath.id === "esports"
-        ? careerPath.status
-        : careerPath.school
-          ? `Học ${careerPath.field}`
-          : careerPath.status;
-  } else if (age < 3) {
-    status = "Chưa đi học";
-  } else if (age < 6) {
-    status = "Học mẫu giáo";
-  } else if (age < 11) {
-    status = "Học sinh tiểu học";
-  } else if (age < 15) {
-    status = "Học sinh THCS";
-  } else if (age < 18) {
-    status = "Học sinh THPT";
-  } else {
-    status = "Chưa có việc làm";
-  }
-  document.getElementById("character-status").textContent = status;
-}
+const renderEducation = initEducation(state, saveEventProgress);
 // Hiển thị khi mở hoặc tải lại game
 renderEducation();
+initRelationships(state);
 function renderLogEntry(log) {
   const logItem = document.createElement("section");
   logItem.classList.add("log-entry");
@@ -251,6 +236,7 @@ function showStudyBlocks() {
     button.append(heading, description);
     button.addEventListener("click", () => {
       state.player.studyBlock = block.id;
+      renderEducation();
       const log = {
         age: state.player.age,
         content: `📚 Chọn khối ${block.id}: ${block.subjects}.`,
@@ -294,6 +280,10 @@ function saveEventProgress() {
 function showPendingEvent() {
   const pending = state.pendingEvent;
   if (!pending) return;
+  if (pending.kind === "orientation-chain" && pending.stage === "choice") {
+    const current = createOrientationEvent(state.player, pending.specialStep);
+    if (current) Object.assign(pending, current);
+  }
   // Replace a saved age-15 story with the school milestone and block selection.
   if (pending.age === 15) {
     state.player.age = 15;
@@ -322,11 +312,21 @@ function showPendingEvent() {
   eligibilityFeedback.hidden = true;
   eligibilityFeedback.textContent = "";
   // Refresh saved story illustrations to use the current mixed media.
-  if (pending.age >= 1 && pending.age <= 21) {
+  if (pending.age >= 1 && pending.age <= 29) {
     const events = getAgeEvents(pending.age, state.player.careerPath) ?? [];
     const current =
       pending.stage === "choice"
-        ? events.find((event) => event.title === pending.title)
+        ? events.find(
+            (event) =>
+              event.title === pending.title ||
+              event.title.replace(/[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]/gu, "").trim() ===
+                pending.title
+                  .replace(
+                    /[\p{Extended_Pictographic}\p{Emoji_Presentation}\uFE0F\u200D]/gu,
+                    "",
+                  )
+                  .trim(),
+          )
         : events
             .flatMap((event) => event.choices)
             .find(
@@ -335,6 +335,11 @@ function showPendingEvent() {
                 pending.content?.startsWith(branch.text),
             );
     if (current) {
+      if (pending.age >= 23 && pending.stage === "choice" && !pending.kind) {
+        pending.title = current.title;
+        pending.text = current.text;
+        pending.choices = current.choices;
+      }
       for (const key of [
         "image",
         "imageAlt",
@@ -472,6 +477,28 @@ function chooseEventAction(index) {
     checkAchievements();
     return;
   }
+  if (pending.kind === "orientation-chain" && choice.nextStep) {
+    const nextStep = createOrientationEvent(state.player, choice.nextStep);
+    if (!nextStep) return;
+    state.pendingEvent = { ...nextStep, stage: "choice", age: pending.age };
+    saveEventProgress();
+    showPendingEvent();
+    return;
+  }
+  if (pending.kind === "lost-child-chain" && choice.nextStep) {
+    const nextStep = createLostChildSpecialStep(choice.nextStep);
+    if (!nextStep) return;
+    state.pendingEvent = {
+      ...nextStep,
+      stage: "choice",
+      age: pending.age,
+      text: `${choice.transitionText ?? ""}${nextStep.text}`,
+      logPrefix: `${pending.logPrefix ?? ""}${pending.text}\nBạn chọn: ${choice.label}\n`,
+    };
+    saveEventProgress();
+    showPendingEvent();
+    return;
+  }
   if (pending.kind === "special-chain" && choice.nextStep) {
     const inventory = { ...(pending.specialInventory ?? {}) };
     if (choice.grants) inventory[choice.grants] = true;
@@ -536,6 +563,34 @@ function chooseEventAction(index) {
     return;
   }
   const updates = { age: pending.age };
+  if (
+    pending.kind === "workplace-dating" &&
+    choice.acceptDating === true &&
+    pending.person
+  ) {
+    Object.assign(
+      updates,
+      getDatingUpdates(state.player, pending.person, pending.age),
+    );
+  }
+  if (
+    pending.kind === "orientation-chain" &&
+    getOrientationLabel(choice.orientation, state.player.gender)
+  ) {
+    updates.orientation = choice.orientation;
+  }
+  if (pending.kind === "career-promotion") {
+    Object.assign(
+      updates,
+      getPromotionUpdates(state.player, pending.age, choice.correct === true),
+    );
+  }
+  if (
+    pending.kind === "lost-child-chain" &&
+    Object.hasOwn(choice, "schoolYearDueAge")
+  ) {
+    updates.lostChildSchoolYearDueAge = choice.schoolYearDueAge;
+  }
   if (choice.careerPath) updates.careerPath = choice.careerPath;
   if (typeof choice.job === "string") updates.job = choice.job;
   if (typeof choice.employmentStatus === "string") {
@@ -546,6 +601,19 @@ function chooseEventAction(index) {
   }
   if (choice.death === true) updates.isAlive = false;
   const changes = [];
+  if (
+    pending.kind === "lost-child-chain" &&
+    pending.specialStep === 5 &&
+    pending.age === 11
+  ) {
+    for (const stat of Object.keys(statNames)) {
+      const oldValue = state.player[stat];
+      updates[stat] = Math.max(oldValue, choice.minimumStats);
+      if (updates[stat] > oldValue) {
+        changes.push(`${statNames[stat]} +${updates[stat] - oldValue}`);
+      }
+    }
+  }
   // Tính mức thay đổi của bốn chỉ số
   for (const stat in choice.effects ?? {}) {
     if (!Object.hasOwn(statNames, stat)) continue;
@@ -632,13 +700,32 @@ ageButton.addEventListener("click", () => {
     return;
   }
 
+  const schoolYearEvent =
+    nextAge === 11 && state.player.lostChildSchoolYearDueAge === 11
+      ? createLostChildSpecialStep(5)
+      : null;
+  const orientationEvent =
+    nextAge === 24 ? createOrientationEvent(state.player) : null;
   const employmentEvent = createEmploymentEvent(state.player, nextAge);
-  const stories = getAgeEvents(nextAge, state.player.careerPath);
+  const promotionEvent =
+    employmentEvent?.kind === "career-promotion" ? employmentEvent : null;
+  const datingEvent =
+    !state.player.partner &&
+    !promotionEvent &&
+    (nextAge === 25 || nextAge === 28)
+      ? createDatingEvent(state.player, nextAge)
+      : null;
+  const stories = [
+    ...(getAgeEvents(nextAge, state.player.careerPath) ?? []),
+    ...(datingEvent ? [datingEvent] : []),
+  ];
   // Tuổi này chưa có sự kiện: ghi nhật kí và tăng tuổi trực tiếp.
   // 80% có sự kiện, 20% không có sự kiện.
   const eventChance = 0.8;
 
   const hasEvent =
+    Boolean(orientationEvent) ||
+    Boolean(schoolYearEvent) ||
     Boolean(employmentEvent) ||
     nextAge === 18 ||
     (Array.isArray(stories) &&
@@ -673,6 +760,9 @@ ageButton.addEventListener("click", () => {
     return;
   }
   const story =
+    promotionEvent ??
+    orientationEvent ??
+    schoolYearEvent ??
     employmentEvent ??
     (nextAge === 18
       ? careerEvent
@@ -705,6 +795,7 @@ ageButton.addEventListener("click", () => {
   state.pendingEvent = {
     stage: "choice",
     kind: story.kind,
+    person: story.person,
     specialId: story.specialId,
     specialStep: story.specialStep,
     specialInventory: story.kind === "special-chain" ? {} : undefined,
@@ -867,7 +958,7 @@ function checkOldAgeDeath(nextAge) {
   renderStats();
   renderLogEntry(log);
 
-  document.getElementById("character-status").textContent = "Đã qua đời";
+  renderEducation();
 
   ageButton.disabled = true;
 

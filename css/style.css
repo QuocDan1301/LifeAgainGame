@@ -293,7 +293,7 @@ button:active {
 }
 .character-card {
   min-width: 0;
-  padding: 0.6rem 0.3rem;
+  padding: 0.8rem 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -307,6 +307,8 @@ button:active {
   display: grid;
   place-items: center;
   flex: 1;
+  width: 100%;
+  min-width: 0;
   font-size: clamp(4.4rem, 13vw, 6.5rem);
   line-height: 1.15;
   position: relative;
@@ -369,14 +371,32 @@ button:active {
   }
 }
 .character-card h2 {
-  margin: 0.4rem 0 0;
-  font-size: 1.5rem;
+  margin: 0.3rem 0 0;
+  max-width: 100%;
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+  font-size: 1.8rem;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 .character-card p {
-  margin: 0.3rem 0 0;
-  font-size: 1.3rem;
+  margin: 0.35rem 0 0;
+  max-width: 100%;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.6rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
+.character-card .character-gender {
+  padding: 0.15rem 0.8rem;
+  border-radius: 999px;
+  background: #e2f4f8;
+  color: #31586a;
+  font-size: 1.4rem;
+}
+.character-card .character-age { color: #173247; }
+#player-province { color: #668391; }
+#player-province:empty { display: none; }
 .character-details {
   min-width: 0;
   display: flex;
@@ -587,7 +607,11 @@ body::before {
   }
 }
 #avt {
-  width: 12rem;
+  display: block;
+  width: 14rem;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 /* ===== Điện thoại nhỏ ===== */
 @media (max-width: 360px) {
@@ -934,6 +958,8 @@ body::before {
   text-align: left;
   cursor: pointer;
 }
+#relationships-dialog,
+#education-dialog,
 #study-block-dialog,
 #event-dialog {
   box-sizing: border-box;
@@ -951,6 +977,57 @@ body::before {
   background: rgb(0 0 0 / 55%);
 }
 #study-block-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#education-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#relationships-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#relationship-current {
+  padding: 1.2rem;
+  border-radius: 1.2rem;
+  background: #fff1c6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+#relationship-history {
+  display: grid;
+  gap: 1.2rem;
+  padding-left: 1.5rem;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+}
+#relationship-history p {
+  margin: 0.3rem 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+#relationship-history:empty::after { content: "Chưa có mốc hẹn hò nào."; }
+#close-relationships { display: block; margin: 1.5rem auto 0; }
+#education-status {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-height: 3.4rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.15;
+  overflow: hidden;
+}
+#education-history {
+  display: grid;
+  gap: 1.2rem;
+  padding-left: 1.5rem;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+}
+#education-history li { padding-left: 0.5rem; }
+#education-history strong { color: #173247; }
+#education-history p {
+  margin: 0.3rem 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+#close-education { display: block; margin: 1.5rem auto 0; }
 .study-block-choices { display: grid; gap: 10px; }
 .study-block-choices strong,
 .study-block-choices span { display: block; }

@@ -1,3 +1,5 @@
+import { openMojiArt } from "./event-art.js";
+import { ensureEventGif } from "./event-gifs.js";
 // Nguồn ngành đào tạo được lưu theo từng lựa chọn để tiện cập nhật.
 const school = (id, name, city, program, source) => ({
   id, name, city, program, source,
@@ -99,7 +101,7 @@ export const academyLogos = {
   "one-star-academy": new URL("../img/teams/one-star.png", import.meta.url).href,
 };
 
-export function createSchoolEvent(careerPath) {
+function createSchoolEventData(careerPath) {
   if (careerPath.id === "esports") {
     const academies = [
       ["flash-academy", "Team Flash Academy"],
@@ -158,5 +160,17 @@ export function createSchoolEvent(careerPath) {
       careerPath: { ...careerPath, school: null, status },
       confirmText: "Bắt đầu hành trình!",
     }],
+  };
+}
+
+export function createSchoolEvent(careerPath) {
+  const event = createSchoolEventData(careerPath);
+  const art = careerPath.id === "military"
+    ? openMojiArt("1FA96", "Bắt đầu huấn luyện quân ngũ")
+    : careerPath.id === "esports"
+      ? openMojiArt("1F4F1", "Chọn academy Liên Quân Mobile")
+      : openMojiArt("1F3EB", "Chọn trường và chương trình học");
+  return { ...event, ...art,
+    choices: event.choices.map(branch => ensureEventGif({ ...branch, ...art })),
   };
 }

@@ -1,3 +1,5 @@
+import { openMojiArt } from "./event-art.js";
+import { ensureEventGif } from "./event-gifs.js";
 // Mỗi ngành có ba câu nhập môn, mỗi câu có ba đáp án và một đáp án đúng.
 const question = (text, answers, correct) => ({ text, answers, correct });
 export const careerTests = {
@@ -111,6 +113,7 @@ export function createCareerTest(careerPath, random = Math.random) {
   const entry = bank[Math.floor(random() * bank.length)];
   return {
     kind: "career-test",
+    ...openMojiArt("1F4DD", "Câu hỏi kiểm tra kiến thức trước khi chọn trường"),
     testedCareer: { ...careerPath },
     title: `📝 Bài test ${careerPath.field}`,
     text: `Một câu hỏi nhỏ trước khi bắt đầu hành trình!\n${entry.text}`,
@@ -121,14 +124,16 @@ export function createCareerTest(careerPath, random = Math.random) {
 export function createFailedTestEvent() {
   return {
     kind: "enlistment-failure",
+    ...openMojiArt("1FA96", "Lựa chọn con đường nhập ngũ"),
     title: "🪖 Tiếng gọi của Tổ quốc",
     text: "Bạn đã tạch, đi theo tiếng gọi của tổ quốc thôi",
-    choices: [{
+    choices: [ensureEventGif({
       label: "🪖 Lên đường nhập ngũ",
       title: "🪖 Hành trình quân ngũ bắt đầu",
       text: "Bạn nhập ngũ tại đơn vị được phân công và bắt đầu học tập, huấn luyện cùng đồng đội.",
       careerPath: { id: "military", field: "Nhập ngũ", school: null, status: "Nhập ngũ" },
       confirmText: "Bắt đầu hành trình!",
-    }],
+      ...openMojiArt("1FA96", "Bắt đầu huấn luyện quân ngũ"),
+    })],
   };
 }

@@ -1,3 +1,4 @@
+import { getOrientationLabel, getOrientationSymbol } from "./special-event-24.js";
 const interactiveAvatars = new WeakSet();
 const avatarStages = [
   { maxAge: 3, file: "0-3" },
@@ -14,6 +15,13 @@ const avatarStages = [
 ];
 
 export function renderAvatar(player) {
+  const genderLabel = document.getElementById("player-gender");
+  if (genderLabel) {
+    const symbol = getOrientationSymbol(player.orientation, player.gender);
+    const gender = `${symbol} ${player.gender === "female" ? "Nữ" : "Nam"}`;
+    const orientation = getOrientationLabel(player.orientation, player.gender);
+    genderLabel.textContent = gender + (orientation ? ` - ${orientation}` : "");
+  }
   const image = document.getElementById("avt");
   if (!image) return;
 
