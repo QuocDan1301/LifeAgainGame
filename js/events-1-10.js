@@ -1,7 +1,6 @@
-// 30 sự kiện • 60 lựa chọn • GIF ở cả hai popup.
+// 30 sự kiện • 60 lựa chọn • Emoji ở cả hai popup.
 // Đặt file này cùng thư mục js/events.js; media ở img/events/childhood.
-const asset = (name) =>
-  new URL(`./img/events/childhood/${name}`, import.meta.url).href;
+const asset = () => "";
 
 export const ageEvents1To10 = {
   1: [
@@ -9,8 +8,8 @@ export const ageEvents1To10 = {
       id: "a1-first-steps",
       title: "👣 Những bước chân đầu tiên",
       text: "Ba dang tay đón ở phía bên kia tấm thảm. Bạn vịn ghế đứng lên, đôi chân còn run run. 👶",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🤝 Nắm tay ba rồi bước thử",
@@ -20,7 +19,7 @@ export const ageEvents1To10 = {
             health: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mình đi được rồi!",
@@ -34,7 +33,7 @@ export const ageEvents1To10 = {
             health: 2,
             happiness: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Lát nữa thử tiếp!",
           achievementIds: [],
@@ -45,8 +44,8 @@ export const ageEvents1To10 = {
       id: "a1-bath-time",
       title: "🛁 Chậu nước đầy tiếng cười",
       text: "Đến giờ tắm, mẹ thả một chú vịt đồ chơi vào chậu. Bạn nhìn những gợn nước nhỏ lan ra. 🦆",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "💦 Vỗ nước chơi cùng chú vịt",
@@ -56,7 +55,7 @@ export const ageEvents1To10 = {
             health: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Vui quá đi!",
@@ -70,7 +69,7 @@ export const ageEvents1To10 = {
             health: 2,
             happiness: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Xong rồi nhé!",
           achievementIds: [],
@@ -81,8 +80,8 @@ export const ageEvents1To10 = {
       id: "a1-bedtime",
       title: "🧸 Cơn buồn ngủ kéo đến",
       text: "Trời đã tối mà con gấu bông trên giường vẫn khiến bạn muốn chơi thêm. Mẹ bắt đầu hát ru. 🌙",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🧸 Ôm gấu và nghe mẹ hát",
@@ -92,7 +91,7 @@ export const ageEvents1To10 = {
             health: 3,
             happiness: 2,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Ngủ ngon nào!",
@@ -106,7 +105,7 @@ export const ageEvents1To10 = {
             health: -2,
             happiness: 2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Mai ngủ sớm hơn!",
           achievementIds: [],
@@ -119,8 +118,8 @@ export const ageEvents1To10 = {
       id: "a2-picture-book",
       title: "📖 Quyển sách biết kể chuyện",
       text: "Mẹ mở một quyển sách tranh có mèo, chó và những chiếc xe nhiều màu. Bạn tò mò chỉ vào từng hình. 🖼️",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "❓ Hỏi tên từng hình",
@@ -130,7 +129,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Con nhớ rồi!",
           achievementIds: [],
@@ -143,7 +142,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Còn nữa cơ!",
@@ -155,8 +154,8 @@ export const ageEvents1To10 = {
       id: "a2-block-tower",
       title: "🧱 Tòa tháp nhỏ bị đổ",
       text: "Bạn đang xếp những khối gỗ thì tòa tháp nghiêng sang một bên rồi đổ xuống thảm. 🏗️",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🧱 Thử xếp khối to xuống dưới",
@@ -166,7 +165,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Lần này không đổ!",
           achievementIds: [],
@@ -179,7 +178,7 @@ export const ageEvents1To10 = {
             intelligence: 1,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Ba xây nữa đi!",
@@ -191,8 +190,8 @@ export const ageEvents1To10 = {
       id: "a2-lost-toy",
       title: "🚗 Chiếc xe đồ chơi đi đâu mất?",
       text: "Bạn muốn chơi chiếc xe nhỏ nhưng tìm mãi không thấy. Lần cuối bạn nhớ nó ở gần chiếc ghế. 🛋️",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🔍 Cùng mẹ tìm quanh chiếc ghế",
@@ -202,7 +201,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Tìm thấy rồi!",
           achievementIds: [],
@@ -215,7 +214,7 @@ export const ageEvents1To10 = {
             intelligence: 1,
             happiness: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Lát nữa tìm tiếp!",
           achievementIds: [],
@@ -228,8 +227,8 @@ export const ageEvents1To10 = {
       id: "a3-preschool",
       title: "🎒 Buổi đầu ở mẫu giáo",
       text: "Lớp mẫu giáo đầy đồ chơi lạ. Cô giáo mời bạn vào chơi, còn ba mẹ đứng chờ ngoài cửa. 🏫",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "👫 Ra sân chơi cùng cô và các bạn",
@@ -239,7 +238,7 @@ export const ageEvents1To10 = {
             health: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mai con lại đi học!",
@@ -253,7 +252,7 @@ export const ageEvents1To10 = {
             health: 2,
             happiness: -2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Rồi mình sẽ quen!",
           achievementIds: [],
@@ -264,8 +263,8 @@ export const ageEvents1To10 = {
       id: "a3-playground",
       title: "🛝 Cầu trượt đông vui",
       text: "Đến giờ chơi ngoài trời, bạn nhìn thấy cầu trượt và một khoảng sân rộng để chạy nhảy. ☀️",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🚶 Xếp hàng chờ lượt trượt",
@@ -275,7 +274,7 @@ export const ageEvents1To10 = {
             health: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Trượt thêm lần nữa!",
@@ -289,7 +288,7 @@ export const ageEvents1To10 = {
             health: -1,
             happiness: 4,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Nghỉ một chút đã!",
           achievementIds: [],
@@ -300,8 +299,8 @@ export const ageEvents1To10 = {
       id: "a3-nap",
       title: "😴 Giờ ngủ trưa",
       text: "Cô giáo kéo rèm cho lớp dịu ánh sáng. Bạn nằm cạnh chiếc gối nhỏ nhưng vẫn muốn trò chuyện. 🕛",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🛏️ Ôm gối và ngủ một giấc",
@@ -311,7 +310,7 @@ export const ageEvents1To10 = {
             health: 4,
             happiness: 1,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Khỏe khoắn quá!",
@@ -325,7 +324,7 @@ export const ageEvents1To10 = {
             health: -2,
             happiness: 3,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Mai ngủ đúng giờ!",
           achievementIds: [],
@@ -338,8 +337,8 @@ export const ageEvents1To10 = {
       id: "a4-painting",
       title: "🎨 Bức tranh đầy màu sắc",
       text: "Cô phát giấy và màu vẽ. Bạn muốn vẽ một khu vườn nhưng chưa biết bắt đầu từ đâu. 🖌️",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🥼 Mặc tạp dề rồi thử pha màu",
@@ -349,7 +348,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             appearance: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Màu này đẹp quá!",
           achievementIds: [],
@@ -362,7 +361,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             appearance: -2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Rửa tay thay áo thôi!",
           achievementIds: [],
@@ -373,8 +372,8 @@ export const ageEvents1To10 = {
       id: "a4-buttons",
       title: "👕 Chiếc áo có hàng cúc",
       text: "Bạn muốn tự mặc chiếc áo mới. Những chiếc cúc nhỏ trông đơn giản nhưng cài lại không dễ chút nào. 🧵",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🐌 Kiên nhẫn cài từng chiếc cúc",
@@ -384,7 +383,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             appearance: 3,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Con tự mặc được!",
           achievementIds: [],
@@ -397,7 +396,7 @@ export const ageEvents1To10 = {
             intelligence: 1,
             appearance: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Để chỉnh lại nào!",
           achievementIds: [],
@@ -408,8 +407,8 @@ export const ageEvents1To10 = {
       id: "a4-garden",
       title: "🌱 Chậu cây của lớp",
       text: "Cô giáo mang đến một chậu đất và vài hạt giống. Bạn được giúp cô trồng cây bên cửa sổ. 🪴",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🧤 Làm theo hướng dẫn và đeo găng",
@@ -419,7 +418,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             appearance: 1,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mau lớn nhé, cây ơi!",
           achievementIds: [],
@@ -432,7 +431,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             appearance: -2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Lấm lem mà học được nhiều!",
           achievementIds: [],
@@ -445,8 +444,8 @@ export const ageEvents1To10 = {
       id: "a5-letter",
       title: "🔤 Chữ cái trong tên mình",
       text: "Cô viết tên bạn lên một tấm thẻ rồi hỏi bạn có nhận ra chữ cái nào không. 🏷️",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "👩‍🏫 Tập nhận từng chữ với cô",
@@ -456,7 +455,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Đó là tên của mình!",
           achievementIds: [],
@@ -469,7 +468,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Chơi thêm một vòng!",
@@ -481,8 +480,8 @@ export const ageEvents1To10 = {
       id: "a5-puzzle",
       title: "🧩 Mảnh ghép cuối cùng",
       text: "Bức tranh ghép hình sắp hoàn thành, nhưng bạn còn một mảnh không biết đặt vào đâu. 🌀",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🔄 Quan sát màu và xoay mảnh ghép",
@@ -492,7 +491,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mình làm được rồi!",
           achievementIds: [],
@@ -505,7 +504,7 @@ export const ageEvents1To10 = {
             intelligence: 1,
             happiness: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Mai mình thử tiếp!",
           achievementIds: [],
@@ -516,8 +515,8 @@ export const ageEvents1To10 = {
       id: "a5-storytelling",
       title: "🗣️ Kể chuyện trước lớp",
       text: "Cô mời bạn kể lại một câu chuyện đã nghe. Các bạn ngồi thành vòng tròn chờ đến lượt bạn. 📖",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🎤 Kể theo những gì mình nhớ",
@@ -527,7 +526,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Lần sau sẽ tự tin hơn!",
           achievementIds: [],
@@ -540,7 +539,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Vở kịch thành công!",
@@ -554,8 +553,8 @@ export const ageEvents1To10 = {
       id: "a6-first-school",
       title: "🏫 Ngày đầu đến trường",
       text: "Bạn bước vào lớp 1 với chiếc cặp mới. Cô giáo giới thiệu chỗ ngồi và những người bạn trong lớp. 🔔",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🙋 Chào cô và làm quen bạn cùng bàn",
@@ -565,7 +564,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Chào lớp 1!",
@@ -579,7 +578,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: -1,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mình sẽ quen thôi!",
           achievementIds: ["primary-school"],
@@ -590,8 +589,8 @@ export const ageEvents1To10 = {
       id: "a6-pencil",
       title: "✏️ Chiếc bút chì để quên",
       text: "Đến giờ tập viết, bạn mở hộp bút và nhận ra chiếc bút chì vẫn nằm ở nhà. 🎒",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🙏 Lễ phép hỏi mượn bạn",
@@ -601,7 +600,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Cảm ơn bạn nhé!",
@@ -615,7 +614,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: -1,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Lần sau nhớ mang!",
           achievementIds: [],
@@ -626,8 +625,8 @@ export const ageEvents1To10 = {
       id: "a6-reading",
       title: "📚 Dòng chữ đầu tiên",
       text: "Bạn ghép được vài chữ trong quyển truyện nhỏ, nhưng một câu dài khiến bạn dừng lại. 🔠",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🗣️ Đánh vần từng tiếng",
@@ -637,7 +636,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mình đọc được rồi!",
           achievementIds: [],
@@ -650,7 +649,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Đọc thêm một trang nhé!",
@@ -664,8 +663,8 @@ export const ageEvents1To10 = {
       id: "a7-tag",
       title: "🏃 Giờ ra chơi náo nhiệt",
       text: "Các bạn rủ bạn chơi đuổi bắt trong sân. Bạn vừa ăn xong và đang phân vân có tham gia không. 🏟️",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🥤 Nghỉ một lúc rồi chơi vừa sức",
@@ -675,7 +674,7 @@ export const ageEvents1To10 = {
             health: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Hết giờ nhanh thế!",
@@ -689,7 +688,7 @@ export const ageEvents1To10 = {
             health: -2,
             happiness: 4,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Uống nước nghỉ đã!",
           achievementIds: [],
@@ -700,8 +699,8 @@ export const ageEvents1To10 = {
       id: "a7-rain",
       title: "🌧️ Cơn mưa lúc tan học",
       text: "Mưa bất chợt đổ xuống lúc tan học. Bạn đứng dưới mái hiên cùng vài người bạn chờ người thân đến đón. ☔",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "🏠 Ở chỗ khô và trò chuyện cùng bạn",
@@ -711,7 +710,7 @@ export const ageEvents1To10 = {
             health: 1,
             happiness: 2,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Về nhà thôi!",
@@ -725,7 +724,7 @@ export const ageEvents1To10 = {
             health: -2,
             happiness: 2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Về thay đồ ngay!",
           achievementIds: [],
@@ -736,8 +735,8 @@ export const ageEvents1To10 = {
       id: "a7-late-cartoon",
       title: "📺 Tập phim chưa kết thúc",
       text: "Đã đến giờ ngủ nhưng bộ phim hoạt hình yêu thích vẫn còn một đoạn. Ngày mai bạn phải dậy đi học. 🌃",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "📴 Tắt màn hình và đi ngủ",
@@ -747,7 +746,7 @@ export const ageEvents1To10 = {
             health: 4,
             happiness: -1,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Mai xem tiếp vậy!",
           achievementIds: [],
@@ -760,7 +759,7 @@ export const ageEvents1To10 = {
             health: -3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Tập này hay thật!",
@@ -774,8 +773,8 @@ export const ageEvents1To10 = {
       id: "a8-hard-math",
       title: "🧮 Bài toán khó nhằn",
       text: "Bạn gặp một bài toán có cách hỏi khác hẳn ví dụ trong sách. Bạn đã thử một lần nhưng chưa ra đáp án. ❔",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "📐 Vẽ hình để tìm cách giải",
@@ -785,7 +784,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "À, ra là vậy!",
           achievementIds: [],
@@ -798,7 +797,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Cảm ơn vì đã chỉ mình!",
@@ -810,8 +809,8 @@ export const ageEvents1To10 = {
       id: "a8-library",
       title: "📚 Một buổi ở thư viện",
       text: "Bạn có thể mượn một cuốn sách mang về. Trên kệ có sách khám phá và truyện tranh vui nhộn. 📖",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🦉 Chọn sách khám phá thiên nhiên",
@@ -821,7 +820,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 1,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Thật nhiều điều lạ!",
           achievementIds: [],
@@ -834,7 +833,7 @@ export const ageEvents1To10 = {
             intelligence: 1,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Đoạn này buồn cười quá!",
@@ -846,8 +845,8 @@ export const ageEvents1To10 = {
       id: "a8-group-project",
       title: "🖍️ Tấm áp phích của nhóm",
       text: "Nhóm bạn được giao làm áp phích về bảo vệ môi trường. Mỗi người có một ý tưởng khác nhau. 📌",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🤝 Lắng nghe rồi chia việc cùng nhau",
@@ -857,7 +856,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Nhóm mình làm tốt lắm!",
@@ -871,7 +870,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: -2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Lần sau chia việc nhé!",
           achievementIds: [],
@@ -884,8 +883,8 @@ export const ageEvents1To10 = {
       id: "a9-school-photo",
       title: "📸 Ngày chụp ảnh lớp",
       text: "Cả lớp chuẩn bị chụp ảnh kỷ niệm. Bạn nhìn lại cổ áo và mái tóc trước khi ra sân. 🏫",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "👔 Chỉnh trang rồi đứng cạnh các bạn",
@@ -895,7 +894,7 @@ export const ageEvents1To10 = {
             appearance: 3,
             happiness: 2,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Nhớ gửi mình tấm ảnh!",
@@ -909,7 +908,7 @@ export const ageEvents1To10 = {
             appearance: -1,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Cười tươi là được!",
@@ -921,8 +920,8 @@ export const ageEvents1To10 = {
       id: "a9-haircut",
       title: "💇 Kiểu tóc mới",
       text: "Người thân đưa bạn đi cắt tóc. Bạn được hỏi muốn giữ kiểu quen thuộc hay thử một kiểu gọn hơn. 💈",
-      image: "joy.gif",
-      imageAlt: "GIF khuôn mặt vui chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji khuôn mặt vui chuyển động nhẹ.",
       choices: [
         {
           label: "✂️ Chọn kiểu gọn gàng mình thích",
@@ -932,7 +931,7 @@ export const ageEvents1To10 = {
             appearance: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Hợp với mình ghê!",
@@ -946,7 +945,7 @@ export const ageEvents1To10 = {
             appearance: 2,
             happiness: -2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Rồi tóc sẽ dài lại!",
           achievementIds: [],
@@ -957,8 +956,8 @@ export const ageEvents1To10 = {
       id: "a9-school-fair",
       title: "🎁 Gian hàng thủ công",
       text: "Lớp tổ chức làm đồ trang trí cho ngày hội. Trên bàn có giấy màu, hồ dán và màu nước. 🎪",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🧵 Làm cẩn thận và giữ áo sạch",
@@ -968,7 +967,7 @@ export const ageEvents1To10 = {
             appearance: 2,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Tác phẩm của mình đây!",
@@ -982,7 +981,7 @@ export const ageEvents1To10 = {
             appearance: -2,
             happiness: 4,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Vui là đáng rồi!",
@@ -996,8 +995,8 @@ export const ageEvents1To10 = {
       id: "a10-science",
       title: "🌱 Thí nghiệm hạt đậu",
       text: "Cô giao theo dõi sự nảy mầm của một hạt đậu. Bạn có thể ghi chép mỗi ngày hoặc quan sát cùng bạn. 🫘",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "📏 Ghi lại thay đổi từng ngày",
@@ -1007,7 +1006,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: 2,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Hạt đậu mọc rồi!",
           achievementIds: [],
@@ -1020,7 +1019,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mai xem tiếp nhé!",
@@ -1032,8 +1031,8 @@ export const ageEvents1To10 = {
       id: "a10-class-test",
       title: "📝 Bài kiểm tra chưa như ý",
       text: "Bạn nhận lại bài kiểm tra và thấy mình sai vài câu vốn tưởng đã làm đúng. 📉",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "🔎 Xem lại lỗi và hỏi cô chỗ chưa hiểu",
@@ -1043,7 +1042,7 @@ export const ageEvents1To10 = {
             intelligence: 4,
             happiness: -2,
           },
-          image: "effort.gif",
+          image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",
           confirmText: "Lần sau sẽ tốt hơn!",
           achievementIds: [],
@@ -1056,7 +1055,7 @@ export const ageEvents1To10 = {
             intelligence: 2,
             happiness: 3,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mình sẽ cố gắng tiếp!",
@@ -1068,8 +1067,8 @@ export const ageEvents1To10 = {
       id: "a10-primary-memories",
       title: "💌 Cuốn sổ kỷ niệm tiểu học",
       text: "Năm học cuối tiểu học đang trôi qua. Bạn muốn làm một cuốn sổ để giữ lại những chuyện đáng nhớ. 📔",
-      image: "learn.gif",
-      imageAlt: "GIF quyển sách chuyển động nhẹ.",
+      image: "",
+      imageAlt: "Emoji quyển sách chuyển động nhẹ.",
       choices: [
         {
           label: "✍️ Viết lại những điều mình đã học",
@@ -1079,7 +1078,7 @@ export const ageEvents1To10 = {
             intelligence: 3,
             happiness: 3,
           },
-          image: "learn.gif",
+          image: "",
           imageAlt: "Biểu tượng quyển sách với những ngôi sao chuyển động nhẹ.",
           confirmText: "Mình đã lớn hơn rồi!",
           achievementIds: [],
@@ -1092,7 +1091,7 @@ export const ageEvents1To10 = {
             intelligence: 1,
             happiness: 5,
           },
-          image: "joy.gif",
+          image: "",
           imageAlt:
             "Biểu tượng khuôn mặt vui với những ngôi sao chuyển động nhẹ.",
           confirmText: "Giữ mãi cuốn sổ này!",
@@ -1103,7 +1102,7 @@ export const ageEvents1To10 = {
   ],
 };
 
-// Chuyển tên GIF thành đường dẫn dựa trên vị trí file JS.
+// Chuyển tên Emoji thành đường dẫn dựa trên vị trí file JS.
 for (const events of Object.values(ageEvents1To10)) {
   for (const event of events) {
     event.image = asset(event.image);

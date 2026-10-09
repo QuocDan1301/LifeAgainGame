@@ -1,5 +1,5 @@
 import { openMojiArt } from "./event-art.js";
-import { ensureEventGif } from "./event-gifs.js";
+import { ensureEventOpenMoji } from "./event-openmoji.js";
 // Mỗi ngành có ba câu nhập môn, mỗi câu có ba đáp án và một đáp án đúng.
 const question = (text, answers, correct) => ({ text, answers, correct });
 export const careerTests = {
@@ -127,7 +127,7 @@ export function createFailedTestEvent() {
     ...openMojiArt("1FA96", "Lựa chọn con đường nhập ngũ"),
     title: "🪖 Tiếng gọi của Tổ quốc",
     text: "Bạn đã tạch, đi theo tiếng gọi của tổ quốc thôi",
-    choices: [ensureEventGif({
+    choices: [ensureEventOpenMoji({
       label: "🪖 Lên đường nhập ngũ",
       title: "🪖 Hành trình quân ngũ bắt đầu",
       text: "Bạn nhập ngũ tại đơn vị được phân công và bắt đầu học tập, huấn luyện cùng đồng đội.",

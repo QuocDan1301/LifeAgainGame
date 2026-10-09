@@ -1,5 +1,5 @@
 import { openMojiArt } from "./event-art.js";
-import { ensureEventGif } from "./event-gifs.js";
+import { ensureEventOpenMoji } from "./event-openmoji.js";
 // Nguồn ngành đào tạo được lưu theo từng lựa chọn để tiện cập nhật.
 const school = (id, name, city, program, source) => ({
   id, name, city, program, source,
@@ -171,6 +171,6 @@ export function createSchoolEvent(careerPath) {
       ? openMojiArt("1F4F1", "Chọn academy Liên Quân Mobile")
       : openMojiArt("1F3EB", "Chọn trường và chương trình học");
   return { ...event, ...art,
-    choices: event.choices.map(branch => ensureEventGif({ ...branch, ...art })),
+    choices: event.choices.map(branch => ensureEventOpenMoji({ ...branch, ...art })),
   };
 }

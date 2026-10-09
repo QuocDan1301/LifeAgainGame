@@ -14,6 +14,13 @@ const avatarStages = [
   { maxAge: Infinity, file: "101-105" },
 ];
 
+export function getAvatarSource(player) {
+  const isFemale = player.gender === "female";
+  const age = Number.isFinite(player.age) ? Math.max(0, player.age) : 0;
+  const stage = avatarStages.find(item => age <= item.maxAge);
+  return new URL(`../img/${isFemale ? "Nu" : "Nam"}/${isFemale ? "nu" : "nam"}_${stage.file}.png`, import.meta.url).href;
+}
+
 export function renderAvatar(player) {
   const genderLabel = document.getElementById("player-gender");
   if (genderLabel) {
@@ -26,18 +33,10 @@ export function renderAvatar(player) {
   if (!image) return;
 
   const isFemale = player.gender === "female";
-  const folder = isFemale ? "Nu" : "Nam";
-  const prefix = isFemale ? "nu" : "nam";
 
   const age = Number.isFinite(player.age) ? Math.max(0, player.age) : 0;
 
-  const stage = avatarStages.find((item) => age <= item.maxAge);
-
-  // Đường dẫn tính từ file avatar.js trong thư mục js.
-  const src = new URL(
-    `../img/${folder}/${prefix}_${stage.file}.png`,
-    import.meta.url,
-  ).href;
+  const src = getAvatarSource(player);
 
   // Chỉ thay ảnh khi bước sang giai đoạn mới.
   if (image.src !== src) {

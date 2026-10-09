@@ -1,10 +1,10 @@
 import { getEmploymentContext } from "./career-jobs.js";
-import { ensureEventGif } from "./event-gifs.js";
+import { ensureEventOpenMoji } from "./event-openmoji.js";
 
 const choice = (label, title, text, effects) => ({ label, title, text, effects, confirmText: "Tiếp tục" });
 
 const illustration = (code, alt) => {
-  const image = new URL(`./img/events/stickers/${code}.svg`, import.meta.url).href;
+  const image = new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
   return {
     image, imageAlt: `OpenMoji: ${alt}`,
     imageFallback: image, imageFallbackAlt: `OpenMoji: ${alt}`,
@@ -49,7 +49,7 @@ function addEverydayMedia(events) {
     return {
       ...event, title: `${emojiFor(titleEmojis[code] ?? code)} ${removeEmoji(event.title)}`, text: removeEmoji(event.text),
       ...illustration(code, alt),
-      choices: event.choices.map((branch, index) => ensureEventGif({
+      choices: event.choices.map((branch, index) => ensureEventOpenMoji({
         ...branch,
         label: removeEmoji(branch.label),
         title: `${emojiFor(resultImages[code]?.[index] ?? "2728")} ${removeEmoji(branch.title)}`,
@@ -122,10 +122,6 @@ export function createYoungAdultEvents(age, careerPath) {
     24: [
       ["Một ngày bớt lướt mạng", "Tôi định xem điện thoại năm phút, ngẩng lên đã hết buổi tối. Ngón tay chăm chỉ hơn cả tôi!", "Cất máy, đọc sách!", "Tôi đọc vài trang sách và thấy đầu óc dễ chịu hơn.", { intelligence: 3 }, "Tắt máy, ngủ sớm!", "Tôi ngủ một giấc ngon, sáng dậy tỉnh táo hơn.", { health: 3 }],
       ["Tập nấu món mới", "Tôi thử nấu một món mới. Công thức bảo vàng giòn, chảo của tôi lại hơi… đen huyền bí!", "Thử lại, giảm lửa!", "Lần thứ hai ngon hơn hẳn. Kiên nhẫn cũng là một loại gia vị.", { intelligence: 2, happiness: 2 }, "Rủ bạn ăn ngoài!", "Tôi kể chuyện cái chảo cháy, cả bàn cười vui vẻ.", { happiness: 3 }],
-    ],
-    25: [
-      ["Trồng cây trên bàn", "Tôi mua một chậu cây nhỏ. Người bán bảo dễ chăm, còn tôi hy vọng cây chịu được chủ hay quên!", "Đặt lịch tưới cây!", "Góc bàn xanh hơn, tôi cũng tập được thói quen chăm chút mỗi ngày.", { happiness: 2, intelligence: 1 }, "Tặng bạn mê cây!", "Chậu cây tìm được người chăm khéo, còn tôi được một lời cảm ơn.", { happiness: 3 }],
-      ["Học thêm một kỹ năng", "Tôi thấy một lớp học thú vị. Não bảo thử đi, cái ghế lại bảo ngồi tiếp!", "Đăng ký học thử!", "Tôi học thêm điều mới và thấy mình có thể tiến bộ từng chút.", { intelligence: 3 }, "Đi dạo trước đã!", "Một vòng đi bộ giúp tôi thư giãn và nghĩ rõ hơn về điều muốn học.", { health: 2, happiness: 1 }],
     ],
     28: [
       ["Hẹn bạn cũ", "Nhóm bạn cũ rủ gặp mặt. Lịch hẹn đổi ba lần, cuối cùng mọi người thống nhất: ai tới trước giữ bàn!", "Đi gặp, kể chuyện!", "Chúng tôi ôn chuyện cũ và cười như chưa từng xa nhau.", { happiness: 4 }, "Gọi hỏi thăm thôi!", "Một cuộc gọi ngắn vẫn đủ nối lại những câu chuyện thân quen.", { happiness: 2 }],

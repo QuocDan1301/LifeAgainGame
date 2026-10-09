@@ -1,6 +1,10 @@
 import { state, createInitialState } from "./state.js";
 import { initLobby } from "./lobby.js";
 import { getCareerProfile } from "./career-jobs.js";
+import { restoreMarriageSchedule } from "./relationships.js";
+import { migrateChildcareDebt } from "./family.js";
+import { getEventCategory } from "./event-category.js";
+import { createOrientationEvent } from "./special-event-24.js";
 
 let entering = false;
 initLobby(async saved => {
@@ -9,6 +13,7 @@ initLobby(async saved => {
   const initial = createInitialState();
   Object.assign(state, initial, saved);
   state.player = { ...initial.player, ...saved.player };
+  restoreMarriageSchedule(state.player, saved.player.marriageScheduleVersion ?? 1);
   // Khôi phục tuổi nâng bậc lần đầu từ nhật ký của bản lưu cũ.
   if (saved.player.nextPromotionAge === undefined && state.player.careerLevel >= 2) {
     const firstPromotion = state.logs?.find(log =>
@@ -25,6 +30,18 @@ initLobby(async saved => {
       .ranks[state.player.careerLevel - 1];
   }
   state.pendingEvent = saved.pendingEvent ?? null;
+  // Old saves may have queued a second, unrelated story for the same year.
+  state.followUpEvent = null;
+  if (state.pendingEvent?.age === 24) {
+    if (getEventCategory(state.pendingEvent) === "everyday") {
+      state.pendingEvent = { ...createOrientationEvent(state.player), stage: "choice", age: 24 };
+    }
+  }
+  migrateChildcareDebt(state.player, state.pendingEvent?.updates);
+  if (state.pendingEvent?.kind === "marriage-proposal" && state.pendingEvent.stage === "choice" &&
+      state.pendingEvent.age < state.player.nextMarriageProposalAge) {
+    state.pendingEvent = null;
+  }
   document.getElementById("lobby-screen").hidden = true;
   document.getElementById("game-screen").hidden = false;
   try {

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" width="200" height="200" role="img">
+  <title>OpenMoji: triangular flag</title><g><g id="color">
+    <polygon fill="#d22f27" points="67 24 36 33.5 5 43 5 24 5 5 36 14.5 67 24" />
+  </g>
+  <g id="line">
+    <g>
+      <polygon fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="67 24 36 33.5 5 43 5 24 5 5 36 14.5 67 24" />
+      <line x1="5" x2="5" y1="5" y2="67" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+    </g>
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

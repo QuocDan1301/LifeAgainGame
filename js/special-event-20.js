@@ -1,5 +1,5 @@
 const sticker = (code) =>
-  new URL(`./img/events/stickers/${code}.svg`, import.meta.url).href;
+  new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
 
 const art = (code, alt) => ({
   image: sticker(code),

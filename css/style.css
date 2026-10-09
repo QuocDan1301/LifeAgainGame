@@ -224,6 +224,11 @@ button:active {
   padding: 0.4rem calc(var(--icon-size) + var(--icon-edge) + 0.5rem) 0.4rem
     calc(var(--age-size) / 2 + 0.4rem);
 }
+#activities:disabled {
+  opacity: 0.5;
+  filter: grayscale(0.7);
+  cursor: not-allowed;
+}
 .action-icon {
   position: absolute;
   top: 50%;
@@ -917,6 +922,7 @@ body::before {
   width: min(90vw, 400px);
   max-height: 80dvh;
   overflow-y: auto;
+  scrollbar-width: none;
   padding: 22px;
   border: 2px solid #e0c878;
   border-radius: 18px;
@@ -924,24 +930,45 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
+#activities-dialog::-webkit-scrollbar {
+  display: none;
+}
 #activities-dialog::backdrop {
   background: rgb(0 0 0 / 45%);
 }
 .activities-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  position: relative;
+  margin-bottom: 18px;
+  padding: 10px 42px;
+  border: 1px solid #4f6cff;
+  border-radius: 14px;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  box-shadow: 0 3px 0 rgb(40 90 145 / 18%);
 }
 .activities-heading h2 {
   margin: 0;
-  font-size: 24px;
+  text-align: center;
+  font-family: "Sriracha", cursive;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #17394b;
 }
 #close-activities {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
   border: none;
-  background: transparent;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 45%);
   color: inherit;
   font-size: 24px;
+  line-height: 1;
   cursor: pointer;
 }
 .activities-list {
@@ -949,16 +976,29 @@ body::before {
   gap: 12px;
 }
 .activities-list button {
-  padding: 14px;
+  padding: 14px 18px;
   border: 1px solid #e0c878;
   border-radius: 10px;
   background: #fff1ad;
   color: inherit;
-  font: inherit;
+  font-family: "Sriracha", cursive;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.5;
   text-align: left;
   cursor: pointer;
 }
+.activities-list button:hover {
+  background: #ffe68b;
+  border-color: #d6ac45;
+}
+.activities-list button:focus-visible,
+#close-activities:focus-visible {
+  outline: 3px solid #285a91;
+  outline-offset: 3px;
+}
 #relationships-dialog,
+#life-profile-dialog,
 #education-dialog,
 #study-block-dialog,
 #event-dialog {
@@ -1034,6 +1074,21 @@ body::before {
 .study-block-choices span { margin-top: 6px; font-size: 15px; }
 #career-eligibility-feedback { color: #b63828; line-height: 1.5; }
 #career-eligibility-feedback[hidden] { display: none; }
+.event-category {
+  width: fit-content;
+  margin: 0 auto 12px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.event-category[data-category="special"] { background: #f3e0ff; color: #6c278e; }
+.event-category[data-category="everyday"] { background: #e1f3df; color: #286333; }
+.event-category[data-category="love"] { background: #ffe0eb; color: #a12554; }
+.event-category[data-category="family"] { background: #ffead3; color: #87501c; }
+.event-category[data-category="education"] { background: #dfeeff; color: #285a91; }
+.event-category[data-category="career"] { background: #fff0ba; color: #735515; }
 #event-title {
   margin: 0 0 16px;
   text-align: center;
@@ -1050,62 +1105,17 @@ body::before {
 #event-image[hidden] {
   display: none;
 }
-#event-image[src*="/events/stickers/"] {
-  width: 144px;
-  height: 144px;
-  margin: 0 auto 8px;
+#event-image[src*="/events/openmoji/"] {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 14px;
   border-radius: 0;
-  filter: drop-shadow(0 5px 3px rgb(23 50 71 / 12%));
-  transform-origin: 50% 80%;
 }
-#event-dialog[open] #event-image[data-motion] {
-  animation: sticker-pop 550ms cubic-bezier(0.22, 1, 0.36, 1) both,
-    var(--sticker-idle) 3.2s ease-in-out 550ms infinite;
-}
-#event-image[data-motion="bounce"] {
-  --sticker-idle: sticker-bounce;
-}
-#event-image[data-motion="sway"] {
-  --sticker-idle: sticker-sway;
-}
-#event-image[data-motion="float"] {
-  --sticker-idle: sticker-float;
-}
-@media (hover: hover) {
-  #event-dialog[open] #event-image[data-motion]:hover {
-    animation: sticker-wiggle 650ms ease-in-out infinite;
-  }
-}
-@keyframes sticker-pop {
-  0% { opacity: 0; transform: translateY(12px) rotate(-10deg) scale(0.65); }
-  60% { opacity: 1; transform: translateY(-5px) rotate(5deg) scale(1.1); }
-  80% { transform: translateY(2px) rotate(-3deg) scale(0.96); }
-  100% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
-}
-@keyframes sticker-bounce {
-  0%, 45%, 100% { transform: translateY(0) rotate(0) scale(1); }
-  12% { transform: translateY(2px) rotate(-3deg) scale(1.04, 0.96); }
-  24% { transform: translateY(-10px) rotate(4deg) scale(0.98, 1.03); }
-  36% { transform: translateY(1px) rotate(-2deg) scale(1.02, 0.98); }
-}
-@keyframes sticker-sway {
-  0%, 100% { transform: rotate(-5deg) translateY(-2px); }
-  50% { transform: rotate(5deg) translateY(-6px); }
-}
-@keyframes sticker-float {
-  0%, 100% { transform: translateY(0) rotate(-2deg); }
-  50% { transform: translateY(-9px) rotate(3deg); }
-}
-@keyframes sticker-wiggle {
-  0%, 100% { transform: translateY(-4px) rotate(0) scale(1.05); }
-  25% { transform: translateY(-6px) rotate(-8deg) scale(1.05); }
-  75% { transform: translateY(-6px) rotate(8deg) scale(1.05); }
-}
-@media (prefers-reduced-motion: reduce) {
-  #event-dialog[open] #event-image[data-motion],
-  #event-dialog[open] #event-image[data-motion]:hover {
-    animation: none;
-  }
+#event-content .event-warning {
+  color: #a52a12;
+  background: #fff0c2;
+  border-radius: 4px;
+  padding: 0 3px;
 }
 #event-content {
   margin: 0 0 20px;
@@ -1413,4 +1423,77 @@ body::before {
 }
 #close-fortune:hover {
   background: #62408f;
+}
+
+#life-profile-dialog {
+  width: min(680px, 90vw);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+#life-memories figure {
+  margin: 12px 0;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fff7e6;
+}
+#life-memories img, .life-summary-portrait {
+  width: 100px;
+  height: 120px;
+  object-fit: contain;
+}
+.memory-photo-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.memory-photo-pair section {
+  padding: 8px;
+  border: 1px solid #ddc7a1;
+  background: white;
+}
+#death-summary { text-align: left; }
+#death-summary li, #life-keepsakes li { margin-bottom: 8px; }
+#event-content details {
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff4d6;
+}
+#event-content summary { cursor: pointer; font-weight: bold; }
+#event-content details p { white-space: pre-line; }
+
+/* Keep dialogs in the top layer until their native closing transition ends. */
+@media (prefers-reduced-motion: no-preference) {
+  dialog {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+    transition:
+      opacity 260ms ease,
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      display 260ms allow-discrete,
+      overlay 260ms allow-discrete;
+  }
+  dialog[open] {
+    opacity: 1;
+    transform: none;
+  }
+  dialog::backdrop {
+    opacity: 0;
+    transition:
+      opacity 260ms ease,
+      display 260ms allow-discrete,
+      overlay 260ms allow-discrete;
+  }
+  dialog[open]::backdrop {
+    opacity: 1;
+  }
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: translateY(16px) scale(0.97);
+    }
+    dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
 }

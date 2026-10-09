@@ -1,6 +1,6 @@
-// Tuổi 11–20: 30 sự kiện, 60 lựa chọn, GIF ở cả hai popup.
-// Theo cấu trúc hiện tại của bạn: js/img/events/childhood/*.gif
-const asset = (name) => new URL(`./img/events/childhood/${name}`, import.meta.url).href;
+// Tuổi 11–20: 30 sự kiện, 60 lựa chọn, Emoji ở cả hai popup.
+// Minh họa được gán từ thư viện OpenMoji sau khi tạo sự kiện.
+const asset = () => "";
 
 export const ageEvents11To20 = {
   "11": [
@@ -8,8 +8,8 @@ export const ageEvents11To20 = {
       "id": "teen-11-1",
       "title": "🎒 Chiếc cặp nặng trĩu",
       "text": "Sách vở năm nay nhiều hơn trước. Mỗi sáng, bạn phải nhấc chiếc cặp như đang tập tạ. 📚",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🗂️ Soạn cặp theo thời khóa biểu",
@@ -19,8 +19,8 @@ export const ageEvents11To20 = {
             "health": 2,
             "intelligence": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Nhẹ cả người!",
           "achievementIds": []
         },
@@ -32,8 +32,8 @@ export const ageEvents11To20 = {
             "health": -2,
             "intelligence": 1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Mai soạn lại vậy!",
           "achievementIds": []
         }
@@ -43,8 +43,8 @@ export const ageEvents11To20 = {
       "id": "teen-11-2",
       "title": "🤝 Một người bạn mới",
       "text": "Một bạn mới chuyển đến ngồi một mình trong giờ nghỉ, tay cứ xoay chiếc bút. 🖊️",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🙋 Chủ động bắt chuyện",
@@ -54,8 +54,8 @@ export const ageEvents11To20 = {
             "intelligence": 1,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Có bạn mới rồi!",
           "achievementIds": []
         },
@@ -67,8 +67,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Hóa ra là vậy!",
           "achievementIds": []
         }
@@ -78,8 +78,8 @@ export const ageEvents11To20 = {
       "id": "teen-11-3",
       "title": "🏸 Quả cầu mắc trên cây",
       "text": "Bạn và nhóm bạn vừa chơi được vài lượt thì quả cầu bay lên cành cây. 🌳",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🧑 Nhờ người lớn lấy giúp",
@@ -89,8 +89,8 @@ export const ageEvents11To20 = {
             "health": 2,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Chơi tiếp nào!",
           "achievementIds": []
         },
@@ -102,8 +102,8 @@ export const ageEvents11To20 = {
             "health": 2,
             "happiness": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Mai đấu tiếp!",
           "achievementIds": []
         }
@@ -115,8 +115,8 @@ export const ageEvents11To20 = {
       "id": "teen-12-1",
       "title": "🔬 Thí nghiệm sủi bọt",
       "text": "Trong giờ khoa học, cô hướng dẫn cả nhóm làm một thí nghiệm an toàn có bọt nổi lên. 🫧",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "📋 Ghi từng bước thực hiện",
@@ -126,8 +126,8 @@ export const ageEvents11To20 = {
             "intelligence": 4,
             "happiness": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Đã hiểu nguyên lý!",
           "achievementIds": []
         },
@@ -139,8 +139,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Hay quá cô ơi!",
           "achievementIds": []
         }
@@ -150,8 +150,8 @@ export const ageEvents11To20 = {
       "id": "teen-12-2",
       "title": "🪞 Một nốt mụn bất ngờ",
       "text": "Sáng soi gương, bạn thấy một nốt mụn ngay giữa trán. Cảm giác nó to hơn cả cái chuông trường! 😳",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🧼 Chăm sóc da nhẹ nhàng",
@@ -161,8 +161,8 @@ export const ageEvents11To20 = {
             "appearance": 2,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Từ từ sẽ ổn!",
           "achievementIds": []
         },
@@ -174,8 +174,8 @@ export const ageEvents11To20 = {
             "appearance": -1,
             "happiness": 1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Mai thử cách khác!",
           "achievementIds": []
         }
@@ -185,8 +185,8 @@ export const ageEvents11To20 = {
       "id": "teen-12-3",
       "title": "📱 Tin nhắn chưa có hồi âm",
       "text": "Bạn gửi một câu đùa vào nhóm lớp nhưng mãi chẳng ai trả lời. Đầu bạn bắt đầu nghĩ đủ chuyện. 💭",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "⏳ Đợi và làm việc khác",
@@ -196,8 +196,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Mình nghĩ nhiều rồi!",
           "achievementIds": []
         },
@@ -209,8 +209,8 @@ export const ageEvents11To20 = {
             "intelligence": 1,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Lần sau nói rõ hơn!",
           "achievementIds": []
         }
@@ -222,8 +222,8 @@ export const ageEvents11To20 = {
       "id": "teen-13-1",
       "title": "🎸 Buổi thử câu lạc bộ",
       "text": "Trường mở buổi trải nghiệm âm nhạc. Một chiếc đàn đang chờ người thử, còn tim bạn thì đánh trống. 🥁",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🎶 Thử một đoạn đơn giản",
@@ -233,8 +233,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Sai mà vẫn vui!",
           "achievementIds": []
         },
@@ -246,8 +246,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 1
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Lần sau mình thử!",
           "achievementIds": []
         }
@@ -257,8 +257,8 @@ export const ageEvents11To20 = {
       "id": "teen-13-2",
       "title": "🥾 Chuyến đi bộ dã ngoại",
       "text": "Lớp đi dã ngoại trên lối đi có người hướng dẫn. Một đoạn dốc khiến cả nhóm thở phì phò. ⛰️",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🥤 Đi đều và nghỉ đúng lúc",
@@ -268,8 +268,8 @@ export const ageEvents11To20 = {
             "health": 3,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Đáng công đi quá!",
           "achievementIds": []
         },
@@ -281,8 +281,8 @@ export const ageEvents11To20 = {
             "health": -2,
             "happiness": 2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Cho mình ngồi chút!",
           "achievementIds": []
         }
@@ -292,8 +292,8 @@ export const ageEvents11To20 = {
       "id": "teen-13-3",
       "title": "🗣️ Bài nói trước lớp",
       "text": "Đến lượt trình bày, bạn bỗng quên mất câu mở đầu đã tập rất kỹ. 🫣",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "📝 Nhìn dàn ý rồi nói tiếp",
@@ -303,8 +303,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Mình làm được rồi!",
           "achievementIds": []
         },
@@ -316,8 +316,8 @@ export const ageEvents11To20 = {
             "intelligence": 1,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Lần sau chậm lại!",
           "achievementIds": []
         }
@@ -329,8 +329,8 @@ export const ageEvents11To20 = {
       "id": "teen-14-1",
       "title": "🧮 Đề ôn tập khó nhằn",
       "text": "Một trang bài tập khiến bạn nhìn mãi mà chưa biết bắt đầu từ đâu. ❔",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🪜 Chia thành từng phần nhỏ",
@@ -340,8 +340,8 @@ export const ageEvents11To20 = {
             "intelligence": 4,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Từng bước một thôi!",
           "achievementIds": []
         },
@@ -353,8 +353,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "health": -3
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Cần ngủ bù thôi!",
           "achievementIds": []
         }
@@ -364,8 +364,8 @@ export const ageEvents11To20 = {
       "id": "teen-14-2",
       "title": "🎨 Tấm áp phích của lớp",
       "text": "Lớp cần một áp phích cho ngày hội. Ai cũng có ý tưởng, thành ra bàn đầy giấy nháp. 🖍️",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🤝 Ghép ý tưởng của mọi người",
@@ -375,8 +375,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Đúng là làm cùng nhau!",
           "achievementIds": []
         },
@@ -388,8 +388,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Lần sau chia việc nhé!",
           "achievementIds": []
         }
@@ -399,8 +399,8 @@ export const ageEvents11To20 = {
       "id": "teen-14-3",
       "title": "🚲 Buổi đạp xe cuối tuần",
       "text": "Gia đình rủ bạn đạp xe trên tuyến đường an toàn. Bạn vẫn còn muốn nằm nướng. ☀️",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🪖 Đội mũ rồi đi cùng",
@@ -410,8 +410,8 @@ export const ageEvents11To20 = {
             "health": 3,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Đi rồi mới thấy thích!",
           "achievementIds": []
         },
@@ -423,8 +423,8 @@ export const ageEvents11To20 = {
             "health": 1,
             "happiness": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Lần sau mình đi!",
           "achievementIds": []
         }
@@ -436,8 +436,8 @@ export const ageEvents11To20 = {
       "id": "teen-15-1",
       "title": "🧭 Ngã rẽ học tập",
       "text": "Bạn được giới thiệu nhiều hướng học sau năm học này. Càng nghe càng thấy có nhiều điều chưa biết. 📌",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "❓ Hỏi về từng hướng",
@@ -447,8 +447,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Có hướng để tìm rồi!",
           "achievementIds": []
         },
@@ -460,8 +460,8 @@ export const ageEvents11To20 = {
             "intelligence": 1,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Mình cần nghĩ thêm!",
           "achievementIds": []
         }
@@ -471,8 +471,8 @@ export const ageEvents11To20 = {
       "id": "teen-15-2",
       "title": "👕 Bộ đồ cho ngày hội",
       "text": "Bạn chuẩn bị đi ngày hội của trường và phân vân trước vài bộ đồ quen thuộc. 🪞",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🧺 Chọn bộ sạch, vừa vặn",
@@ -482,8 +482,8 @@ export const ageEvents11To20 = {
             "appearance": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Vừa ý mình là đẹp!",
           "achievementIds": []
         },
@@ -495,8 +495,8 @@ export const ageEvents11To20 = {
             "appearance": -1,
             "happiness": 2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Một lần thử thú vị!",
           "achievementIds": []
         }
@@ -506,8 +506,8 @@ export const ageEvents11To20 = {
       "id": "teen-15-3",
       "title": "🏐 Trận đấu giao hữu",
       "text": "Đội bạn bị dẫn điểm và mọi người bắt đầu cuống lên. Quả bóng lại được chuyền tới. 🏟️",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🤲 Phối hợp và cổ vũ đồng đội",
@@ -517,8 +517,8 @@ export const ageEvents11To20 = {
             "health": 3,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Hết mình là vui rồi!",
           "achievementIds": []
         },
@@ -530,8 +530,8 @@ export const ageEvents11To20 = {
             "health": -2,
             "happiness": 2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Cần phối hợp hơn!",
           "achievementIds": []
         }
@@ -543,8 +543,8 @@ export const ageEvents11To20 = {
       "id": "teen-16-1",
       "title": "💻 Trang web đầu tay",
       "text": "Bạn thử làm một trang giới thiệu bản thân. Một chiếc nút cứ chạy lệch sang bên như có ý riêng. 🐛",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🔍 Tìm lỗi từng phần",
@@ -554,8 +554,8 @@ export const ageEvents11To20 = {
             "intelligence": 4,
             "happiness": 3
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Chạy được rồi!",
           "achievementIds": []
         },
@@ -567,8 +567,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "health": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Nghỉ mắt chút đã!",
           "achievementIds": []
         }
@@ -578,8 +578,8 @@ export const ageEvents11To20 = {
       "id": "teen-16-2",
       "title": "🥪 Bữa sáng vội vàng",
       "text": "Bạn dậy trễ trong ngày có tiết học sớm. Bữa sáng đã chuẩn bị sẵn trên bàn. ⏰",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🍽️ Ăn rồi sắp xếp lại đồ",
@@ -589,8 +589,8 @@ export const ageEvents11To20 = {
             "health": 2,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Ổn rồi, đi thôi!",
           "achievementIds": []
         },
@@ -602,8 +602,8 @@ export const ageEvents11To20 = {
             "health": -2,
             "happiness": 1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Mai dậy sớm hơn!",
           "achievementIds": []
         }
@@ -613,8 +613,8 @@ export const ageEvents11To20 = {
       "id": "teen-16-3",
       "title": "💬 Một cuộc hiểu lầm",
       "text": "Bạn nghe nói người bạn thân không thích ý kiến của mình trong buổi làm nhóm. 🌥️",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🤝 Hỏi trực tiếp, nói bình tĩnh",
@@ -624,8 +624,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "May mà đã hỏi!",
           "achievementIds": []
         },
@@ -637,8 +637,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Mình sẽ nói khi sẵn sàng!",
           "achievementIds": []
         }
@@ -650,8 +650,8 @@ export const ageEvents11To20 = {
       "id": "teen-17-1",
       "title": "📅 Lịch ôn tập kín mít",
       "text": "Bàn học đầy giấy ghi chú. Bạn cần chọn cách ôn mà vẫn có sức theo đến cuối. 📚",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🧘 Xen kẽ học và nghỉ",
@@ -661,8 +661,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "health": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Giữ nhịp này nhé!",
           "achievementIds": []
         },
@@ -674,8 +674,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "health": -3
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Không thể kéo dài thế này!",
           "achievementIds": []
         }
@@ -685,8 +685,8 @@ export const ageEvents11To20 = {
       "id": "teen-17-2",
       "title": "🏫 Ngày hội hướng nghiệp",
       "text": "Các gian tư vấn giới thiệu đủ nghề, từ kỹ thuật đến nghệ thuật. Bạn chỉ có một buổi để khám phá. 🎪",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🎤 Hỏi người đang làm nghề",
@@ -696,8 +696,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Biết thêm nhiều quá!",
           "achievementIds": []
         },
@@ -709,8 +709,8 @@ export const ageEvents11To20 = {
             "intelligence": 1,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Còn nhiều điều phải cân nhắc!",
           "achievementIds": []
         }
@@ -720,8 +720,8 @@ export const ageEvents11To20 = {
       "id": "teen-17-3",
       "title": "📷 Tấm ảnh cuối buổi học",
       "text": "Nhóm bạn muốn chụp một tấm ảnh chung. Bạn vừa chạy từ sân về, tóc rối hết cả lên. 🍃",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🪞 Chỉnh tóc rồi vào khung hình",
@@ -731,8 +731,8 @@ export const ageEvents11To20 = {
             "appearance": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Lưu làm kỷ niệm!",
           "achievementIds": []
         },
@@ -744,8 +744,8 @@ export const ageEvents11To20 = {
             "appearance": -1,
             "happiness": 3
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Ảnh này không được xóa!",
           "achievementIds": []
         }
@@ -757,8 +757,8 @@ export const ageEvents11To20 = {
       "id": "teen-18-1",
       "title": "🗺️ Kế hoạch tuổi mười tám",
       "text": "Một người hỏi bạn định làm gì tiếp theo. Bạn nhận ra mình muốn tự tìm hiểu trước khi quyết định. 💭",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "📝 Viết vài hướng rồi tìm thông tin",
@@ -768,8 +768,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Cứ đi từng bước!",
           "achievementIds": []
         },
@@ -781,8 +781,8 @@ export const ageEvents11To20 = {
             "intelligence": 1,
             "happiness": -3
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Quay về nhịp của mình thôi!",
           "achievementIds": []
         }
@@ -792,8 +792,8 @@ export const ageEvents11To20 = {
       "id": "teen-18-2",
       "title": "🍳 Bữa ăn tự nấu",
       "text": "Bạn thử tự nấu một bữa đơn giản. Căn bếp trông quen mà đứng nấu mới thấy lạ. 🥕",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "📖 Làm theo công thức từng bước",
@@ -803,8 +803,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "health": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Ăn được là thành công!",
           "achievementIds": []
         },
@@ -816,8 +816,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Lần sau bớt muối!",
           "achievementIds": []
         }
@@ -827,8 +827,8 @@ export const ageEvents11To20 = {
       "id": "teen-18-3",
       "title": "🚌 Chuyến xe tự đi",
       "text": "Bạn tự đi xe buýt tới một địa điểm chưa quen. Bảng tuyến có nhiều số nhìn hoa cả mắt. 🚏",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "📍 Xem tuyến và hỏi nhân viên",
@@ -838,8 +838,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Đi được rồi nhé!",
           "achievementIds": []
         },
@@ -851,8 +851,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "health": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Nhớ tuyến này rồi!",
           "achievementIds": []
         }
@@ -864,8 +864,8 @@ export const ageEvents11To20 = {
       "id": "teen-19-1",
       "title": "💰 Quyển sổ chi tiêu",
       "text": "Bạn nhìn lại những khoản mua lặt vặt và bất ngờ vì chúng cộng lại khá nhiều. 🧾",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🧮 Ghi chép và lên kế hoạch",
@@ -875,8 +875,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Rõ ràng hơn rồi!",
           "achievementIds": []
         },
@@ -888,8 +888,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Cần cân bằng hơn!",
           "achievementIds": []
         }
@@ -899,8 +899,8 @@ export const ageEvents11To20 = {
       "id": "teen-19-2",
       "title": "🧹 Một buổi tình nguyện",
       "text": "Khu phố tổ chức dọn một khu sinh hoạt chung. Bạn được rủ tham gia trong buổi sáng rảnh. 🌳",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🧤 Nhận phần việc vừa sức",
@@ -910,8 +910,8 @@ export const ageEvents11To20 = {
             "health": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Nhìn thích thật!",
           "achievementIds": []
         },
@@ -923,8 +923,8 @@ export const ageEvents11To20 = {
             "health": -2,
             "happiness": 3
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Lần sau chia việc nhé!",
           "achievementIds": []
         }
@@ -934,8 +934,8 @@ export const ageEvents11To20 = {
       "id": "teen-19-3",
       "title": "📹 Đoạn video đầu tiên",
       "text": "Bạn thử quay một video chia sẻ sở thích. Xem lại mới thấy mình nói hơi vấp nhưng khá hào hứng. 🎬",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "✂️ Học chỉnh sửa cơ bản",
@@ -945,8 +945,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Sản phẩm đầu tay đây!",
           "achievementIds": []
         },
@@ -958,8 +958,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": -2
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Tạm nghỉ rồi xem lại!",
           "achievementIds": []
         }
@@ -971,8 +971,8 @@ export const ageEvents11To20 = {
       "id": "teen-20-1",
       "title": "🛠️ Món đồ nhỏ bị hỏng",
       "text": "Một chiếc hộp gỗ bị lỏng bản lề. Bạn muốn thử sửa với dụng cụ cầm tay và có người hướng dẫn. 🔩",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "👂 Nghe hướng dẫn rồi làm thử",
@@ -982,8 +982,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": 2
           },
-          "image": "learn.gif",
-          "imageAlt": "GIF quyển sách chuyển động.",
+          "image": "",
+          "imageAlt": "Emoji quyển sách chuyển động.",
           "confirmText": "Dùng lại được rồi!",
           "achievementIds": []
         },
@@ -995,8 +995,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Lần sau mình thử thêm!",
           "achievementIds": []
         }
@@ -1006,8 +1006,8 @@ export const ageEvents11To20 = {
       "id": "teen-20-2",
       "title": "🏃 Thử thách vận động",
       "text": "Bạn muốn tạo thói quen vận động và đang chọn mục tiêu cho tuần đầu tiên. 👟",
-      "image": "joy.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🌤️ Bắt đầu bằng những buổi ngắn",
@@ -1017,8 +1017,8 @@ export const ageEvents11To20 = {
             "health": 3,
             "happiness": 2
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Đều đặn là được!",
           "achievementIds": []
         },
@@ -1030,8 +1030,8 @@ export const ageEvents11To20 = {
             "health": -3,
             "happiness": 1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Giảm nhịp lại thôi!",
           "achievementIds": []
         }
@@ -1041,8 +1041,8 @@ export const ageEvents11To20 = {
       "id": "teen-20-3",
       "title": "✉️ Lá thư gửi tương lai",
       "text": "Bạn nảy ra ý định viết một lá thư cho bản thân vài năm nữa. Trang giấy vẫn trắng, còn đầu thì đầy chuyện. 🌌",
-      "image": "learn.gif",
-      "imageAlt": "GIF biểu tượng minh họa sự kiện.",
+      "image": "",
+      "imageAlt": "Emoji biểu tượng minh họa sự kiện.",
       "choices": [
         {
           "label": "🖊️ Ghi điều muốn học và trải nghiệm",
@@ -1052,8 +1052,8 @@ export const ageEvents11To20 = {
             "intelligence": 2,
             "happiness": 3
           },
-          "image": "joy.gif",
-          "imageAlt": "GIF khuôn mặt vui.",
+          "image": "",
+          "imageAlt": "Emoji khuôn mặt vui.",
           "confirmText": "Hẹn mình của tương lai!",
           "achievementIds": []
         },
@@ -1065,8 +1065,8 @@ export const ageEvents11To20 = {
             "intelligence": 3,
             "happiness": -1
           },
-          "image": "effort.gif",
-          "imageAlt": "GIF biểu tượng cố gắng.",
+          "image": "",
+          "imageAlt": "Emoji biểu tượng cố gắng.",
           "confirmText": "Vẫn còn thời gian mà!",
           "achievementIds": []
         }

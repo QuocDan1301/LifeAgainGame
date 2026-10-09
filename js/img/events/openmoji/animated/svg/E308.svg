@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" width="200" height="200" role="img">
+  <title>OpenMoji: ecg waves</title><g><g id="color" />
+  <g id="line">
+    <polyline fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="11 36.873 20.227 36.873 25.713 29.641 30.95 43.107 36.686 27.397 42.047 44.603 48.157 36.873 61 36.873" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

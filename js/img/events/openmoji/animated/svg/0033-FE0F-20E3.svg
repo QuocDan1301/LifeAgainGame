@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" version="1.1" width="200" height="200" role="img">
+  <title>OpenMoji: keycap: 3</title><g><g id="color">
+    <rect x="12" y="12" width="48" height="47.83" fill="#92d3f5" />
+  </g>
+  <g id="line" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-miterlimit="10" stroke-width="4.739" d="m31.37 40.9c0.436 1.891 2.322 3.31 4.582 3.31 2.583 0 4.677-1.855 4.677-4.146 0-2.289-2.094-4.146-4.677-4.146 2.583 0 4.677-1.855 4.677-4.146 0-2.289-2.094-4.146-4.677-4.146-2.26 0-4.146 1.424-4.582 3.312" clip-rule="evenodd" />
+    <rect x="12" y="12" width="48" height="48" stroke-width="2" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

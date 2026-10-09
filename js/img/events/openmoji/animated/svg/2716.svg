@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" width="200" height="200" role="img">
+  <title>OpenMoji: multiply</title><g><g id="color">
+    <polygon fill="#D0CFCE" stroke="none" points="30,36 18,24 24,18 36,30 48,18 54,24 42,36 54,48 48,54 36,42 24,54 18,48" />
+  </g>
+  <g id="hair" />
+  <g id="skin" />
+  <g id="skin-shadow" />
+  <g id="line">
+    <polygon fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" points="30,36 18,24 24,18 36,30 48,18 54,24 42,36 54,48 48,54 36,42 24,54 18,48" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

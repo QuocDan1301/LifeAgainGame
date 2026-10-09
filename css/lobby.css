@@ -528,6 +528,25 @@
   line-height: 1.3;
 }
 
+.career-salary-table {
+  width: 100%;
+  margin: 12px 0 20px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.career-salary-table th,
+.career-salary-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.career-salary-table td {
+  text-align: right;
+}
+
 /* Màn hình điện thoại hẹp */
 @media (max-width: 380px) {
   #game-screen .character {

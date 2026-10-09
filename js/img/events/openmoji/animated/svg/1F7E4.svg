@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" version="1.1" width="200" height="200" role="img">
+  <title>OpenMoji: brown circle</title><g><g id="color">
+    <circle cx="36" cy="36" r="28" fill="#6a462f" />
+  </g>
+  <g id="line">
+    <circle cx="36" cy="36" r="28" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="2" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

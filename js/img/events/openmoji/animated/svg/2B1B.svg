@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" width="200" height="200" role="img">
+  <title>OpenMoji: black large square</title><g><g id="line-supplement">
+    <path id="groÃŸes schwarzes quadrat color 1" fill="#000" d="M61 11.0417H11V61.0417H61V11.0417Z" />
+  </g>
+  <g id="color">
+    <path id="groÃŸes schwarzes quadrat color 1_2" fill="#3F3F3F" d="M61 11.0417H11V61.0417H61V11.0417Z" />
+  </g>
+  <g id="line">
+    <path id="groÃŸes schwarzes quadrat line" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M61 11.0417H11V61.0417H61V11.0417Z" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

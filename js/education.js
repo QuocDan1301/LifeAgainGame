@@ -1,3 +1,6 @@
+import { getCareerProfile } from "./career-jobs.js";
+import { getCareerAnnualSalary, getPlayerAnnualSalary, formatSalary } from "./career-salary.js";
+
 const careerIcons = {
   acting: "🎬", military: "🪖", singing: "🎤", painting: "🎨", medicine: "🩺",
   programming: "💻", accounting: "🧾", law: "⚖️", teaching: "📚", football: "⚽",
@@ -84,6 +87,25 @@ export function initEducation(state, save) {
   document.fonts?.ready.then(fitLabel);
   button.addEventListener("click", () => {
     if (document.querySelector("dialog[open]")) return;
+    const salaryDetails = document.getElementById("career-salary-details");
+    const salaryRanks = document.getElementById("career-salary-ranks");
+    const annualSalary = getPlayerAnnualSalary(state.player);
+    salaryDetails.hidden = !annualSalary;
+    salaryRanks.replaceChildren();
+    if (annualSalary) {
+      document.getElementById("career-salary-current").textContent =
+        `Hiện tại: ${formatSalary(annualSalary)}/năm. Lương được cộng vào ví khi nhận việc và mỗi năm tiếp theo.`;
+      getCareerProfile(state.player.careerPath?.id).ranks.forEach((rank, index) => {
+        const row = document.createElement("tr");
+        const name = document.createElement("th");
+        name.scope = "row";
+        name.textContent = `${rank}${state.player.careerLevel === index + 1 ? " (hiện tại)" : ""}`;
+        const amount = document.createElement("td");
+        amount.textContent = formatSalary(getCareerAnnualSalary(state.player.careerPath?.id, index + 1));
+        row.append(name, amount);
+        salaryRanks.append(row);
+      });
+    }
     history.replaceChildren();
     for (const entry of state.educationHistory ?? []) {
       const item = document.createElement("li");

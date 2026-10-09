@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" width="200" height="200" role="img">
+  <title>OpenMoji: glass of milk</title><g><g id="color">
+    <polygon fill="#fff" points="53.545 28 48.35 67 24.6 67 18.6794 28" />
+    <polygon fill="#d0cfce" points="43.404 28 38.35 67 48.35 67 53.404 28" />
+  </g>
+  <g id="line">
+    <path fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m17,17L24.6,67L48.35,67L55,17" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

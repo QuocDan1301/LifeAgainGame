@@ -1,4 +1,4 @@
-import { getEventGif, ensureEventGif } from "./event-gifs.js";
+import { ensureEventOpenMoji } from "./event-openmoji.js";
 import { createEsportsAgeEvents } from "./events-esports-19-21.js";
 
 // Chi tiết chuyên ngành dùng trong 8 tình huống tuổi 19–21.
@@ -168,20 +168,19 @@ const generalStory = {
   practice: "kỹ năng chuyên ngành", showcase: "dự án trình bày tại ngày hội sinh viên",
 };
 
-const sticker = (code) => new URL(`./img/events/stickers/${code}.svg`, import.meta.url).href;
-function illustration(code, alt, gifKey) {
-  const gif = getEventGif(gifKey, { title: alt });
+const sticker = (code) => new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
+function illustration(code, alt) {
   return {
-    image: gif?.url ?? sticker(code),
-    imageAlt: gif?.alt ?? alt,
+    image: sticker(code),
+    imageAlt: alt,
     imageFallback: sticker(code),
     imageFallbackAlt: alt,
   };
 }
-function choice(label, title, text, effects, code, gifKey) {
+function choice(label, title, text, effects, code) {
   return {
     label, title, text, effects,
-    ...illustration(code, title, gifKey),
+    ...illustration(code, title),
     confirmText: "Tiếp tục hành trình!",
     achievementIds: [],
   };
@@ -198,7 +197,7 @@ export function createCareerAgeEvents(careerPath) {
     id: `career-${careerId}-${age}-${index}`,
     title, text,
     ...illustration(code, title),
-    choices: choices.map(branch => ensureEventGif(branch)),
+    choices: choices.map(branch => ensureEventOpenMoji(branch)),
   });
 
   if (careerId === "esports") return createEsportsAgeEvents(event, choice);

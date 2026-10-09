@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" width="200" height="200" role="img">
+  <title>OpenMoji: record button</title><g><g id="color">
+    <circle cx="36" cy="36" r="19.0492" fill="#fff" />
+  </g>
+  <g id="line">
+    <circle cx="36" cy="36" r="20" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="2" />
+    <circle cx="36" cy="36" r="7" />
+  </g>
+  <g id="color-foreground">
+    <circle cx="36" cy="36" r="7" fill="#d22f27" />
+  </g>
+<animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="3.8s" repeatCount="indefinite" /></g></svg>

@@ -127,7 +127,11 @@
             alt="Nhân viên bán vé đang mỉm cười"
           />
         </button>
-        <p>Vé miễn phí không giới hạn<br /><span>Mỗi lượt nhận tối đa 20 vé</span></p>
+        <p>
+          Vé miễn phí không giới hạn<br /><span
+            >Mỗi lượt nhận tối đa 20 vé</span
+          >
+        </p>
       </footer>
     </section>
     <dialog
@@ -142,22 +146,25 @@
         </button>
       </div>
       <p>
-        Vé ở đây hoàn toàn miễn phí. Dùng hết vé hiện có rồi quay lại nhận thêm nhé!
+        Vé ở đây hoàn toàn miễn phí. Dùng hết vé hiện có rồi quay lại nhận thêm
+        nhé!
       </p>
       <form id="ticket-form" novalidate>
         <label for="ticket-quantity">Số lượng vé (1–20)</label>
         <div class="ticket-quantity-controls">
-        <input
-          id="ticket-quantity"
-          type="number"
-          min="1"
-          max="20"
-          step="1"
-          value="1"
-          inputmode="numeric"
-          required
-        />
-          <button type="button" id="ticket-max" aria-label="Chọn tối đa 20 vé">Max</button>
+          <input
+            id="ticket-quantity"
+            type="number"
+            min="1"
+            max="20"
+            step="1"
+            value="1"
+            inputmode="numeric"
+            required
+          />
+          <button type="button" id="ticket-max" aria-label="Chọn tối đa 20 vé">
+            Max
+          </button>
         </div>
         <p id="ticket-error" class="lobby-error" role="alert"></p>
         <button type="submit" class="lobby-primary">Nhận vé miễn phí</button>
@@ -198,8 +205,14 @@
       <form id="create-character-form" hidden novalidate>
         <fieldset class="character-gender-options">
           <legend>Giới tính</legend>
-          <label><input type="radio" name="character-gender" value="male" checked /> Nam</label>
-          <label><input type="radio" name="character-gender" value="female" /> Nữ</label>
+          <label
+            ><input type="radio" name="character-gender" value="male" checked />
+            Nam</label
+          >
+          <label
+            ><input type="radio" name="character-gender" value="female" />
+            Nữ</label
+          >
         </fieldset>
         <label for="new-character-name">Tên nhân vật (1–2 từ)</label>
         <input
@@ -228,15 +241,29 @@
       </form>
       <p id="create-character-error" class="lobby-error" role="alert"></p>
     </dialog>
-    <dialog id="random-gender-dialog" class="lobby-dialog" aria-labelledby="random-gender-title">
+    <dialog
+      id="random-gender-dialog"
+      class="lobby-dialog"
+      aria-labelledby="random-gender-title"
+    >
       <div class="lobby-dialog-heading">
         <h2 id="random-gender-title">Chọn giới tính nhân vật</h2>
-        <button type="button" id="close-random-gender" aria-label="Quay lại tạo nhân vật">✕</button>
+        <button
+          type="button"
+          id="close-random-gender"
+          aria-label="Quay lại tạo nhân vật"
+        >
+          ✕
+        </button>
       </div>
       <p>Bạn chọn giới tính; tên và tỉnh/thành sẽ được tạo ngẫu nhiên.</p>
       <div class="random-gender-choices">
-        <button type="button" id="random-gender-male" class="lobby-primary">👦 Nam</button>
-        <button type="button" id="random-gender-female" class="lobby-secondary">👧 Nữ</button>
+        <button type="button" id="random-gender-male" class="lobby-primary">
+          👦 Nam
+        </button>
+        <button type="button" id="random-gender-female" class="lobby-secondary">
+          👧 Nữ
+        </button>
       </div>
     </dialog>
     <dialog
@@ -246,6 +273,7 @@
     >
       <h2 id="death-title">Hành trình đã khép lại</h2>
       <p id="death-content"></p>
+      <div id="death-summary"></div>
       <button type="button" id="return-after-death" class="lobby-primary">
         Về bến xe
       </button>
@@ -294,19 +322,33 @@
       </main>
       <!-- Các nút chức năng -->
       <nav class="game-actions" aria-label="Chức năng game">
-        <button type="button" class="action-button" id="assets">
+        <button type="button" class="action-button" id="assets" aria-haspopup="dialog" aria-controls="life-profile-dialog">
           <span class="action-icon" aria-hidden="true">💳</span>
           <span>Tài sản</span>
         </button>
-        <button type="button" class="action-button" id="relationships" aria-haspopup="dialog" aria-controls="relationships-dialog">
+        <button
+          type="button"
+          class="action-button"
+          id="relationships"
+          aria-haspopup="dialog"
+          aria-controls="relationships-dialog"
+        >
           <span>Quan hệ</span>
           <span class="action-icon" aria-hidden="true">👥</span>
         </button>
-        <button type="button" class="action-button" id="education" aria-haspopup="dialog" aria-controls="education-dialog">
-          <span class="action-icon" id="education-icon" aria-hidden="true">🎓</span>
+        <button
+          type="button"
+          class="action-button"
+          id="education"
+          aria-haspopup="dialog"
+          aria-controls="education-dialog"
+        >
+          <span class="action-icon" id="education-icon" aria-hidden="true"
+            >🎓</span
+          >
           <span id="education-status">Học vấn</span>
         </button>
-        <button type="button" class="action-button" id="activities">
+        <button type="button" class="action-button" id="activities" disabled title="Mở khi vào cấp 2 (11 tuổi)">
           <span>Hoạt động</span>
           <span class="action-icon" aria-hidden="true">🏃</span>
         </button>
@@ -326,7 +368,11 @@
       <!-- Hồ sơ nhân vật -->
       <section class="character" aria-label="Thông tin nhân vật">
         <div class="character-card">
-          <button type="button" class="avatar" aria-label="Chân dung em bé, nhấn để chào">
+          <button
+            type="button"
+            class="avatar"
+            aria-label="Chân dung em bé, nhấn để chào"
+          >
             <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
           </button>
           <h2 id="player-name"></h2>
@@ -396,12 +442,33 @@
     <dialog id="relationships-dialog" aria-labelledby="relationships-title">
       <h2 id="relationships-title">💞 Nhật ký quan hệ</h2>
       <p id="relationship-current"></p>
+      <button type="button" id="breakup-relationship" hidden>Chia tay</button>
+      <div id="breakup-confirmation" hidden>
+        <p id="breakup-question"></p>
+        <button type="button" id="confirm-breakup">Đồng ý chia tay</button>
+        <button type="button" id="cancel-breakup">Giữ mối quan hệ</button>
+      </div>
+      <h3>Con cái</h3>
+      <ul id="relationship-children"></ul>
       <h3>Các mốc tình cảm</h3>
       <ol id="relationship-history" aria-label="Các mốc hẹn hò"></ol>
       <button type="button" id="close-relationships">Đóng</button>
     </dialog>
     <dialog id="education-dialog" aria-labelledby="education-title">
       <h2 id="education-title">🎓 Học tập và việc làm</h2>
+      <section id="career-salary-details" hidden>
+        <h3>💰 Lương theo bậc nghề</h3>
+        <p id="career-salary-current"></p>
+        <table class="career-salary-table">
+          <thead>
+            <tr>
+              <th scope="col">Bậc nghề</th>
+              <th scope="col">Lương cố định / năm</th>
+            </tr>
+          </thead>
+          <tbody id="career-salary-ranks"></tbody>
+        </table>
+      </section>
       <ol id="education-history" aria-label="Các mốc học tập và việc làm"></ol>
       <button type="button" id="close-education">Đóng</button>
     </dialog>
@@ -412,12 +479,25 @@
           ✕
         </button>
       </div>
-      <p>Chọn việc bạn muốn làm:</p>
       <div class="activities-list">
-        <button type="button" id="activity-read">📚 Đọc sách</button>
-        <button type="button" id="activity-walk">🚶 Đi dạo</button>
-        <button type="button" id="activity-play">🎮 Giải trí</button>
+        <button type="button" id="activity-self-development">🌱 Phát triển bản thân</button>
+        <button type="button" id="activity-wealth">🎲 "Làm giàu"</button>
+        <button type="button" id="activity-love">💘 Tình yêu</button>
+        <button type="button" id="activity-hospital">🏥 Bệnh viện</button>
+        <button type="button" id="activity-part-time">🧰 Làm thêm</button>
+        <button type="button" id="activity-degrees">🪪 Học bằng lái</button>
+        <button type="button" id="activity-tarot">🔮 Xem tarot</button>
+        <button type="button" id="activity-travel">✈️ Du lịch</button>
+        <button type="button" id="activity-food">🍲 Ăn uống</button>
       </div>
+    </dialog>
+    <dialog id="life-profile-dialog" aria-labelledby="life-profile-title">
+      <h2 id="life-profile-title">📖 Kỷ vật và kỷ niệm</h2>
+      <h3>Kỷ vật</h3>
+      <ul id="life-keepsakes"></ul>
+      <h3>Trang kỷ niệm</h3>
+      <div id="life-memories"></div>
+      <button type="button" id="close-life-profile">Đóng</button>
     </dialog>
     <dialog id="study-block-dialog" aria-labelledby="study-block-title">
       <h2 id="study-block-title">📚 Chọn khối học cấp 3</h2>
@@ -425,6 +505,7 @@
       <div id="study-block-choices" class="study-block-choices"></div>
     </dialog>
     <dialog id="event-dialog" aria-labelledby="event-title">
+      <p id="event-category" class="event-category"></p>
       <h2 id="event-title">Sự kiện</h2>
       <img id="event-image" src="" alt="" hidden />
       <p id="event-content"></p>

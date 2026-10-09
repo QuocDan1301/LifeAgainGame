@@ -1,5 +1,5 @@
-import { ensureEventGif } from "./event-gifs.js";
-const image = new URL("./img/events/stickers/1F308.svg", import.meta.url).href;
+import { ensureEventOpenMoji } from "./event-openmoji.js";
+const image = new URL("./img/events/openmoji/color/svg/1F308.svg", import.meta.url).href;
 const labels = { heterosexual: "Thẳng", bisexual: "Song tính", pansexual: "Toàn tính" };
 
 export function getOrientationLabel(orientation, gender) {
@@ -32,7 +32,7 @@ export function createOrientationEvent(player, step = 1) {
   ].map(([orientation, label, description]) => {
     const name = getOrientationLabel(orientation, player.gender);
     const text = `Tôi là ${name.toLocaleLowerCase("vi-VN")} và tự hào về bản thân! Cứ sống thoải mái, đàng hoàng, tôn trọng mọi người và không làm tổn thương ai. 💖`;
-    return ensureEventGif({
+    return ensureEventOpenMoji({
       label: `${label}: ${description}`, orientation,
       title: `🌈 Tự hào là chính mình — ${name}`, text,
       effects: {}, confirmText: "💖 Sống tự tin thôi!",

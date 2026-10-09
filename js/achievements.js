@@ -135,7 +135,10 @@ export function initAchievements(state) {
 export function checkAchievements() {
   if (!initialized || !gameState?.player) return;
   let changed = false;
+  const lifeIds = new Set(gameState.player.lifeAchievementIds ?? []);
+  const previousCount = lifeIds.size;
   for (const achievement of achievements) {
+    if (meetsAchievement(achievement, gameState.player)) lifeIds.add(achievement.id);
     if (
       achieved(achievement.id) ||
       !meetsAchievement(achievement, gameState.player)
@@ -144,6 +147,10 @@ export function checkAchievements() {
     unlocked[achievement.id] = { unlockedAt: new Date().toISOString() };
     queue.push(achievement.id);
     changed = true;
+  }
+  if (lifeIds.size !== previousCount) {
+    gameState.player.lifeAchievementIds = [...lifeIds];
+    localStorage.setItem("lifeAgainSave", JSON.stringify(gameState));
   }
   if (changed) {
     persist();

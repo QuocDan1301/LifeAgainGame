@@ -1,5 +1,7 @@
+import { getCareerAnnualSalary, formatSalary } from "./career-salary.js";
+
 const sticker = (code) =>
-  new URL(`./img/events/stickers/${code}.svg`, import.meta.url).href;
+  new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
 
 const art = (code, alt) => ({
   image: sticker(code),
@@ -518,22 +520,24 @@ export function createInterviewResult(player, passed, age) {
   const isEsports = career.id === "esports";
   const academy = career.school?.name ?? "academy";
   if (passed) {
+    const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1))}/năm.`;
     return {
       stage: "result",
       age,
       title: isEsports ? "🏆 Chính thức lên đội 1!" : `🎉 Vượt qua vòng ${context.round}!`,
-      content: isEsports
+      content: (isEsports
         ? `Cách đọc tình huống và tư duy phối hợp của bạn thuyết phục được ban huấn luyện. Bạn rời đội hình academy và chính thức trở thành ${profile.ranks[0]}.`
-        : `Câu trả lời của bạn thuyết phục được ${context.interviewer}. Bạn chính thức gia nhập ${context.place} ở vị trí ${profile.ranks[0]}.`,
+        : `Câu trả lời của bạn thuyết phục được ${context.interviewer}. Bạn chính thức gia nhập ${context.place} ở vị trí ${profile.ranks[0]}.`)
+        + `\n${salaryText} Lương năm đầu được cộng ngay vào ví khi xác nhận nhận việc; các năm sau tiếp tục nhận mỗi năm.`,
       confirmText: isEsports ? "Ra mắt đội 1!" : "Đi làm thôi!",
       updates: { age, job: profile.ranks[0], employmentStatus: "employed", careerLevel: 1 },
       achievementIds: [],
       logSummary: isEsports
-        ? `Vượt qua đánh giá của ${academy}.\nChính thức trở thành ${profile.ranks[0]}.`
-        : `Vượt qua vòng ${context.round} ngành ${career.field}.\nBắt đầu ở bậc ${profile.ranks[0]}.`,
+        ? `Vượt qua đánh giá của ${academy}.\nChính thức trở thành ${profile.ranks[0]}.\n${salaryText}`
+        : `Vượt qua vòng ${context.round} ngành ${career.field}.\nBắt đầu ở bậc ${profile.ranks[0]}.\n${salaryText}`,
       logContent: isEsports
-        ? `Bạn vượt qua buổi đánh giá năng lực tại ${academy} và chính thức được đưa lên đội 1.`
-        : `Bạn đã vượt qua vòng ${context.round} ngành ${career.field} và bắt đầu làm việc tại ${context.place} ở vị trí ${profile.ranks[0]}.`,
+        ? `Bạn vượt qua buổi đánh giá năng lực tại ${academy} và chính thức được đưa lên đội 1.\n${salaryText}`
+        : `Bạn đã vượt qua vòng ${context.round} ngành ${career.field} và bắt đầu làm việc tại ${context.place} ở vị trí ${profile.ranks[0]}.\n${salaryText}`,
       ...art("1F389", `Ăn mừng vượt qua vòng ${context.round}`),
     };
   }
@@ -643,7 +647,7 @@ export function createPromotionEvent(player, random = Math.random, age = player.
       label: scenario.answers[0],
       correct: true,
       title: finalPromotion ? `🏆 Chạm tới bậc ${profile.ranks[2]}` : `📈 Tiến lên bậc ${profile.ranks[1]}`,
-      text: `Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.`,
+      text: `Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel))}/năm, áp dụng từ năm tiếp theo.`,
       effects: { intelligence: 4, happiness: 3 },
       job: profile.ranks[targetLevel - 1],
       careerLevel: targetLevel,

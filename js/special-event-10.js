@@ -1,4 +1,4 @@
-const image = new URL("./img/events/childhood/joy.gif", import.meta.url).href;
+const image = "";
 const completionLog = "🌟 Một lần giúp em bé đi lạc đã mang đến cho tôi một năm học đáng nhớ. Tôi khỏe mạnh, tự tin và học được nhiều điều mới — tất cả bắt đầu từ việc chịu ngồi lại bên một “chiếc còi báo động” giữa công viên.";
 const next = (label, nextStep, transitionText = "") => ({ label, nextStep, transitionText });
 const ending = (label, text, extra = {}) => ({

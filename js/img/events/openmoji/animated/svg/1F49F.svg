@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" id="emoji" viewBox="-5 -5 82 82" version="1.1" width="200" height="200" role="img">
+  <title>OpenMoji: heart decoration</title><g transform="translate(36 36)"><g><g transform="translate(-36 -36)"><g id="color">
+    <rect x="12" y="12" width="48" height="47.83" fill="#b399c8" />
+    <g id="line_2_">
+      <path fill="#fff" d="m52 30.64c0-4.7-3.81-8.511-8.511-8.511-3.236 0-6.05 1.807-7.489 4.466-1.439-2.66-4.253-4.466-7.489-4.466-4.7 0-8.511 3.81-8.511 8.511 0 2.022 0.7083 3.877 1.886 5.337l-0.0029 0.0023 14.12 17.5 14.12-17.5-0.0029-0.0023c1.178-1.46 1.886-3.315 1.886-5.337z" />
+    </g>
+  </g>
+  <g id="line">
+    <g id="line_1_">
+      <path fill="none" stroke="#000" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m52 30.64c0-4.7-3.81-8.511-8.511-8.511-3.236 0-6.05 1.807-7.489 4.466-1.439-2.66-4.253-4.466-7.489-4.466-4.7 0-8.511 3.81-8.511 8.511 0 2.022 0.7083 3.877 1.886 5.337l-0.0029 0.0023 14.12 17.5 14.12-17.5-0.0029-0.0023c1.178-1.46 1.886-3.315 1.886-5.337z" />
+    </g>
+    <rect x="12" y="12" width="48" height="48" fill="none" stroke="#000" stroke-linejoin="round" stroke-width="2" />
+  </g>
+</g><animateTransform attributeName="transform" type="scale" values="1;1.07;1;1.04;1;1" dur="2.4s" repeatCount="indefinite" /></g></g></svg>

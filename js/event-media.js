@@ -1,8 +1,8 @@
 import { eventMedia } from "./event-media-data.js";
-import { ensureEventGif } from "./event-gifs.js";
+import { ensureEventOpenMoji } from "./event-openmoji.js";
 
 const stickerUrl = (code) =>
-  new URL(`./img/events/stickers/${code}.svg`, import.meta.url).href;
+  new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
 
 function setIllustration(target, sticker) {
   target.imageFallback = stickerUrl(sticker.code);
@@ -20,7 +20,7 @@ export function applyEventMedia(eventsByAge) {
       const illustration = media.choices[index];
       if (!illustration) return;
       setIllustration(choice, illustration);
-      ensureEventGif(choice);
+      ensureEventOpenMoji(choice);
     });
   }
 }
