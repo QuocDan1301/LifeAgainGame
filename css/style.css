@@ -2505,3 +2505,55 @@ body::before {
     font-size: 17px;
   }
 }
+
+/* ===== Nút cài đặt hình bánh răng và bảng cài đặt ===== */
+.menu-button {
+  display: grid;
+  place-items: center;
+  padding: 0.6rem;
+}
+.menu-gear {
+  width: 3rem;
+  height: 3rem;
+  fill: var(--text);
+  fill-rule: evenodd;
+  transition: transform 0.35s ease;
+}
+.menu-gear circle {
+  fill: #fff8dc;
+}
+.menu-button[aria-expanded="true"] .menu-gear {
+  transform: rotate(90deg);
+}
+.menu-title {
+  margin: 0 0 8px;
+  font-family: "Sriracha", cursive;
+  font-size: 18px;
+  color: #17394b;
+}
+#menu-panel {
+  display: grid;
+  gap: 8px;
+  min-width: 200px;
+}
+.menu-music {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #d9f5c8;
+  color: #1f4d27;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.menu-music[aria-pressed="false"] {
+  background: #ece6cf;
+  color: #6f6857;
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-gear { transition: none; }
+}

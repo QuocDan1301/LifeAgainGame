@@ -6,6 +6,9 @@ import { migrateChildcareDebt } from "./family.js";
 import { getEventCategory } from "./event-category.js";
 import { createOrientationEvent } from "./special-event-24.js";
 import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache } from "./module-refresh.js";
+import { initMusic } from "./music.js";
+
+initMusic();
 
 let entering = false;
 initLobby(async saved => {
@@ -43,11 +46,14 @@ initLobby(async saved => {
       state.pendingEvent.age < state.player.nextMarriageProposalAge) {
     state.pendingEvent = null;
   }
+  // Màn hình tải che lúc tải phần chơi (khoảng 70 file JS ở lần đầu).
+  window.appLoader?.show("Đang chuẩn bị cuộc đời");
   document.getElementById("lobby-screen").hidden = true;
   document.getElementById("game-screen").hidden = false;
   try {
     await import("./main.js");
     clearModuleRetry();
+    window.appLoader?.hide();
     document.querySelector(".journal").focus({ preventScroll: true });
   } catch (error) {
     // File JS cũ trong bộ nhớ đệm không khớp bản mới: tải lại toàn bộ rồi mở lại trang (một lần).
@@ -55,10 +61,12 @@ initLobby(async saved => {
       document.getElementById("game-screen").hidden = true;
       document.getElementById("lobby-screen").hidden = false;
       document.getElementById("lobby-message").textContent = "Đang cập nhật phiên bản mới của game…";
+      window.appLoader?.show("Đang cập nhật phiên bản mới");
       await refreshModuleCache(["./boot.js", "./main.js"]);
       location.reload();
       return;
     }
+    window.appLoader?.hide();
     document.getElementById("game-screen").hidden = true;
     document.getElementById("lobby-screen").hidden = false;
     // Không khởi tạo lại module đã chạy dở và gắn trùng sự kiện.

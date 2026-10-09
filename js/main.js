@@ -105,7 +105,7 @@ const menuPanel = document.getElementById("menu-panel");
 function setMenuOpen(isOpen) {
   menuPanel.hidden = !isOpen;
   menuToggle.setAttribute("aria-expanded", String(isOpen));
-  menuToggle.setAttribute("aria-label", isOpen ? "Đóng menu" : "Mở menu");
+  menuToggle.setAttribute("aria-label", isOpen ? "Đóng cài đặt" : "Mở cài đặt");
 }
 // Bấm ba gạch để mở hoặc đóng
 menuToggle.addEventListener("click", () => {
