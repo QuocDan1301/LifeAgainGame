@@ -5,6 +5,7 @@ import { restoreMarriageSchedule } from "./relationships.js";
 import { migrateChildcareDebt } from "./family.js";
 import { getEventCategory } from "./event-category.js";
 import { createOrientationEvent } from "./special-event-24.js";
+import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache } from "./module-refresh.js";
 
 let entering = false;
 initLobby(async saved => {
@@ -46,8 +47,18 @@ initLobby(async saved => {
   document.getElementById("game-screen").hidden = false;
   try {
     await import("./main.js");
+    clearModuleRetry();
     document.querySelector(".journal").focus({ preventScroll: true });
   } catch (error) {
+    // File JS cũ trong bộ nhớ đệm không khớp bản mới: tải lại toàn bộ rồi mở lại trang (một lần).
+    if (canRetryModuleLoad()) {
+      document.getElementById("game-screen").hidden = true;
+      document.getElementById("lobby-screen").hidden = false;
+      document.getElementById("lobby-message").textContent = "Đang cập nhật phiên bản mới của game…";
+      await refreshModuleCache(["./boot.js", "./main.js"]);
+      location.reload();
+      return;
+    }
     document.getElementById("game-screen").hidden = true;
     document.getElementById("lobby-screen").hidden = false;
     // Không khởi tạo lại module đã chạy dở và gắn trùng sự kiện.

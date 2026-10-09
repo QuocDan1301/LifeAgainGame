@@ -701,6 +701,16 @@
       </p>
       <button type="button" id="close-fortune">Để xem có đúng không!</button>
     </dialog>
+    <script>
+      // File JS cũ trong bộ nhớ đệm làm phần khởi động lỗi: tải lại file mới rồi mở lại trang (một lần mỗi phiên).
+      window.addEventListener("error", function (event) {
+        if (!/requested module|does not provide an export|binding name|module script failed/i.test(event.message || "")) return;
+        import("./js/module-refresh.js").then(function (refresh) {
+          if (!refresh.canRetryModuleLoad()) return;
+          return refresh.refreshModuleCache(["./boot.js", "./main.js"]).then(function () { location.reload(); });
+        });
+      });
+    </script>
     <script type="module" src="./js/boot.js"></script>
   </body>
 </html>
