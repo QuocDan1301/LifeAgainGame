@@ -1,0 +1,49 @@
+<!doctype html><meta charset="utf-8"><pre id="result">Running…</pre>
+<script type="module">
+try {
+  const assert=(condition,message)=>{if(!condition)throw Error(message)};
+  const {getEventOpenMoji}=await import('../js/event-openmoji.js');
+  const {openMojiCatalog}=await import('../js/openmoji-catalog.js');
+  const {getAgeEvents}=await import('../js/events.js');
+  const {reviewPendingMedia}=await import('../js/semantic-event-media.js');
+  const {createEventImageRenderer}=await import('../js/event-image.js');
+  const library=await(await fetch('../js/img/events/openmoji/library-manifest.json')).json();
+  assert(Object.keys(openMojiCatalog).length===4495,'Complete official OpenMoji library');
+  assert(library.styles.color.count===4495&&library.styles.black.count===4495,'Both complete color and black libraries');
+  const hike=getAgeEvents(13).find(event=>event.id==='teen-13-2');
+  assert(hike.imageOptions[0].plan.code==='1F6B6','Hike uses a walking OpenMoji');
+  assert(hike.choices[0].imageOptions[0].plan.code==='1F4F8','Photo result uses a camera with flash');
+  assert(hike.choices[1].imageOptions[0].plan.code==='1F62E-200D-1F4A8','Tired hiking result shows exhaling');
+  const emoji=getEventOpenMoji(hike,hike,false);
+  const image={dataset:{},style:{},removeAttribute(name){delete this[name]}},motion={matches:false};
+  const render=createEventImageRenderer(image,motion);
+  for(let index=0;index<30;index++){render(emoji.url,emoji.alt,emoji.poster,emoji.alt,[emoji]);assert(image.src===emoji.url&&!image.hidden,'Unlimited reuse of the relevant OpenMoji');assert(image.style.visibility==='hidden','Previous emoji stays invisible while the new image loads');image.onload();assert(image.style.visibility==='','Loaded emoji becomes visible')}
+  const previousLoad=image.onload;
+  render(hike.choices[0].image, '', '', '', hike.choices[0].imageOptions);
+  previousLoad();assert(image.style.visibility==='hidden','Previous scene cannot reveal an image still loading');
+  image.onload();assert(image.style.visibility==='','New scene becomes visible after loading');
+  motion.matches=true;render(emoji.url,emoji.alt,emoji.poster,emoji.alt,[emoji]);assert(image.src===emoji.poster,'Reduced motion uses the original OpenMoji');
+  motion.matches=false;render(emoji.url,emoji.alt,emoji.poster,emoji.alt,[emoji]);image.onerror();assert(image.src===emoji.poster,'Error fallback preserves the same OpenMoji');image.onload();
+  const old={...structuredClone(hike),stage:'choice',image:'/deleted-sticker.svg',imageOptions:[{kind:'animated-emoji',url:'/deleted-sticker.svg'}]};
+  reviewPendingMedia(old);assert(old.imageOptions[0].kind==='animated-openmoji'&&old.image.includes('/openmoji/animated/'),'Old illustrations migrate');
+  const oldDating={stage:'result',age:25,title:'💞 Một mối quan hệ mới',content:'Tôi và Trần Minh An đồng ý tìm hiểu nhau. Từ nay, giờ nghỉ không chỉ có cà phê mà còn có người để mong gặp!'};
+  reviewPendingMedia(oldDating);assert(oldDating.imageOptions[0].plan.code==='2764'&&oldDating.imageOptions[0].plan.reviewed,'Generated names preserve the reviewed subject');
+  const audit=await(await fetch('../js/img/events/full-media-audit.json')).json();
+  const paths=new Set(),interviews=new Map();
+  for(const row of audit) {
+    assert(row.kind==='animated-openmoji'&&row.origin==='openmoji','Every illustration is OpenMoji: '+row.title);
+    assert(row.plan.reviewed&&row.plan.reviewRevision===3&&openMojiCatalog[row.plan.code],'Every scene/result has a reviewed official icon');
+    assert(row.optionCount===1&&row.image.includes('/openmoji/animated/')&&row.fallback.includes('/openmoji/color/'),'One animated icon with its own original SVG');
+    paths.add(row.image);paths.add(row.fallback);
+    if(row.kindOfEvent==='job-interview'&&row.slot==='scene') {
+      if(!interviews.has(row.variant))interviews.set(row.variant,new Set());
+      interviews.get(row.variant).add(row.text);
+    }
+  }
+  assert(interviews.size===22&&[...interviews.values()].every(bank=>bank.size===5),'Complete interview question banks');
+  assert(audit.filter(row=>row.eventId==='centennial-memorial').length===3,'Memorial branches are included');
+  const list=[...paths];
+  for(let start=0;start<list.length;start+=4)await Promise.all(list.slice(start,start+4).map(async path=>assert((await fetch('../'+path)).ok,'Local asset exists: '+path)));
+  document.querySelector('#result').textContent=`PASS: ${audit.length} reviewed scene/results; 4495 complete OpenMoji icons, animated SVGs, original posters, old-save migration and unlimited reuse.`;
+}catch(error){document.querySelector('#result').textContent='FAIL: '+error.stack}
+</script>

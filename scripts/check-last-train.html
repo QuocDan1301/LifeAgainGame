@@ -1,0 +1,86 @@
+<!doctype html><meta charset="utf-8"><title>Last train checks</title>
+<pre id="train-check-result">Running…</pre>
+<script>
+(async()=>{
+  const result=document.getElementById('train-check-result');
+  const assert=(value,message)=>{if(!value)throw Error(message);};
+  const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
+  try{
+    const {createLastTrainSpecialStep:step,createLastTrainSpecialEvent}=await import('../js/special-event-45.js');
+    const {getAgeEvents}=await import('../js/events.js');
+    const {state,createInitialState}=await import('../js/state.js');
+    const {achievements}=await import('../js/achievements-data.js');
+    const {getCareerProfile}=await import('../js/career-jobs.js');
+    assert(getAgeEvents(45).length===3&&getAgeEvents(45).filter(e=>!e.specialId).length===2,'Two ordinary stories plus the special');
+    assert(!step(0)&&!step(5),'Invalid scenes rejected');
+    const images=new Set();
+    for(const reunited of [false,true])for(let i=1;i<=4;i++){
+      const scene=step(i,{reunited});
+      assert(scene.specialStep===i&&scene.warningPhrases.every(p=>scene.text.includes(p)),'Every danger has a visible clue');
+      images.add(scene.image);
+      for(const choice of scene.choices){
+        if(choice.nextStep)assert(choice.nextStep===i+1,'Forward-only chain');
+        else{
+          images.add(choice.image);
+          if(choice.death)assert(!choice.money&&!choice.achievementIds,'Fatal choices award nothing');
+          else if(i===4)assert((choice.money??0)===(reunited?100000000:0)&&choice.achievementIds.includes('story-last-train'),'Cash requires age-40 completion; both variants unlock achievement');
+        }
+      }
+    }
+    for(const image of images)assert((await fetch(image)).ok,'All illustrations exist');
+    assert(createLastTrainSpecialEvent({}).text.includes('tấm ảnh cũ'),'Unconnected character receives photo clue from the start');
+    assert(createLastTrainSpecialEvent({achievementFlags:{'story-reincarnation':true}}).text.includes('những lá thư'),'Connected character remembers the letters');
+    const html=await(await fetch('../index.html')).text();
+    const parsed=new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState());localStorage.removeItem('lifeAgainSave');
+    // All device achievements are unlocked: these must not grant a new life the age-40 connection.
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
+    const start=reunited=>{
+      document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+      Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:44,health:80,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',money:0,
+        achievementFlags:reunited?{'story-reincarnation':true}:{},employmentStatus:'employed',careerLevel:1,
+        careerPath:{id:'programming',field:'Công nghệ thông tin'},job:getCareerProfile('programming').ranks[0],lastSalaryAge:44,nextPromotionAge:null});
+      birthday.disabled=false;document.getElementById('game-screen').hidden=false;document.getElementById('lobby-screen').hidden=true;
+      let roll=0;Math.random=()=>roll++===0?0.1:0.99;birthday.click();Math.random=()=>0.99;
+      assert(state.pendingEvent.specialId==='last-train'&&state.pendingEvent.specialInventory.reunited===reunited,'Correct per-life context saved from the first scene');
+    };
+    for(const reunited of [false,true]){
+      start(reunited);
+      for(let i=1;i<=3;i++){
+        assert(document.querySelector('#event-content .event-warning'),'Clues highlighted in actual dialog');
+        if(i===3)assert(state.pendingEvent.text.includes(reunited?'bà cụ năm xưa':'tấm ảnh trên vé'),'Correct memory or photo version');
+        choose(0);resume();
+        assert(state.player.age===44&&state.player.money===0&&state.pendingEvent.specialStep===i+1&&state.pendingEvent.specialInventory.reunited===reunited,'Reload preserves context; intermediate scenes do not pay salary');
+      }
+      choose(0);resume();
+      assert(state.pendingEvent.content.includes('Bà An gọi')===reunited,'Only connected character receives the call');
+      assert(state.player.money===0&&!state.player.achievementFlags['story-last-train'],'Rewards wait for confirmation');
+      confirm.click();const expected=reunited?220000000:120000000;
+      assert(state.player.age===45&&state.player.isAlive&&state.player.money===expected&&state.player.intelligence===60&&state.player.happiness===60,'Exact reward plus one annual salary');
+      assert(state.player.achievementFlags['story-last-train']&&document.getElementById('money-value').textContent===expected.toLocaleString('vi-VN'),'Achievement and wallet updated');
+      assert(state.logs.at(-1).content.includes('tặng tôi 100.000.000')===reunited,'Diary follows the right ending');
+      confirm.click();assert(state.player.money===expected,'No duplicate reward');
+      for(let deathStep=1;deathStep<=4;deathStep++){
+        start(reunited);for(let i=1;i<deathStep;i++)choose(0);
+        choose(1);resume();confirm.click();
+        assert(!state.player.isAlive&&state.player.health===0&&state.player.age===45&&birthday.disabled&&document.getElementById('death-dialog').open,'Each fatal branch ends the game');
+        assert(!state.player.achievementFlags['story-last-train']&&state.player.money===120000000,'Fatal branch receives no special reward beyond existing annual salary');
+        assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.isAlive===false,'Death persists');
+      }
+      start(reunited);choose(2);confirm.click();
+      assert(state.player.isAlive&&state.player.age===45&&state.player.money===120000000&&state.player.happiness===50&&!state.player.achievementFlags['story-last-train'],'Leaving the station safely grants only annual salary');
+    }
+    result.textContent='PASS: 4 scenes, both age-40 histories, photo clues, per-life reward gating, all deaths, safe exit, saves, salary, wallet and achievement.';
+  }catch(error){result.textContent='FAIL: '+error.stack;}
+  finally{Math.random=random;keys.forEach((key,i)=>saved[i]===null?localStorage.removeItem(key):localStorage.setItem(key,saved[i]));}
+})();
+</script>

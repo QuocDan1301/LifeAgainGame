@@ -1,0 +1,70 @@
+<!doctype html><meta charset="utf-8"><pre id="audit">Running…</pre>
+<script type="module">
+try {
+  const {getAgeEvents}=await import('../js/events.js');
+  const {careerEvent}=await import('../js/career-event.js');
+  const {reviewEventMedia}=await import('../js/semantic-event-media.js');
+  const {createInitialState}=await import('../js/state.js');
+  const {createOrientationEvent}=await import('../js/special-event-24.js');
+  const {createDatingEvent,createMarriageEvent}=await import('../js/relationships.js');
+  const {createChildProposalEvent}=await import('../js/family.js');
+  const {createSchoolEvent}=await import('../js/career-schools.js');
+  const {createCareerTest,createFailedTestEvent}=await import('../js/career-tests.js');
+  const {createJobInterview,createInterviewResult,createInterviewRetryPrompt,createPromotionEvent}=await import('../js/career-jobs.js');
+  const {createLaterSpecialStep}=await import('../js/special-later-life.js');
+  const factories=await Promise.all([10,20,30,35,40,45,50,55].map(age=>import('../js/special-event-'+age+'.js')));
+  const steps=factories.map(module=>Object.entries(module).find(([key,value])=>/SpecialStep$/.test(key)&&typeof value==='function')[1]);
+  const events=[];
+  const collect=(event,age,variant='')=>{if(event)events.push({age,variant,event:reviewEventMedia({...structuredClone(event),age})});};
+  const player={...createInitialState().player,gender:'male',health:80,intelligence:50,happiness:50,appearance:50,partner:{id:'audit-partner',name:'Người bạn đời',gender:'female',relationship:80,stats:{health:80}},marriedAtAge:30,relationshipStartedAtAge:25,nextMarriageProposalAge:30,nextChildProposalAge:35};
+  for(let age=1;age<=105;age++)for(const event of getAgeEvents(age,null,player))collect(event,age);
+  collect(careerEvent,18);
+  for(const entry of careerEvent.choices){
+    const career=entry.careerPath;
+    for(const age of [19,20,21])for(const event of getAgeEvents(age,career,player))collect(event,age,career.id);
+    for(let age=23;age<=29;age++)for(const event of getAgeEvents(age,career,player))collect(event,age);
+    collect(createSchoolEvent(career),18,career.id);
+    // Cover all questions, including the longer military/esports banks.
+    for(const roll of Array.from({length:16},(_,index)=>(index+.5)/16)){
+      collect(createCareerTest(career,()=>roll),18,career.id);
+      const employed={...player,careerPath:career,careerLevel:1,employmentStatus:'employed'};
+      collect(createJobInterview(employed,()=>roll),22,career.id);
+      collect(createPromotionEvent(employed,()=>roll,27),27,career.id);
+      collect(createPromotionEvent({...employed,careerLevel:2},()=>roll,37),37,career.id);
+    }
+    collect(createInterviewResult({...player,careerPath:career},true,22),22,career.id);
+    collect(createInterviewResult({...player,careerPath:career},false,22),22,career.id);
+    collect(createInterviewRetryPrompt({...player,careerPath:career}),23,career.id);
+  }
+  collect(createFailedTestEvent(),18);
+  for(const age of [90,100,105])for(const event of getAgeEvents(age,null,{...player,partner:{...player.partner,deceased:true,isAlive:false},children:[]}))collect(event,age);
+  for(let index=0;index<steps.length;index++)for(let step=1;step<=8;step++)for(const inventory of [{},{bread:true,flashlight:true,completedOldHouse:true,reunited:true}])collect(steps[index](step,inventory),[10,20,30,35,40,45,50,55][index]);
+  for(const age of [60,65,70,75,80,85,90,95,100,105])for(let step=1;step<=6;step++)for(const inventory of [{},{ticket:'0080',spouseId:'audit-partner',spouseName:'Người bạn đời'},{closed:true,communityOnly:true}])collect(createLaterSpecialStep(age,step,inventory),age);
+  for(const gender of ['male','female']){
+    collect(createOrientationEvent({...player,gender},1),24,gender);collect(createOrientationEvent({...player,gender},2),24,gender);
+    collect(createDatingEvent({...player,gender,partner:null,marriedAtAge:null},25,()=>0.4),25,gender);
+    collect(createMarriageEvent({...player,gender,marriedAtAge:null},30),30,gender);
+    collect(createMarriageEvent({...player,gender,marriedAtAge:null,marriageProposalDeclines:1},32),32,gender);
+    collect(createChildProposalEvent({...player,gender},35),35,gender);
+    collect(createChildProposalEvent({...player,gender,childProposalDeclines:1},37),37,gender);
+  }
+  const unique=new Map();
+  const assets=new Set();
+  for(const {age,variant,event} of events){
+    for(const [index,slot] of [event,...(event.choices??[])].entries()){
+      const text=index===0?event.text??event.content:slot.text??slot.label;
+      const key=JSON.stringify([age,variant,event.id??event.kind,event.specialStep,index,event.title,text]);
+      for(const option of slot.imageOptions??[])assets.add(option.url);
+      const record={age,variant,eventId:event.id??event.kind,kindOfEvent:event.kind,step:event.specialStep??null,slot:index===0?(event.stage==='result'?'result':'scene'):'choice-'+index,title:event.title,text,label:slot.label,resultTitle:index?slot.title:undefined,...slot.mediaReview,image:slot.image,fallback:slot.imageFallback,optionCount:slot.imageOptions?.length??0};
+      unique.set(key,record);
+      if(index && slot.transitionText?.trim()) {
+        const renderText=slot.transitionText.trim();
+        const intermediate=reviewEventMedia({...structuredClone(event),choices:[{...structuredClone(slot),text:renderText}]}).choices[0];
+        unique.set(key+'-transition',{...record,slot:'transition-'+index,text:renderText,...intermediate.mediaReview,image:intermediate.image,fallback:intermediate.imageFallback});
+      }
+    }
+  }
+  window.mediaAuditAssets=[...assets];
+  document.getElementById('audit').textContent=JSON.stringify([...unique.values()]);
+}catch(error){document.getElementById('audit').textContent='FAIL: '+error.stack;}
+</script>

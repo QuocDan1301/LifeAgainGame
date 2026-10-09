@@ -1,0 +1,108 @@
+<!doctype html><meta charset="utf-8"><title>Later life checks</title>
+<pre id="later-life-check-result">Running…</pre>
+<script>
+(async()=>{
+  const result=document.getElementById('later-life-check-result');
+  const assert=(value,message)=>{if(!value)throw Error(message);};
+  const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
+  try{
+    const {getAgeEvents,isPriorityEvent,ageEvents}=await import('../js/events.js');
+    const {state,createInitialState}=await import('../js/state.js');
+    const {achievements}=await import('../js/achievements-data.js');
+    const reserved=[50,55,60,65,70,75,80,85,90,100];
+    const ids=new Set(),titles=new Set(),images=new Set();let count=0;
+    for(let age=50;age<=104;age++){
+      const events=getAgeEvents(age).filter(event=>!event.specialId&&!event.addedEveryday);
+      assert(events.length===(reserved.includes(age)?2:3),'Correct count at '+age);
+      for(const event of events){
+        assert(event.id&&event.title&&event.text&&event.choices.length===2&&!isPriorityEvent(event),'Complete ordinary event');
+        assert(!ids.has(event.id)&&!titles.has(event.title),'Unique event IDs and titles');
+        ids.add(event.id);titles.add(event.title);images.add(event.imageFallback);
+        for(const choice of event.choices){
+          assert(choice.label&&choice.title&&choice.text&&choice.image&&choice.imageFallback&&!choice.death,'Complete ordinary choice');
+          assert(Object.entries(choice.effects).every(([stat,delta])=>['health','intelligence','happiness','appearance'].includes(stat)&&Number.isFinite(delta)),'Valid effects');
+          images.add(choice.imageFallback);
+        }
+      }
+      count+=events.length;
+    }
+    assert(count===155,'155 ordinary stories');
+    ageEvents[60]=[{id:'future-story',specialId:'future',title:'Future',choices:[]}];
+    assert(getAgeEvents(60).length===6&&getAgeEvents(60).some(e=>e.id==='future-story'),'Reserved years support a future special');
+    delete ageEvents[60];
+    const finale=getAgeEvents(105);
+    assert(finale.length===3&&finale[0].choices.length===3&&finale[0].kind==='special-chain'&&isPriorityEvent(finale[0]),'Exactly one guaranteed final chain');
+    images.add(finale[0].imageFallback);
+    for(const image of images)assert((await fetch(image)).ok,'Illustrations exist');
+    getAgeEvents(50)[0].choices[0].effects.health=999;
+    assert(getAgeEvents(50)[0].choices[0].effects.health!==999,'Fresh lives have independent event effects');
+    const html=await(await fetch('../index.html')).text();
+    const parsed=new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState());localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    const legacy=new URLSearchParams(location.search).get('legacy');
+    if(legacy){
+      Object.assign(state.player,{age:105,health:60,happiness:60,intelligence:60,appearance:60,studyBlock:'A00'});
+      if(legacy==='result'){
+        const {createLaterSpecialStep}=await import('../js/special-later-life.js');const choice=createLaterSpecialStep(105,4).choices[0];
+        state.pendingEvent={stage:'result',age:105,title:choice.title,content:choice.text,
+          logContent:choice.logContent,logSummary:choice.logSummary,updates:{age:105,isAlive:false,health:0},achievementIds:[]};
+      }
+    }
+    await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    if(legacy){
+      assert(state.pendingEvent.age===105&&state.pendingEvent.stage===(legacy==='result'?'result':'choice'),'Legacy age-105 save opens finale and preserves an unconfirmed final result');
+      if(legacy!=='result'){
+        assert(state.pendingEvent.specialId==='later-105'&&state.pendingEvent.choices.length===3,'Legacy survivor has the final chain');for(let i=0;i<4;i++)choose(0);
+      }
+      confirm.click();assert(!state.player.isAlive&&state.player.age===105,'Legacy save ends at 105');
+      result.textContent='PASS: legacy age-105 '+legacy+' save completes the finale.';return;
+    }
+    const reset=age=>{
+      document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:age-1,health:60,happiness:60,intelligence:60,appearance:60,
+        studyBlock:'A00',nextPromotionAge:null,employmentStatus:'declined'});
+      birthday.disabled=false;document.getElementById('game-screen').hidden=false;document.getElementById('lobby-screen').hidden=true;
+    };
+    for(let age=50;age<=104;age++){
+      const events=getAgeEvents(age).filter(event=>!event.specialId&&!event.addedEveryday);
+      for(let i=0;i<events.length;i++)for(let c=0;c<2;c++){
+        reset(age);let roll=0;
+        const values=age>=98?[0,0.1,(i+0.1)/getAgeEvents(age).length]:[0.1,(i+0.1)/getAgeEvents(age).length];
+        Math.random=()=>values[roll++]??0.1;birthday.click();
+        assert(state.pendingEvent?.title===events[i].title&&state.pendingEvent.age===age,'Every later-life event reachable at its age');
+        choose(c);state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;confirm.click();
+        assert(state.player.age===age&&state.player.isAlive&&!state.pendingEvent,'Saved choice completes year');
+        for(const stat of ['health','intelligence','happiness','appearance'])assert(state.player[stat]===60+(events[i].choices[c].effects[stat]??0),'Exact stat change');
+        assert(state.logs.at(-1).content.includes(events[i].choices[c].text),'Diary records outcome');
+      }
+    }
+    reset(104);Math.random=()=>0.99;birthday.click();
+    assert(!state.player.isAlive&&state.player.age===104,'Existing old-age mortality before 105 remains in effect');
+    reset(105);
+    state.player.partner={id:'test-partner',name:'Người thân',gender:'female',stats:{happiness:60}};
+    state.player.relationshipStartedAtAge=100;state.player.nextMarriageProposalAge=105;
+    // A high roll would kill the character before the finale under the old logic.
+    Math.random=()=>0.99;birthday.click();
+    assert(state.pendingEvent.addedEveryday&&state.followUpEvent.specialId==='later-105','Ordinary scene before guaranteed finale');choose(0);confirm.click();
+    assert(state.pendingEvent.specialId==='later-105'&&state.pendingEvent.age===105&&state.pendingEvent.choices.length===3&&state.player.isAlive,'Finale guaranteed regardless of chance and due marriage');
+    for(let i=0;i<4;i++)choose(0);state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
+    assert(state.player.isAlive&&state.player.age===104,'Final ending waits for confirmation');
+    confirm.click();
+    assert(!state.player.isAlive&&state.player.age===105&&state.player.health===0&&birthday.disabled&&document.getElementById('death-dialog').open,'Finale ends the game at 105');
+    assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.isAlive===false,'Final death persists');
+    birthday.click();assert(state.player.age===105,'Cannot continue to 106');
+    reset(105);state.player.partner={id:'test-partner',name:'Người thân',gender:'female'};
+    state.player.marriedAtAge=100;state.player.nextChildProposalAge=105;
+    birthday.click();assert(state.pendingEvent.addedEveryday,'Ordinary scene precedes final chain');choose(0);confirm.click();assert(state.pendingEvent.specialId==='later-105','Finale also overrides a due child proposal');for(let i=0;i<4;i++)choose(0);confirm.click();
+    result.textContent='PASS: 155 unique stories, reserved counts, illustrations, all 310 choices, diary, saved progress, mortality and guaranteed four-scene ending at 105.';
+  }catch(error){result.textContent='FAIL: '+error.stack;}
+  finally{Math.random=random;keys.forEach((key,i)=>saved[i]===null?localStorage.removeItem(key):localStorage.setItem(key,saved[i]));}
+})();
+</script>

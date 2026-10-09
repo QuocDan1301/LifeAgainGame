@@ -1,0 +1,5042 @@
+[
+  {
+    "sceneTitle": "Bóng đèn trước cửa",
+    "text": "Bóng đèn trước cửa chập chờn. Tôi muốn sửa trước khi trời tối.",
+    "slot": "scene",
+    "label": "Bóng đèn",
+    "code": "1F4A1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bóng đèn trước cửa",
+    "text": "Đèn được thay, lối vào sáng trở lại.",
+    "slot": "result",
+    "label": "Bóng đèn",
+    "code": "1F4A1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bóng đèn trước cửa",
+    "text": "Tôi hẹn được thời gian kiểm tra và sửa đèn.",
+    "slot": "result",
+    "label": "Lên kế hoạch với bóng đèn",
+    "code": "1F4A1",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Danh sách nhạc cho ngày mưa",
+    "text": "Một ngày mưa ở nhà, tôi muốn nghe lại vài bài từng thích.",
+    "slot": "scene",
+    "label": "Lắng nghe tai nghe nhạc",
+    "code": "1F3A7",
+    "action": "listen"
+  },
+  {
+    "sceneTitle": "Danh sách nhạc cho ngày mưa",
+    "text": "Tôi tìm được những bài gắn với kỷ niệm vui.",
+    "slot": "result",
+    "label": "Lắng nghe tai nghe nhạc",
+    "code": "1F3A7",
+    "action": "listen"
+  },
+  {
+    "sceneTitle": "Danh sách nhạc cho ngày mưa",
+    "text": "Chúng tôi nhắn nhau về lần đầu nghe bài hát.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "💪 Cái lưng lên tiếng",
+    "text": "Ngồi lâu quá, tôi đứng dậy nghe lưng kêu rắc. Hai mươi sáu tuổi mà hiệu ứng âm thanh như cửa gỗ cũ!",
+    "slot": "scene",
+    "label": "Giãn cơ và vận động nhẹ",
+    "code": "1F9D8",
+    "action": "stretch"
+  },
+  {
+    "sceneTitle": "💪 Cái lưng lên tiếng",
+    "text": "Tôi bắt đầu đi bộ và nghỉ vận động giữa giờ. Cơ thể dễ chịu, tinh thần cũng nhẹ hơn.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "💪 Cái lưng lên tiếng",
+    "text": "Tôi nghỉ ngơi cho đỡ mệt, nhưng biết mình vẫn cần vận động đều đặn hơn.",
+    "slot": "result",
+    "label": "Ngồi nghỉ thư giãn",
+    "code": "1F6CB",
+    "action": "rest"
+  },
+  {
+    "sceneTitle": "🎂 Sinh nhật không cần hoành tráng",
+    "text": "Bạn bè rủ tôi tổ chức sinh nhật. Một đứa đề nghị tiệc sang, đứa còn lại hỏi có được mang mì gói không.",
+    "slot": "scene",
+    "label": "Bánh sinh nhật",
+    "code": "1F382",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🎂 Sinh nhật không cần hoành tráng",
+    "text": "Mọi người cùng nấu ăn, kể chuyện và cười đến quên chụp ảnh. Tôi thấy mình thật may mắn.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "🎂 Sinh nhật không cần hoành tráng",
+    "text": "Tôi đọc sách, đi dạo và tự chúc mình thêm một tuổi bình an.",
+    "slot": "result",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Phiếu bảo hành trong ngăn kéo",
+    "text": "Thiết bị cần kiểm tra, còn phiếu bảo hành lẫn trong nhiều giấy tờ.",
+    "slot": "scene",
+    "label": "Tìm hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Phiếu bảo hành trong ngăn kéo",
+    "text": "Tôi có đủ giấy để hỏi nơi bảo hành.",
+    "slot": "result",
+    "label": "Hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Phiếu bảo hành trong ngăn kéo",
+    "text": "Tôi xác nhận cách tra cứu trước khi mang đồ tới.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Đĩa rau cho bữa tối",
+    "text": "Tôi muốn làm bữa tối đơn giản từ những thứ đang có trong tủ.",
+    "slot": "scene",
+    "label": "Nấu bữa ăn",
+    "code": "1F957",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Đĩa rau cho bữa tối",
+    "text": "Tôi có đĩa rau vừa khẩu vị mà không mua thêm nhiều đồ.",
+    "slot": "result",
+    "label": "Đĩa rau",
+    "code": "1F957",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Đĩa rau cho bữa tối",
+    "text": "Công thức của bạn giúp tôi tận dụng nguyên liệu.",
+    "slot": "result",
+    "label": "Nấu bữa ăn",
+    "code": "1F957",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Danh bạ có tên trùng nhau",
+    "text": "Hai người quen cùng tên xuất hiện trong danh bạ, tôi suýt nhắn nhầm.",
+    "slot": "scene",
+    "label": "Điện thoại",
+    "code": "1F4F1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Danh bạ có tên trùng nhau",
+    "text": "Tôi phân biệt được hai liên hệ trước khi gửi tin.",
+    "slot": "result",
+    "label": "Thao tác tìm và quản lý tin trên điện thoại",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Danh bạ có tên trùng nhau",
+    "text": "Tôi tìm đúng người qua nội dung đã trao đổi.",
+    "slot": "result",
+    "label": "Tìm điện thoại",
+    "code": "1F4F1",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Chậu hoa ngoài ban công",
+    "text": "Chậu hoa được tặng còn nguyên nhãn hướng dẫn chăm sóc.",
+    "slot": "scene",
+    "label": "Chậu cây",
+    "code": "1FAB4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chậu hoa ngoài ban công",
+    "text": "Tôi đặt chậu ở vị trí phù hợp trong nhà.",
+    "slot": "result",
+    "label": "Chậu cây",
+    "code": "1FAB4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chậu hoa ngoài ban công",
+    "text": "Tôi biết thêm thói quen chăm chậu hoa này.",
+    "slot": "result",
+    "label": "Chậu cây",
+    "code": "1FAB4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📸 Hẹn bạn cũ",
+    "text": "Nhóm bạn cũ rủ gặp mặt. Lịch hẹn đổi ba lần, cuối cùng mọi người thống nhất: ai tới trước giữ bàn!",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📸 Hẹn bạn cũ",
+    "text": "Chúng tôi ôn chuyện cũ và cười như chưa từng xa nhau.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "📸 Hẹn bạn cũ",
+    "text": "Một cuộc gọi ngắn vẫn đủ nối lại những câu chuyện thân quen.",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "👟 Đôi giày phủ bụi",
+    "text": "Tôi tìm thấy đôi giày thể thao lâu không dùng. Nó còn mới, chỉ có quyết tâm tập luyện là hơi cũ!",
+    "slot": "scene",
+    "label": "Giày thể thao",
+    "code": "1F45F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "👟 Đôi giày phủ bụi",
+    "text": "Tôi vận động vừa sức và quyết định giữ thói quen này.",
+    "slot": "result",
+    "label": "Giãn cơ và vận động nhẹ",
+    "code": "1F9D8",
+    "action": "stretch"
+  },
+  {
+    "sceneTitle": "👟 Đôi giày phủ bụi",
+    "text": "Tôi sắp xếp lại đồ đạc, căn phòng thoáng hơn hẳn.",
+    "slot": "result",
+    "label": "Sắp xếp ngôi nhà",
+    "code": "1F3E0",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Đường đi bộ bị rào một đoạn",
+    "text": "Lối đi bộ quen đang sửa, có biển chỉ sang đường khác.",
+    "slot": "scene",
+    "label": "Rào chắn đường",
+    "code": "1F6A7",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Đường đi bộ bị rào một đoạn",
+    "text": "Tôi khám phá một đoạn đường khác gần nhà.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Đường đi bộ bị rào một đoạn",
+    "text": "Tôi chọn một vòng dễ đi và trở về đúng giờ.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Cuốn sách mượn sắp đến hạn",
+    "text": "Cuốn sách còn vài chương mà ngày trả đã gần.",
+    "slot": "scene",
+    "label": "Cuốn sách",
+    "code": "1F4D6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuốn sách mượn sắp đến hạn",
+    "text": "Tôi có thêm thời gian đọc và ghi lại hạn mới.",
+    "slot": "result",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Cuốn sách mượn sắp đến hạn",
+    "text": "Tôi trả đúng hạn và lưu tên sách để đọc tiếp.",
+    "slot": "result",
+    "label": "Trao lại cuốn sách",
+    "code": "1F4D6",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "🧭 Sắp ba mươi rồi đó!",
+    "text": "Tôi nhìn lại những năm vừa qua: vài lần vấp ngã, vài điều làm được và một danh sách việc muốn thử vẫn dài như hóa đơn siêu thị.",
+    "slot": "scene",
+    "label": "Mục tiêu",
+    "code": "1F3AF",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧭 Sắp ba mươi rồi đó!",
+    "text": "Tôi chọn một mục tiêu vừa sức và chia thành bước nhỏ. Không cần chạy đua với cuộc đời của người khác.",
+    "slot": "result",
+    "label": "Lên kế hoạch với mục tiêu",
+    "code": "1F3AF",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "🧭 Sắp ba mươi rồi đó!",
+    "text": "Một chuyến đi ngắn giúp tôi thư giãn và có thêm những ý tưởng mới.",
+    "slot": "result",
+    "label": "Hành lý",
+    "code": "1F9F3",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📦 Dọn nhà, đào kỷ niệm",
+    "text": "Tôi dọn phòng và tìm thấy những món đồ cũ. Tờ giấy ghi mục tiêu năm xưa vẫn còn, riêng mục ‘ngủ sớm’ thì chưa hoàn thành!",
+    "slot": "scene",
+    "label": "Sắp xếp thùng đồ",
+    "code": "1F4E6",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "📦 Dọn nhà, đào kỷ niệm",
+    "text": "Tôi giữ lại món đồ ý nghĩa, sắp xếp phòng và đặt giờ ngủ đều đặn hơn.",
+    "slot": "result",
+    "label": "Sắp xếp thùng đồ",
+    "code": "1F4E6",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "📦 Dọn nhà, đào kỷ niệm",
+    "text": "Một tấm ảnh kéo theo cả buổi trò chuyện. Có những người lâu không gặp mà vẫn thấy gần gũi.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Lịch hẹn kín cả tuần",
+    "text": "Tôi nhìn lịch: việc cần làm, cuộc hẹn bạn bè và một buổi tối định nghỉ ngơi đều chen vào nhau. Có vẻ người cần đặt lịch gặp tôi nhất lại là… chính tôi!",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Lịch hẹn kín cả tuần",
+    "text": "Tôi cân nhắc điều quan trọng, đổi một cuộc hẹn và dành thời gian nghỉ ngơi. Lịch bớt kín, đầu óc cũng nhẹ hơn.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Lịch hẹn kín cả tuần",
+    "text": "Tôi rủ bạn đi bộ thay vì ngồi quán. Chúng tôi trò chuyện vui vẻ và trở về với đôi chân hơi mỏi nhưng tinh thần thoải mái.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Ngăn dụng cụ thiếu nhãn",
+    "text": "Tôi tìm tua vít mà phải mở cả ba hộp dụng cụ.",
+    "slot": "scene",
+    "label": "Tìm hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Ngăn dụng cụ thiếu nhãn",
+    "text": "Tôi xếp dụng cụ theo loại để lần sau tìm nhanh.",
+    "slot": "result",
+    "label": "Sắp xếp hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Ngăn dụng cụ thiếu nhãn",
+    "text": "Tôi biết món nào còn dùng được trước khi mua thêm.",
+    "slot": "result",
+    "label": "Hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Lời mời gặp mặt bị bỏ sót",
+    "text": "Một thư mời gặp nhóm bạn nằm trong mục thư ít mở.",
+    "slot": "scene",
+    "label": "Thư mời",
+    "code": "1F4E8",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Lời mời gặp mặt bị bỏ sót",
+    "text": "Tôi xác nhận được kế hoạch của buổi gặp.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Lời mời gặp mặt bị bỏ sót",
+    "text": "Tôi giữ liên lạc bằng một cuộc hẹn khác.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Ba mươi, một bữa cơm đáng nhớ",
+    "text": "Sinh nhật ba mươi đến. Bạn bè hỏi tôi muốn quà gì; tôi chợt thấy một bữa cơm có đủ người thương quý cũng đã là món quà lớn.",
+    "slot": "scene",
+    "label": "Bánh sinh nhật",
+    "code": "1F382",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Ba mươi, một bữa cơm đáng nhớ",
+    "text": "Tôi chuẩn bị một bữa cơm giản dị. Mọi người kể chuyện, cười vui và chúc nhau một năm bình an.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Ba mươi, một bữa cơm đáng nhớ",
+    "text": "Tôi đi dạo, viết vài điều mình biết ơn và chọn một việc muốn thử trong tuổi ba mươi. Không cần có mọi đáp án ngay hôm nay.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Chiếc quạt chọn đúng lúc để hỏng",
+    "text": "Một món đồ dùng trong nhà hỏng đúng tuần nhiều khoản cần thanh toán. Tôi mở sổ chi tiêu và nhận ra khoản dự phòng lâu nay vẫn nằm trong mục ‘để mai tính’.",
+    "slot": "scene",
+    "label": "Quạt điện trong nhà cần sửa",
+    "code": "1F6E0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chiếc quạt chọn đúng lúc để hỏng",
+    "text": "Tôi lập kế hoạch cho những khoản cần thiết, đặt một mục tiêu dự phòng vừa sức và xử lý món đồ hỏng theo ngân sách.",
+    "slot": "result",
+    "label": "Lên kế hoạch với tiền",
+    "code": "1F4B0",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Chiếc quạt chọn đúng lúc để hỏng",
+    "text": "Tôi hỏi người quen xem có thể sửa món đồ an toàn không. Chúng tôi tìm được phương án phù hợp và tôi học thêm cách chăm đồ dùng.",
+    "slot": "result",
+    "label": "Sửa quạt điện trong nhà",
+    "code": "1F6E0",
+    "action": "repair"
+  },
+  {
+    "sceneTitle": "🛗 Thang máy đi hơi xa",
+    "text": "Sau một ngày mệt nhoài, tôi về nhà, ngả lưng lên ghế rồi chợt nhớ mình để quên đồ dưới sảnh. Tôi bước vào thang máy, nhấn tầng trệt.\n\nMàn hình lần lượt hiện: 1… 0… Mặt Trăng… Sao Thổ…\n\nMột giọng nói vang lên: ‘Quý khách đang đến phiên đấu giá hành tinh. Vui lòng không tựa cửa.’",
+    "slot": "scene",
+    "label": "Thang máy",
+    "code": "1F6D7",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🛗 Thang máy đi hơi xa",
+    "text": "Đi lố thì đi cho biết!",
+    "slot": "result",
+    "label": "Thang máy",
+    "code": "1F6D7",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🛗 Thang máy đi hơi xa",
+    "text": "Cửa mở ngay trước nhà. Tôi bước ra, tỉnh giấc trên ghế. Thang máy đi đến phiên đấu giá hành tinh hóa ra chỉ là một giấc mơ.",
+    "slot": "result",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "Khung ảnh chưa có chỗ treo",
+    "text": "Tôi có khung ảnh mới nhưng chưa chọn được góc đặt.",
+    "slot": "scene",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Khung ảnh chưa có chỗ treo",
+    "text": "Tấm ảnh nằm ở chỗ tôi dễ nhìn thấy mỗi ngày.",
+    "slot": "result",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Khung ảnh chưa có chỗ treo",
+    "text": "Tôi tìm được vị trí hợp với căn phòng.",
+    "slot": "result",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Nồi canh thiếu một nguyên liệu",
+    "text": "Tôi định nấu canh rồi nhận ra thiếu một nguyên liệu nhỏ.",
+    "slot": "scene",
+    "label": "Nấu bữa ăn",
+    "code": "1F372",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Nồi canh thiếu một nguyên liệu",
+    "text": "Tôi thử một phiên bản khác và ghi lại cách nấu.",
+    "slot": "result",
+    "label": "Nấu bữa ăn",
+    "code": "1F372",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Nồi canh thiếu một nguyên liệu",
+    "text": "Tôi vẫn có bữa ăn ngon từ nguyên liệu sẵn.",
+    "slot": "result",
+    "label": "Bữa ăn",
+    "code": "1F37D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Người hàng xóm mới",
+    "text": "Hàng xóm mới chuyển đến, loay hoay với mấy thùng đồ trước cửa. Tôi đang xách túi rau, trông cũng chẳng khác đội chuyển nhà là mấy.",
+    "slot": "scene",
+    "label": "Thùng đồ",
+    "code": "1F4E6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Người hàng xóm mới",
+    "text": "Tôi giúp mang một thùng nhỏ và chỉ chỗ mua đồ gần nhà. Một lời chào biến thành cuộc trò chuyện thân thiện.",
+    "slot": "result",
+    "label": "Mang thùng đồ",
+    "code": "1F4E6",
+    "action": "carry"
+  },
+  {
+    "sceneTitle": "Người hàng xóm mới",
+    "text": "Tôi chào hàng xóm và nói mình sẽ ghé hỏi thăm khi rảnh. Tôi vẫn giữ được lịch riêng mà không bỏ qua cơ hội làm quen.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Album toàn những tấm ảnh mờ",
+    "text": "Tôi mở ảnh cũ, thấy rất nhiều tấm rung tay nhưng chẳng muốn xóa. Có những ngày không đẹp trong ảnh mà lại rất đẹp trong ký ức.",
+    "slot": "scene",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Album toàn những tấm ảnh mờ",
+    "text": "Tôi chọn ảnh ý nghĩa, ghi vài chú thích và tạo bản sao lưu. Tìm lại một kỷ niệm giờ không cần kéo màn hình cả buổi.",
+    "slot": "result",
+    "label": "Chọn và sao lưu ảnh trên thiết bị",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Album toàn những tấm ảnh mờ",
+    "text": "Tấm ảnh mở đầu cho một cuộc gọi hỏi thăm. Chúng tôi kể chuyện hôm nay rồi bật cười vì kiểu tóc ngày trước.",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "Cuối tuần không cần đi xa",
+    "text": "Tôi có một ngày trống mà chưa biết làm gì. Lướt xem chỗ đi chơi một lúc, tôi nhận ra công viên gần nhà cũng lâu rồi chưa ghé.",
+    "slot": "scene",
+    "label": "Cây xanh ngoài trời",
+    "code": "1F333",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuối tuần không cần đi xa",
+    "text": "Tôi đi bộ vừa sức, ngắm cây và ngồi nghỉ một lát. Một ngày bình thường cũng có thể làm mình thư giãn.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Cuối tuần không cần đi xa",
+    "text": "Tôi lau cửa sổ, tưới cây và sắp xếp góc đọc sách. Căn nhà quen thuộc bỗng có cảm giác mới.",
+    "slot": "result",
+    "label": "Lau dọn cửa sổ",
+    "code": "1FA9F",
+    "action": "clean"
+  },
+  {
+    "sceneTitle": "Tấm chăn chưa kịp khô",
+    "text": "Trời chuyển mưa khi chăn vừa được giặt xong.",
+    "slot": "scene",
+    "label": "Tấm chăn vừa giặt",
+    "code": "1F9FA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Tấm chăn chưa kịp khô",
+    "text": "Tôi thu xếp lại việc giặt theo thời tiết.",
+    "slot": "result",
+    "label": "Sắp lịch giặt đồ theo thời tiết",
+    "code": "1F9FA",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Tấm chăn chưa kịp khô",
+    "text": "Tôi để chăn mới giặt khô hẳn rồi mới dùng.",
+    "slot": "result",
+    "label": "Tấm chăn vừa giặt",
+    "code": "1F9FA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Điểm hẹn ghi tên cũ",
+    "text": "Bạn gửi tên quán cũ, trong khi quán đã đổi bảng hiệu.",
+    "slot": "scene",
+    "label": "Địa điểm hẹn",
+    "code": "1F4CD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Điểm hẹn ghi tên cũ",
+    "text": "Chúng tôi tìm đúng quán nhờ số nhà.",
+    "slot": "result",
+    "label": "Tìm bản đồ",
+    "code": "1F5FA",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Điểm hẹn ghi tên cũ",
+    "text": "Bạn chỉ lại đường và hai người gặp được nhau.",
+    "slot": "result",
+    "label": "Địa điểm hẹn",
+    "code": "1F4CD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Buổi tối bị thông báo chiếm chỗ",
+    "text": "Tôi định nghỉ nhưng điện thoại cứ sáng lên vì những việc chưa thật sự gấp. Bữa tối nguội dần, còn màn hình thì rất chăm chỉ.",
+    "slot": "scene",
+    "label": "Điện thoại",
+    "code": "1F4F1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Buổi tối bị thông báo chiếm chỗ",
+    "text": "Tôi xử lý việc cần thiết rồi đặt giờ trả lời những tin còn lại. Buổi tối có chỗ cho nghỉ ngơi mà việc quan trọng vẫn được theo dõi.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Buổi tối bị thông báo chiếm chỗ",
+    "text": "Tôi dành riêng thời gian ăn uống rồi mới xem lại tin nhắn. Một bữa ăn không vội khiến tôi thấy nhẹ nhõm.",
+    "slot": "result",
+    "label": "Ăn bữa ăn",
+    "code": "1F37D",
+    "action": "eat"
+  },
+  {
+    "sceneTitle": "Nấu món ăn gợi nhớ nhà",
+    "text": "Tôi nhớ một món ăn quen mà công thức trong đầu chỉ có ‘nêm vừa miệng’. Hóa ra ký ức nhớ hương vị rất giỏi, nhớ số thìa thì không.",
+    "slot": "scene",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Nấu món ăn gợi nhớ nhà",
+    "text": "Tôi gọi người thân, vừa hỏi cách nấu vừa kể chuyện gần đây. Món ăn thành công và cuộc trò chuyện còn ấm hơn nồi cơm.",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "Nấu món ăn gợi nhớ nhà",
+    "text": "Tôi thử từng bước và ghi lại cách nêm hợp khẩu vị. Không giống hoàn toàn ngày xưa nhưng vẫn là một bữa ăn đáng nhớ.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Bạn rủ thử môn mới",
+    "text": "Một người bạn rủ tôi tham gia buổi vận động cho người mới. Tôi nhìn đôi giày rồi tự nhắc: hôm nay tới học, không phải thi vô địch.",
+    "slot": "scene",
+    "label": "Giày thể thao",
+    "code": "1F45F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bạn rủ thử môn mới",
+    "text": "Tôi làm quen từng động tác, nghỉ khi cần và vui vì đã thử một điều mới.",
+    "slot": "result",
+    "label": "Giãn cơ và vận động nhẹ",
+    "code": "1F9D8",
+    "action": "stretch"
+  },
+  {
+    "sceneTitle": "Bạn rủ thử môn mới",
+    "text": "Tôi chọn hoạt động phù hợp hơn với mình. Chúng tôi đi bộ, trò chuyện và vẫn có một buổi gặp vui.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Các khoản nhỏ cộng lại",
+    "text": "Những khoản mua lặt vặt trong tuần nhiều hơn tôi tưởng.",
+    "slot": "scene",
+    "label": "Tiền",
+    "code": "1F4B0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Các khoản nhỏ cộng lại",
+    "text": "Tôi nhìn rõ thói quen mua sắm của mình.",
+    "slot": "result",
+    "label": "Lên kế hoạch với tiền",
+    "code": "1F4B0",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Các khoản nhỏ cộng lại",
+    "text": "Tôi chọn món cần dùng thay vì mua theo hứng.",
+    "slot": "result",
+    "label": "Túi mua sắm",
+    "code": "1F6CD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Tiếng nhạc từ nhà bên",
+    "text": "Hàng xóm tập đàn đúng giờ tôi muốn tập trung.",
+    "slot": "scene",
+    "label": "Đàn piano",
+    "code": "1F3B9",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Tiếng nhạc từ nhà bên",
+    "text": "Hai bên thống nhất một khoảng giờ dễ chịu hơn.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Tiếng nhạc từ nhà bên",
+    "text": "Tôi tìm được góc yên tĩnh và hẹn trao đổi sau.",
+    "slot": "result",
+    "label": "Ngồi nghỉ thư giãn",
+    "code": "1F6CB",
+    "action": "rest"
+  },
+  {
+    "sceneTitle": "Trở lại làm người mới",
+    "text": "Tôi đăng ký một buổi học ngoài lĩnh vực quen thuộc. Câu đầu tiên của thầy là ‘rất đơn giản’, còn cuốn vở của tôi thì đã đầy dấu hỏi.",
+    "slot": "scene",
+    "label": "Học với vở học",
+    "code": "1F4D3",
+    "action": "study"
+  },
+  {
+    "sceneTitle": "Trở lại làm người mới",
+    "text": "Tôi hỏi điều chưa hiểu và luyện lại từ cơ bản. Suy nghĩ kỹ hơn giúp tôi thấy mình vẫn có thể học điều mới.",
+    "slot": "result",
+    "label": "Học với vở học",
+    "code": "1F4D3",
+    "action": "study"
+  },
+  {
+    "sceneTitle": "Trở lại làm người mới",
+    "text": "Chúng tôi giúp nhau hiểu bài và đặt lịch luyện vừa sức. Việc học bớt ngại khi có người cùng bắt đầu.",
+    "slot": "result",
+    "label": "Học với vở học",
+    "code": "1F4D3",
+    "action": "study"
+  },
+  {
+    "sceneTitle": "Cuộc gọi cứ hẹn để mai",
+    "text": "Tôi nhìn tin nhắn hỏi thăm từ người thân rồi nhớ ra mình đã hẹn gọi lại mấy hôm. Những ngày bận rộn rất dễ làm một lời hẹn nhỏ kéo dài.",
+    "slot": "scene",
+    "label": "Điện thoại",
+    "code": "1F4F1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuộc gọi cứ hẹn để mai",
+    "text": "Tôi dành thời gian nghe chuyện của người thân và kể về mình. Chẳng có tin gì lớn, chỉ có cảm giác gần nhau hơn.",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "Cuộc gọi cứ hẹn để mai",
+    "text": "Tôi thống nhất một thời gian phù hợp với mọi người và ghi vào lịch. Lần này câu ‘hôm nào gặp’ đã có ngày rõ ràng.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Cuốn sách mua lâu chưa mở",
+    "text": "Một cuốn sách trên kệ vẫn còn tờ đánh dấu ở trang đầu. Tôi từng mua với quyết tâm rất cao; hình như quyết tâm được cất chung trong túi giấy.",
+    "slot": "scene",
+    "label": "Cuốn sách",
+    "code": "1F4D6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuốn sách mua lâu chưa mở",
+    "text": "Tôi đặt một mục tiêu đọc vừa sức và ghi lại điều thú vị. Cuốn sách dần có thêm những trang gấp góc.",
+    "slot": "result",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Cuốn sách mua lâu chưa mở",
+    "text": "Tôi trao đổi sách với một người bạn. Chúng tôi có thêm đề tài trò chuyện và mỗi người tìm được thứ muốn đọc.",
+    "slot": "result",
+    "label": "Trao lại cuốn sách",
+    "code": "1F4D6",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "Cúc áo trong hộp kim chỉ",
+    "text": "Chiếc áo thích mặc bị lỏng cúc, hộp kim chỉ vẫn còn.",
+    "slot": "scene",
+    "label": "Kim chỉ",
+    "code": "1F9F5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cúc áo trong hộp kim chỉ",
+    "text": "Tôi gia cố chiếc cúc rồi cất kim chỉ gọn.",
+    "slot": "result",
+    "label": "May sửa kim chỉ",
+    "code": "1FAA1",
+    "action": "sew"
+  },
+  {
+    "sceneTitle": "Cúc áo trong hộp kim chỉ",
+    "text": "Chiếc áo được sửa, tôi không cần thay áo mới.",
+    "slot": "result",
+    "label": "May sửa kim chỉ",
+    "code": "1FAA1",
+    "action": "sew"
+  },
+  {
+    "sceneTitle": "Kệ trao đổi sách đầu ngõ",
+    "text": "Khu phố đặt một kệ đổi sách, ai cũng có thể góp một cuốn.",
+    "slot": "scene",
+    "label": "Cuốn sách",
+    "code": "1F4D6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Kệ trao đổi sách đầu ngõ",
+    "text": "Tôi để lại lời giới thiệu ngắn trong cuốn sách.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Kệ trao đổi sách đầu ngõ",
+    "text": "Tôi tìm được một cuốn mới từ kệ chung.",
+    "slot": "result",
+    "label": "Cuốn sách",
+    "code": "1F4D6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một ngày nghỉ thật sự",
+    "text": "Tôi có ngày nghỉ nhưng danh sách việc vặt vẫn dài. Nhìn đồng hồ, tôi tự hỏi mình đang nghỉ hay chỉ đổi chỗ làm việc.",
+    "slot": "scene",
+    "label": "Ghế nghỉ",
+    "code": "1F6CB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một ngày nghỉ thật sự",
+    "text": "Tôi hoàn thành việc cần nhất và để những việc còn lại sang hôm khác. Một khoảng nghỉ giúp tôi lấy lại sức.",
+    "slot": "result",
+    "label": "Ngồi nghỉ thư giãn",
+    "code": "1F6CB",
+    "action": "rest"
+  },
+  {
+    "sceneTitle": "Một ngày nghỉ thật sự",
+    "text": "Tôi dành một buổi đi dạo và trò chuyện. Việc nhà vẫn còn đó nhưng tôi trở về với tinh thần dễ chịu hơn.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Bức ảnh cả nhà khó đủ người",
+    "text": "Mọi người muốn chụp chung một bức ảnh nhưng lịch ai cũng khác. Tôi nhận ra để đủ mặt đôi khi cần kiên nhẫn hơn chỉnh máy ảnh.",
+    "slot": "scene",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bức ảnh cả nhà khó đủ người",
+    "text": "Tôi cùng mọi người chọn thời gian phù hợp. Buổi gặp có một bức ảnh đẹp và nhiều chuyện để kể.",
+    "slot": "result",
+    "label": "Chụp ảnh bằng máy ảnh",
+    "code": "1F4F8",
+    "action": "photo"
+  },
+  {
+    "sceneTitle": "Bức ảnh cả nhà khó đủ người",
+    "text": "Tôi xin ảnh mới của từng người và làm một album chung. Khoảng cách vẫn còn nhưng kỷ niệm được đặt cạnh nhau.",
+    "slot": "result",
+    "label": "Sắp xếp khung ảnh",
+    "code": "1F5BC",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Sở thích nằm ngoài danh sách thành tích",
+    "text": "Tôi muốn thử một việc chỉ vì thấy thích, nhưng lại quen hỏi nó có giúp ích gì không. Có lẽ một buổi vui cũng đã là một ích lợi.",
+    "slot": "scene",
+    "label": "Suy nghĩ",
+    "code": "1F914",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Sở thích nằm ngoài danh sách thành tích",
+    "text": "Tôi thử sở thích mới và cười vì vài lần vụng về. Không cần thành thạo ngay, tôi vẫn thấy buổi tối đáng nhớ.",
+    "slot": "result",
+    "label": "Mỉm cười",
+    "code": "1F642",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Sở thích nằm ngoài danh sách thành tích",
+    "text": "Tôi tham gia một nhóm sinh hoạt nhỏ và làm quen qua những câu chuyện chung. Mỗi người đều từng có buổi đầu bỡ ngỡ.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Pin điều khiển hết đúng lúc",
+    "text": "Điều khiển không phản hồi, tôi muốn kiểm tra trước khi kết luận hỏng.",
+    "slot": "scene",
+    "label": "Pin",
+    "code": "1F50B",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Pin điều khiển hết đúng lúc",
+    "text": "Tôi thay đúng loại pin và cất pin cũ để thu gom.",
+    "slot": "result",
+    "label": "Pin thay cho điều khiển",
+    "code": "1F50B",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Pin điều khiển hết đúng lúc",
+    "text": "Tôi xác định được cách kiểm tra kết nối.",
+    "slot": "result",
+    "label": "Pin",
+    "code": "1F50B",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Buổi vẽ dành cho người mới",
+    "text": "Một lớp vẽ cuối tuần nhận người chưa từng học.",
+    "slot": "scene",
+    "label": "Vẽ tranh",
+    "code": "1F3A8",
+    "action": "draw"
+  },
+  {
+    "sceneTitle": "Buổi vẽ dành cho người mới",
+    "text": "Tôi tập vẽ một đồ vật đơn giản.",
+    "slot": "result",
+    "label": "Vẽ tranh",
+    "code": "1F3A8",
+    "action": "draw"
+  },
+  {
+    "sceneTitle": "Buổi vẽ dành cho người mới",
+    "text": "Hai người có một buổi học mới và chuyện để kể.",
+    "slot": "result",
+    "label": "Vẽ tranh",
+    "code": "1F3A8",
+    "action": "draw"
+  },
+  {
+    "sceneTitle": "Nửa chặng đường ba mươi",
+    "text": "Ở tuổi ba mươi lăm, tôi đọc lại những mục tiêu cũ. Có điều đã làm được, có điều không còn phù hợp, và có cả ước mơ mình đã quên mất.",
+    "slot": "scene",
+    "label": "Lên kế hoạch với mục tiêu",
+    "code": "1F3AF",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Nửa chặng đường ba mươi",
+    "text": "Tôi nhìn lại điều quan trọng với mình và chọn một mục tiêu vừa sức. Tương lai không cần giống bản kế hoạch viết nhiều năm trước.",
+    "slot": "result",
+    "label": "Lên kế hoạch với mục tiêu",
+    "code": "1F3AF",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Nửa chặng đường ba mươi",
+    "text": "Tôi tự thưởng một buổi gặp bạn và kể về những bước tiến nhỏ. Có những thành công không được ghi trên bằng khen.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Thói quen thức khuya lâu năm",
+    "text": "Tôi định ngủ sớm, nhưng một tập phim kéo theo tập tiếp theo. Sáng hôm sau, chuông báo thức vang lên như một lời nhắc rất thẳng thắn.",
+    "slot": "scene",
+    "label": "Đồng hồ báo thức",
+    "code": "23F0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Thói quen thức khuya lâu năm",
+    "text": "Tôi điều chỉnh giờ sinh hoạt và dành đủ thời gian nghỉ. Vài tối đầu hơi khó quen nhưng buổi sáng đã dễ chịu hơn.",
+    "slot": "result",
+    "label": "Ngủ",
+    "code": "1F634",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Thói quen thức khuya lâu năm",
+    "text": "Tôi dành một khung giờ xem phù hợp hơn. Thói quen giải trí vẫn còn mà giấc ngủ không phải nhường chỗ mãi.",
+    "slot": "result",
+    "label": "Ngủ",
+    "code": "1F634",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🏗️ Tiếng kêu sau hàng rào",
+    "text": "Trên đường về nhà, tôi nghe tiếng kêu cứu từ một công trường bỏ hoang. Một người đàn ông bị kẹt chân dưới thanh sắt, phía trên là giàn giáo đang nghiêng.\n\nNgay trước mặt tôi có tấm biển ‘Nền yếu — nguy cơ sụt lún’. Bên cạnh là lối bê tông vòng quanh.",
+    "slot": "scene",
+    "label": "Công trường",
+    "code": "1F3D7",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🏗️ Tiếng kêu sau hàng rào",
+    "text": "Gọi cứu hộ, đi vòng xem sao!",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "🏗️ Tiếng kêu sau hàng rào",
+    "text": "Tôi phớt lờ biển báo nền yếu và chạy thẳng tới. Nền đất sụp xuống, kéo tôi rơi vào hố công trình. Tôi tử vong; cuộc đời kết thúc ở tuổi 35.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🏗️ Tiếng kêu sau hàng rào",
+    "text": "Tôi báo cứu hộ và chờ ở nơi an toàn. Người đàn ông được đội cứu hộ hỗ trợ. Tôi trở về bình an; chuỗi kết thúc, không nhận phần thưởng đặc biệt.",
+    "slot": "result",
+    "label": "Chờ xe cứu hộ",
+    "code": "1F691",
+    "action": "wait"
+  },
+  {
+    "sceneTitle": "Ảnh trong máy chưa sao lưu",
+    "text": "Máy tính nhắc dung lượng đầy. Trong đó còn nhiều ảnh quan trọng.",
+    "slot": "scene",
+    "label": "Máy tính",
+    "code": "1F4BB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Ảnh trong máy chưa sao lưu",
+    "text": "Tôi kiểm tra bản sao trước khi dọn bộ nhớ.",
+    "slot": "result",
+    "label": "Dùng máy tính",
+    "code": "1F4BB",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Ảnh trong máy chưa sao lưu",
+    "text": "Tôi sắp ảnh theo năm để tìm dễ hơn.",
+    "slot": "result",
+    "label": "Sắp ảnh theo năm trên máy tính",
+    "code": "1F4BB",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Bữa ăn nhóm mỗi người một món",
+    "text": "Bạn bè hẹn mang món ăn tới, hai người định làm cùng một món.",
+    "slot": "scene",
+    "label": "Bữa ăn",
+    "code": "1F37D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bữa ăn nhóm mỗi người một món",
+    "text": "Bàn ăn có các món khác nhau và đủ phần.",
+    "slot": "result",
+    "label": "Bữa ăn",
+    "code": "1F37D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bữa ăn nhóm mỗi người một món",
+    "text": "Tôi góp một món đơn giản cho buổi gặp.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Góc nhà cần chăm lại",
+    "text": "Một chiếc ngăn kéo kẹt và vài món đồ thất lạc khiến tôi mất thời gian tìm đồ mỗi sáng. Căn nhà đang âm thầm xin một buổi được chăm sóc.",
+    "slot": "scene",
+    "label": "Ngôi nhà",
+    "code": "1F3E0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Góc nhà cần chăm lại",
+    "text": "Tôi dọn gọn, xử lý việc đơn giản và nhờ người có chuyên môn với phần khó. Đồ dùng trở lại đúng chỗ.",
+    "slot": "result",
+    "label": "Sắp xếp ngôi nhà",
+    "code": "1F3E0",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Góc nhà cần chăm lại",
+    "text": "Tôi lên lịch cho từng góc nhỏ thay vì làm tất cả một ngày. Căn nhà gọn dần mà tôi vẫn có thời gian nghỉ.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Món đồ còn tốt tìm chủ mới",
+    "text": "Tôi có vài món đồ lâu không dùng nhưng còn tốt. Giữ lại thì chật nhà, bỏ đi thì tiếc; có lẽ chúng chỉ đang chờ người cần hơn.",
+    "slot": "scene",
+    "label": "Thùng đồ",
+    "code": "1F4E6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Món đồ còn tốt tìm chủ mới",
+    "text": "Tôi kiểm tra đồ và trao lại cho người cần dùng. Góc nhà rộng hơn, còn món đồ có một cuộc sống mới.",
+    "slot": "result",
+    "label": "Trao lại thùng đồ",
+    "code": "1F4E6",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "Món đồ còn tốt tìm chủ mới",
+    "text": "Tôi chọn món còn phù hợp và đặt ở chỗ dễ dùng. Trước khi mua thêm, tôi đã biết mình đang có gì.",
+    "slot": "result",
+    "label": "Sắp xếp thùng đồ",
+    "code": "1F4E6",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Một lời nhờ đúng lúc quá tải",
+    "text": "Người quen nhờ tôi giúp thêm một việc, trong khi lịch tuần này đã kín. Tôi muốn giúp nhưng cũng biết mình không có thêm một ngày bí mật trong tuần.",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một lời nhờ đúng lúc quá tải",
+    "text": "Tôi nói rõ lịch của mình và đề nghị một phần việc vừa sức. Lời hứa cụ thể khiến cả hai dễ sắp xếp hơn.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Một lời nhờ đúng lúc quá tải",
+    "text": "Tôi nói thật rằng mình không thể nhận thêm và chỉ một hướng hỗ trợ khác. Tôi giữ lời với những việc đã nhận.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Vết bẩn trên bàn gỗ",
+    "text": "Chiếc bàn quen có một vết bẩn mới, tôi chưa biết lau thế nào.",
+    "slot": "scene",
+    "label": "Miếng bọt biển",
+    "code": "1F9FD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Vết bẩn trên bàn gỗ",
+    "text": "Tôi chọn cách lau phù hợp với vật liệu.",
+    "slot": "result",
+    "label": "Lau dọn miếng bọt biển",
+    "code": "1F9FD",
+    "action": "clean"
+  },
+  {
+    "sceneTitle": "Vết bẩn trên bàn gỗ",
+    "text": "Tôi nhận được chỉ dẫn trước khi làm sạch.",
+    "slot": "result",
+    "label": "Miếng bọt biển",
+    "code": "1F9FD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Vé triển lãm còn một buổi",
+    "text": "Tấm vé triển lãm sắp hết hạn sử dụng, lịch hôm nay vừa trống.",
+    "slot": "scene",
+    "label": "Vé",
+    "code": "1F3AB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Vé triển lãm còn một buổi",
+    "text": "Tôi dành thời gian ngắm các tác phẩm mình thích.",
+    "slot": "result",
+    "label": "Quan sát bảng màu vẽ",
+    "code": "1F3A8",
+    "action": "observe"
+  },
+  {
+    "sceneTitle": "Vé triển lãm còn một buổi",
+    "text": "Một người bạn nhận vé và kể lại trải nghiệm.",
+    "slot": "result",
+    "label": "Trao lại vé",
+    "code": "1F3AB",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "Có người hỏi kinh nghiệm sống",
+    "text": "Một người trẻ hơn hỏi tôi cách sắp xếp cuộc sống. Tôi suýt trả lời như chuyên gia rồi nhớ ra sáng nay mình vẫn đi tìm chìa khóa mười phút.",
+    "slot": "scene",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Có người hỏi kinh nghiệm sống",
+    "text": "Tôi chia sẻ vài cách đã hữu ích với mình và cả những điều chưa làm tốt. Cuộc trò chuyện thoải mái vì chẳng ai phải hoàn hảo.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Có người hỏi kinh nghiệm sống",
+    "text": "Tôi hỏi về hoàn cảnh của họ rồi cùng cân nhắc vài lựa chọn. Mỗi người có một nhịp sống khác nhau.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Buổi họp mặt sau nhiều lần hẹn",
+    "text": "Bạn bè cũ cuối cùng cũng chọn được ngày gặp. Câu chuyện giờ có nhiều thay đổi, nhưng câu ‘nhớ hồi đó không’ vẫn mở đầu rất hiệu quả.",
+    "slot": "scene",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Buổi họp mặt sau nhiều lần hẹn",
+    "text": "Tôi lắng nghe những chặng đường khác nhau và kể về mình. Chúng tôi vẫn tìm được nhiều điều để cười cùng nhau.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Buổi họp mặt sau nhiều lần hẹn",
+    "text": "Tôi báo trước và gọi hỏi thăm vào lúc phù hợp. Không có mặt trực tiếp vẫn có thể dành sự quan tâm.",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "Lối đi quen có một ngã rẽ mới",
+    "text": "Trên đường đi bộ quen thuộc, tôi thấy một lối nhỏ dẫn tới góc công viên chưa từng ghé. Hóa ra gần nhà vẫn còn điều để khám phá.",
+    "slot": "scene",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Lối đi quen có một ngã rẽ mới",
+    "text": "Tôi khám phá lối đi mới và nghỉ khi cần. Buổi vận động quen thuộc có thêm một điều thú vị.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Lối đi quen có một ngã rẽ mới",
+    "text": "Tôi chụp lại đường đi và hẹn bạn cùng khám phá. Có thêm một lý do để giữ thói quen đi bộ.",
+    "slot": "result",
+    "label": "Chụp ảnh bằng máy ảnh",
+    "code": "1F4F8",
+    "action": "photo"
+  },
+  {
+    "sceneTitle": "Nhóm bạn chọn mãi một ngày",
+    "text": "Mỗi người rảnh một lúc, cuộc hẹn nhóm cứ đổi lịch.",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Nhóm bạn chọn mãi một ngày",
+    "text": "Nhóm chọn được giờ phù hợp với nhiều người.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Nhóm bạn chọn mãi một ngày",
+    "text": "Chúng tôi vẫn gặp nhau dù không đủ cả nhóm.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Chai đựng có nhãn mờ",
+    "text": "Trong góc giặt đồ có chai mất nhãn, tôi không nhớ bên trong là gì.",
+    "slot": "scene",
+    "label": "Chai đồ dùng",
+    "code": "1F9F4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chai đựng có nhãn mờ",
+    "text": "Tôi xác minh đồ trong chai trước khi sử dụng.",
+    "slot": "result",
+    "label": "Tìm chai đồ dùng",
+    "code": "1F9F4",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Chai đựng có nhãn mờ",
+    "text": "Góc đồ dùng gọn hơn và dễ phân biệt hơn.",
+    "slot": "result",
+    "label": "Sắp xếp chai đồ dùng",
+    "code": "1F9F4",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Khách đến, món ăn chưa xong",
+    "text": "Bạn ghé chơi sớm hơn dự tính, còn món chính chưa nấu xong. Tôi nhìn gian bếp rồi quyết định buổi gặp không nhất thiết phải giống chương trình nấu ăn.",
+    "slot": "scene",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Khách đến, món ăn chưa xong",
+    "text": "Chúng tôi vừa nấu vừa trò chuyện. Một chút chậm trễ đổi lấy nhiều tiếng cười và một bữa ăn ngon.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Khách đến, món ăn chưa xong",
+    "text": "Tôi chọn món đơn giản hơn và dành thời gian trò chuyện. Bạn đến để gặp tôi, không phải chấm điểm thực đơn.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Một chuyến đi cần ít hành lý hơn",
+    "text": "Tôi chuẩn bị chuyến đi ngắn và nhận ra vali chứa đủ đồ cho một tuần. Cái áo ‘biết đâu cần’ đã có tới ba người anh em.",
+    "slot": "scene",
+    "label": "Hành lý",
+    "code": "1F9F3",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một chuyến đi cần ít hành lý hơn",
+    "text": "Tôi xem lịch trình và chỉ mang đồ cần thiết. Việc di chuyển dễ hơn mà chuyến đi vẫn đủ những thứ quan trọng.",
+    "slot": "result",
+    "label": "Sắp xếp hành lý",
+    "code": "1F9F3",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Một chuyến đi cần ít hành lý hơn",
+    "text": "Tôi chọn điểm đến gần, bớt vội và có thời gian thư giãn. Nghỉ ngơi không cần phải đi thật xa.",
+    "slot": "result",
+    "label": "Bản đồ",
+    "code": "1F5FA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuốn sổ công thức gia đình",
+    "text": "Tôi muốn ghi lại những món ăn quen để không phải hỏi lại mỗi lần. Có người bảo cứ nêm theo cảm giác, nhưng cảm giác của tôi vẫn cần giấy hướng dẫn.",
+    "slot": "scene",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Cuốn sổ công thức gia đình",
+    "text": "Tôi ghi cách nấu cùng vài câu chuyện về món ăn. Cuốn sổ vừa hữu ích vừa làm tôi thấy gần gũi với người thân.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Cuốn sổ công thức gia đình",
+    "text": "Tôi thử nấu, chụp lại các bước và điều chỉnh phần chưa hợp. Lần sau vào bếp đã có một bản hướng dẫn của riêng mình.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Chiếc radio bắt được kênh cũ",
+    "text": "Tôi thử chiếc radio lâu không dùng và nghe được chương trình quen.",
+    "slot": "scene",
+    "label": "Radio",
+    "code": "1F4FB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chiếc radio bắt được kênh cũ",
+    "text": "Tôi dành một khoảng nghỉ cho chương trình cũ.",
+    "slot": "result",
+    "label": "Radio",
+    "code": "1F4FB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chiếc radio bắt được kênh cũ",
+    "text": "Chúng tôi nhắc lại kỷ niệm nghe radio ngày trước.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Cành cây chạm khung cửa",
+    "text": "Cành cây ngoài cửa chạm vào kính mỗi khi có gió.",
+    "slot": "scene",
+    "label": "Cây xanh ngoài trời",
+    "code": "1F333",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cành cây chạm khung cửa",
+    "text": "Cành được xử lý, khung cửa không còn bị chạm.",
+    "slot": "result",
+    "label": "Cây xanh ngoài trời",
+    "code": "1F333",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cành cây chạm khung cửa",
+    "text": "Tôi dọn góc cửa và chờ người có trách nhiệm kiểm tra.",
+    "slot": "result",
+    "label": "Lau dọn cửa sổ",
+    "code": "1FA9F",
+    "action": "clean"
+  },
+  {
+    "sceneTitle": "Giấy tờ không nên chơi trốn tìm",
+    "text": "Tôi cần một giấy tờ cũ nhưng phải mở tới ngăn kéo thứ ba mới thấy. Chuyện nhỏ này khiến tôi muốn thôi giao việc ghi nhớ cho trí nhớ.",
+    "slot": "scene",
+    "label": "Tìm hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Giấy tờ không nên chơi trốn tìm",
+    "text": "Tôi sắp xếp giấy tờ theo nhóm, ghi nơi cất và lưu bản sao của tài liệu cần thiết. Lần tìm sau sẽ bớt loay hoay.",
+    "slot": "result",
+    "label": "Sắp xếp hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Giấy tờ không nên chơi trốn tìm",
+    "text": "Tôi bắt đầu từ nhóm giấy tờ hay dùng nhất. Một việc nhỏ làm xong còn tốt hơn kế hoạch lớn để mãi trong đầu.",
+    "slot": "result",
+    "label": "Sắp xếp hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Chưa từng thử không có nghĩa là muộn",
+    "text": "Tôi thấy một lớp trải nghiệm mình thích, nhưng nghĩ mình có lẽ lớn tuổi hơn nhiều người ở đó. Rồi tôi đọc thấy dòng ‘dành cho người mới bắt đầu’.",
+    "slot": "scene",
+    "label": "Suy nghĩ",
+    "code": "1F914",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chưa từng thử không có nghĩa là muộn",
+    "text": "Tôi đến thử với tâm thế học hỏi. Sự vụng về ban đầu không ngăn tôi vui khi làm được một điều mới.",
+    "slot": "result",
+    "label": "Mỉm cười",
+    "code": "1F642",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chưa từng thử không có nghĩa là muộn",
+    "text": "Tôi chọn cách trải nghiệm vừa sức và dành một buổi thực hành. Sở thích mới không cần bắt đầu bằng kế hoạch thật lớn.",
+    "slot": "result",
+    "label": "Mỉm cười",
+    "code": "1F642",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Giữ nhịp thay vì chạy đua",
+    "text": "Tôi nhìn lịch gần đây và thấy mình hay bỏ qua giờ nghỉ, bữa ăn và vận động. Có vẻ thứ cần nâng cấp lúc này là cách chia thời gian.",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Giữ nhịp thay vì chạy đua",
+    "text": "Tôi chọn giờ sinh hoạt phù hợp hơn và bắt đầu bằng những thay đổi nhỏ. Giữ đều đặn quan trọng hơn làm thật nhiều một ngày.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Giữ nhịp thay vì chạy đua",
+    "text": "Tôi cùng bạn thống nhất lịch vận động vừa sức. Những buổi gặp vừa giúp chúng tôi khỏe hơn vừa có thời gian hỏi thăm.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Giấy tờ cần một ngăn riêng",
+    "text": "Mấy giấy tờ quan trọng đang lẫn với tài liệu cũ.",
+    "slot": "scene",
+    "label": "Hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Giấy tờ cần một ngăn riêng",
+    "text": "Tôi biết chỗ tìm giấy tờ khi cần.",
+    "slot": "result",
+    "label": "Hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Giấy tờ cần một ngăn riêng",
+    "text": "Tôi kiểm tra đủ giấy và lưu danh sách riêng.",
+    "slot": "result",
+    "label": "Sắp xếp hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Một sở thích chưa thử",
+    "text": "Tôi xem lại danh sách những việc từng muốn làm mà cứ để sau.",
+    "slot": "scene",
+    "label": "Mục tiêu",
+    "code": "1F3AF",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một sở thích chưa thử",
+    "text": "Tôi đặt được buổi thử đầu tiên trong lịch.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Một sở thích chưa thử",
+    "text": "Tôi hiểu cần chuẩn bị gì trước khi tham gia.",
+    "slot": "result",
+    "label": "Mục tiêu",
+    "code": "1F3AF",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bốn mươi, nến hơi chật bánh",
+    "text": "Đến sinh nhật bốn mươi, bạn tôi hỏi có cần cắm đủ nến không. Tôi nhìn chiếc bánh nhỏ rồi đề nghị chừa chỗ cho kem. Điều tôi muốn nhất là một buổi tối dễ chịu.",
+    "slot": "scene",
+    "label": "Bánh sinh nhật",
+    "code": "1F382",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bốn mươi, nến hơi chật bánh",
+    "text": "Tôi cùng những người thân thiết ăn một bữa giản dị, kể chuyện và chụp ảnh. Bốn mươi bắt đầu bằng tiếng cười chứ không phải một danh sách thành tích.",
+    "slot": "result",
+    "label": "Ăn bữa ăn",
+    "code": "1F37D",
+    "action": "eat"
+  },
+  {
+    "sceneTitle": "Bốn mươi, nến hơi chật bánh",
+    "text": "Tôi viết điều mình trân trọng và một mong muốn vừa sức cho những năm tới. Có những điều cần tiếp tục, có những điều đã có thể đặt xuống.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Chiếc ngăn kéo lâu rồi chưa mở",
+    "text": "Tôi tìm pin trong ngăn kéo và gặp cả chìa khóa cũ, dây sạc lạ cùng một tờ giấy ghi ‘đừng quên’. Tôi đã quên tờ giấy ấy nói về chuyện gì.",
+    "slot": "scene",
+    "label": "Thùng đồ",
+    "code": "1F4E6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chiếc ngăn kéo lâu rồi chưa mở",
+    "text": "Tôi phân loại đồ, gom thứ còn dùng được và sắp lại ngăn kéo. Lần tới cần pin, có lẽ tôi sẽ không phải khai quật cả quá khứ.",
+    "slot": "result",
+    "label": "Sắp xếp thùng đồ",
+    "code": "1F4E6",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Chiếc ngăn kéo lâu rồi chưa mở",
+    "text": "Tôi dành một hộp nhỏ cho đồ có ý nghĩa, còn vật dụng thường ngày được đặt ở chỗ dễ lấy. Nhà gọn hơn mà ký ức vẫn có chỗ ở.",
+    "slot": "result",
+    "label": "Sắp xếp thùng đồ",
+    "code": "1F4E6",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "🏚️ Căn nhà gọi tên tôi",
+    "text": "Trên đường về quê, xe tôi chết máy giữa cơn mưa. Tôi ghé mái hiên một căn nhà cũ trú tạm. Điện thoại hết sóng, xung quanh không có nhà nào còn sáng đèn.\n\nBỗng bên trong vang lên tiếng một bà cụ:\n\n‘Vào đi con. Đứng ngoài đó ướt hết.’\n\nTôi vừa định đáp thì bà gọi đúng tên mình.",
+    "slot": "scene",
+    "label": "Ngôi nhà",
+    "code": "1F3E0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🏚️ Căn nhà gọi tên tôi",
+    "text": "Dạ… mà sao bà biết tên con?",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🏚️ Căn nhà gọi tên tôi",
+    "text": "Tôi quay ra đường chờ xe qua. Khi ngoảnh lại, căn nhà tối om. Tôi rời đi mà chưa biết vì sao bà cụ biết tên mình.",
+    "slot": "result",
+    "label": "Chờ ghế nghỉ",
+    "code": "1F6CB",
+    "action": "wait"
+  },
+  {
+    "sceneTitle": "Bức ảnh tự chụp trước cửa",
+    "text": "Tôi muốn giữ lại một ngày bình thường của tuổi bốn mươi.",
+    "slot": "scene",
+    "label": "Chụp ảnh bằng máy ảnh",
+    "code": "1F4F8",
+    "action": "photo"
+  },
+  {
+    "sceneTitle": "Bức ảnh tự chụp trước cửa",
+    "text": "Tôi ghi ngày và một câu chuyện nhỏ vào ảnh.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Bức ảnh tự chụp trước cửa",
+    "text": "Tôi có tấm ảnh tự nhiên hơn mình nghĩ.",
+    "slot": "result",
+    "label": "Chụp ảnh bằng máy ảnh",
+    "code": "1F4F8",
+    "action": "photo"
+  },
+  {
+    "sceneTitle": "Bộ bát còn thiếu một chiếc",
+    "text": "Sắp bàn ăn, tôi thấy bộ bát không còn đủ như trước.",
+    "slot": "scene",
+    "label": "Bữa ăn",
+    "code": "1F37D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bộ bát còn thiếu một chiếc",
+    "text": "Bàn ăn được bày gọn, khác màu cũng không sao.",
+    "slot": "result",
+    "label": "Sắp xếp bữa ăn",
+    "code": "1F37D",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Bộ bát còn thiếu một chiếc",
+    "text": "Tôi tìm lại bát và sắp chúng về một chỗ.",
+    "slot": "result",
+    "label": "Sắp xếp bữa ăn",
+    "code": "1F37D",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Ứng dụng đổi chỗ tất cả nút bấm",
+    "text": "Ứng dụng quen vừa cập nhật. Nút tôi dùng mỗi ngày biến mất khỏi chỗ cũ, như thể nó cũng muốn đổi môi trường sống.",
+    "slot": "scene",
+    "label": "Điện thoại",
+    "code": "1F4F1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Ứng dụng đổi chỗ tất cả nút bấm",
+    "text": "Tôi tìm phần hướng dẫn và thử từng bước. Sau một lúc, giao diện mới bớt lạ và tôi biết thêm một cách làm tiện hơn.",
+    "slot": "result",
+    "label": "Dùng điện thoại",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Ứng dụng đổi chỗ tất cả nút bấm",
+    "text": "Bạn hướng dẫn tôi cách dùng. Tôi ghi lại thao tác để lần sau tự làm, rồi cảm ơn bằng một câu chuyện vui.",
+    "slot": "result",
+    "label": "Dùng điện thoại",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Chậu cây nghiêng về phía cửa sổ",
+    "text": "Chậu cây trên bàn vươn hẳn về phía cửa sổ. Tôi nhận ra mình chăm tưới nước nhưng chưa để ý chỗ đặt cây có đủ sáng hay không.",
+    "slot": "scene",
+    "label": "Chậu cây",
+    "code": "1FAB4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chậu cây nghiêng về phía cửa sổ",
+    "text": "Tôi đọc cách chăm loại cây này và chọn vị trí thích hợp. Chăm cây hóa ra cần quan sát nhiều hơn là tưới theo thói quen.",
+    "slot": "result",
+    "label": "Chậu cây",
+    "code": "1FAB4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chậu cây nghiêng về phía cửa sổ",
+    "text": "Người hàng xóm chỉ tôi vài mẹo và kể về vườn nhỏ của họ. Tôi mang cây sang chỗ mới, có thêm một người để hỏi chuyện cây cối.",
+    "slot": "result",
+    "label": "Mang chậu cây",
+    "code": "1FAB4",
+    "action": "carry"
+  },
+  {
+    "sceneTitle": "Một tối không xếp thêm việc",
+    "text": "Tôi định lấp khoảng trống cuối ngày bằng vài việc lặt vặt. Nhìn lịch kín cả tuần, tôi chợt muốn giữ lại một buổi tối cho mình.",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một tối không xếp thêm việc",
+    "text": "Tôi đi bộ một vòng vừa sức, về nhà thư giãn và ngủ đúng giờ. Khoảng trống trong lịch hôm nay có ích thật.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Một tối không xếp thêm việc",
+    "text": "Tôi tắt thông báo không cần thiết và đọc sách. Không phải hoàn thành cả cuốn, chỉ cần có thời gian tận hưởng nó.",
+    "slot": "result",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Đèn bàn đổi chỗ",
+    "text": "Góc đọc sách hơi tối, chiếc đèn đang đặt sau vai.",
+    "slot": "scene",
+    "label": "Bóng đèn",
+    "code": "1F4A1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Đèn bàn đổi chỗ",
+    "text": "Tôi tìm được góc chiếu sáng dễ nhìn hơn.",
+    "slot": "result",
+    "label": "Bóng đèn",
+    "code": "1F4A1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Đèn bàn đổi chỗ",
+    "text": "Chúng tôi sắp lại bàn để đọc thuận tiện.",
+    "slot": "result",
+    "label": "Sắp xếp cuốn sách",
+    "code": "1F4D6",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Cuộn len lâu chưa dùng",
+    "text": "Tôi tìm được cuộn len và nhớ món đồ từng định làm.",
+    "slot": "scene",
+    "label": "Cuộn len",
+    "code": "1F9F6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuộn len lâu chưa dùng",
+    "text": "Tôi học lại những mũi cơ bản trên món nhỏ.",
+    "slot": "result",
+    "label": "Đan cuộn len",
+    "code": "1F9F6",
+    "action": "knit"
+  },
+  {
+    "sceneTitle": "Cuộn len lâu chưa dùng",
+    "text": "Cuộn len được dùng cho một món đồ mới.",
+    "slot": "result",
+    "label": "Đan cuộn len",
+    "code": "1F9F6",
+    "action": "knit"
+  },
+  {
+    "sceneTitle": "Món quen được nấu theo cách mới",
+    "text": "Tôi muốn thử một cách nấu khác cho món ăn quen. Công thức trông đơn giản, nhưng gian bếp của tôi chưa từng đồng ý với chữ ‘chỉ mất mười phút’.",
+    "slot": "scene",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Món quen được nấu theo cách mới",
+    "text": "Tôi làm một phần nhỏ, nếm rồi điều chỉnh. Món ăn chưa hoàn hảo nhưng đủ ngon để lần sau tiếp tục thử.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Món quen được nấu theo cách mới",
+    "text": "Chúng tôi chia việc, cùng nếm và ghi lại cách nấu phù hợp. Bữa ăn có thêm tiếng cười và một công thức mới.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Tập giấy tờ dày hơn tôi nhớ",
+    "text": "Tôi cần tìm một giấy tờ cũ trong tập hồ sơ. Những tờ quan trọng và tờ hướng dẫn mua nồi cơm đang chung sống rất hòa thuận.",
+    "slot": "scene",
+    "label": "Tìm hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "Tập giấy tờ dày hơn tôi nhớ",
+    "text": "Tôi tách giấy tờ theo nhóm và ghi nhãn rõ ràng. Việc tìm kiếm lần sau sẽ bớt phụ thuộc vào trí nhớ.",
+    "slot": "result",
+    "label": "Sắp xếp hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Tập giấy tờ dày hơn tôi nhớ",
+    "text": "Tôi ghi nơi lưu từng bản gốc, tạo bản sao cần thiết và giữ thông tin riêng tư cẩn thận. Tập hồ sơ đã dễ dùng hơn.",
+    "slot": "result",
+    "label": "Sắp xếp hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Cuộc hẹn cứ dời từ tháng này sang tháng khác",
+    "text": "Tôi và một người bạn liên tục nhắn ‘hôm nào gặp’. Hôm nào ấy đã đi qua mấy trang lịch mà chưa ghé tới.",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuộc hẹn cứ dời từ tháng này sang tháng khác",
+    "text": "Chúng tôi chọn một giờ cụ thể và gặp nhau một lúc. Không cần cả ngày rảnh mới có thể hỏi thăm một người bạn.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Cuộc hẹn cứ dời từ tháng này sang tháng khác",
+    "text": "Tôi gọi bạn và nghe những chuyện mới. Cuộc gặp trực tiếp vẫn để sau, nhưng lời hỏi thăm đã đến được hôm nay.",
+    "slot": "result",
+    "label": "Gọi điện hỏi thăm",
+    "code": "1F4F1",
+    "action": "call"
+  },
+  {
+    "sceneTitle": "Tin nhắn chúc mừng gửi trễ",
+    "text": "Tôi nhớ sinh nhật bạn sau khi ngày ấy đã qua.",
+    "slot": "scene",
+    "label": "Bánh sinh nhật",
+    "code": "1F382",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Tin nhắn chúc mừng gửi trễ",
+    "text": "Bạn nhận lời chúc và hai người hỏi thăm nhau.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Tin nhắn chúc mừng gửi trễ",
+    "text": "Chúng tôi chọn được ngày gặp và trò chuyện.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Cây trước cổng có người chăm",
+    "text": "Hàng xóm muốn chia lịch chăm cây ở khoảng sân chung.",
+    "slot": "scene",
+    "label": "Chậu cây",
+    "code": "1FAB4",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cây trước cổng có người chăm",
+    "text": "Tôi góp việc chăm cây theo lịch đã thống nhất.",
+    "slot": "result",
+    "label": "Tưới chậu cây",
+    "code": "1FAB4",
+    "action": "water"
+  },
+  {
+    "sceneTitle": "Cây trước cổng có người chăm",
+    "text": "Tôi mang dụng cụ có sẵn để cả nhóm dùng chung.",
+    "slot": "result",
+    "label": "Mang hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "carry"
+  },
+  {
+    "sceneTitle": "Buổi vẽ không cần đẹp ngay",
+    "text": "Một lớp trải nghiệm vẽ mở gần nhà. Tôi từng thích vẽ nhưng lâu rồi chỉ cầm bút để ghi danh sách mua đồ.",
+    "slot": "scene",
+    "label": "Vẽ tranh",
+    "code": "1F3A8",
+    "action": "draw"
+  },
+  {
+    "sceneTitle": "Buổi vẽ không cần đẹp ngay",
+    "text": "Tôi thử phối màu và chấp nhận bức tranh còn vụng. Điều thú vị là được tập trung làm một thứ mình thích.",
+    "slot": "result",
+    "label": "Vẽ tranh",
+    "code": "1F3A8",
+    "action": "draw"
+  },
+  {
+    "sceneTitle": "Buổi vẽ không cần đẹp ngay",
+    "text": "Tôi dùng giấy bút sẵn có, vẽ chiếc cốc trên bàn. Một sở thích cũ trở lại bằng những nét rất đơn giản.",
+    "slot": "result",
+    "label": "Vẽ tranh",
+    "code": "1F3A8",
+    "action": "draw"
+  },
+  {
+    "sceneTitle": "Buổi dọn sân của khu phố",
+    "text": "Khu phố tổ chức dọn sân chung vào cuối tuần. Tôi bước xuống thì thấy mọi người đã chia nhau chổi, túi rác và cả chuyện để kể.",
+    "slot": "scene",
+    "label": "Lau dọn chổi",
+    "code": "1F9F9",
+    "action": "clean"
+  },
+  {
+    "sceneTitle": "Buổi dọn sân của khu phố",
+    "text": "Tôi nhận phần việc vừa sức và cùng mọi người dọn sân. Kết thúc buổi, chúng tôi đứng ngắm chỗ ngồi chung sạch sẽ hơn.",
+    "slot": "result",
+    "label": "Lau dọn chổi",
+    "code": "1F9F9",
+    "action": "clean"
+  },
+  {
+    "sceneTitle": "Buổi dọn sân của khu phố",
+    "text": "Tôi hỗ trợ sắp dụng cụ, phân loại đồ bỏ đi và trả đồ về đúng chỗ. Mỗi người làm một phần, buổi dọn sân nhẹ hơn.",
+    "slot": "result",
+    "label": "Sắp xếp hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Bạn đi bộ nhanh hơn tôi tưởng",
+    "text": "Tôi hẹn bạn đi bộ và nhận ra hai người có tốc độ khác nhau. Bạn gọi đó là đi thong thả, còn tôi đã bắt đầu đếm ghế nghỉ.",
+    "slot": "scene",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Bạn đi bộ nhanh hơn tôi tưởng",
+    "text": "Chúng tôi đi chậm lại và chọn quãng đường phù hợp. Buổi gặp vui hơn khi cả hai đều có thể trò chuyện thoải mái.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Bạn đi bộ nhanh hơn tôi tưởng",
+    "text": "Tôi đề nghị đi một vòng ngắn và ngồi nghỉ. Giữ thói quen vận động dễ hơn khi biết lắng nghe sức mình.",
+    "slot": "result",
+    "label": "Ngồi nghỉ thư giãn",
+    "code": "1F6CB",
+    "action": "rest"
+  },
+  {
+    "sceneTitle": "Lịch treo tường còn tháng cũ",
+    "text": "Tôi nhìn lịch rồi nhận ra chưa lật trang tháng mới.",
+    "slot": "scene",
+    "label": "Lịch hẹn",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Lịch treo tường còn tháng cũ",
+    "text": "Các cuộc hẹn hiện rõ trên trang lịch mới.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Lịch treo tường còn tháng cũ",
+    "text": "Tôi sửa một giờ hẹn ghi chưa đúng.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Nồi cơm còn dư",
+    "text": "Sau bữa ăn, cơm còn nhiều hơn tôi dự tính.",
+    "slot": "scene",
+    "label": "Bát cơm",
+    "code": "1F35A",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Nồi cơm còn dư",
+    "text": "Tôi thu xếp phần ăn còn dùng được theo thói quen gia đình.",
+    "slot": "result",
+    "label": "Sắp xếp bát cơm",
+    "code": "1F35A",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Nồi cơm còn dư",
+    "text": "Tôi điều chỉnh lượng chuẩn bị để bớt dư.",
+    "slot": "result",
+    "label": "Lên kế hoạch với bát cơm",
+    "code": "1F35A",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Một tấm ảnh thiếu tên người chụp",
+    "text": "Tôi tìm thấy ảnh một chuyến đi cũ nhưng không nhớ ai chụp. Trong ảnh, cả nhóm còn trẻ và mái tóc của tôi rất tự tin.",
+    "slot": "scene",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một tấm ảnh thiếu tên người chụp",
+    "text": "Mọi người nhận ra địa điểm và bổ sung những chuyện tôi đã quên. Một tấm ảnh mở đầu cả buổi hỏi thăm.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Một tấm ảnh thiếu tên người chụp",
+    "text": "Tôi ghi tên người, địa điểm và những chi tiết chắc chắn nhớ được. Album bớt những tấm ảnh không có câu chuyện.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Những khoản nhỏ nối thành một hàng dài",
+    "text": "Tôi xem lại chi tiêu và phát hiện nhiều khoản đăng ký ít dùng. Mỗi khoản đều nhỏ, nhưng chúng gặp nhau rất đều vào cuối tháng.",
+    "slot": "scene",
+    "label": "Tiền",
+    "code": "1F4B0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Những khoản nhỏ nối thành một hàng dài",
+    "text": "Tôi rà lại nhu cầu và hủy các gói không sử dụng. Những khoản sắp tới được ghi rõ để tôi dễ theo dõi.",
+    "slot": "result",
+    "label": "Lên kế hoạch với tiền",
+    "code": "1F4B0",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Những khoản nhỏ nối thành một hàng dài",
+    "text": "Tôi chia khoản cần thiết và khoản có thể giảm, rồi hẹn lịch xem lại hàng tháng. Quản lý tiền bớt mơ hồ khi có con số cụ thể.",
+    "slot": "result",
+    "label": "Lên kế hoạch với tiền",
+    "code": "1F4B0",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Chiếc ghế hơi lung lay",
+    "text": "Chiếc ghế quen bắt đầu kêu khi tôi ngồi xuống. Tôi kiểm tra và thấy một mối nối lỏng; có lẽ nó đã nhắc tôi từ tuần trước.",
+    "slot": "scene",
+    "label": "Ghế",
+    "code": "1FA91",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chiếc ghế hơi lung lay",
+    "text": "Tôi nhờ người có kinh nghiệm sửa mối nối và kiểm tra lại ghế. Một món đồ quen được tiếp tục sử dụng an toàn.",
+    "slot": "result",
+    "label": "Sửa ghế",
+    "code": "1FA91",
+    "action": "repair"
+  },
+  {
+    "sceneTitle": "Chiếc ghế hơi lung lay",
+    "text": "Tôi đánh dấu ghế cần sửa và dùng chiếc khác. Đồ hỏng có thể chờ xử lý, còn chỗ ngồi nên chắc chắn ngay hôm nay.",
+    "slot": "result",
+    "label": "Ghế",
+    "code": "1FA91",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuốn sách có trang gấp góc",
+    "text": "Trong sách mượn có một trang gấp góc và lời ghi rất ngắn.",
+    "slot": "scene",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Cuốn sách có trang gấp góc",
+    "text": "Tôi biết đoạn văn ấy có ý nghĩa với họ.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Cuốn sách có trang gấp góc",
+    "text": "Tôi giữ sách gọn và ghi đoạn thích vào sổ.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Danh sách mua đồ dùng chung",
+    "text": "Nhóm cùng mua đồ cho buổi gặp, nhưng danh sách có món ghi hai lần.",
+    "slot": "scene",
+    "label": "Túi mua sắm",
+    "code": "1F6CD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Danh sách mua đồ dùng chung",
+    "text": "Nhóm tránh mua trùng và chia việc rõ hơn.",
+    "slot": "result",
+    "label": "Sắp xếp túi mua sắm",
+    "code": "1F6CD",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Danh sách mua đồ dùng chung",
+    "text": "Tôi xác nhận phần của mình rồi báo lại hóa đơn.",
+    "slot": "result",
+    "label": "Hóa đơn",
+    "code": "1F9FE",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bốn mươi lăm, một điều vẫn muốn thử",
+    "text": "Sinh nhật bốn mươi lăm, tôi nhìn danh sách những điều từng muốn làm. Có việc đã xong, có việc vẫn chờ một ngày đủ rảnh.",
+    "slot": "scene",
+    "label": "Bánh sinh nhật",
+    "code": "1F382",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Bốn mươi lăm, một điều vẫn muốn thử",
+    "text": "Tôi chọn việc phù hợp với thời gian và khả năng hiện tại, rồi đặt lịch bước đầu tiên. Danh sách lần này có thêm hành động.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Bốn mươi lăm, một điều vẫn muốn thử",
+    "text": "Tôi dành thời gian nhớ lại những việc mình đã vượt qua và trò chuyện với người thân thiết. Không chỉ việc chưa làm mới đáng được nhắc tới.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Dãy hàng quen đã thay biển hiệu",
+    "text": "Tôi ghé khu chợ từng đi nhiều năm trước. Có quầy đã đổi chủ, có quầy vẫn giữ tiếng chào quen thuộc. Con đường cũ mang theo nhiều chuyện mới.",
+    "slot": "scene",
+    "label": "Túi mua sắm",
+    "code": "1F6CD",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Dãy hàng quen đã thay biển hiệu",
+    "text": "Tôi trò chuyện với người bán quen và nghe chuyện khu phố đổi thay. Chuyến đi ngắn lại cho tôi nhiều điều để nhớ.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Dãy hàng quen đã thay biển hiệu",
+    "text": "Tôi mua nguyên liệu trong khoản đã dự tính và nấu lại món quen. Mùi trong bếp khiến một buổi tối bình thường trở nên đặc biệt.",
+    "slot": "result",
+    "label": "Nấu bữa ăn trong gian bếp",
+    "code": "1F373",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "🚉 Chuyến cuối lúc 0 giờ",
+    "text": "Sau chuyến đi xa, tôi đến ga khi chuyến tàu cuối chuẩn bị rời bến. Vé ghi rõ: toa 04, ghế 18.\n\nNhân viên soát vé nhìn tôi, bỗng hạ giọng:\n\n‘Đêm nay toa bốn hỏng đèn. Anh sang toa năm, chỗ đó sáng.’\n\nTôi định nghe theo thì tấm vé nóng lên. Mặt sau hiện một tấm ảnh cũ: bà cụ đứng cạnh bé gái đeo vòng bạc có mặt dây hình trăng khuyết. Dưới ảnh là dòng chữ:\n\n‘Đừng đổi chỗ đã dành cho con.’",
+    "slot": "scene",
+    "label": "Tàu hỏa",
+    "code": "1F686",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚉 Chuyến cuối lúc 0 giờ",
+    "text": "Theo vé, tối thì bật đèn.",
+    "slot": "result",
+    "label": "Vé",
+    "code": "1F3AB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚉 Chuyến cuối lúc 0 giờ",
+    "text": "Tôi bước vào toa 05 dù tấm vé dặn không đổi chỗ. Cửa đóng sầm, dưới chân không có sàn, chỉ là khoảng tối hun hút. Tôi tử vong; cuộc đời kết thúc ở tuổi 45.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚉 Chuyến cuối lúc 0 giờ",
+    "text": "Tôi rời ga an toàn và đợi đến sáng mới đi tiếp. Chuyến tàu cuối biến mất trong đêm; tôi không nhận phần thưởng đặc biệt.",
+    "slot": "result",
+    "label": "Chờ ghế nghỉ",
+    "code": "1F6CB",
+    "action": "wait"
+  },
+  {
+    "sceneTitle": "Bài hát nhớ nửa lời",
+    "text": "Một bài hát cũ vang lên, tôi nhớ giai điệu mà quên lời.",
+    "slot": "scene",
+    "label": "Lắng nghe tai nghe nhạc",
+    "code": "1F3A7",
+    "action": "listen"
+  },
+  {
+    "sceneTitle": "Bài hát nhớ nửa lời",
+    "text": "Tôi nhận ra một câu mình đã hát nhầm lâu nay.",
+    "slot": "result",
+    "label": "Lắng nghe tai nghe nhạc",
+    "code": "1F3A7",
+    "action": "listen"
+  },
+  {
+    "sceneTitle": "Bài hát nhớ nửa lời",
+    "text": "Chúng tôi cùng nhớ lại bài hát của một thời.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Sắp lại chỗ để giày",
+    "text": "Giày dép trước cửa làm lối đi hơi chật.",
+    "slot": "scene",
+    "label": "Giày thể thao",
+    "code": "1F45F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Sắp lại chỗ để giày",
+    "text": "Lối vào gọn hơn và giày dễ tìm hơn.",
+    "slot": "result",
+    "label": "Sắp xếp giày thể thao",
+    "code": "1F45F",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Sắp lại chỗ để giày",
+    "text": "Tôi giữ lại giày còn phù hợp và dọn phần còn lại.",
+    "slot": "result",
+    "label": "Sắp xếp giày thể thao",
+    "code": "1F45F",
+    "action": "sort"
+  },
+  {
+    "sceneTitle": "Người quen cần học cách sao lưu ảnh",
+    "text": "Một người quen lo mất ảnh trong điện thoại và hỏi tôi cách sao lưu. Tôi cũng từng có cả album mang tên ‘ảnh cuối cùng, bản cuối thật’.",
+    "slot": "scene",
+    "label": "Điện thoại",
+    "code": "1F4F1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Người quen cần học cách sao lưu ảnh",
+    "text": "Tôi hướng dẫn chậm rãi để họ tự thao tác và kiểm tra ảnh đã lưu. Cả hai nhẹ nhõm khi kỷ niệm được giữ cẩn thận.",
+    "slot": "result",
+    "label": "Dùng điện thoại",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Người quen cần học cách sao lưu ảnh",
+    "text": "Tôi ghi các bước bằng lời đơn giản và nhắc họ kiểm tra định kỳ. Giúp một người học được cách làm còn hữu ích hơn làm hộ một lần.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Cuốn sách đọc lại thấy khác",
+    "text": "Tôi mở cuốn sách từng đọc hồi trẻ. Những trang trước đây lướt qua giờ lại khiến tôi dừng lâu hơn, như thể cuốn sách vừa được viết thêm.",
+    "slot": "scene",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Cuốn sách đọc lại thấy khác",
+    "text": "Tôi ghi những điều mình hiểu khác trước. Cuốn sách vẫn thế, nhưng kinh nghiệm sống đã làm cuộc đọc thay đổi.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Cuốn sách đọc lại thấy khác",
+    "text": "Chúng tôi chọn đoạn mỗi người nhớ nhất và nói về cách hiểu của mình. Tôi nghe thêm những góc nhìn thú vị.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Bữa trưa không nhìn màn hình",
+    "text": "Tôi ăn trưa mà vẫn lướt điện thoại. Đến lúc đặt máy xuống, tôi nhận ra đã ăn gần hết mà chưa nhớ món hôm nay có vị gì.",
+    "slot": "scene",
+    "label": "Ăn bữa ăn",
+    "code": "1F37D",
+    "action": "eat"
+  },
+  {
+    "sceneTitle": "Bữa trưa không nhìn màn hình",
+    "text": "Tôi dành thời gian cho bữa ăn và một chút nghỉ ngơi. Khoảng nghỉ giữa ngày dễ chịu hơn khi không thêm thông báo.",
+    "slot": "result",
+    "label": "Ăn bữa ăn",
+    "code": "1F37D",
+    "action": "eat"
+  },
+  {
+    "sceneTitle": "Bữa trưa không nhìn màn hình",
+    "text": "Tôi rủ người quen ăn cùng vào hôm khác và thống nhất cất điện thoại. Bữa trưa thành dịp hỏi thăm thay vì lướt màn hình.",
+    "slot": "result",
+    "label": "Ăn bữa ăn",
+    "code": "1F37D",
+    "action": "eat"
+  },
+  {
+    "sceneTitle": "Màn hình đầy nhóm trò chuyện",
+    "text": "Nhiều nhóm gửi thông báo cùng lúc khiến tôi khó tìm tin cần đọc.",
+    "slot": "scene",
+    "label": "Điện thoại",
+    "code": "1F4F1",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Màn hình đầy nhóm trò chuyện",
+    "text": "Tôi tìm được tin quan trọng mà bớt bị ngắt quãng.",
+    "slot": "result",
+    "label": "Thao tác tìm và quản lý tin trên điện thoại",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Màn hình đầy nhóm trò chuyện",
+    "text": "Tôi có khoảng riêng để đọc và trả lời.",
+    "slot": "result",
+    "label": "Dùng điện thoại",
+    "code": "1F4F1",
+    "action": "type"
+  },
+  {
+    "sceneTitle": "Giỏ rau có món chưa biết nấu",
+    "text": "Trong giỏ rau có một loại tôi ít dùng.",
+    "slot": "scene",
+    "label": "Đĩa rau",
+    "code": "1F957",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Giỏ rau có món chưa biết nấu",
+    "text": "Tôi biết cách chuẩn bị một món đơn giản.",
+    "slot": "result",
+    "label": "Nấu bữa ăn",
+    "code": "1F957",
+    "action": "cook"
+  },
+  {
+    "sceneTitle": "Giỏ rau có món chưa biết nấu",
+    "text": "Tôi ghi được một công thức để thử trong bếp.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Chuyến đi có nhiều khoảng nghỉ",
+    "text": "Tôi lên lịch một chuyến đi ngắn. Lịch cũ có sáu điểm trong một ngày, còn mong muốn hiện tại của tôi là ngồi ngắm cảnh mà không xem giờ liên tục.",
+    "slot": "scene",
+    "label": "Bản đồ",
+    "code": "1F5FA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Chuyến đi có nhiều khoảng nghỉ",
+    "text": "Tôi chọn vài nơi thật muốn ghé và chừa khoảng nghỉ. Chuyến đi bớt vội, những cảnh đã thấy cũng được nhớ rõ hơn.",
+    "slot": "result",
+    "label": "Lên kế hoạch với bản đồ",
+    "code": "1F5FA",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Chuyến đi có nhiều khoảng nghỉ",
+    "text": "Tôi tìm một nơi gần trong ngân sách đã dành và đi theo nhịp thoải mái. Không cần đi xa mới có chuyện mới để kể.",
+    "slot": "result",
+    "label": "Bản đồ",
+    "code": "1F5FA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Món đồ còn tốt nhưng tôi ít dùng",
+    "text": "Khi dọn nhà, tôi thấy vài món đồ còn tốt mà nhiều năm chưa dùng. Chúng chiếm chỗ rất chăm chỉ, dù công việc chính đã nghỉ từ lâu.",
+    "slot": "scene",
+    "label": "Thùng đồ",
+    "code": "1F4E6",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Món đồ còn tốt nhưng tôi ít dùng",
+    "text": "Tôi kiểm tra tình trạng đồ rồi tặng cho người cần. Một góc nhà trống hơn và món đồ lại có ích.",
+    "slot": "result",
+    "label": "Trao lại thùng đồ",
+    "code": "1F4E6",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "Món đồ còn tốt nhưng tôi ít dùng",
+    "text": "Tôi hỏi trước nơi tiếp nhận, làm sạch và gửi những món phù hợp. Việc dọn nhà mang lại niềm vui ngoài căn phòng của mình.",
+    "slot": "result",
+    "label": "Trao lại thùng đồ",
+    "code": "1F4E6",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "Bài hát cũ bất ngờ được phát",
+    "text": "Một bài hát quen vang lên lúc tôi đang làm việc nhà. Tôi nhớ giai điệu rất rõ, còn lời thì tự tin hát sai một đoạn.",
+    "slot": "scene",
+    "label": "Lắng nghe tai nghe nhạc",
+    "code": "1F3A7",
+    "action": "listen"
+  },
+  {
+    "sceneTitle": "Bài hát cũ bất ngờ được phát",
+    "text": "Tôi nghỉ vài phút, nghe hết bài và tìm lại lời đã quên. Một kỷ niệm nhỏ làm ngày hôm nay vui hơn.",
+    "slot": "result",
+    "label": "Lắng nghe tai nghe nhạc",
+    "code": "1F3A7",
+    "action": "listen"
+  },
+  {
+    "sceneTitle": "Bài hát cũ bất ngờ được phát",
+    "text": "Bạn trả lời bằng một câu chuyện hồi trước. Chúng tôi nhắc lại những ngày cũ rồi hỏi thăm cuộc sống hiện tại.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Dụng cụ mượn chưa trả",
+    "text": "Dọn nhà, tôi thấy món dụng cụ đã mượn của hàng xóm.",
+    "slot": "scene",
+    "label": "Hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Dụng cụ mượn chưa trả",
+    "text": "Tôi trả đồ gọn gàng và hỏi thăm hàng xóm.",
+    "slot": "result",
+    "label": "Trao lại hộp dụng cụ",
+    "code": "1F9F0",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "Dụng cụ mượn chưa trả",
+    "text": "Chúng tôi chọn được lúc thuận tiện để nhận lại đồ.",
+    "slot": "result",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Một chữ ký khó đọc",
+    "text": "Tôi muốn ghi lời tặng trong sách nhưng nét chữ hơi vội.",
+    "slot": "scene",
+    "label": "Viết vào cuốn sách",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Một chữ ký khó đọc",
+    "text": "Tôi có lời tặng rõ và vừa với trang sách.",
+    "slot": "result",
+    "label": "Viết vào cuốn sách",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Một chữ ký khó đọc",
+    "text": "Tôi ghi điều mình muốn nói bằng vài chữ.",
+    "slot": "result",
+    "label": "Viết vào cuốn sách",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Đêm nào cũng thêm một tập nữa",
+    "text": "Tôi định xem một tập phim rồi ngủ. Mấy tối liền, câu ‘một tập nữa thôi’ đều có phần tiếp theo của nó.",
+    "slot": "scene",
+    "label": "Tivi",
+    "code": "1F4FA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Đêm nào cũng thêm một tập nữa",
+    "text": "Tôi chọn giờ tắt màn hình và giữ lại các tập còn lại cho hôm sau. Sáng hôm sau, tôi có một khởi đầu bớt ngái ngủ.",
+    "slot": "result",
+    "label": "Ngủ",
+    "code": "1F634",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Đêm nào cũng thêm một tập nữa",
+    "text": "Tôi đặt điện thoại ra xa và đọc một ít. Buổi tối chậm lại, đủ thời gian nghỉ trước ngày mới.",
+    "slot": "result",
+    "label": "Đọc cuốn sách",
+    "code": "1F4D6",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "Viết lại một chuyện nhỏ trong ngày",
+    "text": "Tôi muốn ghi nhật ký nhưng trang đầu làm tôi nghĩ phải có chuyện thật lớn. Hôm nay chỉ có một lời chào dễ mến và bữa ăn vừa miệng.",
+    "slot": "scene",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Viết lại một chuyện nhỏ trong ngày",
+    "text": "Tôi viết vài dòng về lời chào và bữa ăn. Những ngày bình thường cũng có chi tiết đáng giữ lại.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Viết lại một chuyện nhỏ trong ngày",
+    "text": "Tôi chụp góc nhỏ mình thích và thêm một câu chú thích. Ký ức có thể bắt đầu từ một cách ghi rất đơn giản.",
+    "slot": "result",
+    "label": "Chụp ảnh bằng máy ảnh",
+    "code": "1F4F8",
+    "action": "photo"
+  },
+  {
+    "sceneTitle": "Buổi chơi cờ với người hàng xóm",
+    "text": "Người hàng xóm rủ tôi chơi một trò trên bàn. Luật không dài, nhưng tôi nghe xong vẫn cần hỏi lại xem lượt của mình được làm gì.",
+    "slot": "scene",
+    "label": "Quân cờ",
+    "code": "265F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Buổi chơi cờ với người hàng xóm",
+    "text": "Tôi học qua một ván thử và dần hiểu cách chơi. Thua một ván chẳng ngăn buổi gặp trở nên vui vẻ.",
+    "slot": "result",
+    "label": "Chơi quân cờ",
+    "code": "265F",
+    "action": "play"
+  },
+  {
+    "sceneTitle": "Buổi chơi cờ với người hàng xóm",
+    "text": "Chúng tôi mời thêm người quen và hướng dẫn nhau. Trò chơi tạo ra một dịp gặp gỡ đơn giản mà vui.",
+    "slot": "result",
+    "label": "Chơi quân cờ",
+    "code": "265F",
+    "action": "play"
+  },
+  {
+    "sceneTitle": "Ảnh họp mặt thiếu chú thích",
+    "text": "Một tấm ảnh cũ có nhiều người, tôi không nhớ hết ngày chụp.",
+    "slot": "scene",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Ảnh họp mặt thiếu chú thích",
+    "text": "Mọi người giúp ghi đúng thời gian và địa điểm.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Ảnh họp mặt thiếu chú thích",
+    "text": "Tôi giữ các thông tin rõ, để trống điều chưa biết.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Cuộc gặp ngoài công viên",
+    "text": "Bạn hẹn gặp ở công viên thay vì quán quen.",
+    "slot": "scene",
+    "label": "Cây xanh ngoài trời",
+    "code": "1F333",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Cuộc gặp ngoài công viên",
+    "text": "Chúng tôi vừa đi vừa kể chuyện gần đây.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "Cuộc gặp ngoài công viên",
+    "text": "Hai người trò chuyện thong thả ở một góc yên.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Những năm bốn mươi trong một album",
+    "text": "Tôi nhìn lại ảnh của gần mười năm qua. Có việc từng làm tôi lo rất nhiều giờ đã thành chuyện cũ, còn vài cuộc gặp nhỏ vẫn khiến tôi mỉm cười.",
+    "slot": "scene",
+    "label": "Khung ảnh",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Những năm bốn mươi trong một album",
+    "text": "Tôi chọn những khoảnh khắc đáng nhớ và ghi điều chúng dạy mình. Chặng đường đã qua có cả bài học lẫn niềm vui.",
+    "slot": "result",
+    "label": "Ghi lại điều nhớ từ những khoảnh khắc trong album",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Những năm bốn mươi trong một album",
+    "text": "Tôi nhắn lời cảm ơn cụ thể cho người từng giúp mình. Họ vẫn nhớ câu chuyện, và cuộc trò chuyện khiến cả hai vui.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Một kỹ năng chưa có trong danh sách",
+    "text": "Tôi thấy một bài hướng dẫn làm điều mình chưa từng thử. Bốn mươi chín tuổi vẫn có buổi đầu tiên, chỉ khác là tôi biết nên bắt đầu vừa sức.",
+    "slot": "scene",
+    "label": "Mảnh ghép",
+    "code": "1F9E9",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một kỹ năng chưa có trong danh sách",
+    "text": "Tôi làm theo từng bước và thử lại phần chưa hiểu. Hoàn thành một bài nhỏ khiến tôi muốn tiếp tục.",
+    "slot": "result",
+    "label": "Đồng ý",
+    "code": "1F44D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Một kỹ năng chưa có trong danh sách",
+    "text": "Tôi rủ người quen chia sẻ tiến độ mỗi tuần. Có người cùng trao đổi giúp việc học vui và dễ duy trì hơn.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Một kế hoạch cho tuổi năm mươi",
+    "text": "Tuổi năm mươi còn một năm nữa. Tôi nghĩ về cách mình muốn sống mỗi ngày, rồi nhận ra kế hoạch tốt cần chỗ cho nghỉ ngơi và những người mình quý.",
+    "slot": "scene",
+    "label": "Lên kế hoạch với lịch hẹn",
+    "code": "1F4C5",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Một kế hoạch cho tuổi năm mươi",
+    "text": "Tôi ghi ba thói quen phù hợp và bắt đầu từ hôm nay. Chặng mới không cần chờ đến đúng sinh nhật mới chuẩn bị.",
+    "slot": "result",
+    "label": "Viết vào giấy ghi chú",
+    "code": "1F4DD",
+    "action": "write"
+  },
+  {
+    "sceneTitle": "Một kế hoạch cho tuổi năm mươi",
+    "text": "Tôi dành thời gian cho những cuộc gặp mình thường để muộn. Một kế hoạch tốt cũng có thể là biết giữ liên lạc.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "Điều muốn thử trước tuổi năm mươi",
+    "text": "Tôi muốn chọn một trải nghiệm nhỏ trước sinh nhật kế tiếp.",
+    "slot": "scene",
+    "label": "Mục tiêu",
+    "code": "1F3AF",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Điều muốn thử trước tuổi năm mươi",
+    "text": "Tôi bắt đầu điều đã nghĩ tới từ lâu.",
+    "slot": "result",
+    "label": "Mục tiêu",
+    "code": "1F3AF",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Điều muốn thử trước tuổi năm mươi",
+    "text": "Tôi chọn được việc phù hợp thay vì ôm quá nhiều.",
+    "slot": "result",
+    "label": "Lên kế hoạch với mục tiêu",
+    "code": "1F3AF",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "Món quà cần biết người nhận",
+    "text": "Tôi định mua quà cho bạn nhưng chưa rõ họ đang cần gì.",
+    "slot": "scene",
+    "label": "Món quà",
+    "code": "1F381",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Món quà cần biết người nhận",
+    "text": "Tôi chọn món quà gần với điều bạn thích.",
+    "slot": "result",
+    "label": "Món quà",
+    "code": "1F381",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "Món quà cần biết người nhận",
+    "text": "Chúng tôi có buổi gặp thay cho một món đồ.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Diễn xuất gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi 29.",
+    "slot": "result",
+    "label": "Lịch hẹn thử lại sau hai năm",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎬 Diễn viên triển vọng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Diễn xuất. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi 39.",
+    "slot": "result",
+    "label": "Lịch hẹn thử lại sau hai năm",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 Minh tinh màn bạc.\nLương mới: 720.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Diễn xuất. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎬 Diễn viên triển vọng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi 29.",
+    "slot": "result",
+    "label": "Lịch hẹn thử lại sau hai năm",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Diễn xuất hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 Minh tinh màn bạc.\nLương mới: 720.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi 39.",
+    "slot": "result",
+    "label": "Lịch hẹn thử lại sau hai năm",
+    "code": "1F4C5",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Nhập ngũ gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎖️ Quân nhân kỳ cựu.\nLương mới: 144.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Nhập ngũ. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⭐ Chuyên gia quân sự.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Nhập ngũ. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎖️ Quân nhân kỳ cựu.\nLương mới: 144.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Nhập ngũ hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⭐ Chuyên gia quân sự.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Thanh nhạc gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎵 Ca sĩ triển vọng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Thanh nhạc. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 Ngôi sao ca nhạc.\nLương mới: 720.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Thanh nhạc. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎵 Ca sĩ triển vọng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Thanh nhạc hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 Ngôi sao ca nhạc.\nLương mới: 720.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Mỹ thuật gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🖼️ Họa sĩ triển vọng.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Mỹ thuật. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎨 Danh họa.\nLương mới: 420.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Mỹ thuật. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🖼️ Họa sĩ triển vọng.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Mỹ thuật hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎨 Danh họa.\nLương mới: 420.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Y khoa gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🥼 Bác sĩ chuyên khoa.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Y khoa. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏥 Trưởng khoa.\nLương mới: 600.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Y khoa. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🥼 Bác sĩ chuyên khoa.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Y khoa hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏥 Trưởng khoa.\nLương mới: 600.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Công nghệ thông tin gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🧑‍💻 Lập trình viên chính.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Công nghệ thông tin. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⭐ Chuyên gia lập trình.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Công nghệ thông tin. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🧑‍💻 Lập trình viên chính.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Công nghệ thông tin hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⭐ Chuyên gia lập trình.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Kế toán gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 📊 Kế toán tổng hợp.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Kế toán. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 💼 Kế toán trưởng.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Kế toán. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 📊 Kế toán tổng hợp.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Kế toán hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 💼 Kế toán trưởng.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Luật gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⚖️ Luật sư.\nLương mới: 264.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Luật. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏛️ Chuyên gia pháp lí.\nLương mới: 540.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Luật. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⚖️ Luật sư.\nLương mới: 264.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Luật hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏛️ Chuyên gia pháp lí.\nLương mới: 540.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Sư phạm gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏫 Giáo viên chủ nhiệm.\nLương mới: 144.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Sư phạm. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎓 Hiệu trưởng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Sư phạm. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏫 Giáo viên chủ nhiệm.\nLương mới: 144.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Sư phạm hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎓 Hiệu trưởng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Bóng đá gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🥅 Cầu thủ đội dự bị.\nLương mới: 360.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Bóng đá. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏆 Siêu sao sân cỏ.\nLương mới: 1.200.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Bóng đá. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🥅 Cầu thủ đội dự bị.\nLương mới: 360.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Bóng đá hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏆 Siêu sao sân cỏ.\nLương mới: 1.200.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Tâm lý học gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🧠 Chuyên viên tâm lí.\nLương mới: 192.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Tâm lý học. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌿 Chuyên gia tâm lí.\nLương mới: 360.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Tâm lý học. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🧠 Chuyên viên tâm lí.\nLương mới: 192.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Tâm lý học hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌿 Chuyên gia tâm lí.\nLương mới: 360.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Liên Quân Mobile gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🔥 Game thủ xuất sắc.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Liên Quân Mobile. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏆 Siêu sao thể thao điện tử.\nLương mới: 900.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Liên Quân Mobile. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🔥 Game thủ xuất sắc.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Liên Quân Mobile hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏆 Siêu sao thể thao điện tử.\nLương mới: 900.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Sáng tạo nội dung TikTok gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🔥 TikToker triển vọng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Sáng tạo nội dung TikTok. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 Ngôi sao TikTok.\nLương mới: 600.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Sáng tạo nội dung TikTok. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🔥 TikToker triển vọng.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Sáng tạo nội dung TikTok hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 Ngôi sao TikTok.\nLương mới: 600.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Sáng tạo nội dung YouTube gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎞️ YouTuber triển vọng.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Sáng tạo nội dung YouTube. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 YouTuber triệu người theo dõi.\nLương mới: 840.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Sáng tạo nội dung YouTube. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🎞️ YouTuber triển vọng.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Sáng tạo nội dung YouTube hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌟 YouTuber triệu người theo dõi.\nLương mới: 840.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Kinh doanh gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 📈 Trưởng nhóm kinh doanh.\nLương mới: 216.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Kinh doanh. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 💼 Giám đốc kinh doanh.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Kinh doanh. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 📈 Trưởng nhóm kinh doanh.\nLương mới: 216.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Kinh doanh hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 💼 Giám đốc kinh doanh.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Tài chính gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 📊 Chuyên viên phân tích.\nLương mới: 264.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Tài chính. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 💎 Chuyên gia tài chính.\nLương mới: 600.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Tài chính. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 📊 Chuyên viên phân tích.\nLương mới: 264.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Tài chính hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 💎 Chuyên gia tài chính.\nLương mới: 600.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Cơ khí gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⚙️ Kĩ thuật viên cơ khí.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Cơ khí. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏅 Chuyên gia cơ khí.\nLương mới: 336.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Cơ khí. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ⚙️ Kĩ thuật viên cơ khí.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Cơ khí hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏅 Chuyên gia cơ khí.\nLương mới: 336.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Kiến trúc gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏗️ Kiến trúc sư chính.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Kiến trúc. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏛️ Kiến trúc sư tài ba.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Kiến trúc. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏗️ Kiến trúc sư chính.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Kiến trúc hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🏛️ Kiến trúc sư tài ba.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Thiết kế thời trang gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👗 Nhà thiết kế thời trang.\nLương mới: 216.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Thiết kế thời trang. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ✨ Nhà thiết kế danh tiếng.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Thiết kế thời trang. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👗 Nhà thiết kế thời trang.\nLương mới: 216.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Thiết kế thời trang hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ✨ Nhà thiết kế danh tiếng.\nLương mới: 480.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Marketing gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🚀 Trưởng nhóm marketing.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Marketing. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👑 Ông hoàng marketing.\nLương mới: 540.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Marketing. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🚀 Trưởng nhóm marketing.\nLương mới: 240.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Marketing hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👑 Ông hoàng marketing.\nLương mới: 540.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Du lịch gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🗺️ Hướng dẫn viên chính.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Du lịch. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌏 Chuyên gia du lịch.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Du lịch. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🗺️ Hướng dẫn viên chính.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Du lịch hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 🌏 Chuyên gia du lịch.\nLương mới: 300.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Một nhiệm vụ trong ngành Ẩm thực gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
+    "slot": "scene",
+    "label": "Cân nhắc cách xử lý nhiệm vụ sát hạn",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "📋 Công việc sát hạn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👨‍🍳 Đầu bếp.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn được cân nhắc cho bậc cao nhất của ngành Ẩm thực. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
+    "slot": "scene",
+    "label": "Trao đổi với đồng nghiệp về nhiệm vụ chung",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚀 Dẫn dắt nhiệm vụ lớn",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👑 Vua đầu bếp.\nLương mới: 420.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn phát hiện một sai sót trong công việc ngành Ẩm thực. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
+    "slot": "scene",
+    "label": "Kính lúp kiểm tra sai sót",
+    "code": "1F50D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🔎 Sai sót bất ngờ",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👨‍🍳 Đầu bếp.\nLương mới: 180.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Một kế hoạch lớn trong ngành Ẩm thực hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
+    "slot": "scene",
+    "label": "Cân nhắc kế hoạch và rủi ro trước khi quyết định",
+    "code": "1F4CB",
+    "action": "plan"
+  },
+  {
+    "sceneTitle": "⚖️ Quyết định quan trọng",
+    "text": "Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc 👑 Vua đầu bếp.\nLương mới: 420.000.000 VNĐ/năm, áp dụng từ năm tiếp theo.",
+    "slot": "result",
+    "label": "Chúc mừng thăng bậc nghề",
+    "code": "1F389",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🌍 Món hàng quen quen",
+    "text": "Cửa thang máy mở ra giữa một hội trường đầy sinh vật kỳ lạ. Một con sứa mặc vest đưa tôi bảng đấu giá. Trên sân khấu là quả cầu xanh quen thuộc.\n\n‘Lô số 030: Trái Đất. Có biển, có rừng, cư dân hơi ồn. Chủ mới có thể cải tạo thành bãi đỗ tàu.’\n\nTôi nhìn kỹ. Đúng khu nhà mình đang nằm dưới ngón tay người dẫn chương trình.",
+    "slot": "scene",
+    "label": "Trái Đất",
+    "code": "1F30D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🌍 Món hàng quen quen",
+    "text": "Khoan! Nhà tôi còn trong đó!",
+    "slot": "result",
+    "label": "Trái Đất",
+    "code": "1F30D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🌍 Món hàng quen quen",
+    "text": "Tôi ngồi xem đến lúc tiếng búa hóa thành tiếng báo thức. Tôi tỉnh giấc trên ghế; phiên đấu giá chỉ là giấc mơ.",
+    "slot": "result",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "👽 Đại diện bất đắc dĩ",
+    "text": "Cả hội trường quay lại. Một thực thể có đôi mắt như hai dải ngân hà bước tới.\n\n‘Bạn là cư dân Trái Đất? Tốt. Hãy chứng minh nơi đó đáng giữ lại.’\n\nTôi hỏi sao không gọi người có chức có quyền. Nó nhìn tờ danh sách:\n\n‘Chúng tôi bấm chuông nhiều nơi rồi. Chỉ có bạn đi xuống.’",
+    "slot": "scene",
+    "label": "Người ngoài hành tinh",
+    "code": "1F47D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "👽 Đại diện bất đắc dĩ",
+    "text": "Được, cho tôi nói vài câu.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "👽 Đại diện bất đắc dĩ",
+    "text": "Tôi xin rút lui, bước qua cửa thoát hiểm và tỉnh dậy trên ghế. Cuộc gặp gỡ kỳ lạ chỉ diễn ra trong giấc mơ.",
+    "slot": "result",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "🍲 Thứ đáng giá nhất",
+    "text": "Thực thể đưa tôi đến một căn phòng có thể lấy ra bất cứ thứ gì từ ký ức. Tôi được chọn một món để trình bày trước hội đồng.\n\n‘Chọn cẩn thận. Chúng tôi đã thấy rất nhiều vàng và kim cương.’",
+    "slot": "scene",
+    "label": "Suy nghĩ",
+    "code": "1F914",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🍲 Thứ đáng giá nhất",
+    "text": "Một mâm cơm có đủ người.",
+    "slot": "result",
+    "label": "Bữa ăn",
+    "code": "1F37D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🍲 Thứ đáng giá nhất",
+    "text": "Chiếc áo mưa từng được cho.",
+    "slot": "result",
+    "label": "Chiếc áo mưa có mũ",
+    "code": "1F9E5",
+    "action": "raincoat"
+  },
+  {
+    "sceneTitle": "🍲 Thứ đáng giá nhất",
+    "text": "Hội đồng chỉ sang thùng chặn cửa bằng vàng của họ. Tôi hết giờ trình bày rồi tỉnh giấc trên ghế. Núi vàng và phiên đấu giá đều chỉ là giấc mơ.",
+    "slot": "result",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "⚖️ Nhưng con người đâu chỉ tốt?",
+    "text": "Thực thể nhìn món đồ tôi chọn rồi mở một màn hình lớn. Trên đó có những dòng sông đầy rác, những cuộc cãi vã và người đi ngang qua một người đang cần giúp.\n\n‘Nếu biết yêu thương, tại sao các bạn vẫn làm những chuyện này?’\n\nTôi định cãi, nhưng chợt nhận ra trong một hình ảnh có chính mình — đang vội bỏ đi vì nghĩ sẽ có người khác giúp.",
+    "slot": "scene",
+    "label": "Trái Đất",
+    "code": "1F30D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Nhưng con người đâu chỉ tốt?",
+    "text": "Đúng. Có lúc tôi cũng thờ ơ.",
+    "slot": "result",
+    "label": "Suy nghĩ",
+    "code": "1F914",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Nhưng con người đâu chỉ tốt?",
+    "text": "Chúng tôi chưa tốt, nhưng có thể học.",
+    "slot": "result",
+    "label": "Suy nghĩ",
+    "code": "1F914",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚖️ Nhưng con người đâu chỉ tốt?",
+    "text": "Màn hình phóng to mặt tôi. Tôi xấu hổ đến mức giật mình tỉnh dậy trên ghế. Hội đồng chỉ có trong mơ, nhưng sự thờ ơ ấy khiến tôi nghĩ ngợi.",
+    "slot": "result",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "🎫 Một vé dành riêng cho tôi",
+    "text": "Hội đồng tạm ngừng phiên đấu giá. Thực thể kéo tôi sang một bên, đưa ra tấm vé:\n\n‘Bạn có thể đến một hành tinh khác. Nhà ở, thức ăn, một cuộc sống thoải mái. Nhưng chỉ có một chỗ.’\n\nTôi hỏi còn những người ở nhà thì sao.\n\nNó không trả lời, chỉ đặt tấm vé vào tay tôi.",
+    "slot": "scene",
+    "label": "Vé",
+    "code": "1F3AB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🎫 Một vé dành riêng cho tôi",
+    "text": "Một chỗ thì tôi không đi.",
+    "slot": "result",
+    "label": "Từ chối",
+    "code": "1F645",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🎫 Một vé dành riêng cho tôi",
+    "text": "Có cách nào giữ mọi người lại?",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🎫 Một vé dành riêng cho tôi",
+    "text": "Tôi bước qua cổng, nghe tiếng người thân gọi phía sau rồi tỉnh giấc trên ghế. Không có vé đi hành tinh khác; tất cả chỉ là một giấc mơ.",
+    "slot": "result",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "⏰ Phán quyết cuối cùng",
+    "text": "Tôi trở lại trước hội đồng, tay không.\n\nTôi chẳng nghĩ ra bài diễn văn nào hay ho, chỉ nói: ‘Tôi chưa biết làm sao cứu cả hành tinh. Nhưng nếu được về, tôi sẽ bắt đầu bằng những chuyện mình làm được.’\n\nThực thể nhìn tôi một lúc, rồi hạ chiếc búa xuống.\n\nBíp. Bíp. Bíp.\n\nTôi bật dậy trên ghế. Điện thoại đang báo thức. Tivi vẫn phát bộ phim khoa học viễn tưởng tôi xem dở. Tấm bảng đấu giá trong tay hóa ra là chiếc điều khiển.\n\nTất cả chỉ là một giấc mơ. Không có phiên đấu giá, không có vé đi hành tinh khác. Ngoài cửa sổ, người hàng xóm lớn tuổi đang loay hoay nhặt túi đồ vừa rơi.",
+    "slot": "scene",
+    "label": "Tỉnh giấc trên ghế",
+    "code": "1F971",
+    "action": "wake"
+  },
+  {
+    "sceneTitle": "⏰ Phán quyết cuối cùng",
+    "text": "Tôi đứng dậy giúp bác hàng xóm nhặt và xách đồ lên nhà. Trong túi có cả đơn hàng cam bác vừa chuẩn bị giao, may mà không quả nào bị dập. Bác cười: ‘May có cháu, bác còn kịp giao hàng. Cầm chút tiền uống nước nhé!’ Bác tặng tôi hai quả cam cùng 500.000 VNĐ để cảm ơn. Tôi không cứu thế giới trong mơ, nhưng đã làm một việc tốt khi thức dậy.",
+    "slot": "result",
+    "label": "Giúp hàng xóm xách túi đồ lên nhà",
+    "code": "1F6CD",
+    "action": "carry"
+  },
+  {
+    "sceneTitle": "⏰ Phán quyết cuối cùng",
+    "text": "Tôi nằm xuống ngủ tiếp. Phiên đấu giá Trái Đất chỉ là giấc mơ, và tôi để lỡ cơ hội giúp bác hàng xóm.",
+    "slot": "result",
+    "label": "Ngủ",
+    "code": "1F634",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚡ Sợi dây trong vũng nước",
+    "text": "Đến gần, tôi thấy một sợi dây điện đứt đang tóe lửa trong vũng nước chắn ngang. Người đàn ông cố nhổm dậy rồi chỉ về phía tôi: ‘Đừng bước xuống!’\n\nBên trái có một đoạn nền khô, tách khỏi vũng nước, dẫn đến chỗ ông ấy.",
+    "slot": "scene",
+    "label": "Biển cảnh báo",
+    "code": "26A0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⚡ Sợi dây trong vũng nước",
+    "text": "Đi lối khô, tránh xa dây điện!",
+    "slot": "result",
+    "label": "Đi vòng qua nền khô, tránh dây điện",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "⚡ Sợi dây trong vũng nước",
+    "text": "Tôi phớt lờ sợi dây điện đang tóe lửa và bước vào vùng nước có điện. Tôi bị điện giật tử vong; cuộc đời kết thúc ở tuổi 35.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⏳ Tiếng kim loại rạn nứt",
+    "text": "Tôi đến bên người đàn ông. Thanh sắt đè lên phần ống quần, giữ ông ấy lại. Ông đã rút được chân ra khỏi chiếc giày mắc kẹt, nhưng vẫn cố với lấy túi tài liệu nằm dưới giàn giáo.\n\nPhía trên vang lên tiếng rắc. Một thanh giằng vừa bung khỏi mối nối.",
+    "slot": "scene",
+    "label": "Công trường",
+    "code": "1F3D7",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "⏳ Tiếng kim loại rạn nứt",
+    "text": "Bỏ túi đi, tôi dìu ông ra!",
+    "slot": "result",
+    "label": "Dìu người bị nạn ra nơi an toàn",
+    "code": "1F691",
+    "action": "rescue"
+  },
+  {
+    "sceneTitle": "⏳ Tiếng kim loại rạn nứt",
+    "text": "Tôi phớt lờ tiếng rạn nứt và thanh giằng vừa bung khỏi mối nối. Khi tôi cúi xuống dưới giàn giáo, cả khung sắt đổ sập. Tôi tử vong; cuộc đời kết thúc ở tuổi 35.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚑 Người được cứu",
+    "text": "Chúng tôi vừa đến chỗ an toàn thì giàn giáo phía sau đổ xuống. Đội cứu hộ đến nơi, tiếp nhận người bị nạn. Tôi ngồi bệt xuống, hai tay vẫn run.\n\nVài ngày sau, ông tìm đến cảm ơn. Hóa ra ông là chủ một doanh nghiệp, hôm ấy đến kiểm tra công trình đang tạm dừng thi công. Ông nói:\n\n‘Cậu nhắc tôi bỏ cái túi, tôi mới chịu đi. Nghĩ lại, chẳng có giấy tờ nào đáng để đổi mạng cả.’\n\nÔng ngỏ ý tặng tôi 50.000.000 VNĐ để cảm ơn.",
+    "slot": "scene",
+    "label": "Xe cứu hộ",
+    "code": "1F691",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚑 Người được cứu",
+    "text": "Tôi nhận 50.000.000 VNĐ từ ông. Tôi đã trở về, và giúp một người khác cũng được trở về. Tối đó, bữa cơm bình thường cũng ngon hơn mọi ngày.",
+    "slot": "result",
+    "label": "Tiền",
+    "code": "1F4B0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🚑 Người được cứu",
+    "text": "Tôi nhận 25.000.000 VNĐ. Nửa còn lại được ông chuyển đi hỗ trợ người khó khăn. Tôi đã trở về, và giúp một người khác cũng được trở về.",
+    "slot": "result",
+    "label": "Trao lại tiền",
+    "code": "1F4B0",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "🍵 Hai chén trà, một người khách",
+    "text": "Bà cụ ngồi cạnh bàn gỗ, trước mặt là hai chén trà. Bà bảo đã đợi người đến giúp từ lâu.\n\nKhi tôi cúi xuống đặt ba lô, ánh chớp lóe lên. Trên tường chỉ có bóng của tôi.\n\nBà nhận ra ánh mắt ấy, khẽ nói: ‘Đừng sợ. Bà chỉ muốn nhờ con gửi lại một món đồ.’",
+    "slot": "scene",
+    "label": "Chén trà",
+    "code": "1F375",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🍵 Hai chén trà, một người khách",
+    "text": "Bà cứ nói, con nghe.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🍵 Hai chén trà, một người khách",
+    "text": "Tôi xin phép rời đi. Bà không giữ lại, chỉ nhìn chén trà còn nguyên. Lời nhờ gửi món đồ chưa kịp được nói hết.",
+    "slot": "result",
+    "label": "Cửa",
+    "code": "1F6AA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📷 Đứa trẻ trong bức ảnh",
+    "text": "Bà đưa tôi tấm ảnh một bé gái đeo vòng bạc, mặt dây hình trăng khuyết.\n\n‘Con gái bà, tên An. Hai mẹ con lạc nhau trong một trận lũ. Bà đợi mãi… chưa kịp gặp lại.’\n\nBà nhờ tôi lấy chiếc hộp ở căn phòng cuối hành lang. Trong đó có những thứ giúp tìm cô bé.\n\nNhưng khi đến cửa phòng, tôi nghe tiếng trẻ con bên trong: ‘Đừng tin bà ấy…’",
+    "slot": "scene",
+    "label": "Khung ảnh bé An",
+    "code": "1F5BC",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "📷 Đứa trẻ trong bức ảnh",
+    "text": "Hỏi bà rõ chuyện đã.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "📷 Đứa trẻ trong bức ảnh",
+    "text": "Tôi quay ra. Bà gật đầu, cánh cửa chính tự mở. Tôi chưa đủ can đảm tìm hiểu câu chuyện của hai mẹ con.",
+    "slot": "result",
+    "label": "Cửa",
+    "code": "1F6AA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🪞 Người trong gương",
+    "text": "Căn phòng phủ bụi, riêng chiếc gương vẫn sáng rõ. Trong gương, một bé gái đang ngồi ôm chiếc hộp. Tôi quay lại — chiếc ghế phía sau hoàn toàn trống.\n\nCô bé chỉ xuống gầm giường rồi mấp máy môi: ‘Mang cho mẹ…’\n\nTôi cúi xuống, thấy chiếc hộp gỗ khắc chữ An. Bên cạnh là một hộp trang sức đang hé mở, ánh vàng lấp lánh.",
+    "slot": "scene",
+    "label": "Gương",
+    "code": "1FA9E",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🪞 Người trong gương",
+    "text": "Lấy đúng hộp bà nhờ thôi.",
+    "slot": "result",
+    "label": "Mang thùng đồ",
+    "code": "1F4E6",
+    "action": "carry"
+  },
+  {
+    "sceneTitle": "🪞 Người trong gương",
+    "text": "Vừa chạm vào trang sức, tôi nghe giọng bà: ‘Thứ không phải của mình, con ạ.’ Tôi giật mình chạy ra; khi quay lại, cửa đã khóa. Tôi không mang theo được món trang sức nào.",
+    "slot": "result",
+    "label": "Cửa",
+    "code": "1F6AA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "✉️ Lá thư chưa được mở",
+    "text": "Trong hộp là giấy tờ cũ và những lá thư bà viết cho con qua từng năm. Lá cuối chỉ có một câu:\n\n‘Nếu con còn sống, đừng nghĩ mẹ đã bỏ con.’\n\nDưới đáy hộp có một phong thư gửi đến từ mái ấm, vẫn chưa bóc. Ngày gửi muộn hơn ngày mất ghi trên di ảnh của bà ở góc phòng.\n\nTôi mở thư: cô bé đã được cứu, sau đó được một gia đình nhận nuôi. Bức thư có tên mái ấm và thông tin liên hệ.\n\nBà nhìn tôi, đôi tay run run: ‘Vậy là con bà còn sống?’",
+    "slot": "scene",
+    "label": "Đọc thư mời",
+    "code": "1F4E8",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "✉️ Lá thư chưa được mở",
+    "text": "Con sẽ tìm cô ấy cho bà.",
+    "slot": "result",
+    "label": "Tìm hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "✉️ Lá thư chưa được mở",
+    "text": "Tôi bàn giao manh mối cho bên tìm thân nhân nhưng không tiếp tục tham gia. Câu chuyện của hai mẹ con vẫn còn chờ một cuộc đoàn tụ; tôi không nhận thưởng đặc biệt.",
+    "slot": "result",
+    "label": "Trao lại hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "🌙 Người con gái đã lớn",
+    "text": "Sau nhiều ngày lần theo hồ sơ mái ấm, tôi tìm được bà An — giờ đã lớn tuổi và đang điều hành một doanh nghiệp.\n\nNghe câu chuyện, bà nghi tôi lừa đảo. Nhưng khi nhìn thấy tấm ảnh, bà lặng người, lấy từ trong cổ áo ra chiếc vòng bạc có mặt trăng khuyết.\n\n‘Tôi cứ nghĩ mẹ không đi tìm mình…’\n\nTôi đưa bà đọc những lá thư. Bà đọc rất chậm, rồi hỏi liệu tôi có thể dẫn bà về căn nhà cũ không.",
+    "slot": "scene",
+    "label": "Đọc thư mời",
+    "code": "1F4E8",
+    "action": "read"
+  },
+  {
+    "sceneTitle": "🌙 Người con gái đã lớn",
+    "text": "Mình về thôi, bà vẫn đang đợi.",
+    "slot": "result",
+    "label": "Đi bộ ngoài trời",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "🌙 Người con gái đã lớn",
+    "text": "Bà An cảm ơn và nhận lại kỷ vật. Tôi không chứng kiến cuộc đoàn tụ; câu chuyện của tôi dừng ở đây, chưa mở khóa thành tựu và không nhận thưởng đặc biệt.",
+    "slot": "result",
+    "label": "Trao lại thư mời",
+    "code": "1F4E8",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "🕯️ Lời hẹn cuối cùng",
+    "text": "Tôi đưa bà An trở lại vào buổi chiều. Căn nhà giờ chỉ còn mái ngói sụp một góc và chiếc bàn gỗ phủ bụi.\n\nBà đặt những lá thư xuống, nghẹn ngào:\n\n‘Mẹ ơi, con về rồi.’\n\nMột làn gió nhẹ thổi qua. Trong khoảnh khắc, tôi thấy bà cụ đứng bên cửa, mỉm cười như lần đầu gặp. Bà đưa tay vuốt tóc con gái, rồi bóng dáng dần tan trong nắng.\n\nBà An khẽ nhắm mắt: ‘Mùi dầu gió của mẹ… Tôi vẫn nhớ.’\n\nVài tuần sau, bà cho sửa lại căn nhà thành nơi hương khói và trao tôi 200.000.000 VNĐ từ tiền cá nhân để cảm ơn. Bà cũng quyết định hỗ trợ mái ấm từng cưu mang mình.",
+    "slot": "scene",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Lời hẹn cuối cùng",
+    "text": "Tôi nhận 200.000.000 VNĐ để lo cho gia đình. Bà An tiếp tục hỗ trợ mái ấm từng cưu mang mình. Điều tôi nhớ nhất vẫn là nụ cười của người mẹ bên khung cửa chiều hôm ấy.",
+    "slot": "result",
+    "label": "Nhận tiền cảm ơn để lo cho gia đình",
+    "code": "1F4B0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Lời hẹn cuối cùng",
+    "text": "Tôi nhận 100.000.000 VNĐ. Phần còn lại góp thêm cho mái ấm, bên cạnh khoản hỗ trợ bà An đã quyết định. Một lời hẹn được trọn vẹn và sự giúp đỡ tiếp tục đến với những người khác.",
+    "slot": "result",
+    "label": "Góp tiền hỗ trợ mái ấm",
+    "code": "1F4B0",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "🎫 Người soát vé thứ hai",
+    "text": "Toa 04 vắng tanh. Khi tàu chạy, một người soát vé đến, xin kiểm tra vé rồi bảo:\n\n‘Anh ngồi nhầm rồi. Ghế 18 ở phía sau. Để tôi giữ vé, anh đi theo.’\n\nTôi nhìn lên: ngay trên đầu mình là số 18. Trong tấm kính cửa sổ, tôi thấy bóng mình, chiếc ghế và chiếc kìm bấm vé lơ lửng — nhưng không có bóng người đang đứng trước mặt.\n\nNgười ấy vẫn cười: ‘Kính cũ nên phản chiếu sai thôi.’",
+    "slot": "scene",
+    "label": "Vé",
+    "code": "1F3AB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🎫 Người soát vé thứ hai",
+    "text": "Tôi đúng ghế, trả vé giúp.",
+    "slot": "result",
+    "label": "Yêu cầu người soát vé trả lại vé",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🎫 Người soát vé thứ hai",
+    "text": "Tôi bỏ qua số 18 ngay trên đầu và bóng phản chiếu kỳ lạ, theo người soát vé qua cửa nối toa. Cánh cửa mở ra khoảng không bên ngoài đoàn tàu đang chạy. Tôi tử vong; cuộc đời kết thúc ở tuổi 45.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Một người quen ở sân ga",
+    "text": "Tàu dừng. Qua cửa kính, tôi thấy bà cụ giống người trong tấm ảnh trên vé đứng dưới sân ga, vẫy tay:\n\n‘Xuống đây con, bà dẫn về.’\n\nTôi vừa định đứng dậy thì thấy bàn tay bà đang nắm một chiếc vòng có mặt dây hình ngôi sao.\n\n‘Con nhìn ảnh rồi chứ? Chiếc vòng bà tặng bé An đấy.’\n\nTôi cúi nhìn lại tấm ảnh trên vé: bé An đeo vòng bạc có mặt dây trăng khuyết. Dưới sân ga, bà vẫn giục, giọng mỗi lúc một gấp.",
+    "slot": "scene",
+    "label": "Trăng khuyết",
+    "code": "1F319",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Một người quen ở sân ga",
+    "text": "Vòng của cô An là trăng khuyết.",
+    "slot": "result",
+    "label": "Trăng khuyết",
+    "code": "1F319",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Một người quen ở sân ga",
+    "text": "Tôi bước xuống dù chiếc vòng hình ngôi sao không khớp với mặt dây trăng khuyết. Sân ga biến mất, chỉ còn đường ray tối đen và ánh đèn một đoàn tàu lao tới. Tôi tử vong; cuộc đời kết thúc ở tuổi 45.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🌅 Hai cánh cửa cuối cùng",
+    "text": "Khi trời gần sáng, tàu dừng lần nữa. Hai cửa cùng mở.\n\nBên trái là người thân đang gọi tôi, sau lưng họ có bảng ‘LỐI RA’. Bên phải chỉ là sân ga cũ, vắng người.\n\nTôi cúi nhìn tấm vé. Nơi đến ghi Bình An. Biển bên phải cũng là Bình An, còn chiếc đồng hồ trên sân ga đang chạy bình thường.\n\nỞ bên trái, đồng hồ cứ lặp mãi một giây. Người thân vẫn gọi đúng một câu, không thay đổi nét mặt.",
+    "slot": "scene",
+    "label": "Cửa",
+    "code": "1F6AA",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🌅 Hai cánh cửa cuối cùng",
+    "text": "Tôi bước qua cửa bên phải, xuống đúng ga Bình An. Tôi ngoảnh lại. Đường ray trống không, như chưa từng có đoàn tàu nào dừng ở đó.\n\nTôi mở lại tấm vé. Bức ảnh cũ và dòng chữ phía sau đã biến mất, chỉ còn nơi đến Bình An. Tôi giữ vé, rời sân ga và trở về nhà khi trời sáng. Tôi không biết ai đã gửi lời nhắc, nhưng hiểu rằng không phải ai gọi tên mình cũng là người đang chờ mình về.",
+    "slot": "result",
+    "label": "Rời ga Bình An và đi về nhà",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "🌅 Hai cánh cửa cuối cùng",
+    "text": "Tôi bỏ qua chiếc đồng hồ lặp mãi một giây và bước sang cửa bên trái. Những bàn tay lạnh ngắt kéo tôi vào bóng tối. Tôi tử vong; cuộc đời kết thúc ở tuổi 45.",
+    "slot": "result",
+    "label": "Nến tưởng niệm",
+    "code": "1F56F",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💌 Có người để ý tôi!",
+    "text": "Trong lần ghé nơi làm việc tìm cơ hội việc làm, Hoàng Minh Khôi ngỏ lời làm quen. Người ấy thích sự hài hước của tôi, kể cả những câu đùa hơi nhạt. Tôi tưởng người ta hỏi tiến độ, hóa ra hỏi… mình có người yêu chưa!\n\nHoàng Minh Khôi · Nam · 24 tuổi\n🎂 Sinh nhật: 13/05 · Kim Ngưu\n✨ Tính cách: chu đáo, năng động\n💪 Sức khỏe 58% · 🧠 Trí tuệ 58%\n❤️ Hạnh phúc 58% · 👁️ Ngoại hình 58%\n\nTôi có muốn thử hẹn hò không?",
+    "slot": "scene",
+    "label": "Trái tim",
+    "code": "2764",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💌 Có người để ý tôi!",
+    "text": "Tôi và Hoàng Minh Khôi đồng ý tìm hiểu nhau. Từ nay, giờ nghỉ không chỉ có cà phê mà còn có người để mong gặp!",
+    "slot": "result",
+    "label": "Trái tim",
+    "code": "2764",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💌 Có người để ý tôi!",
+    "text": "Tôi cảm ơn Hoàng Minh Khôi và nói rõ cảm xúc của mình. Người ấy tôn trọng quyết định; chúng tôi vẫn cư xử thân thiện.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "💍 Mình cưới nhau nhé?",
+    "text": "Trong một buổi trò chuyện yên tĩnh, Người bạn đời nắm tay tôi và hỏi: “Mình đã cùng nhau trải qua nhiều chuyện. Bạn có muốn cưới tôi và xây dựng cuộc sống chung không?” Tôi cần trả lời thật lòng về điều mình muốn.",
+    "slot": "scene",
+    "label": "Nhẫn cưới",
+    "code": "1F48D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💍 Mình cưới nhau nhé?",
+    "text": "Tôi đồng ý cưới Người bạn đời. Chúng tôi cùng bàn bạc, tổ chức một buổi lễ phù hợp và chính thức trở thành bạn đời. Một chương mới bắt đầu từ sự tự nguyện của cả hai.",
+    "slot": "result",
+    "label": "Nhẫn cưới",
+    "code": "1F48D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💍 Mình cưới nhau nhé?",
+    "text": "Tôi nói thật rằng mình chưa muốn cưới. Người bạn đời đồng ý cho cả hai thêm thời gian và hẹn sẽ nói lại chuyện này sau hai năm, khi tôi 32 tuổi.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🧸 Mình có muốn sinh con không?",
+    "text": "Người bạn đời mở lời về chuyện sinh con: “Bạn có muốn chúng mình cùng nuôi dạy một đứa trẻ không?” Hai người cùng bàn về việc chào đón một em bé.\n\nChi phí nuôi con bắt đầu từ 12.000.000 VNĐ/năm, tăng 2.000.000 VNĐ mỗi tuổi và được tính đến hết năm con 18 tuổi.",
+    "slot": "scene",
+    "label": "Em bé",
+    "code": "1F476",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧸 Mình có muốn sinh con không?",
+    "text": "Tôi và Người bạn đời cùng quyết định sinh con. Gia đình chào đón một em bé và bắt đầu hành trình chăm sóc, nuôi dạy con.",
+    "slot": "result",
+    "label": "Ôm và chăm sóc em bé mới chào đời",
+    "code": "1F9D1-200D-1F37C",
+    "action": "hug"
+  },
+  {
+    "sceneTitle": "🧸 Mình có muốn sinh con không?",
+    "text": "Tôi nói thật rằng mình chưa sẵn sàng. Người bạn đời đồng ý chờ và sẽ hỏi lại sau hai năm, khi tôi 37 tuổi.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🧸 Mình có muốn nhận con nuôi không?",
+    "text": "Người bạn đời mở lời về chuyện nhận con nuôi: “Bạn có muốn chúng mình cùng nuôi dạy một đứa trẻ không?” Hai người dự định nhận nuôi một bé 5 tuổi.\n\nChi phí nuôi con bắt đầu từ 22.000.000 VNĐ/năm, tăng 2.000.000 VNĐ mỗi tuổi và được tính đến hết năm con 18 tuổi.",
+    "slot": "scene",
+    "label": "Em nhỏ",
+    "code": "1F9D2",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧸 Mình có muốn nhận con nuôi không?",
+    "text": "Tôi và Người bạn đời đồng ý nhận nuôi một bé 5 tuổi. Chúng tôi đón con về nhà và cùng nhận trách nhiệm chăm sóc, nuôi dạy con.",
+    "slot": "result",
+    "label": "Ôm đón con nuôi về gia đình",
+    "code": "1F9D1-200D-1F9D2",
+    "action": "hug"
+  },
+  {
+    "sceneTitle": "🧸 Mình có muốn nhận con nuôi không?",
+    "text": "Tôi nói thật rằng mình chưa sẵn sàng. Người bạn đời đồng ý chờ và sẽ hỏi lại sau hai năm, khi tôi 37 tuổi.",
+    "slot": "result",
+    "label": "Hai người trò chuyện",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🏗️ Tiếng kêu sau hàng rào",
+    "text": "Tôi báo vị trí rồi theo lối bê tông đến gần.",
+    "slot": "result",
+    "label": "Đi bộ theo lối an toàn",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "🏚️ Căn nhà gọi tên tôi",
+    "text": "Tôi bước vào hỏi chuyện.",
+    "slot": "result",
+    "label": "Hai người trao đổi",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🚉 Chuyến cuối lúc 0 giờ",
+    "text": "Tôi giữ vé và lên toa 04.",
+    "slot": "result",
+    "label": "Tàu hỏa",
+    "code": "1F686",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🍲 Thứ đáng giá nhất",
+    "text": "Một bàn ăn hiện ra, có tiếng gọi nhau kéo ghế.",
+    "slot": "result",
+    "label": "Bữa ăn",
+    "code": "1F37D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🍲 Thứ đáng giá nhất",
+    "text": "Tôi kể về người lạ đã giúp mình giữa cơn mưa.",
+    "slot": "result",
+    "label": "Hai người trao đổi",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "⚖️ Nhưng con người đâu chỉ tốt?",
+    "text": "Tôi thừa nhận và xin cơ hội sửa đổi.",
+    "slot": "result",
+    "label": "Hai người trao đổi",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "⚖️ Nhưng con người đâu chỉ tốt?",
+    "text": "Tôi kể về những lần con người nhận lỗi và làm lại.",
+    "slot": "result",
+    "label": "Hai người trao đổi",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🎫 Một vé dành riêng cho tôi",
+    "text": "Tôi trả vé, quay về hội trường.",
+    "slot": "result",
+    "label": "Trao lại vé",
+    "code": "1F3AB",
+    "action": "give"
+  },
+  {
+    "sceneTitle": "🎫 Một vé dành riêng cho tôi",
+    "text": "Tôi xin tiếp tục trình bày.",
+    "slot": "result",
+    "label": "Hai người trao đổi",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "⚡ Sợi dây trong vũng nước",
+    "text": "Tôi vòng qua đoạn nền khô.",
+    "slot": "result",
+    "label": "Đi bộ theo lối an toàn",
+    "code": "1F6B6",
+    "action": "walk"
+  },
+  {
+    "sceneTitle": "⏳ Tiếng kim loại rạn nứt",
+    "text": "Ông buông túi tài liệu, cùng tôi rời khỏi khu vực.",
+    "slot": "result",
+    "label": "Dìu người bị nạn ra nơi an toàn",
+    "code": "1F691",
+    "action": "rescue"
+  },
+  {
+    "sceneTitle": "📷 Đứa trẻ trong bức ảnh",
+    "text": "Bà giải thích căn nhà thường vọng lại những âm thanh cũ; dặn tôi tìm chiếc hộp khắc tên An.",
+    "slot": "result",
+    "label": "Hai người trao đổi",
+    "code": "1F4AC",
+    "action": "talk"
+  },
+  {
+    "sceneTitle": "🪞 Người trong gương",
+    "text": "Tôi mang chiếc hộp gỗ khắc tên An ra.",
+    "slot": "result",
+    "label": "Mang thùng đồ",
+    "code": "1F4E6",
+    "action": "carry"
+  },
+  {
+    "sceneTitle": "✉️ Lá thư chưa được mở",
+    "text": "Tôi nhận giữ hộp thư và quyết định lần theo thông tin từ mái ấm.",
+    "slot": "result",
+    "label": "Tìm hồ sơ giấy tờ",
+    "code": "1F4C1",
+    "action": "search"
+  },
+  {
+    "sceneTitle": "🚉 Chuyến cuối lúc 0 giờ",
+    "text": "Sau chuyến đi xa, tôi đến ga khi chuyến tàu cuối chuẩn bị rời bến. Vé ghi rõ: toa 04, ghế 18.\n\nNhân viên soát vé nhìn tôi, bỗng hạ giọng:\n\n‘Đêm nay toa bốn hỏng đèn. Anh sang toa năm, chỗ đó sáng.’\n\nTôi định nghe theo thì tấm vé nóng lên. Mặt sau hiện dòng chữ quen thuộc, giống nét chữ trong những lá thư của bà cụ năm xưa:\n\n‘Đừng đổi chỗ đã dành cho con.’",
+    "slot": "scene",
+    "label": "Tàu hỏa",
+    "code": "1F686",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🎫 Người soát vé thứ hai",
+    "text": "Nụ cười tắt hẳn. Người ấy đặt vé xuống rồi lùi vào bóng tối.",
+    "slot": "result",
+    "label": "Vé",
+    "code": "1F3AB",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Một người quen ở sân ga",
+    "text": "Khuôn mặt ngoài cửa kính méo đi. Tàu chuyển bánh, bóng người bị bỏ lại phía sau.",
+    "slot": "result",
+    "label": "Tàu hỏa",
+    "code": "1F686",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🕯️ Một người quen ở sân ga",
+    "text": "Tàu dừng. Qua cửa kính, tôi thấy bà cụ năm xưa đứng dưới sân ga, vẫy tay:\n\n‘Xuống đây con, bà dẫn về.’\n\nTôi mừng đến mức đứng bật dậy. Nhưng bàn tay bà đang nắm một chiếc vòng có mặt dây hình ngôi sao.\n\n‘Con còn nhớ không? Chiếc vòng bà tặng bé An đấy.’\n\nTôi chợt nhớ rất rõ: trong tấm ảnh cũ, mặt dây là trăng khuyết. Dưới sân ga, bà vẫn giục, giọng mỗi lúc một gấp.",
+    "slot": "scene",
+    "label": "Trăng khuyết",
+    "code": "1F319",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🌅 Hai cánh cửa cuối cùng",
+    "text": "Tôi bước qua cửa bên phải, xuống đúng ga Bình An. Tôi ngoảnh lại. Đường ray trống không, như chưa từng có đoàn tàu nào dừng ở đó.\n\nĐiện thoại đổ chuông. Bà An gọi, giọng lo lắng: ‘Đêm qua tôi mơ thấy mẹ dặn gọi hỏi xem cậu về đến nhà chưa.’\n\nVài ngày sau, bà mời tôi đến gặp. Đúng dịp hoàn tất việc phân chia tài sản gia đình, bà quyết định tặng thêm tôi 100.000.000 VNĐ — khoản tiền bà đã dự định từ lâu để cảm ơn người giúp mình tìm lại mẹ.\n\nTrong phong bì kèm theo có tấm ảnh căn nhà cũ. Bên khung cửa, một vệt nắng trông giống bóng người đang mỉm cười.",
+    "slot": "result",
+    "label": "Tiền",
+    "code": "1F4B0",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💍 Mình đã sẵn sàng cưới chưa?",
+    "text": "Người bạn đời nhắc lại chuyện cưới hỏi sau thời gian chờ đợi: “Mình đã nói về việc này rồi. Bây giờ bạn có muốn cùng tôi xây dựng cuộc sống chung không?” Người ấy nói rõ rằng nếu tôi vẫn không muốn cưới, hai người sẽ chia tay vì mong muốn tương lai khác nhau.",
+    "slot": "scene",
+    "label": "Nhẫn cưới",
+    "code": "1F48D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💍 Mình đã sẵn sàng cưới chưa?",
+    "text": "Tôi đồng ý cưới Người bạn đời. Chúng tôi cùng bàn bạc, tổ chức một buổi lễ phù hợp và chính thức trở thành bạn đời. Một chương mới bắt đầu từ sự tự nguyện của cả hai.",
+    "slot": "result",
+    "label": "Nhẫn cưới",
+    "code": "1F48D",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "💍 Mình đã sẵn sàng cưới chưa?",
+    "text": "Người bạn đời buồn nhưng nói rõ rằng không thể tiếp tục chờ đợi. Vì tôi vẫn không muốn cưới, người ấy quyết định chia tay và cắt đứt mối quan hệ.",
+    "slot": "result",
+    "label": "Trái tim tan vỡ",
+    "code": "1F494",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧸 Mình nói lại chuyện sinh con nhé?",
+    "text": "Người bạn đời nhắc lại chuyện sinh con: “Bạn có muốn chúng mình cùng nuôi dạy một đứa trẻ không?” Hai người cùng bàn về việc chào đón một em bé.\n\nChi phí nuôi con bắt đầu từ 12.000.000 VNĐ/năm, tăng 2.000.000 VNĐ mỗi tuổi và được tính đến hết năm con 18 tuổi.",
+    "slot": "scene",
+    "label": "Em bé",
+    "code": "1F476",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧸 Mình nói lại chuyện sinh con nhé?",
+    "text": "Tôi và Người bạn đời cùng quyết định sinh con. Gia đình chào đón một em bé và bắt đầu hành trình chăm sóc, nuôi dạy con.",
+    "slot": "result",
+    "label": "Ôm em bé",
+    "code": "1F9D1-200D-1F37C",
+    "action": "hug"
+  },
+  {
+    "sceneTitle": "🧸 Mình nói lại chuyện sinh con nhé?",
+    "text": "Người bạn đời buồn vì tôi tiếp tục không đồng ý. Người ấy quyết định không đề cập chuyện sinh con nữa. Chúng tôi vẫn ở bên nhau, nhưng kế hoạch có con được khép lại.",
+    "slot": "result",
+    "label": "Buồn",
+    "code": "1F622",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧸 Mình nói lại chuyện nhận con nuôi nhé?",
+    "text": "Người bạn đời nhắc lại chuyện nhận con nuôi: “Bạn có muốn chúng mình cùng nuôi dạy một đứa trẻ không?” Hai người dự định nhận nuôi một bé 5 tuổi.\n\nChi phí nuôi con bắt đầu từ 22.000.000 VNĐ/năm, tăng 2.000.000 VNĐ mỗi tuổi và được tính đến hết năm con 18 tuổi.",
+    "slot": "scene",
+    "label": "Em nhỏ",
+    "code": "1F9D2",
+    "action": "icon"
+  },
+  {
+    "sceneTitle": "🧸 Mình nói lại chuyện nhận con nuôi nhé?",
+    "text": "Tôi và Người bạn đời đồng ý nhận nuôi một bé 5 tuổi. Chúng tôi đón con về nhà và cùng nhận trách nhiệm chăm sóc, nuôi dạy con.",
+    "slot": "result",
+    "label": "Ôm em nhỏ",
+    "code": "1F9D1-200D-1F9D2",
+    "action": "hug"
+  },
+  {
+    "sceneTitle": "🧸 Mình nói lại chuyện nhận con nuôi nhé?",
+    "text": "Người bạn đời buồn vì tôi tiếp tục không đồng ý. Người ấy quyết định không đề cập chuyện nhận con nuôi nữa. Chúng tôi vẫn ở bên nhau, nhưng kế hoạch có con được khép lại.",
+    "slot": "result",
+    "label": "Buồn",
+    "code": "1F622",
+    "action": "icon"
+  }
+]

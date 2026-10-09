@@ -1,0 +1,131 @@
+<!doctype html><meta charset="utf-8"><title>Save life checks</title>
+<pre id="rescue-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById('rescue-check-result');
+  const assert = (value,message) => { if (!value) throw Error(message); };
+  const keys = ['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const previous = keys.map(key=>localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const {createSaveLifeSpecialStep:step} = await import('../js/special-event-35.js');
+    const {getAgeEvents} = await import('../js/events.js');
+    const {state,createInitialState} = await import('../js/state.js');
+    const {createAdmirer,getDatingUpdates} = await import('../js/relationships.js');
+    const {achievements} = await import('../js/achievements-data.js');
+    assert(getAgeEvents(35).length===5 && getAgeEvents(35).filter(e=>!e.specialId).length===4,'Two ordinary stories plus the age-35 special');
+    let deaths=0,wins=0,safe=0;
+    for(let i=1;i<=4;i++) {
+      const scene=step(i);
+      assert(scene.specialStep===i && scene.specialId==='save-life','Consistent chain identity');
+      if(i<4) assert(scene.warningPhrases.length && scene.warningPhrases.every(p=>scene.text.includes(p)),'Danger is explicitly signposted');
+      for(const item of [scene,...scene.choices.filter(c=>!c.nextStep)]) assert((await fetch(item.image)).ok,'Illustrations exist');
+      for(const choice of scene.choices) {
+        if(choice.nextStep) assert(choice.nextStep===i+1,'Safe path moves forward');
+        else if(choice.death) { deaths++;assert(!choice.money && !choice.achievementIds,'No special reward for fatal choices'); }
+        else if(choice.achievementIds) wins++;
+        else safe++;
+      }
+    }
+    assert(deaths===3 && wins===2 && safe===1,'Three deaths, two successes and one safe exit');
+    const html=await(await fetch('../index.html')).text();
+    const parsed=new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());
+    parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState());
+    localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    Math.random=()=>0.99;
+    await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const reset=()=>{
+      document.querySelectorAll('dialog[open]').forEach(d=>d.close());
+      Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:34,gender:'male',orientation:'heterosexual',health:80,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',money:0,nextPromotionAge:null,employmentStatus:'declined'});
+      birthday.disabled=false;
+      document.getElementById('game-screen').hidden=false;
+      document.getElementById('lobby-screen').hidden=true;
+    };
+    const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
+    const startRescue=()=>{
+      let roll=0;
+      Math.random=()=>roll++===0?0.1:2.1/getAgeEvents(35).length;
+      birthday.click();
+      Math.random=()=>0.99;
+    };
+    for(const age of [30,35,40,45,50,55]) for(const index of [0,1,2]) {
+      reset();state.player.age=age-1;let roll=0;
+      Math.random=()=>roll++===0?0.1:(index+0.1)/getAgeEvents(age).length;
+      birthday.click();
+      assert(state.pendingEvent.title===getAgeEvents(age)[index].title,'Both milestone years randomly select from all three stories');
+      choose(index===2?([35,45].includes(age)?2:1):0);confirm.click();
+    }
+    for(const age of [30,35,40,45,50,55]) for(const kind of ['marriage','child']) for(const index of [0,1,2,3]) {
+      reset();state.player.age=age-1;
+      const partner=createAdmirer(state.player,age-5,()=>0.4);
+      Object.assign(state.player,{partner,
+        marriedAtAge:kind==='child'?age-5:null,
+        relationshipStartedAtAge:age-5,
+        nextMarriageProposalAge:kind==='marriage'?age:null,
+        nextChildProposalAge:kind==='child'?age:null});
+      let roll=0;
+      Math.random=()=>index===3?0.99:(roll++===0?0.1:(index+0.1)/getAgeEvents(age).length);
+      birthday.click();Math.random=()=>0.99;
+      const dateField=kind==='marriage'?'nextMarriageProposalAge':'nextChildProposalAge';
+      if(index===2) {
+        assert(state.pendingEvent.specialId && state.player[dateField]===age+1,'Only a drawn special postpones the due proposal');
+        assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player[dateField]===age+1,'Postponement persists');
+        choose([35,45].includes(age)?2:1);confirm.click();birthday.click();
+        assert(state.pendingEvent.kind===`${kind}-proposal` && state.pendingEvent.age===age+1,'Postponed proposal appears next year');
+      } else {
+        assert(state.pendingEvent.kind===`${kind}-proposal` && state.pendingEvent.age===age && state.player[dateField]===age,
+          'Ordinary draw or no-event draw preserves the due proposal this year');
+      }
+      choose(1);confirm.click();
+    }
+    reset();Math.random=()=>0.99;birthday.click();
+    assert(state.player.age===35 && !state.pendingEvent,'The normal no-event chance also applies');
+    for(const finalChoice of [0,1]) {
+      reset();
+      const person=createAdmirer(state.player,30,()=>0.4);
+      Object.assign(state.player,getDatingUpdates(state.player,person,30));
+      startRescue();
+      assert(state.pendingEvent.specialId==='save-life' && state.player.nextMarriageProposalAge===36,'Drawn special postpones the due marriage proposal');
+      for(let i=1;i<=3;i++) {
+        assert(document.querySelector('#event-content .event-warning'),'Warning is visibly emphasized');
+        choose(0);resume();
+        assert(state.pendingEvent.specialStep===i+1 && state.player.age===34 && state.player.money===0,'Saved scene advances without applying reward or age');
+      }
+      choose(finalChoice);resume();
+      assert(state.player.money===0 && !state.player.achievementFlags['story-save-life'],'Preview awards nothing before confirmation');
+      confirm.click();
+      assert(state.player.age===35 && state.player.isAlive && state.player.money===(finalChoice===0?50000000:25000000) && state.player.happiness===(finalChoice===0?60:65),'Exact cash and happiness reward');
+      assert(state.player.achievementFlags['story-save-life'] && state.logs.at(-1).content.includes('bữa cơm bình thường'),'Achievement and supplied diary saved');
+      birthday.click();assert(state.pendingEvent.kind==='marriage-proposal' && state.pendingEvent.age===36,'Marriage resumes the following year');
+      choose(0);confirm.click();
+    }
+    for(let deathStep=1;deathStep<=3;deathStep++) {
+      reset();startRescue();
+      for(let i=1;i<deathStep;i++) choose(0);
+      choose(1);resume();confirm.click();
+      assert(state.player.age===35 && !state.player.isAlive && state.player.health===0 && birthday.disabled,'Every fatal choice ends the game');
+      assert(document.getElementById('death-dialog').open && state.player.money===0 && !state.player.achievementFlags['story-save-life'],'Death screen, no special rewards');
+      assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.isAlive===false,'Death persists');
+      birthday.click();assert(state.player.age===35,'Dead character cannot age further');
+    }
+    reset();startRescue();choose(2);confirm.click();
+    assert(state.player.age===35 && state.player.isAlive && state.player.money===0 && state.player.happiness===50 && !state.player.achievementFlags['story-save-life'],'Waiting safely ends without special reward');
+    reset();
+    const person=createAdmirer(state.player,25,()=>0.4);
+    Object.assign(state.player,{partner:person,marriedAtAge:30,nextChildProposalAge:35});
+    birthday.click();
+    assert(state.pendingEvent.kind==='child-proposal' && state.pendingEvent.age===35 && state.player.nextChildProposalAge===35,'Random rescue does not preempt a due child proposal');
+    choose(1);confirm.click();
+    result.textContent='PASS: random selection among all 3 stories, no-event chance, 4 scenes, warnings, deaths, rewards, saves and scheduled proposals.';
+  }catch(error){result.textContent='FAIL: '+error.stack;}
+  finally{Math.random=random;keys.forEach((key,i)=>previous[i]===null?localStorage.removeItem(key):localStorage.setItem(key,previous[i]));}
+})();
+</script>

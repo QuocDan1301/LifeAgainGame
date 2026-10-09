@@ -1,0 +1,117 @@
+<!doctype html><meta charset="utf-8"><title>Earth auction checks</title>
+<pre id="earth-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById('earth-check-result');
+  const assert = (value, message) => { if (!value) throw Error(message); };
+  const keys = ['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const previous = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createEarthAuctionSpecialStep: step } = await import('../js/special-event-30.js');
+    const { getAgeEvents } = await import('../js/events.js');
+    const { state, createInitialState } = await import('../js/state.js');
+    const { createAdmirer, getDatingUpdates } = await import('../js/relationships.js');
+    const { achievements } = await import('../js/achievements-data.js');
+    const { getCareerProfile } = await import('../js/career-jobs.js');
+    assert(getAgeEvents(30).length === 3 && getAgeEvents(30).filter(e => !e.specialId).length === 2,
+      'Age 30 retains two everyday stories plus its special story');
+    assert(!step(0) && !step(8), 'Reject invalid steps');
+    let paths = 0, wins = 0;
+    const walk = number => {
+      const scene = step(number);
+      for (const choice of scene.choices) {
+        if (choice.nextStep) { assert(choice.nextStep === number + 1, 'Forward-only chain'); walk(choice.nextStep); }
+        else {
+          paths++;
+          if (choice.achievementIds?.includes('story-alien')) {
+            wins++;
+            assert(number === 7 && choice.effects.intelligence === 10 && choice.effects.happiness === 10 && choice.money === 500_000,
+              'Only helping the neighbor awards the achievement, stats and 500,000 VND');
+          } else assert(!choice.achievementIds && Object.keys(choice.effects).length === 0, 'All other endings award nothing');
+        }
+      }
+    };
+    walk(1);
+    assert(paths === 26 && wins === 8, 'Every branch terminates, including both meaningful options in scenes 4–6');
+    for (let i = 1; i <= 7; i++) {
+      const scene = step(i);
+      for (const item of [scene, ...scene.choices.filter(c => !c.nextStep)]) {
+        assert((await fetch(item.image)).ok, 'All scene and ending illustrations exist');
+      }
+    }
+    const html = await (await fetch('../index.html')).text();
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    parsed.querySelectorAll('script').forEach(e => e.remove());
+    parsed.querySelectorAll('[src]').forEach(e => e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+    Object.assign(state, createInitialState());
+    localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(achievements.map(e => [e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue', '[]');
+    Math.random = () => 0.99;
+    await import('../js/main.js');
+    const birthday = document.getElementById('age-up');
+    const confirm = document.getElementById('event-confirm');
+    const choose = index => document.querySelectorAll('#event-choices button')[index].click();
+    const reset = () => {
+      Object.assign(state, createInitialState());
+      Object.assign(state.player, { age:29, gender:'male', orientation:'heterosexual', health:90,
+        happiness:50, intelligence:50, appearance:70, studyBlock:'A', money:0,
+        employmentStatus:'employed', careerLevel:1, lastSalaryAge:29, nextPromotionAge:null,
+        careerPath:{ id:'programming', field:'Công nghệ thông tin' }, job:getCareerProfile('programming').ranks[0] });
+      document.getElementById('game-screen').hidden = false;
+      document.getElementById('lobby-screen').hidden = true;
+    };
+    reset();
+    const person = createAdmirer(state.player,25,()=>0.4);
+    Object.assign(state.player, getDatingUpdates(state.player,person,25));
+    let roll=0;
+    Math.random=()=>roll++===0?0.1:0.99;
+    birthday.click();
+    Math.random=()=>0.99;
+    assert(state.pendingEvent?.specialId === 'earth-auction' && state.player.nextMarriageProposalAge === 31,
+      'Randomly selected age-30 special defers the due marriage proposal');
+    for (let i = 1; i < 7; i++) {
+      assert(state.pendingEvent.specialStep === i && state.player.age === 29 && state.player.money === 0,
+        'Intermediate scenes do not advance age or pay salary');
+      choose(i === 4 ? 1 : 0);
+      state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
+      assert(state.pendingEvent.specialStep === i+1, 'Saved chain resumes at the correct next scene');
+    }
+    assert(state.pendingEvent.text.includes('Tất cả chỉ là một giấc mơ'), 'Final scene reveals the dream');
+    choose(0);
+    assert(state.player.intelligence === 50 && state.player.happiness === 50, 'Rewards wait for confirmation');
+    state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
+    confirm.click();
+    assert(state.player.age === 30 && state.player.money === 120_500_000 && state.player.intelligence === 60 && state.player.happiness === 60,
+      'Confirm advances one year, adds salary once and awards both stats');
+    assert(state.player.achievementFlags['story-alien'] && state.logs.at(-1).content.includes('hai quả cam'),
+      'Achievement and the supplied diary entry persist');
+    assert(document.getElementById('money-value').textContent === '120.500.000' && state.logs.at(-1).content.includes('500.000 VNĐ'),
+      'Cash reward appears in the wallet and diary');
+    birthday.click();
+    assert(state.pendingEvent?.kind === 'marriage-proposal' && state.pendingEvent.age === 31, 'Deferred proposal appears at 31');
+    choose(0); confirm.click();
+    reset();
+    Object.assign(state.player, { partner:person, marriedAtAge:25, nextChildProposalAge:30 });
+    roll=0;
+    Math.random=()=>roll++===0?0.1:0.99;
+    birthday.click();
+    Math.random=()=>0.99;
+    assert(state.pendingEvent.specialId === 'earth-auction' && state.player.nextChildProposalAge === 31,
+      'Due child proposal is also deferred by the special story');
+    choose(1); confirm.click();
+    assert(state.player.age === 30 && !state.player.achievementFlags['story-alien'] && state.player.intelligence === 50,
+      'Early exit completes the year without achievement or stat rewards');
+    birthday.click();
+    assert(state.pendingEvent?.kind === 'child-proposal', 'Deferred child proposal appears at 31');
+    choose(1); confirm.click();
+    result.textContent = 'PASS: 7 scenes, 26 paths, illustrations, saved progress, rewards, diary, annual salary and both proposal deferrals.';
+  } catch (error) { result.textContent = 'FAIL: '+error.stack; }
+  finally {
+    Math.random = random;
+    keys.forEach((key,i) => previous[i] === null ? localStorage.removeItem(key) : localStorage.setItem(key,previous[i]));
+  }
+})();
+</script>

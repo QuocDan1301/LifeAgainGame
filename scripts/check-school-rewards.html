@@ -1,0 +1,91 @@
+﻿<!doctype html><meta charset="utf-8"><title>School rewards checks</title>
+<pre id="school-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById('school-check-result');
+  const assert = (value, message) => { if (!value) throw Error(message); };
+  const keys = ['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const previous = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createSchoolEntryReward } = await import('../js/school-rewards.js');
+    const { completeLifeYear } = await import('../js/family.js');
+    const { state, createInitialState } = await import('../js/state.js');
+    const stats = ['health','intelligence','happiness','appearance'];
+    const base = age => ({ ...createInitialState().player, age, health:50, intelligence:50, happiness:50, appearance:50 });
+    for (const [age,min,money] of [[6,1,0],[11,2,500000],[15,3,1000000]]) {
+      for (const value of [0,0.999]) {
+        const player = base(age-1);
+        const reward = createSchoolEntryReward(player,age,{},()=>value);
+        assert(stats.every(stat => reward.updates[stat] === 50+min+(value>0?1:0)), 'Each stat receives the correct inclusive random range');
+        completeLifeYear(player,age,{},JSON.parse(JSON.stringify(reward)));
+        assert(player.money === money && stats.every(stat => player[stat] === reward.updates[stat]), 'Reward applied to actual stats and wallet');
+        assert(!createSchoolEntryReward(player,age), 'No repeated milestone reward');
+        completeLifeYear(player,age);
+        assert(player.money === money, 'Reconfirm cannot duplicate money');
+      }
+    }
+    const capped = createSchoolEntryReward({...base(10),health:99},11,{},()=>0.999);
+    assert(capped.updates.health === 100, 'Stat cap remains 100');
+    const path = {id:'programming', school:{name:'Đại học Công nghệ',id:'test'}};
+    const freshman = base(17);
+    const reward = createSchoolEntryReward(freshman,18,{careerPath:path});
+    assert(reward.updates.money === 2000000 && !reward.updates.health, 'University awards cash only');
+    completeLifeYear(freshman,18,{careerPath:path},reward);
+    assert(freshman.money === 2000000 && !createSchoolEntryReward(freshman,19,{careerPath:path}), 'University cash only once per life');
+    for (const careerPath of [{id:'military',school:null}, {id:'military',school:{name:'Học viện Quân sự'}},
+      {id:'esports',school:{name:'Team Flash Academy',type:'academy'}}, {id:'culinary',school:{name:'Trường Cao đẳng Du lịch'}}]) {
+      assert(!createSchoolEntryReward(base(17),18,{careerPath}), 'Enlistment, academy and college do not grant university cash');
+    }
+    const html = await (await fetch('../index.html')).text();
+    const parsed = new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());
+    parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState());
+    Object.assign(state.player,base(5));
+    localStorage.removeItem('lifeAgainSave');
+    const { achievements } = await import('../js/achievements-data.js');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    Math.random = () => 0;
+    await import('../js/main.js');
+    document.getElementById('game-screen').hidden = false;
+    document.getElementById('lobby-screen').hidden = true;
+    const birthday = document.getElementById('age-up');
+    const confirm = document.getElementById('event-confirm');
+    const choose = i => document.querySelectorAll('#event-choices button')[i].click();
+    birthday.click(); choose(0);
+    const savedReward = JSON.stringify(state.pendingEvent.schoolReward);
+    assert(state.player.age === 5 && state.player.health === 50, 'Result preview does not mutate stats');
+    Math.random = () => 0.999;
+    state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
+    assert(JSON.stringify(state.pendingEvent.schoolReward) === savedReward, 'Save preserves exact random reward');
+    confirm.click();
+    assert(state.player.health === 51 && state.player.intelligence === 53 && state.player.happiness === 55,
+      'School reward adds to choice effects without overwriting them');
+    Object.assign(state.player,base(10)); birthday.click();
+    assert(state.player.age === 11 && state.player.money === 500000 && state.player.health === 53,
+      'Age 11 awards stats and cash even when no everyday event is selected');
+    Object.assign(state.player,base(14),{studyBlock:'A00'}); birthday.click();
+    assert(state.player.age === 15 && state.player.money === 1000000 && state.player.health === 54,
+      'Age 15 special study flow awards stats and money');
+    assert(state.logs.at(-1).content.includes('Vào cấp 3') && document.getElementById('money-value').textContent === '1.000.000',
+      'Diary and wallet display reflect rewards');
+    Object.assign(state.player,base(17),{studyBlock:'A00'}); birthday.click();
+    choose(state.pendingEvent.choices.findIndex(c=>c.careerPath?.id==='programming'));
+    choose(state.pendingEvent.choices.findIndex(c=>c.correct));
+    choose(0);
+    assert(state.pendingEvent.schoolReward?.updates.money === 2000000, 'Passing admission and selecting a university prepares cash reward');
+    confirm.click();
+    assert(state.player.money === 2000000 && state.player.schoolRewardsReceived.university, 'University reward reaches wallet on confirmation');
+    Object.assign(state.player,base(17),{studyBlock:'A00'}); birthday.click();
+    choose(state.pendingEvent.choices.findIndex(c=>c.careerPath?.id==='programming'));
+    choose(state.pendingEvent.choices.findIndex(c=>!c.correct)); choose(0); confirm.click();
+    assert(state.player.careerPath.id==='military' && state.player.money===0, 'Failed admission and enlistment receive no university cash');
+    result.textContent = 'PASS: random ranges, all four stats, cash, caps, once per life, saved results, diaries, UI, university and failed admission.';
+  } catch(error) { result.textContent = 'FAIL: '+error.stack; }
+  finally { Math.random=random; keys.forEach((key,i)=>previous[i]===null?localStorage.removeItem(key):localStorage.setItem(key,previous[i])); }
+})();
+</script>
+

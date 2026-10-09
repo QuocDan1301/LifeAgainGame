@@ -1,0 +1,143 @@
+<!doctype html><meta charset="utf-8"><title>Later special story checks</title>
+<pre id="later-special-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById('later-special-check-result');
+  const assert = (value, message) => { if (!value) throw Error(message); };
+  const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+  const backup = keys.map(key => localStorage.getItem(key)), random = Math.random;
+  try {
+    const {createLaterSpecialStep: step, createLaterSpecialEvent: event, canStartCentennialStory} = await import('../js/special-later-life.js');
+    const {laterLifeStories} = await import('../js/special-later-life-data.js');
+    const {getAgeEvents} = await import('../js/events.js');
+    const {state, createInitialState} = await import('../js/state.js');
+    const {achievements} = await import('../js/achievements-data.js');
+    const spouse = {id:'spouse', name:'Bạn đời', gender:'female', relationship:80, metAtAge:25, ageAtMeeting:24, stats:{health:80,intelligence:50,happiness:50,appearance:50}};
+    const married = {partner:spouse, marriedAtAge:30, children:[]};
+    assert(canStartCentennialStory(married),'Living spouse with relationship 80 qualifies');
+    for (const player of [{}, {...married, marriedAtAge:null}, {...married,partner:{...spouse,relationship:79}}, {...married,partner:{...spouse,isAlive:false}}, {...married,partner:{...spouse,deceased:true}}, {...married,partner:{...spouse,stats:{health:0}}}]) {
+      assert(!canStartCentennialStory(player) && !event(100,player),'Ineligible centennial chain excluded');
+      assert(!getAgeEvents(100,null,player).some(e=>e.specialId),'Ordinary age 100 remains playable');
+    }
+    assert(getAgeEvents(100,null,{...married,partner:{...spouse,isAlive:false}}).some(e=>e.id==='centennial-memorial'),'Deceased spouse gets a memorial');
+    const imageURLs = new Set();
+    const routes = [];
+    function visit(age, scene, inventory, choices) {
+      assert(scene && scene.text && scene.choices.length >= 2,'Complete scene '+age);
+      assert(!scene.warningPhrases.some(p=>!scene.text.includes(p)),'Visible clues '+age);
+      imageURLs.add(scene.image);
+      scene.choices.forEach((choice,index)=>{
+        const path = [...choices,index];
+        if (choice.nextStep) {
+          assert(choice.nextStep===scene.specialStep+1,'No backward or missing steps');
+          const nextInventory = {...inventory,...choice.inventoryChanges};
+          visit(age,step(age,choice.nextStep,nextInventory),nextInventory,path);
+        } else {
+          imageURLs.add(choice.image);
+          routes.push({age,path,choice,inventory});
+        }
+      });
+    }
+    for (const age of Object.keys(laterLifeStories).map(Number)) {
+      const initial = event(age,married);
+      assert(initial.priority===(age===105),'Only finale is guaranteed');
+      assert(!step(age,0)&&!step(age,laterLifeStories[age].steps.length+1),'Reject invalid step');
+      visit(age,initial,initial.specialInventory,[]);
+    }
+    for (const url of imageURLs) assert((await fetch(url)).ok,'Local image exists '+url);
+    const parsed = new DOMParser().parseFromString(await(await fetch('../index.html')).text(),'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());
+    parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState()); localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    if (new URLSearchParams(location.search).has('resume105')) {
+      Object.assign(state.player,{age:104,health:50,studyBlock:'A00'});
+      state.pendingEvent={...step(105,3,{closed:true}),stage:'choice',age:105};
+    }
+    await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
+    if (new URLSearchParams(location.search).has('resume105')) {
+      assert(state.pendingEvent.specialStep===3&&state.pendingEvent.specialInventory.closed,'Reload keeps final chain progress');
+      choose(0);choose(2);confirm.click();
+      assert(state.player.ending==='fulfilled'&&!state.player.isAlive,'Reopening connections after a saved refusal gives a good ending');
+      result.textContent='PASS: resumed age-105 chain keeps its scene and branching state.';return;
+    }
+    const start=(age,health=50,extra={})=>{
+      document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:age-1,health,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null}, age===100?structuredClone(married):{},extra);
+      birthday.disabled=false;document.getElementById('game-screen').hidden=false;
+      const pool=getAgeEvents(age,state.player.careerPath,state.player);
+      const index=pool.findIndex(e=>e.specialId==='later-'+age);
+      let rolls=age>=98&&age<105?[0,0.1,(index+0.1)/pool.length]:[0.1,(index+0.1)/pool.length];
+      Math.random=()=>rolls.shift()??0.1;birthday.click();Math.random=()=>0.99;
+      if(age===105){assert(state.pendingEvent.addedEveryday,'Ordinary scene before finale');choose(0);confirm.click();Object.assign(state.player,{intelligence:50,happiness:50});}
+      assert(state.pendingEvent?.specialId==='later-'+age,'Random special selected at '+age);
+    };
+    for (const {age,path,choice,inventory} of routes) {
+      start(age);
+      for (const index of path) {
+        choose(index);resume();
+        assert(state.player.age===age-1&&state.player.money===0,'No early reward or birthday '+age);
+      }
+      assert(state.pendingEvent.stage==='result','All paths resolve');
+      confirm.click();
+      assert(state.player.age===age&&!state.pendingEvent,'Path completes exactly one year');
+      assert(state.player.money===(choice.money??0),'Exact wallet reward or loss '+age);
+      for (const stat of ['health','intelligence','happiness','appearance']) {
+        const expected=choice.statTargets?.[stat]??Math.max(stat==='health'?(choice.minimumHealth??0):0,Math.min(100,50+(choice.effects?.[stat]??0)));
+        assert(state.player[stat]===expected,'Exact stat '+age+' '+stat);
+      }
+      assert(state.player.isAlive!==Boolean(choice.death),'Correct survival '+age);
+      for (const id of choice.achievementIds??[]) assert(state.player.achievementFlags[id]&&state.player.lifeAchievementIds.includes(id),'Achievement remains specific to this life');
+      assert((state.player.keepsakes.length===1)===Boolean(choice.keepsake),'Keepsake only at successful ending');
+      assert((state.player.memories.length===1)===Boolean(choice.memory),'Memory only at successful ending');
+      if (age===100&&choice.memory) assert(state.player.partner.relationship===100&&state.player.memories[0].photos.length===2,'Couple relationship and paired pictures');
+      if (age===80&&choice.keepsake) assert(state.player.keepsakes[0].description.includes(inventory.ticket),'Winning number matches retained ticket');
+      if (age===105) {
+        const cold=path[2]===2&&path[3]===2;
+        assert(state.player.ending===(cold?'cold':'fulfilled'),'Fair final branching');
+        assert(Boolean(state.player.achievementFlags['ending-fulfilled'])===!cold,'Only good ending unlocks final achievement');
+        assert(document.getElementById('death-summary').textContent.includes('105'),'Final summary visible');
+      }
+      const before=JSON.stringify(state.player);confirm.click();assert(JSON.stringify(state.player)===before,'Repeated confirmation cannot duplicate rewards');
+      assert(JSON.stringify(JSON.parse(localStorage.getItem('lifeAgainSave')).player)===before,'Final changes saved');
+    }
+    for (const age of [65,75,85]) for(const health of [20,10,1]) for(let scene=1;scene<=4;scene++) {
+      start(age,health);for(let i=1;i<scene;i++)choose(0);choose(1);resume();confirm.click();
+      assert(state.player.health===Math.max(1,health-(age===85?10:20))&&state.player.isAlive&&!document.getElementById('death-dialog').open,'All low-health injuries end safely');
+    }
+    start(60);for(let i=0;i<4;i++)choose(0);choose(1);confirm.click();
+    document.getElementById('activities').click();const teach=document.getElementById('activity-repair-lessons');
+    assert(!teach.hidden&&!teach.disabled,'Free lessons unlock');teach.click();const lessonLogs=state.logs.length;teach.click();
+    assert(state.logs.length===lessonLogs&&state.player.money===100000000&&state.player.lastRepairLessonAge===60,'Lessons are free and limited to once per year');
+    document.getElementById('activities-dialog').close();document.getElementById('assets').click();
+    assert(document.getElementById('life-keepsakes').textContent.includes('Bộ dụng cụ nghĩa tình'),'Profile shows keepsakes');document.getElementById('life-profile-dialog').close();
+    Math.random=()=>0.99;birthday.click();document.getElementById('activities').click();
+    assert(!teach.disabled&&state.player.age===61,'Free lessons become available in the next year');document.getElementById('activities-dialog').close();
+    start(90);for(let i=0;i<5;i++)choose(0);confirm.click();
+    assert(state.player.memories[0].people.length>0&&state.player.isAlive,'Birthday without family still has community connections');
+    document.getElementById('assets').click();assert(document.querySelector('#life-memories img')&&document.getElementById('life-memories').textContent.includes('Sinh nhật tuổi 90'),'Memory page visible');document.getElementById('life-profile-dialog').close();
+    start(100);for(let i=0;i<5;i++)choose(0);confirm.click();document.getElementById('assets').click();
+    assert(document.querySelectorAll('#life-memories .memory-photo-pair img').length===4,'Two couple portraits appear side by side');document.getElementById('life-profile-dialog').close();
+    for(const age of [75,85]) {
+      start(age);choose(0);
+      assert(document.querySelector('#event-content details summary')&&state.pendingEvent.referenceNotes.includes(step(age,1).text),'Previous clues can be reviewed');
+      assert(!state.pendingEvent.referenceNotes.includes(step(age,4).text),'Future clues are not revealed early');
+    }
+    for(const age of [60,65,70,75,80,85,90,95])for(const draw of ['ordinary','special','none']) {
+      document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:age-1,health:50,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null,partner:structuredClone(spouse),relationshipStartedAtAge:age-5,nextMarriageProposalAge:age});
+      const pool=getAgeEvents(age,null,state.player);const specialIndex=pool.findIndex(e=>e.specialId==='later-'+age);let values=draw==='none'?[0.99]:[0.1,draw==='ordinary'?0:(specialIndex+0.1)/pool.length];
+      Math.random=()=>values.shift()??0.1;birthday.disabled=false;birthday.click();
+      assert(state.player.nextMarriageProposalAge===(draw==='special'?age+1:age),'Only selected special postpones proposal '+age);
+      assert(draw==='special'?state.pendingEvent.specialId==='later-'+age:state.pendingEvent.kind==='marriage-proposal','Due proposal gets correct priority');
+    }
+    result.textContent='PASS: '+routes.length+' complete branching paths; rewards, wallet losses, clues, assets, saved results, nonfatal injuries, fatal choices, keepsakes, memories, free lessons, spouse eligibility, proposal deferral and all 54 final endings.';
+  } catch(error) { result.textContent='FAIL: '+error.stack; }
+  finally { Math.random=random;keys.forEach((key,i)=>backup[i]===null?localStorage.removeItem(key):localStorage.setItem(key,backup[i])); }
+})();
+</script>

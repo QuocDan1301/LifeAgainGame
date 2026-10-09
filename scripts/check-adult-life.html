@@ -1,0 +1,195 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Adult life checks</title>
+<pre id="adult-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("adult-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { getAgeEvents, ageEvents, isPriorityEvent } = await import("../js/events.js");
+    const { createInitialState, state } = await import("../js/state.js");
+    const { createAdmirer, createDatingEvent, createMarriageEvent, getDatingUpdates, getMarriageUpdates, restoreMarriageSchedule } = await import("../js/relationships.js");
+    const { getPromotionUpdates, createEmploymentEvent, getCareerProfile } = await import("../js/career-jobs.js");
+    let count = 0;
+    assert(getAgeEvents(25).length === 0, "Age 25 has no ordinary stories");
+    for (let age = 29; age <= 39; age++) {
+      const events = getAgeEvents(age).filter(event => !event.specialId);
+      assert(events.length === ([30, 35].includes(age) ? 2 : 3), `Wrong everyday event count at ${age}`);
+      for (const event of events) {
+        assert(event.title && event.text && event.image && event.choices.length === 2, `Missing content at ${age}`);
+        for (const choice of event.choices) assert(choice.text && choice.image && choice.imageFallback, `Missing result illustration at ${age}`);
+      }
+      count += events.length;
+    }
+    const base = () => ({ ...createInitialState().player, age: 31, gender: "female", orientation: "bisexual" });
+    const person = createAdmirer(base(), 27, () => 0.4);
+    const lover = base();
+    Object.assign(lover, getDatingUpdates(lover, person, 25));
+    assert(createMarriageEvent(lover, 29) === null, "No proposal before five dating years");
+    assert(createMarriageEvent(lover, 30)?.person.id === person.id, "Dating at 25 schedules the first proposal at 30");
+    Object.assign(lover, getMarriageUpdates(lover, person, 30, "decline"));
+    assert(lover.partner && lover.nextMarriageProposalAge === 32, "First decline schedules the same partner two years later");
+    assert(createMarriageEvent(lover, 31) === null, "Wait two years before asking again");
+    const restored = JSON.parse(JSON.stringify(lover));
+    assert(createMarriageEvent(restored, 32)?.title.includes("sẵn sàng"), "Reload preserves the second proposal");
+    Object.assign(restored, getMarriageUpdates(restored, person, 32, "decline"));
+    assert(!restored.partner && restored.datingActivitiesOnly, "Second decline ends the relationship and disables automatic dating");
+    assert(restored.relationshipHistory.at(-1).type === "breakup", "Breakup is recorded");
+    assert(createMarriageEvent(restored, 35) === null && createDatingEvent(restored, 35) === null, "No automatic replacement or proposal after breakup");
+    const married = { ...base(), partner: person };
+    Object.assign(married, getMarriageUpdates(married, person, 32, "accept"));
+    assert(married.partner.id === person.id && married.marriedAtAge === 32, "Acceptance preserves the partner and records marriage");
+    assert(createMarriageEvent(married, 34) === null, "No repeat proposal after marriage");
+    assert(createMarriageEvent(base(), 32) === null, "Single characters do not receive a proposal");
+    for (const start of [25, 28, 40]) {
+      const dating = base();
+      Object.assign(dating, getDatingUpdates(dating, person, start));
+      assert(createMarriageEvent(dating, start + 4) === null && createMarriageEvent(dating, start + 5), "Any dating start age schedules a proposal after five years");
+    }
+    const legacy = { ...base(), partner: person, nextMarriageProposalAge: 32,
+      relationshipHistory: [{ age: 28, type: "dating", person }] };
+    restoreMarriageSchedule(legacy, 1);
+    assert(legacy.nextMarriageProposalAge === 33, "Old fixed-age schedules migrate using the dating start");
+    legacy.nextMarriageProposalAge = 34;
+    restoreMarriageSchedule(legacy, 2);
+    assert(legacy.nextMarriageProposalAge === 34, "Reload preserves a deferred proposal");
+    const legacyRetry = { ...legacy, marriageProposalDeclines: 1, nextMarriageProposalAge: 36 };
+    restoreMarriageSchedule(legacyRetry, 1);
+    assert(legacyRetry.nextMarriageProposalAge === 36, "Migration preserves existing refusal retries");
+    assert(isPriorityEvent({ priority: true }) && isPriorityEvent({ specialId: "future" }) &&
+      isPriorityEvent({ kind: "special-chain" }) && !isPriorityEvent({ title: "A normal story" }), "Special stories support explicit priority markers");
+    const delayed = getPromotionUpdates({ careerLevel: 1 }, 27, false);
+    assert(delayed.nextPromotionAge === 29, "First promotion retry remains 29");
+    assert(getPromotionUpdates({ careerLevel: 1 }, 27, true).nextPromotionAge === 37, "First promotion at 27 schedules final promotion at 37");
+    assert(getPromotionUpdates({ careerLevel: 1 }, 29, true).nextPromotionAge === 39, "First promotion at 29 schedules final promotion at 39");
+    assert(getPromotionUpdates({ careerLevel: 2 }, 39, false).nextPromotionAge === null, "Final promotion does not retry after 39");
+
+    // Run the real birthday and confirmation handlers with a saved result.
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, base(), { partner: person, health: 90, happiness: 70, intelligence: 70,
+      appearance: 70, studyBlock: "A", employmentStatus: "employed", careerLevel: 1,
+      careerPath: { id: "programming", field: "Công nghệ thông tin" },
+      job: getCareerProfile("programming").ranks[0], lastSalaryAge: 31, nextPromotionAge: null });
+    const { achievements } = await import("../js/achievements-data.js");
+    localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(entry => [entry.id, true]))));
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const birthday = document.getElementById("age-up");
+    const confirm = document.getElementById("event-confirm");
+    const choose = index => document.querySelectorAll("#event-choices button")[index].click();
+    birthday.click();
+    assert(state.pendingEvent?.kind === "marriage-proposal" && state.pendingEvent.age === 32, "Proposal overrides random chance at exactly 32");
+    choose(1);
+    assert(state.player.marriageProposalDeclines === 0, "Result preview must not alter relationship state");
+    state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
+    confirm.click();
+    assert(state.player.age === 32 && state.player.nextMarriageProposalAge === 34, "Confirming saved first refusal schedules 34");
+    assert(state.player.money === 120_000_000, "Marriage story still receives annual salary");
+    birthday.click();
+    assert(state.player.age === 33 && !state.pendingEvent, "No repeat proposal at 33");
+    birthday.click();
+    assert(state.pendingEvent?.kind === "marriage-proposal" && state.pendingEvent.person.id === person.id, "Same partner asks again at 34");
+    choose(1);
+    confirm.click();
+    assert(state.player.age === 34 && !state.player.partner && state.player.datingActivitiesOnly, "Second confirmed refusal breaks up");
+    assert(state.logs.at(-1).content.includes("chia tay"), "Diary records the breakup");
+    document.getElementById("relationships").click();
+    assert(document.getElementById("relationship-current").textContent.includes("độc thân"), "Relationship panel reflects breakup");
+    document.getElementById("close-relationships").click();
+    birthday.click();
+    assert(state.player.age === 35 && !state.pendingEvent && !state.player.partner, "No replacement partner at 35");
+    for (const promotionAge of [37, 39]) {
+      Object.assign(state.player, { age: promotionAge - 1, careerLevel: 2,
+        nextPromotionAge: promotionAge, lastSalaryAge: promotionAge - 1 });
+      assert(createEmploymentEvent(state.player, promotionAge)?.kind === "career-promotion", "Career scheduler retains final promotions");
+      birthday.click();
+      assert(state.pendingEvent?.kind === "career-promotion", `Final promotion overrides ordinary events at ${promotionAge}`);
+      choose(state.pendingEvent.choices.findIndex(entry => entry.correct));
+      confirm.click();
+      assert(state.player.careerLevel === 3 && state.player.nextPromotionAge === null, "Final promotion reaches rank 3 and finishes the schedule");
+    }
+    Object.assign(state.player, { age: 31, partner: person, marriedAtAge: null,
+      marriageProposalDeclines: 0, nextMarriageProposalAge: 32, lastSalaryAge: 31 });
+    birthday.click();
+    choose(0);
+    confirm.click();
+    assert(state.player.marriedAtAge === 32 && state.player.achievementFlags.married, "Wedding applies on confirmation and grants its achievement");
+    document.getElementById("relationships").click();
+    assert(document.getElementById("relationship-current").textContent.includes("Đã kết hôn"), "Relationship panel reflects marriage");
+    document.getElementById("close-relationships").click();
+    const save = JSON.parse(localStorage.getItem("lifeAgainSave"));
+    assert(save.player.marriedAtAge === 32, "Marriage persists in the life save");
+    for (const status of ["employed", "unemployed"]) {
+      Object.assign(state.player, { age: 24, partner: null, marriedAtAge: null,
+        nextMarriageProposalAge: null, marriageProposalDeclines: 0, datingActivitiesOnly: false,
+        nextPromotionAge: null, employmentStatus: status, careerLevel: status === "employed" ? 1 : 0,
+        money: 0, lastSalaryAge: 24 });
+      birthday.click();
+      assert(state.pendingEvent?.kind === "workplace-dating" && state.pendingEvent.age === 25,
+        "Age 25 always shows dating, even with high random roll or unemployment");
+      choose(0);
+      confirm.click();
+      assert(state.player.age === 25 && state.player.partner, "Age-25 dating can be accepted");
+      assert(state.player.money === (status === "employed" ? 120_000_000 : 0), "Guaranteed dating preserves salary eligibility");
+    }
+    // A career priority pushes the due proposal to next year and saves that date.
+    Object.assign(state.player, { age: 36, partner: person, marriedAtAge: null,
+      relationshipStartedAtAge: 32, marriageProposalDeclines: 0, nextMarriageProposalAge: 37,
+      careerLevel: 2, nextPromotionAge: 37, employmentStatus: "employed", lastSalaryAge: 36 });
+    birthday.click();
+    assert(state.pendingEvent.kind === "career-promotion" && state.player.nextMarriageProposalAge === 38,
+      "Priority promotion defers the due proposal by one year");
+    assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.nextMarriageProposalAge === 38,
+      "Deferred proposal persists before resolving the priority story");
+    choose(state.pendingEvent.choices.findIndex(entry => entry.correct));
+    confirm.click();
+    birthday.click();
+    assert(state.pendingEvent.kind === "marriage-proposal" && state.pendingEvent.age === 38,
+      "Deferred proposal appears the following year");
+    choose(1);
+    confirm.click();
+    assert(state.player.nextMarriageProposalAge === 40, "Two-year retry starts from the actual postponed proposal");
+
+    // Inject two future special stories to verify consecutive deferrals.
+    const special = { id: "test-priority", priority: true, title: "Special story", text: "Special story",
+      choices: [{ label: "Continue", title: "Special result", text: "Complete", effects: {} }] };
+    ageEvents[41] = [special];
+    ageEvents[42] = [{ ...special, id: "test-next-priority", priority: undefined, specialId: "next-special" }];
+    Object.assign(state.player, { age: 40, partner: person, marriedAtAge: null,
+      relationshipStartedAtAge: 35, marriageProposalDeclines: 0, nextMarriageProposalAge: 40,
+      careerLevel: 3, nextPromotionAge: null, lastSalaryAge: 40 });
+    for (const age of [41, 42]) {
+      birthday.click();
+      assert(state.pendingEvent.title === "Special story" && state.player.nextMarriageProposalAge === age + 1,
+        "Consecutive special years each defer marriage by one year");
+      choose(0);
+      confirm.click();
+    }
+    birthday.click();
+    assert(state.pendingEvent.kind === "marriage-proposal" && state.pendingEvent.age === 43,
+      "Proposal returns after consecutive special events");
+    choose(0);
+    confirm.click();
+    delete ageEvents[41];
+    delete ageEvents[42];
+    result.textContent = `PASS: ${count} everyday stories; five-year proposals; priority and consecutive-special deferrals; migration; reload; marriage; breakup; salary; promotions`;
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

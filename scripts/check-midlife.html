@@ -1,0 +1,73 @@
+<!doctype html><meta charset="utf-8"><title>Midlife event checks</title>
+<pre id="midlife-check-result">Running…</pre>
+<script>
+(async () => {
+  const result=document.getElementById('midlife-check-result');
+  const assert=(value,message)=>{if(!value)throw Error(message);};
+  const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const saved=keys.map(key=>localStorage.getItem(key));
+  const random=Math.random;
+  try {
+    const {getAgeEvents,isPriorityEvent}=await import('../js/events.js');
+    const {state,createInitialState}=await import('../js/state.js');
+    const {achievements}=await import('../js/achievements-data.js');
+    const ids=new Set(),titles=new Set(),images=new Set();
+    let count=0;
+    for(let age=40;age<=49;age++) {
+      const events=getAgeEvents(age).filter(event=>!event.specialId);
+      assert(events.length===([40,45].includes(age)?2:3),'Correct count at age '+age);
+      for(const event of events) {
+        assert(!ids.has(event.id)&&!titles.has(event.title),'Unique stories');
+        ids.add(event.id);titles.add(event.title);
+        assert(event.text&&event.image&&event.imageAlt&&event.choices.length===2&&!isPriorityEvent(event),'Complete ordinary event');
+        images.add(event.imageFallback);
+        for(const choice of event.choices) {
+          assert(choice.label&&choice.title&&choice.text&&choice.effects&&choice.image&&choice.imageFallback,'Complete choice and result');
+          images.add(choice.imageFallback);
+          assert(Object.entries(choice.effects).every(([stat,delta])=>['health','intelligence','happiness','appearance'].includes(stat)&&Number.isFinite(delta)),'Valid effects');
+        }
+      }
+      count+=events.length;
+    }
+    assert(count===28,'28 new everyday stories');
+    for(const image of images) assert((await fetch(image)).ok,'Local illustration exists');
+    const first=getAgeEvents(42);first[0].choices[0].effects.health=999;
+    assert(getAgeEvents(42)[0].choices[0].effects.health!==999,'Fresh events do not leak changes into future lives');
+    const html=await(await fetch('../index.html')).text();
+    const parsed=new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());
+    parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState());localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    for(let age=40;age<=49;age++) {
+      const events=getAgeEvents(age).filter(event=>!event.specialId);
+      for(let i=0;i<events.length;i++) for(let choice=0;choice<2;choice++) {
+        Object.assign(state,createInitialState());
+        Object.assign(state.player,{age:age-1,health:60,intelligence:60,happiness:60,appearance:60,
+          studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null});
+        birthday.disabled=false;
+        document.getElementById('game-screen').hidden=false;
+        document.getElementById('lobby-screen').hidden=true;
+        let roll=0;Math.random=()=>roll++===0?0.1:(i+0.1)/getAgeEvents(age).length;
+        birthday.click();
+        assert(state.pendingEvent?.title===events[i].title&&state.pendingEvent.age===age,'Random selection reaches every new story');
+        document.querySelectorAll('#event-choices button')[choice].click();
+        state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
+        confirm.click();
+        assert(state.player.age===age&&!state.pendingEvent&&state.player.isAlive,'Confirmation completes the year');
+        for(const stat of ['health','intelligence','happiness','appearance']) {
+          assert(state.player[stat]===60+(events[i].choices[choice].effects[stat]??0),'Correct choice effects');
+        }
+        assert(state.logs.at(-1).content.includes(events[i].choices[choice].text),'Result appears in diary');
+        assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.age===age,'Year saved');
+      }
+    }
+    result.textContent='PASS: 28 unique stories, reserved counts at 40/45, local illustrations, all 56 choices, random selection, diary and saved results.';
+  }catch(error){result.textContent='FAIL: '+error.stack;}
+  finally{Math.random=random;keys.forEach((key,i)=>saved[i]===null?localStorage.removeItem(key):localStorage.setItem(key,saved[i]));}
+})();
+</script>

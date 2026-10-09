@@ -1,0 +1,88 @@
+<!doctype html><meta charset="utf-8"><title>Theater and luggage checks</title>
+<pre id="theater-luggage-check-result">Running…</pre>
+<script>
+(async()=>{
+  const result=document.getElementById('theater-luggage-check-result');
+  const assert=(value,message)=>{if(!value)throw Error(message);};
+  const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
+  try{
+    const {createTheaterSpecialStep:theater}=await import('../js/special-event-50.js');
+    const {createLuggageSpecialStep:luggage}=await import('../js/special-event-55.js');
+    const {getAgeEvents}=await import('../js/events.js');
+    const {state,createInitialState}=await import('../js/state.js');
+    const {achievements}=await import('../js/achievements-data.js');
+    const {getCareerProfile}=await import('../js/career-jobs.js');
+    const images=new Set();
+    for(const [age,factory,length] of [[50,theater,7],[55,luggage,4]]){
+      assert(getAgeEvents(age).length===5&&getAgeEvents(age).filter(e=>!e.specialId).length===4,'Two ordinary events plus a random special');
+      assert(!factory(0)&&!factory(length+1),'Invalid scenes rejected');
+      for(let i=1;i<=length;i++){
+        const scene=factory(i);assert(scene.specialStep===i&&scene.text&&scene.choices.length>=2,'Complete connected scene');
+        if(scene.warningPhrases)assert(scene.warningPhrases.every(p=>scene.text.includes(p)),'Clues appear in the scene');
+        images.add(scene.image);
+        for(const choice of scene.choices){
+          assert(!choice.death,'Neither new chain contains a fatal choice');
+          if(choice.nextStep)assert(choice.nextStep===i+1,'Forward-only progression');
+          else images.add(choice.image);
+        }
+      }
+    }
+    for(const image of images)assert((await fetch(image)).ok,'Illustrations exist');
+    const html=await(await fetch('../index.html')).text();const parsed=new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);Object.assign(state,createInitialState());localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
+    const start=(age,health=80,working=false)=>{
+      document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:age-1,health,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',nextPromotionAge:null,
+        employmentStatus:working?'employed':'declined',careerLevel:working?1:0,lastSalaryAge:age-1,
+        careerPath:working?{id:'programming',field:'Công nghệ thông tin'}:null,
+        job:working?getCareerProfile('programming').ranks[0]:null});
+      birthday.disabled=false;document.getElementById('game-screen').hidden=false;document.getElementById('lobby-screen').hidden=true;
+      let roll=0;Math.random=()=>roll++===0?0.1:2.1/getAgeEvents(age).length;birthday.click();Math.random=()=>0.99;
+      assert(state.pendingEvent.specialId===(age===50?'theater':'luggage'),'Random draw reaches the requested chain');
+    };
+    for(const finalChoice of [0,1]){
+      start(50,80,true);
+      for(let i=1;i<7;i++){
+        choose(0);resume();assert(state.pendingEvent.specialStep===i+1&&state.player.age===49&&state.player.money===0,'Theater reloads without early age or salary');
+      }
+      choose(finalChoice);resume();assert(state.player.keepsakes.length===0&&state.player.money===0,'Certificate and cash wait for confirmation');
+      confirm.click();
+      assert(state.player.age===50&&state.player.isAlive&&state.player.money===220000000&&state.player.happiness===65&&state.player.intelligence===55&&state.player.achievementFlags['story-hero'],'Both theater endings award stats, cash and annual salary once');
+      assert(state.player.keepsakes.length===1&&state.player.keepsakes[0].id==='hero-certificate'&&state.player.keepsakes[0].receivedAtAge===50,'Certificate added once');
+      assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.keepsakes[0].name==='Bằng vinh danh người hùng'&&state.logs.at(-1).summary.includes('Bằng vinh danh'),'Certificate persists and is visible in diary');
+      assert(state.logs.at(-1).content.includes('bức tranh của bé Mai'),'Supplied theater diary');
+      confirm.click();assert(state.player.keepsakes.length===1&&state.player.money===220000000,'No duplicate certificate or reward');
+    }
+    for(let exitStep=1;exitStep<7;exitStep++)for(let choice=1;choice<theater(exitStep).choices.length;choice++){
+      start(50);for(let i=1;i<exitStep;i++)choose(0);choose(choice);resume();confirm.click();
+      assert(state.player.isAlive&&state.player.age===50&&state.player.money===0&&state.player.keepsakes.length===0&&!state.player.achievementFlags['story-hero'],'All seven early theater exits are safe and award no special reward');
+    }
+    for(const finalChoice of [0,1]){
+      start(55);for(let i=1;i<4;i++){choose(0);resume();assert(state.pendingEvent.specialStep===i+1&&state.player.health===80,'Safe luggage progression');}
+      choose(finalChoice);resume();confirm.click();
+      assert(state.player.money===(finalChoice===0?150000000:100000000)&&state.player.happiness===(finalChoice===0?60:65)&&state.player.achievementFlags['story-luggage']&&state.player.health===80,'Both luggage rewards and achievement');
+      assert(state.logs.at(-1).content.includes('BÊN TRONG CHỈ CÓ BÁNH TRÁNG'),'Supplied luggage diary');
+    }
+    for(const health of [100,80,40,20,1])for(let wrongStep=1;wrongStep<=3;wrongStep++){
+      start(55,health);for(let i=1;i<wrongStep;i++)choose(0);choose(1);
+      const expected=Math.max(1,health-40);
+      assert(state.player.health===health&&state.pendingEvent.updates.health===expected&&state.pendingEvent.nonFatal,'Injury preview uses floor 1 and does not mutate player');
+      resume();assert(state.pendingEvent.nonFatal&&state.pendingEvent.updates.health===expected,'Saved injury preserves floor and nonfatal flag');
+      confirm.click();confirm.click();
+      assert(state.player.isAlive&&state.player.age===55&&state.player.health===expected&&!state.pendingEvent&&!state.player.achievementFlags['story-luggage']&&state.player.money===0,'Each wrong choice subtracts once, closes the chain and awards nothing');
+      assert(!document.getElementById('death-dialog').open&&!birthday.disabled,'No death dialog or game lock at low health');
+      const persisted=JSON.parse(localStorage.getItem('lifeAgainSave'));assert(persisted.player.health===expected&&persisted.player.isAlive,'Survival persists');
+      birthday.click();assert(state.player.age===56&&state.player.health===expected,'Player can continue after the injury without repeated deduction');
+    }
+    result.textContent='PASS: both chains, all early exits, both reward choices, certificate, reloads, salary and all injury branches at 100/80/40/20/1 health.';
+  }catch(error){result.textContent='FAIL: '+error.stack;}
+  finally{Math.random=random;keys.forEach((key,i)=>saved[i]===null?localStorage.removeItem(key):localStorage.setItem(key,saved[i]));}
+})();
+</script>

@@ -1,0 +1,75 @@
+<!doctype html><meta charset="utf-8"><title>Old house checks</title>
+<pre id="old-house-check-result">Running…</pre>
+<script>
+(async()=>{
+  const result=document.getElementById('old-house-check-result');
+  const assert=(value,message)=>{if(!value)throw Error(message);};
+  const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
+  const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
+  try{
+    const {createOldHouseSpecialStep:step}=await import('../js/special-event-40.js');
+    const {getAgeEvents}=await import('../js/events.js');
+    const {state,createInitialState}=await import('../js/state.js');
+    const {achievements}=await import('../js/achievements-data.js');
+    const {getCareerProfile}=await import('../js/career-jobs.js');
+    assert(getAgeEvents(40).length===3&&getAgeEvents(40).filter(e=>!e.specialId).length===2,'Two ordinary stories plus one special');
+    const achievement=achievements.find(e=>e.id==='story-reincarnation');
+    assert(achievement.title==='Lời hẹn âm dương'&&achievement.description.includes('con về'),'Stable achievement ID and new description');
+    assert(!step(0)&&!step(8),'Invalid steps rejected');
+    for(let i=1;i<=7;i++){
+      const scene=step(i);
+      assert(scene.specialId==='old-house'&&scene.specialStep===i&&scene.choices.length===2,'Seven connected scenes');
+      for(const item of [scene,...scene.choices.filter(c=>!c.nextStep)])assert((await fetch(item.image)).ok,'Illustrations exist');
+      for(const choice of scene.choices){
+        if(choice.nextStep)assert(choice.nextStep===i+1,'Forward-only transitions');
+        else if(i<7)assert(!choice.money&&!choice.achievementIds&&!choice.death&&Object.keys(choice.effects).length===0,'Early exits have no special reward or death');
+        else assert(choice.achievementIds.includes('story-reincarnation'),'Both successes unlock the achievement');
+      }
+    }
+    const html=await(await fetch('../index.html')).text();
+    const parsed=new DOMParser().parseFromString(html,'text/html');
+    parsed.querySelectorAll('script').forEach(e=>e.remove());parsed.querySelectorAll('[src]').forEach(e=>e.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend',parsed.body.innerHTML);
+    Object.assign(state,createInitialState());localStorage.removeItem('lifeAgainSave');
+    localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
+    localStorage.setItem('lifeAgainAchievementQueue','[]');
+    await import('../js/main.js');
+    const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
+    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
+    const start=()=>{
+      Object.assign(state,createInitialState());
+      Object.assign(state.player,{age:39,health:80,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',money:0,
+        employmentStatus:'employed',careerLevel:1,careerPath:{id:'programming',field:'Công nghệ thông tin'},
+        job:getCareerProfile('programming').ranks[0],lastSalaryAge:39,nextPromotionAge:null});
+      birthday.disabled=false;document.getElementById('game-screen').hidden=false;document.getElementById('lobby-screen').hidden=true;
+      let roll=0;Math.random=()=>roll++===0?0.1:0.99;
+      birthday.click();Math.random=()=>0.99;
+      assert(state.pendingEvent.specialId==='old-house'&&state.pendingEvent.age===40,'Random draw reaches the special story');
+    };
+    for(const finalChoice of [0,1]){
+      start();
+      for(let i=1;i<7;i++){
+        assert(state.pendingEvent.specialStep===i&&state.player.age===39&&state.player.money===0,'Intermediate scenes do not complete the year or pay money');
+        choose(0);resume();assert(state.pendingEvent.specialStep===i+1,'Saved progression preserves next scene');
+      }
+      assert(state.pendingEvent.text.includes('Mẹ ơi, con về rồi.'),'Reunion is presented before the final choice');
+      choose(finalChoice);resume();
+      assert(state.player.money===0&&!state.player.achievementFlags['story-reincarnation'],'Reward applies only on confirmation');
+      confirm.click();
+      const money=120000000+(finalChoice===0?200000000:100000000);
+      assert(state.player.age===40&&state.player.isAlive&&state.player.money===money&&state.player.happiness===(finalChoice===0?65:70),'Exact final reward and one annual salary');
+      assert(state.player.achievementFlags['story-reincarnation']&&state.logs.at(-1).content.includes('nụ cười của bà bên khung cửa'),'Achievement and supplied diary saved');
+      assert(document.getElementById('money-value').textContent===money.toLocaleString('vi-VN'),'Wallet shows reward');
+      confirm.click();assert(state.player.money===money,'Repeated confirmation cannot duplicate reward');
+    }
+    for(let exitStep=1;exitStep<=6;exitStep++){
+      start();for(let i=1;i<exitStep;i++)choose(0);
+      choose(1);resume();confirm.click();
+      assert(state.player.age===40&&state.player.isAlive&&state.player.money===120000000&&state.player.happiness===50&&!state.player.achievementFlags['story-reincarnation'],'All six early exits end safely, pay salary only and grant no achievement');
+    }
+    result.textContent='PASS: 7 scenes, 6 early exits, 2 rewards, illustrations, saved progress, salary once, wallet, achievement and diary.';
+  }catch(error){result.textContent='FAIL: '+error.stack;}
+  finally{Math.random=random;keys.forEach((key,i)=>saved[i]===null?localStorage.removeItem(key):localStorage.setItem(key,saved[i]));}
+})();
+</script>

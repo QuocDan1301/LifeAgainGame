@@ -1,0 +1,104 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Career salary checks</title>
+<pre id="salary-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("salary-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const originalRandom = Math.random;
+  try {
+    const { careerAnnualSalaries, getCareerAnnualSalary, getPlayerAnnualSalary, getAnnualSalaryPayment, completeCareerYear } = await import("../js/career-salary.js");
+    const { state, createInitialState } = await import("../js/state.js");
+    const { careerEvent } = await import("../js/career-event.js");
+    const { createInterviewResult, getCareerProfile } = await import("../js/career-jobs.js");
+    for (const choice of careerEvent.choices) {
+      const amounts = careerAnnualSalaries[choice.careerPath.id];
+      assert(amounts?.length === 3 && amounts.every(Number.isSafeInteger), "Every career needs three fixed salaries");
+      assert(amounts[0] > 0 && amounts[0] < amounts[1] && amounts[1] < amounts[2], "Salary must increase by rank");
+    }
+    const worker = () => ({ ...createInitialState().player, age: 22, money: 10_000,
+      careerPath: { id: "programming", field: "Công nghệ thông tin" },
+      careerLevel: 1, lastSalaryAge: 22, employmentStatus: "employed", job: getCareerProfile("programming").ranks[0] });
+    const player = worker();
+    assert(getAnnualSalaryPayment(player, 22) === null, "Do not repeat a paid salary within the same year");
+    completeCareerYear(player, 23, { money: 5_000 });
+    assert(player.money === 120_005_000, "Event spending and salary must both apply");
+    assert(completeCareerYear(player, 23) === null && player.money === 120_005_000, "Do not pay the same year twice");
+    const payment = completeCareerYear(player, 24, { careerLevel: 2 });
+    assert(payment.amount === 120_000_000, "Promotion year pays the completed year's old rank");
+    assert(completeCareerYear(player, 25).amount === 240_000_000, "Following year pays the new rank");
+    const jump = worker();
+    assert(completeCareerYear(jump, 26).amount === 480_000_000, "Skipping four years must credit all four annual salaries");
+    const oldSave = worker();
+    oldSave.age = 45;
+    delete oldSave.lastSalaryAge;
+    completeCareerYear(oldSave, 45);
+    assert(oldSave.money === 120_010_000, "Old saves receive the current unpaid year without retroactive payments");
+    completeCareerYear(oldSave, 46);
+    assert(oldSave.money === 240_010_000, "Old saves continue annual payments");
+    const restored = JSON.parse(JSON.stringify(oldSave));
+    assert(completeCareerYear(restored, 46) === null, "Reload preserves payment guard");
+    for (const status of ["unemployed", "declined", null]) {
+      const person = { ...worker(), employmentStatus: status };
+      assert(getPlayerAnnualSalary(person) === 0 && completeCareerYear(person, 23) === null, "Only employed characters receive salary");
+    }
+    assert(getPlayerAnnualSalary({ ...worker(), isAlive: false }) === 0, "Dead characters do not receive salary");
+    assert(getCareerAnnualSalary("unknown", 3) > 0, "Unknown legacy careers retain a salary fallback");
+    const hired = { ...worker(), employmentStatus: "unemployed", careerLevel: 0, age: 21, lastSalaryAge: null };
+    completeCareerYear(hired, 22, createInterviewResult(hired, true, 22).updates);
+    assert(hired.money === 120_010_000 && getPlayerAnnualSalary(hired) === 120_000_000, "Hiring credits the first salary directly into the wallet");
+    assert(completeCareerYear(hired, 22) === null && hired.money === 120_010_000, "Reload must not repeat the hiring salary");
+
+    // Exercise the actual birthday buttons, result confirmation and UI.
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(script => script.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, worker(), { age: 30, money: 0, lastSalaryAge: null, health: 90, studyBlock: "A", nextPromotionAge: null });
+    const { achievements } = await import("../js/achievements-data.js");
+    localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(item => [item.id, true]))));
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    assert(state.player.money === 120_000_000 && state.player.lastSalaryAge === 30, "An existing worker with zero balance receives the unpaid current salary on load");
+    assert(document.getElementById("money-value").textContent === "120.000.000", "Existing save's first salary appears in the wallet immediately");
+    const birthday = document.getElementById("age-up");
+    const mainSource = await (await fetch("../js/main.js")).text();
+    const ageStep = Number(mainSource.match(/const nextAge = state\.player\.age \+ (\d+)/)?.[1] ?? 1);
+    birthday.click();
+    assert(state.player.age === 30 + ageStep && state.player.money === 120_000_000 * (ageStep + 1), "A birthday must pay salary for every elapsed year");
+    assert(document.getElementById("money-value").textContent === state.player.money.toLocaleString("vi-VN"), "Wallet refreshes immediately");
+    assert(state.logs.at(-1).content.includes("Nhận lương"), "Diary records salary");
+    document.getElementById("education").click();
+    assert(document.getElementById("career-salary-ranks").children.length === 3, "Career dialog shows every salary tier");
+    document.getElementById("close-education").click();
+    Object.assign(state.player, { age: 27 - ageStep, money: 0, lastSalaryAge: null, nextPromotionAge: 27 });
+    birthday.click();
+    const correct = state.pendingEvent.choices.findIndex(choice => choice.correct);
+    document.querySelectorAll("#event-choices button")[correct].click();
+    assert(state.player.money === 0, "Preview must not pay before confirmation");
+    assert(document.getElementById("event-content").textContent.includes(`+${(120_000_000 * ageStep).toLocaleString("vi-VN")} VNĐ`), "Preview announces salary for the elapsed years");
+    state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
+    document.getElementById("event-confirm").click();
+    assert(state.player.money === 120_000_000 * ageStep && state.player.careerLevel === 2, "Confirming a saved promotion pays once at the old rank");
+    assert(document.getElementById("money-value").textContent === state.player.money.toLocaleString("vi-VN"), "Wallet shows the credited balance after promotion");
+    birthday.click();
+    assert(state.player.age === 27 + ageStep && state.player.money === 360_000_000 * ageStep, "The following years pay the promoted salary");
+    const persisted = JSON.parse(localStorage.getItem("lifeAgainSave"));
+    assert(persisted.player.lastSalaryAge === 27 + ageStep && persisted.player.money === 360_000_000 * ageStep, "Payment and age persist together");
+    result.textContent = "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = originalRandom;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>
