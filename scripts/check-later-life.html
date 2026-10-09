@@ -16,7 +16,7 @@
       const events=getAgeEvents(age).filter(event=>!event.specialId&&!event.addedEveryday);
       assert(events.length===(reserved.includes(age)?2:3),'Correct count at '+age);
       for(const event of events){
-        assert(event.id&&event.title&&event.text&&event.choices.length===2&&!isPriorityEvent(event),'Complete ordinary event');
+        assert(event.id&&event.title&&event.text&&[2,3].includes(event.choices.length)&&!isPriorityEvent(event),'Complete ordinary event');
         assert(!ids.has(event.id)&&!titles.has(event.title),'Unique event IDs and titles');
         ids.add(event.id);titles.add(event.title);images.add(event.imageFallback);
         for(const choice of event.choices){
@@ -72,7 +72,7 @@
     };
     for(let age=50;age<=104;age++){
       const events=getAgeEvents(age).filter(event=>!event.specialId&&!event.addedEveryday);
-      for(let i=0;i<events.length;i++)for(let c=0;c<2;c++){
+      for(let i=0;i<events.length;i++)for(let c=0;c<events[i].choices.length;c++){
         reset(age);let roll=0;
         const values=age>=98?[0,0.1,(i+0.1)/getAgeEvents(age).length]:[0.1,(i+0.1)/getAgeEvents(age).length];
         Math.random=()=>values[roll++]??0.1;birthday.click();

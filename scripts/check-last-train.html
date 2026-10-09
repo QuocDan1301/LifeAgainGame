@@ -66,7 +66,7 @@
       assert(state.player.money===0&&!state.player.achievementFlags['story-last-train'],'Rewards wait for confirmation');
       confirm.click();const expected=reunited?220000000:120000000;
       assert(state.player.age===45&&state.player.isAlive&&state.player.money===expected&&state.player.intelligence===60&&state.player.happiness===60,'Exact reward plus one annual salary');
-      assert(state.player.achievementFlags['story-last-train']&&document.getElementById('money-value').textContent===expected.toLocaleString('vi-VN'),'Achievement and wallet updated');
+      assert(state.player.achievementFlags['story-last-train']&&document.getElementById('money-value').textContent===`${expected/1000000} triệu`,'Achievement and wallet updated');
       assert(state.logs.at(-1).content.includes('tặng tôi 100.000.000')===reunited,'Diary follows the right ending');
       confirm.click();assert(state.player.money===expected,'No duplicate reward');
       for(let deathStep=1;deathStep<=4;deathStep++){

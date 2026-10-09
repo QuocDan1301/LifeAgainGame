@@ -20,7 +20,7 @@
       const events = getAgeEvents(age).filter(event => !event.specialId);
       assert(events.length === ([30, 35].includes(age) ? 2 : 3), `Wrong everyday event count at ${age}`);
       for (const event of events) {
-        assert(event.title && event.text && event.image && event.choices.length === 2, `Missing content at ${age}`);
+        assert(event.title && event.text && event.image && [2, 3].includes(event.choices.length), `Missing content at ${age}`);
         for (const choice of event.choices) assert(choice.text && choice.image && choice.imageFallback, `Missing result illustration at ${age}`);
       }
       count += events.length;
@@ -77,7 +77,7 @@
     Object.assign(state, createInitialState());
     Object.assign(state.player, base(), { partner: person, health: 90, happiness: 70, intelligence: 70,
       appearance: 70, studyBlock: "A", employmentStatus: "employed", careerLevel: 1,
-      careerPath: { id: "programming", field: "Công nghệ thông tin" },
+      careerPath: { id: "programming", field: "Công nghệ thông tin" }, careerSpark: "programming",
       job: getCareerProfile("programming").ranks[0], lastSalaryAge: 31, nextPromotionAge: null });
     const { achievements } = await import("../js/achievements-data.js");
     localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(entry => [entry.id, true]))));
@@ -110,6 +110,8 @@
     document.getElementById("close-relationships").click();
     birthday.click();
     assert(state.player.age === 35 && !state.pendingEvent && !state.player.partner, "No replacement partner at 35");
+    assert(createEmploymentEvent({ ...state.player, age: 36, careerLevel: 2, nextPromotionAge: 37, careerSpark: "law" }, 37) === null,
+      "Final promotion needs the age-16 milestone of the chosen career");
     for (const promotionAge of [37, 39]) {
       Object.assign(state.player, { age: promotionAge - 1, careerLevel: 2,
         nextPromotionAge: promotionAge, lastSalaryAge: promotionAge - 1 });

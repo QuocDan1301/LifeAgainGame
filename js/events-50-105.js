@@ -295,7 +295,7 @@ export function createLaterLifeEvents(age) {
   return (stories[age] ?? []).map(([theme, title, text, firstResult, secondResult], index) => {
     const [code, first, second] = themes[theme];
     return {
-      id: `later-life-${age}-${index + 1}`, title, text, ...art(code, title),
+      id: `later-life-${age}-${index + 1}`, everydayTheme: theme, title, text, ...art(code, title),
       choices: [first, second].map(([label, effects], choiceIndex) => ensureEventOpenMoji({
         label, title: choiceIndex === 0 ? "Một điều nhỏ cho hôm nay" : "Một khoảnh khắc cùng nhau",
         text: choiceIndex === 0 ? firstResult : secondResult,

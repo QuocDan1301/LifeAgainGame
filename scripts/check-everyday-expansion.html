@@ -18,11 +18,13 @@
     const ids=new Set(),titles=new Set(),assets=new Set();let total=0;
     for(let age=1;age<=105;age++){
       const pool=getAgeEvents(age),extra=pool.filter(e=>e.addedEveryday);
-      const expected = age === 24 ? 0 : 2;
-      assert(extra.length===expected&&pool.length===(getBaseAgeEvents(age)?.length??0)+expected,'Ordinary additions except the orientation-only age 24 at '+age);
+      const expected = age === 24 || age === 16 ? 0 : 2;
+      assert(extra.length===expected&&pool.length===(getBaseAgeEvents(age)?.length??0)+expected,'Ordinary additions except the orientation-only age 24 and career-discovery age 16 at '+age);
       for(const event of extra){
         assert(!ids.has(event.id)&&!titles.has(event.title),'Distinct authored situations');ids.add(event.id);titles.add(event.title);
-        assert(event.choices.length===2&&event.text&&!event.specialId,'Ordinary event with two actions');
+        assert([2,3].includes(event.choices.length)&&event.text&&!event.specialId,'Ordinary event with two or three actions');
+        assert(event.choices.some(c=>Object.values(c.effects).some(v=>v>0)&&!Object.values(c.effects).some(v=>v<0)),'Every event has a beneficial action');
+        assert(event.choices.some(c=>Object.values(c.effects).some(v=>v<0)),'Every event has a costly action');
         for(const slot of [event,...event.choices]){
           assert(slot.image&&slot.imageFallback&&slot.imageAlt&&slot.imageFallbackAlt,'Every scene and outcome has media');assets.add(slot.image);assets.add(slot.imageFallback);
         }
@@ -30,7 +32,7 @@
         total++;
       }
     }
-    assert(total===208,'All 208 active new events');
+    assert(total===206,'All 206 active new events (age 16 is career discovery only)');
     const audit=await(await fetch('../js/img/events/full-media-audit.json')).json();
     assert(audit.length>3000&&new Set(audit.map(row=>row.age)).size===105,'Whole-life and career branch audit exists');
     for(const row of audit){assets.add(new URL('../'+row.image,location.href).href);assets.add(new URL('../'+row.fallback,location.href).href);assert(row.kind==='animated-openmoji','Every slot uses animated OpenMoji');}
@@ -54,8 +56,8 @@
       Object.assign(state.player,{age:age-1,health:60,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',datingActivitiesOnly:true,employmentStatus:'declined',nextPromotionAge:null},extra);
       birthday.disabled=false;document.getElementById('game-screen').hidden=false;
     };
-    for(let age=1;age<=105;age++)for(let i=0;i<2;i++)for(let action=0;action<2;action++){
-      if ([18, 24, 25, 105].includes(age)) continue;
+    for(let age=1;age<=105;age++)for(let i=0;i<2;i++)for(let action=0;action<(createEverydayAdditions(age)[i]?.choices.length??0);action++){
+      if ([16, 18, 24, 25, 105].includes(age)) continue;
       reset(age);const pool=getAgeEvents(age),index=pool.findIndex(e=>e.id==='everyday-added-'+age+'-'+(i+1));
       let rolls=[...(age>=98?[0.1]:[]),0.1,(index+0.1)/pool.length];
       Math.random=()=>rolls.shift()??0.1;birthday.click();Math.random=()=>0.99;
@@ -69,8 +71,8 @@
     }
     reset(25,{datingActivitiesOnly:false,careerPath:{id:'programming'},employmentStatus:'employed',careerLevel:1,job:getCareerProfile('programming').ranks[0],lastSalaryAge:24});
     Math.random=()=>0.1;birthday.click();assert(state.pendingEvent.kind==='workplace-dating'&&!state.followUpEvent,'Age-25 dating is the only story');
-    choose(0);restore();confirm.click();assert(state.player.partner&&state.player.age===25&&state.player.money===120000000&&!state.pendingEvent,'Dating settles the birthday and pays salary once');
-    confirm.click();assert(state.player.money===120000000,'Repeated confirmation cannot pay twice');
+    choose(0);restore();confirm.click();assert(state.player.partner&&state.player.age===25&&state.player.money===84000000&&!state.pendingEvent,'Dating settles the birthday and pays salary once (minus living costs)');
+    confirm.click();assert(state.player.money===84000000,'Repeated confirmation cannot pay twice');
     reset(105);Math.random=()=>0.1;birthday.click();assert(state.pendingEvent.specialId==='later-105'&&!state.followUpEvent,'Age-105 finale starts directly');
     for(let n=0;n<4;n++)choose(0);restore();confirm.click();assert(state.player.isAlive===false&&state.player.ending==='fulfilled','Finale still ends at 105');
     result.textContent='PASS: ordinary actions outside mandatory milestones, one story per birthday, complete OpenMoji audit, saved progress, direct age-105 finale and salary once per year.';

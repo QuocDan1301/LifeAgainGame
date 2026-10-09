@@ -1,0 +1,155 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Shop checks</title>
+<pre id="shop-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("shop-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const { shopCatalog, shops, getSellPrice, collectAssetIncome, isAtLimit } = await import("../js/shop.js");
+    const { achievements } = await import("../js/achievements-data.js");
+    assert(shopCatalog.every(item => item.price > 0 && item.description && shops[item.shop].groups.some(g => g.id === item.group)),
+      "Every item has a price, description and a valid group");
+    assert(shopCatalog.filter(item => item.group === "vehicles").every(item => !item.profit), "Vehicles only have a price");
+    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group)).every(item => item.profit > 0),
+      "Real estate, businesses and animals earn yearly");
+    const expected = ["own-house", "own-resort", "own-hotel", "own-restaurant", "own-cafe", "own-noodle-cart", "own-motorbike",
+      "own-big-bike", "own-car", "own-lamborghini", "own-porsche", "own-rolls-royce", "own-private-jet"];
+    assert(expected.every(id => shopCatalog.some(item => item.achievement === id) && achievements.some(a => a.id === id)),
+      "All 13 shopping items unlock their existing achievement");
+    assert(getSellPrice({ price: 150_000 }) === 75_000, "Sell price is half the purchase price");
+    const pigeon = shopCatalog.find(item => item.id === "pigeon");
+    const five = { livestock: Array.from({ length: 5 }, (_, i) => ({ uid: `p${i}`, id: "pigeon", boughtAtAge: 20 })) };
+    assert(isAtLimit(five, pigeon) && !isAtLimit({ livestock: five.livestock.slice(1) }, pigeon), "At most 5 of each animal");
+    assert(shopCatalog.filter(item => item.shop === "pets").every(item => item.limit === 5 && item.profit / item.price <= 0.2),
+      "Animals earn at most 20% a year");
+    assert(!shopCatalog.find(item => item.id === "house").limit, "Real estate has no limit");
+    const sample = { money: 0, livestock: [{ uid: "a", id: "cow", boughtAtAge: 30 }],
+      purchases: [{ uid: "b", id: "cafe", boughtAtAge: 30, rentedAtAge: 30 }, { uid: "c", id: "car", boughtAtAge: 30 },
+        { uid: "d", id: "house", boughtAtAge: 29 }, { uid: "e", id: "noodle-cart", boughtAtAge: 30 }] };
+    const income = collectAssetIncome(sample, 31);
+    assert(income.amount === 2_500_000 + 225_000_000 + 6_000_000 && sample.money === income.amount,
+      "Animals and businesses (cafe, noodle cart) earn automatically; real estate only while rented");
+    assert(shopCatalog.filter(item => item.group === "business").map(item => item.id).sort().join() === "cafe,noodle-cart",
+      "Cafe and noodle cart share the business group");
+    const lease = { purchases: [{ uid: "r", id: "house", boughtAtAge: 30, rentedAtAge: 30 }], money: 0 };
+    const paid = [31, 32, 33, 34, 35].map(age => collectAssetIncome(lease, age)?.amount ?? 0);
+    assert(paid.join() === [600_000_000, 600_000_000, 600_000_000, 600_000_000, 0].join(), "A lease pays exactly 4 years");
+    assert(collectAssetIncome(lease, 34).content.includes("hết hạn"), "Diary announces the end of the lease");
+
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 20, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 80_000_000, studyBlock: "A00", datingActivitiesOnly: true, employmentStatus: "declined",
+      nextPromotionAge: null });
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const closeOthers = () => document.querySelectorAll("dialog[open]").forEach(d => d !== $("shop-dialog") && d.close());
+    const openGroup = group => document.querySelector(`.shop-group[data-group="${group}"]`).click();
+    const buyButton = (group, id) => document.querySelectorAll(".shop-buy")[shopCatalog.filter(i => i.group === group).findIndex(i => i.id === id)];
+
+    // Mua vật nuôi
+    $("activities").click();
+    $("activity-pets").click();
+    assert($("shop-dialog").open && $("shop-title").textContent.includes("vật nuôi"), "Pets button opens the pet shop");
+    assert(document.querySelectorAll(".shop-group").length === 2 && !document.querySelector(".shop-buy"), "Pet shop starts with two groups");
+    openGroup("poultry");
+    buyButton("poultry", "chicken").click();
+    assert($("shop-confirm-dialog").open && state.player.money === 80_000_000, "Buying asks for confirmation first");
+    $("shop-cancel").click();
+    assert(!(state.player.livestock ?? []).length, "Cancel does not buy");
+    buyButton("poultry", "chicken").click();
+    $("shop-confirm").click();
+    assert(state.player.money === 79_850_000 && state.player.livestock.length === 1, "Confirm buys the animal");
+    $("close-shop").click();
+
+    // Mua sắm
+    $("activities").click();
+    $("activity-shopping").click();
+    const groups = [...document.querySelectorAll(".shop-group")];
+    assert(groups.map(b => b.dataset.group).join() === "items,vehicles,realestate,business", "Shopping shows items, vehicles, real estate, business");
+    assert(groups[0].disabled, "Items are coming soon");
+    document.querySelector(".shop-back").click();
+    assert(!$("shop-dialog").open && $("activities-dialog").open, "Back on the group screen returns to Activities");
+    $("activity-shopping").click();
+    openGroup("vehicles");
+    assert(buyButton("vehicles", "motorbike").disabled && buyButton("vehicles", "motorbike").textContent.includes("Cần"),
+      "Vehicles need a driving licence");
+    state.player.licenses = [{ id: "motorbike", receivedAtAge: 20 }];
+    document.querySelector(".shop-back").click();
+    openGroup("vehicles");
+    assert(buyButton("vehicles", "car").disabled, "A motorbike licence does not allow cars");
+    buyButton("vehicles", "motorbike").click();
+    $("shop-confirm").click();
+    closeOthers();
+    assert(state.player.purchases.length === 1 && state.player.money === 49_850_000, "Vehicle purchase");
+    assert(state.player.achievementFlags["own-motorbike"] && JSON.parse(localStorage.getItem("lifeAgainAchievements"))["own-motorbike"],
+      "Vehicle unlocks its achievement");
+    document.querySelector(".shop-back").click();
+    openGroup("business");
+    buyButton("business", "noodle-cart").click();
+    $("shop-confirm").click();
+    closeOthers();
+    assert(state.player.purchases.length === 2 && state.player.money === 19_850_000, "Business purchase");
+    assert(state.player.achievementFlags["own-noodle-cart"], "Noodle cart achievement flag");
+    assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.purchases.length === 2, "Purchases persist");
+    $("close-shop").click();
+    closeOthers();
+
+    // Lãi hằng năm
+    $("age-up").click();
+    if (state.pendingEvent) {
+      document.querySelector("#event-choices button")?.click();
+      $("event-confirm").click();
+    }
+    const yearLog = state.logs.at(-1).content;
+    assert(yearLog.includes("Lãi từ 1 vật nuôi") && yearLog.includes("Lãi kinh doanh"), "Yearly income in the diary");
+    closeOthers();
+
+    // Cho thuê bất động sản trong Tài sản
+    state.player.purchases = [...state.player.purchases, { uid: "test-house", id: "house", boughtAtAge: state.player.age }];
+    $("assets").click();
+    const leaseButton = document.querySelector("#life-realestate .shop-lease");
+    assert(leaseButton, "Unrented real estate shows a lease button");
+    leaseButton.click();
+    const house = state.player.purchases.find(entry => entry.uid === "test-house");
+    assert(house.rentedAtAge === state.player.age && state.logs.at(-1).content.includes("Cho thuê"), "Leasing starts a 4-year contract");
+    assert(!document.querySelector("#life-realestate .shop-lease") && document.querySelector("#life-realestate .shop-lease-status"),
+      "A leased property shows its remaining years instead of the button");
+    state.player.purchases = state.player.purchases.filter(entry => entry.uid !== "test-house");
+    $("close-life-profile").click();
+
+    // Bán trong Tài sản
+    $("assets").click();
+    assert(document.querySelectorAll("#life-livestock .shop-sell").length === 1 &&
+      document.querySelectorAll("#life-realestate .shop-sell").length === 1 &&
+      !document.querySelector("#life-realestate .shop-lease") &&
+      document.querySelectorAll("#life-vehicles .shop-sell").length === 1, "Assets list each owned item in its card");
+    const beforeSale = state.player.money;
+    document.querySelector("#life-vehicles .shop-sell").click();
+    $("shop-confirm").click();
+    assert(state.player.money === beforeSale + 15_000_000 && state.player.purchases.length === 1, "Selling a vehicle pays half price");
+    assert(!document.querySelector("#life-vehicles .shop-sell"), "Assets list updates after selling");
+    result.textContent = "PASS: pet shop; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

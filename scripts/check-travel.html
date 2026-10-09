@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Travel checks</title>
+<pre id="travel-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("travel-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const { destinations } = await import("../js/travel.js");
+    const expected = { "Đà Nẵng": [3e6, 5], "Hội An": [4e6, 6], Bangkok: [8e6, 8], Singapore: [15e6, 10], Tokyo: [25e6, 12],
+      Seoul: [20e6, 11], Paris: [50e6, 16], "New York": [70e6, 18], Sydney: [45e6, 15] };
+    assert(destinations.length === 9 && destinations.every(d => expected[d.name]?.[0] === d.cost && expected[d.name]?.[1] === d.happiness),
+      "Nine destinations match the table");
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 30, health: 50, happiness: 90, intelligence: 50,
+      appearance: 50, money: 30_000_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const go = id => $("travel-body").querySelector(`.travel-go[data-place="${id}"]`);
+
+    $("activities").click();
+    $("activity-travel").click();
+    assert($("travel-dialog").open && $("travel-body").querySelectorAll(".travel-go").length === 9, "Travel popup lists nine destinations");
+    assert(go("paris").disabled && !go("tokyo").disabled, "Cannot afford trips above the balance");
+    go("da-nang").click();
+    assert(state.player.money === 27_000_000 && state.player.happiness === 95 && $("happiness-value").textContent === "95%", "Trip costs money and adds happiness");
+    assert(go("da-nang").disabled && go("da-nang").textContent.includes("Đã đi"), "Visited destination marked");
+    assert(go("tokyo").disabled && go("tokyo").textContent.includes("Hẹn năm sau"), "Only one trip per year");
+    go("tokyo").click();
+    assert(state.player.money === 27_000_000, "Blocked trip costs nothing");
+    $("close-travel").click();
+    Object.assign(state.player, { age: 31 });
+    $("activities").click();
+    $("activity-travel").click();
+    assert(!go("da-nang").disabled && !go("tokyo").disabled, "Available again next year");
+    go("tokyo").click();
+    assert(state.player.money === 2_000_000 && state.player.happiness === 100, "Happiness stops at 100");
+    assert(state.logs.at(-1).content.includes("Tokyo (Nhật Bản)") && state.logs.at(-1).content.includes("Hạnh phúc +5"), "Diary records the real gain");
+    result.textContent = "PASS: nine destinations from the table; cost and happiness; max 100; one trip per year; diary";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

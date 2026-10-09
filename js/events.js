@@ -18,6 +18,7 @@ import { createLaterSpecialEvent, createCentennialMemorial } from "./special-lat
 import { createEverydayAdditions } from "./everyday-additions.js";
 import { reviewEventMedia } from "./semantic-event-media.js";
 import { enrichEverydayRewards } from "./everyday-rewards.js";
+import { createCareerSparkEvents } from "./career-milestones.js";
 export const ageEvents = {};
 
 // Future special stories can opt in with priority: true or specialId.
@@ -25,7 +26,7 @@ export function isPriorityEvent(event) {
   if (event?.priority === false) return false;
   return Boolean(event?.priority || event?.specialId ||
     event?.kind === "special-chain" || event?.kind === "lost-child-chain" ||
-    event?.kind === "career-promotion" || event?.kind === "orientation-chain" ||
+    event?.kind === "career-promotion" || event?.kind === "career-spark" || event?.kind === "orientation-chain" ||
     event?.kind === "job-interview" || event?.kind === "job-interview-retry");
 }
 Object.assign(ageEvents, ageEvents1To10);
@@ -38,6 +39,8 @@ ageEvents[10] = [...ageEvents[10], lostChildSpecialEvent];
 
 export function getBaseAgeEvents(age, careerPath, player = {}) {
   if (age === 24) return [];
+  // Tuổi 16 chỉ có chuỗi khám phá một ngành, thay cho mọi sự kiện đời thường.
+  if (age === 16) return createCareerSparkEvents(player.studyBlock);
   if (age === 50) return [...createLaterLifeEvents(age), theaterSpecialEvent, ...(ageEvents[age] ?? [])];
   if (age === 55) return [...createLaterLifeEvents(age), luggageSpecialEvent, ...(ageEvents[age] ?? [])];
   if (age === 105) return [createLaterSpecialEvent(age, player)];
@@ -65,5 +68,6 @@ export function getBaseAgeEvents(age, careerPath, player = {}) {
 }
 
 export function getAgeEvents(age, careerPath, player = {}) {
-  return [...(getBaseAgeEvents(age, careerPath, player) ?? []), ...createEverydayAdditions(age)].map(event => reviewEventMedia(enrichEverydayRewards({ ...event, age }, age)));
+  const additions = age === 16 ? [] : createEverydayAdditions(age);
+  return [...(getBaseAgeEvents(age, careerPath, player) ?? []), ...additions].map(event => reviewEventMedia(enrichEverydayRewards({ ...event, age }, age)));
 }

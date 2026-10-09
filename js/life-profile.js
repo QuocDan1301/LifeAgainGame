@@ -1,8 +1,9 @@
 import { achievements, meetsAchievement } from "./achievements-data.js";
+import { formatMoneyText } from "./money-format.js";
 
 const node = (tag, text) => {
   const element = document.createElement(tag);
-  if (text !== undefined) element.textContent = text;
+  if (text !== undefined) element.textContent = formatMoneyText(text);
   return element;
 };
 

@@ -82,32 +82,9 @@
   background: #ffdd6e;
   box-shadow: 0 5px 0 #b69945;
 }
-#new-life-button,
 #continue-button {
-  --journey-shadow: #b69945;
-  --journey-glow: #f5c54b66;
-  animation: journey-glow 3.2s ease-in-out infinite;
-}
-#continue-button {
-  --journey-shadow: #83b8a2;
-  --journey-glow: #83b8a266;
   background: #d4f1e3;
   box-shadow: 0 5px 0 #83b8a2;
-}
-@keyframes journey-glow {
-  0%,
-  100% {
-    opacity: 1;
-    box-shadow:
-      0 5px 0 var(--journey-shadow),
-      0 0 0 0 #f5c54b00;
-  }
-  50% {
-    opacity: 0.65;
-    box-shadow:
-      0 5px 0 var(--journey-shadow),
-      0 0 25px 5px var(--journey-glow);
-  }
 }
 .lobby-ticket-count {
   font-size: 23px;
@@ -626,5 +603,72 @@
 @media (prefers-reduced-motion: reduce) {
   #lobby-screen::before {
     animation: none;
+  }
+}
+
+/* Hành trình một đời người: dải bóng đen ở giữa, phía dưới bến xe */
+.lobby-life-stages {
+  width: min(100%, 520px);
+  margin: 8px auto 0;
+  color: #141b24;
+  pointer-events: none;
+}
+.lobby-life-stages svg { display: block; width: 100%; height: auto; }
+.lobby-footer { position: relative; z-index: 1; }
+@media (min-width: 900px) {
+  .lobby-life-stages {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: min(38vw, 540px);
+    margin: 0;
+    transform: translateX(-50%);
+  }
+}
+@keyframes life-stage-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #lobby-screen:not([hidden]) .life-stage {
+    animation: life-stage-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(250ms + var(--i) * 140ms);
+  }
+}
+
+/* Bộ bóng nữ và nam thay phiên ẩn hiện như một làn sóng từ trái sang phải */
+.life-male { opacity: 0; }
+/* Mỗi bộ đứng yên 2 giây, chuyển mờ 0,5 giây: một vòng 5 giây. */
+@keyframes life-show-female {
+  0%, 40% { opacity: 1; }
+  50%, 90% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes life-show-male {
+  0%, 40% { opacity: 0; }
+  50%, 90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #lobby-screen:not([hidden]) .life-swap {
+    animation: life-show-female 5s ease-in-out infinite both;
+    animation-delay: calc(1.7s + var(--i) * 150ms);
+  }
+  #lobby-screen:not([hidden]) .life-male { animation-name: life-show-male; }
+}
+
+/* Điện thoại: popup bến xe gọn hơn, bong bóng lời thoại không gãy dòng */
+@media (max-width: 480px) {
+  .lobby-dialog {
+    width: calc(100vw - 24px);
+    padding: 18px;
+  }
+  .lobby-dialog h2 {
+    font-size: 22px;
+  }
+  .seller-speech {
+    padding: 7px 12px;
+    font-size: 17px;
+    white-space: nowrap;
   }
 }

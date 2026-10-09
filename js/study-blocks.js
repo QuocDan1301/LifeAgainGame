@@ -5,10 +5,15 @@ export const studyBlocks = [
   { id: "B00", subjects: "Toán, Hóa học, Sinh học", careers: ["medicine", "psychology", "teaching", "football", "culinary"] },
   { id: "C00", subjects: "Ngữ văn, Lịch sử, Địa lí", careers: ["law", "psychology", "teaching", "acting", "singing", "painting", "fashion", "tourism"] },
   { id: "D01", subjects: "Ngữ văn, Toán, Tiếng Anh", careers: ["programming", "accounting", "law", "psychology", "teaching", "acting", "singing", "painting", "football", "business", "finance", "architecture", "fashion", "marketing", "tourism", "culinary"] },
+  // Khối riêng cho các hướng đi không theo tổ hợp môn.
+  { id: "TD", label: "Khối Tự do", subjects: "Không theo tổ hợp môn", careers: ["military", "esports", "tiktok", "youtube"] },
 ];
 
-const unrestricted = ["military", "esports", "tiktok", "youtube"];
+export function getStudyBlockLabel(blockId) {
+  const block = studyBlocks.find((entry) => entry.id === blockId);
+  return block?.label ?? (blockId ? `Khối ${blockId}` : "");
+}
+
 export function canChooseCareer(careerId, blockId) {
-  return unrestricted.includes(careerId) ||
-    (studyBlocks.find((block) => block.id === blockId)?.careers.includes(careerId) ?? false);
+  return studyBlocks.find((block) => block.id === blockId)?.careers.includes(careerId) ?? false;
 }

@@ -56,7 +56,7 @@
     assert(legacy.money===-7_000_000 && legacyResult.money===-7_500_000,'Reload does not subtract old costs twice');
     Object.assign(poor,{employmentStatus:'employed',careerLevel:1,careerPath:{id:'programming'},lastSalaryAge:35});
     completeLifeYear(poor,36);
-    assert(poor.money===99_000_000 && poor.childcareDebt===0,'Next salary covers current costs and the unpaid balance');
+    assert(poor.money===63_000_000 && poor.childcareDebt===0,'Next salary covers current costs, living costs and the unpaid balance');
     const parent = {...married(),children:birth.children};
     Object.assign(parent,getBreakupUpdates(parent));
     assert(parent.children.length===1 && canStartRelationship(parent), 'Breakup preserves children and makes the player single');
@@ -88,8 +88,8 @@
     assert(state.player.children.length===0 && state.player.money===0,'Preview does not add children or deduct money');
     state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     confirm.click();
-    assert(state.player.children.length===1 && state.player.money===108_000_000 && state.player.achievementFlags['first-child'],'Confirm saved birth credits salary, charges newborn costs and unlocks achievement');
-    assert(document.getElementById('money-value').textContent==='108.000.000','Wallet shows the net balance');
+    assert(state.player.children.length===1 && state.player.money===72_000_000 && state.player.achievementFlags['first-child'],'Confirm saved birth credits salary, charges newborn costs and unlocks achievement');
+    assert(document.getElementById('money-value').textContent==='72.000.000','Wallet shows the net balance');
     birthday.click();
     assert(state.player.age===36 && state.player.money===214_000_000,'Year without a story still pays childcare after salary');
     document.getElementById('relationships').click();

@@ -1,4 +1,6 @@
 import { getCareerProfile } from "./career-jobs.js";
+import { getStudyBlockLabel } from "./study-blocks.js";
+import { getSideJobTitle } from "./side-jobs.js";
 import { getCareerAnnualSalary, getPlayerAnnualSalary, formatSalary } from "./career-salary.js";
 
 const careerIcons = {
@@ -11,6 +13,9 @@ const careerIcons = {
 
 export function getEducationStatus(player) {
   if (player.isAlive === false) return { text: "Đã qua đời", icon: "🕊️" };
+  // Chưa có công việc chính thì hiện cửa hàng làm thêm đầu tiên.
+  const sideJob = getSideJobTitle(player);
+  if (sideJob && !(player.employmentStatus === "employed" && player.job)) return { text: sideJob, icon: "🏪" };
   if (player.employmentStatus === "unemployed" || player.job === "Thất nghiệp") {
     return { text: "Chưa có việc làm", icon: "🔎" };
   }
@@ -56,7 +61,7 @@ export function updateEducationHistory(state) {
   const last = state.educationHistory.at(-1);
   if (last?.statusKey !== key && player.isAlive !== false) {
     const details = [player.careerPath?.school?.name,
-      player.studyBlock ? `Khối ${player.studyBlock}` : "",
+      getStudyBlockLabel(player.studyBlock),
       player.lostChildSchoolYearDueAge === 11 ? "Bắt đầu một năm học miễn phí tại trường mới" : "",
     ].filter(Boolean);
     state.educationHistory.push({ age: player.age, icon: status.icon,

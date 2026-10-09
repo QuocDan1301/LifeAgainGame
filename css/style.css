@@ -224,10 +224,33 @@ button:active {
   padding: 0.4rem calc(var(--icon-size) + var(--icon-edge) + 0.5rem) 0.4rem
     calc(var(--age-size) / 2 + 0.4rem);
 }
-#activities:disabled {
+#activities:disabled,
+#activities.is-locked {
   opacity: 0.5;
   filter: grayscale(0.7);
   cursor: not-allowed;
+}
+#activities.is-locked:not(:disabled) {
+  cursor: pointer;
+}
+#activities-locked-dialog {
+  width: min(90vw, 420px);
+  box-sizing: border-box;
+  padding: 1.5rem;
+  border: 2px solid var(--text);
+  border-radius: 1.2rem;
+  color: var(--text);
+  text-align: center;
+}
+#activities-locked-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+#close-activities-locked {
+  padding: 0.6rem 1.2rem;
+  border: 2px solid var(--text);
+  border-radius: 0.8rem;
+  font: inherit;
+  cursor: pointer;
 }
 .action-icon {
   position: absolute;
@@ -1019,30 +1042,116 @@ body::before {
 #study-block-dialog::backdrop { background: rgb(0 0 0 / 55%); }
 #education-dialog::backdrop { background: rgb(0 0 0 / 55%); }
 #relationships-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+/* Popup Tài sản, Học vấn, Mối quan hệ: tiêu đề xanh giống popup Hoạt động, mỗi phần là một thẻ. */
+.dialog-heading {
+  position: relative;
+  margin-bottom: 16px;
+  padding: 10px 42px;
+  border: 1px solid #4f6cff;
+  border-radius: 14px;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  box-shadow: 0 3px 0 rgb(40 90 145 / 18%);
+}
+.dialog-heading h2 {
+  margin: 0;
+  text-align: center;
+  font-family: "Sriracha", cursive;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #17394b;
+}
+.dialog-close {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 45%);
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.dialog-close:focus-visible,
+.dialog-card button:focus-visible {
+  outline: 3px solid #285a91;
+  outline-offset: 3px;
+}
+.dialog-card {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid #e0c878;
+  border-radius: 12px;
+  background: #fff1ad;
+}
+.dialog-card[hidden] { display: none; }
+.dialog-card h3 {
+  margin: 0 0 8px;
+  font-family: "Sriracha", cursive;
+  font-size: 19px;
+  font-weight: 400;
+  color: #17394b;
+}
 #relationship-current {
-  padding: 1.2rem;
-  border-radius: 1.2rem;
-  background: #fff1c6;
+  margin: 0;
   white-space: pre-line;
   overflow-wrap: anywhere;
   font-family: "Patrick Hand", cursive;
   font-size: 1.8rem;
   line-height: 1.5;
 }
-#relationship-history {
+.dialog-entries {
   display: grid;
-  gap: 1.2rem;
-  padding-left: 1.5rem;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   font-family: "Patrick Hand", cursive;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
+  line-height: 1.4;
 }
-#relationship-history p {
+.dialog-entries li {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 4px solid #46cbfc;
+  border-radius: 8px;
+  background: #fff8dc;
+  overflow-wrap: anywhere;
+}
+.dialog-entries strong { color: #173247; }
+.dialog-entries p {
   margin: 0.3rem 0 0;
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
+#relationship-children:empty::after,
+#relationship-history:empty::after {
+  color: #5a6b78;
+  font-style: italic;
+}
+#relationship-children:empty::after { content: "Chưa có con."; }
 #relationship-history:empty::after { content: "Chưa có mốc hẹn hò nào."; }
-#close-relationships { display: block; margin: 1.5rem auto 0; }
+#breakup-relationship,
+.breakup-actions button {
+  padding: 6px 14px;
+  border: 1px solid #d6ac45;
+  border-radius: 10px;
+  background: #ffe68b;
+  color: inherit;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  cursor: pointer;
+}
+#breakup-relationship { margin-top: 10px; }
+#breakup-question { margin: 10px 0 8px; }
+.breakup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#confirm-breakup { background: #ffd2d2; border-color: #d97a7a; }
 #education-status {
   display: block;
   width: 100%;
@@ -1053,21 +1162,6 @@ body::before {
   line-height: 1.15;
   overflow: hidden;
 }
-#education-history {
-  display: grid;
-  gap: 1.2rem;
-  padding-left: 1.5rem;
-  font-family: "Patrick Hand", cursive;
-  font-size: 1.8rem;
-}
-#education-history li { padding-left: 0.5rem; }
-#education-history strong { color: #173247; }
-#education-history p {
-  margin: 0.3rem 0 0;
-  white-space: pre-line;
-  overflow-wrap: anywhere;
-}
-#close-education { display: block; margin: 1.5rem auto 0; }
 .study-block-choices { display: grid; gap: 10px; }
 .study-block-choices strong,
 .study-block-choices span { display: block; }
@@ -1426,16 +1520,46 @@ body::before {
 }
 
 #life-profile-dialog {
-  width: min(680px, 90vw);
-  max-height: 85vh;
-  overflow-y: auto;
+  width: min(520px, 92vw);
+}
+#life-memories {
+  display: grid;
+  gap: 10px;
+}
+#life-memories:empty::after {
+  content: "Chưa có trang kỷ niệm nào.";
+  color: #5a6b78;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  font-style: italic;
 }
 #life-memories figure {
-  margin: 12px 0;
-  padding: 16px;
-  border-radius: 14px;
-  background: #fff7e6;
+  margin: 0;
+  padding: 12px;
+  border-left: 4px solid #46cbfc;
+  border-radius: 8px;
+  background: #fff8dc;
 }
+#life-memories h4 { margin: 0 0 8px; font-family: "Sriracha", cursive; font-weight: 400; }
+#life-memories figcaption { font-family: "Patrick Hand", cursive; font-size: 1.7rem; }
+#career-salary-current { margin: 0 0 8px; font-family: "Patrick Hand", cursive; font-size: 1.7rem; }
+.career-salary-table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff8dc;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.6rem;
+}
+.career-salary-table th,
+.career-salary-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #f0dca0;
+  text-align: left;
+}
+.career-salary-table thead th { background: #dff4fd; }
+.career-salary-table td { text-align: right; white-space: nowrap; }
 #life-memories img, .life-summary-portrait {
   width: 100px;
   height: 120px;
@@ -1452,7 +1576,7 @@ body::before {
   background: white;
 }
 #death-summary { text-align: left; }
-#death-summary li, #life-keepsakes li { margin-bottom: 8px; }
+#death-summary li { margin-bottom: 8px; }
 #event-content details {
   margin-top: 14px;
   padding: 10px;
@@ -1495,5 +1619,889 @@ body::before {
     dialog[open]::backdrop {
       opacity: 0;
     }
+  }
+}
+
+/* Cửa hàng (Mua vật nuôi, Mua sắm) và danh sách tài sản đã mua. */
+#shop-dialog,
+#shop-confirm-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#shop-dialog::backdrop,
+#shop-confirm-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.shop-wallet {
+  margin: 0;
+  text-align: center;
+  font-family: "Sriracha", cursive;
+  font-size: 18px;
+}
+.shop-items { display: grid; gap: 10px; }
+.shop-item {
+  padding: 10px 12px;
+  border-left: 4px solid #46cbfc;
+  border-radius: 8px;
+  background: #fff8dc;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  line-height: 1.4;
+}
+.shop-item h4 {
+  margin: 0 0 4px;
+  font-family: "Sriracha", cursive;
+  font-size: 18px;
+  font-weight: 400;
+}
+.shop-item p { margin: 0 0 6px; }
+.shop-figures { white-space: pre-line; font-weight: 700; }
+.shop-buy,
+.shop-sell,
+.shop-confirm-actions button {
+  padding: 6px 14px;
+  border: 1px solid #4f6cff;
+  border-radius: 10px;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  color: #17394b;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  cursor: pointer;
+}
+.shop-buy { display: block; width: 100%; margin-top: 4px; }
+.shop-buy:disabled,
+.shop-sell:disabled {
+  border-color: #c9c2a8;
+  background: #ece6cf;
+  color: #7a7462;
+  cursor: not-allowed;
+}
+.shop-owned {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 10px;
+}
+.shop-sell { background: #ffe68b; border-color: #d6ac45; }
+#life-livestock:empty::after,
+#life-realestate:empty::after,
+#life-vehicles:empty::after {
+  color: #5a6b78;
+  font-style: italic;
+}
+#shop-confirm-title {
+  margin: 0 0 10px;
+  text-align: center;
+  font-family: "Sriracha", cursive;
+  font-size: 22px;
+  font-weight: 400;
+}
+#shop-confirm-text {
+  margin: 0 0 14px;
+  white-space: pre-line;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+.shop-confirm-actions { display: flex; justify-content: center; gap: 10px; }
+#shop-cancel { background: #fff1ad; border-color: #d6ac45; }
+.shop-buy:focus-visible,
+.shop-sell:focus-visible,
+.shop-confirm-actions button:focus-visible {
+  outline: 3px solid #285a91;
+  outline-offset: 3px;
+}
+
+/* Ẩn thanh cuộn nhưng vẫn cuộn được, giống popup Hoạt động. */
+#shop-dialog,
+#shop-confirm-dialog,
+#life-profile-dialog,
+#education-dialog,
+#relationships-dialog {
+  scrollbar-width: none;
+}
+#shop-dialog::-webkit-scrollbar,
+#shop-confirm-dialog::-webkit-scrollbar,
+#life-profile-dialog::-webkit-scrollbar,
+#education-dialog::-webkit-scrollbar,
+#relationships-dialog::-webkit-scrollbar {
+  display: none;
+}
+
+.shop-groups { display: grid; gap: 12px; margin-top: 12px; }
+.shop-group {
+  padding: 16px 18px;
+  border: 1px solid #e0c878;
+  border-radius: 12px;
+  background: #fff1ad;
+  color: inherit;
+  font-family: "Sriracha", cursive;
+  font-size: 22px;
+  text-align: left;
+  cursor: pointer;
+}
+.shop-group:hover { background: #ffe68b; border-color: #d6ac45; }
+.shop-back {
+  margin-top: 12px;
+  padding: 6px 12px;
+  border: 1px solid #d6ac45;
+  border-radius: 10px;
+  background: #fff1ad;
+  color: inherit;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  cursor: pointer;
+}
+.shop-group:focus-visible,
+.shop-back:focus-visible {
+  outline: 3px solid #285a91;
+  outline-offset: 3px;
+}
+
+#life-livestock:empty::after { content: "Chưa có vật nuôi. Hãy ghé Hoạt động → Mua vật nuôi."; }
+#life-realestate:empty::after { content: "Chưa có bất động sản hay cơ sở kinh doanh."; }
+#life-vehicles:empty::after { content: "Chưa có phương tiện nào."; }
+.shop-group:disabled {
+  border-style: dashed;
+  background: #f3edd6;
+  color: #8a8270;
+  cursor: not-allowed;
+}
+.shop-group:disabled:hover { background: #f3edd6; border-color: #e0c878; }
+
+.shop-lease-status {
+  flex-basis: 100%;
+  color: #286333;
+  font-weight: 700;
+}
+.shop-lease {
+  padding: 6px 14px;
+  border: 1px solid #3f8f4c;
+  border-radius: 10px;
+  background: #d9f5c8;
+  color: #1f4d27;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  cursor: pointer;
+}
+.shop-lease:disabled { opacity: 0.6; cursor: not-allowed; }
+.shop-lease:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+
+/* Nội dung đổi bên trong popup (chọn nhóm cửa hàng, quay lại, xác nhận chia tay) cũng hiện ra mượt. */
+@keyframes popup-content-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #shop-list > *,
+  #breakup-confirmation:not([hidden]) {
+    animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  #shop-list > * + * { animation-delay: 40ms; }
+  .shop-group:nth-child(2) { animation: popup-content-in 240ms 40ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .shop-group:nth-child(3) { animation: popup-content-in 240ms 80ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .shop-group:nth-child(4) { animation: popup-content-in 240ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+/* Học bằng lái */
+#license-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#license-dialog::-webkit-scrollbar { display: none; }
+#license-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.license-question {
+  margin: 0 0 12px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.9rem;
+  line-height: 1.45;
+}
+.license-answers,
+.license-actions { display: grid; gap: 10px; }
+.license-actions { margin-top: 12px; }
+.license-answer {
+  padding: 12px 14px;
+  border: 1px solid #e0c878;
+  border-radius: 10px;
+  background: #fff8dc;
+  color: inherit;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+.license-answer:hover { background: #ffe68b; border-color: #d6ac45; }
+.license-answer:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+.license-result p { margin: 0; font-family: "Patrick Hand", cursive; font-size: 1.8rem; line-height: 1.45; }
+#life-licenses:empty::after {
+  content: "Chưa có bằng lái. Vào Hoạt động → Học bằng lái.";
+  color: #5a6b78;
+  font-style: italic;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #license-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+.license-age-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #ffe0e0;
+  color: #8a2a2a;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+  line-height: 1.4;
+}
+
+/* Làm thêm */
+#side-job-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#side-job-dialog::-webkit-scrollbar { display: none; }
+#side-job-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.side-job-note {
+  display: block;
+  margin-top: 4px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.6rem;
+}
+.side-job-intro {
+  margin: 0 0 10px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  line-height: 1.4;
+}
+#life-jobs:empty::after {
+  content: "Chưa có việc làm. Vào Hoạt động → Làm thêm để kiếm thêm thu nhập.";
+  color: #5a6b78;
+  font-style: italic;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #side-job-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+/* Bệnh viện */
+#hospital-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#hospital-dialog::-webkit-scrollbar { display: none; }
+#hospital-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.hospital-illness { border-left-color: #e05a5a; }
+.hospital-warning { color: #a12f2f; font-weight: 700; }
+.hospital-healthy,
+.hospital-note {
+  margin: 0;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  line-height: 1.4;
+}
+.hospital-note { margin-top: 10px; color: #5a6b78; font-style: italic; }
+.hospital-prices li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.hospital-prices strong { white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  #hospital-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+/* Tình yêu: trung tâm mai mối */
+#love-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#love-dialog::-webkit-scrollbar { display: none; }
+#love-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.love-profile-text {
+  margin: 0;
+  padding: 10px 12px;
+  border-left: 4px solid #f27aa5;
+  border-radius: 8px;
+  background: #fff8dc;
+  white-space: pre-line;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+.love-accept { background: radial-gradient(circle, #ff9cc2 60%, #f2588f 100%); border-color: #d9487c; }
+@media (prefers-reduced-motion: no-preference) {
+  #love-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+/* Trò chơi */
+.activity-note {
+  display: block;
+  font-family: "Patrick Hand", cursive;
+  font-size: 15px;
+  font-style: italic;
+  color: #7a5b16;
+}
+#games-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 460px);
+  max-height: 88dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#games-dialog::-webkit-scrollbar { display: none; }
+#games-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.game-motto {
+  margin: 6px 0 0;
+  text-align: center;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  font-style: italic;
+  color: #7a5b16;
+}
+.game-tagline, .game-quote {
+  margin: 0 0 8px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
+  font-style: italic;
+}
+.game-hint, .game-summary {
+  margin: 10px 0 6px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  line-height: 1.4;
+}
+.game-summary { font-weight: 700; }
+.game-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.game-option {
+  flex: 1 1 auto;
+  min-width: 64px;
+  padding: 8px 12px;
+  border: 1px solid #e0c878;
+  border-radius: 10px;
+  background: #fff8dc;
+  color: inherit;
+  font-family: "Sriracha", cursive;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease;
+}
+.game-option small { display: block; font-family: "Patrick Hand", cursive; font-size: 14px; }
+.game-option[aria-pressed="true"] {
+  border-color: #4f6cff;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  transform: translateY(-2px);
+}
+.game-option:focus-visible, .game-door:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+.game-dice-values .game-option { font-size: 30px; line-height: 1; }
+.game-bet-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e0c878;
+  border-radius: 10px;
+  background: #fff;
+  font: inherit;
+  font-size: 17px;
+}
+.game-start { margin-top: 6px; }
+.game-table li { display: flex; justify-content: space-between; gap: 10px; }
+.game-note { border-left-color: transparent !important; font-style: italic; color: #5a6b78; }
+.game-swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; }
+.game-stage { text-align: center; }
+.game-live { min-height: 1.4em; text-align: center; }
+.game-result.is-win { border-color: #3f8f4c; background: #e2f7d4; }
+.game-result.is-lose { border-color: #d98a8a; background: #ffe8e8; }
+/* Đồng xu */
+.game-coin-wrap { display: grid; place-items: center; height: 190px; perspective: 600px; }
+.game-coin { position: relative; width: 120px; height: 120px; transform-style: preserve-3d; }
+.game-coin-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 5px solid #c9971c;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #f2c640 60%, #d9a521);
+  backface-visibility: hidden;
+  white-space: pre-line;
+  font-family: "Sriracha", cursive;
+  font-size: 19px;
+  line-height: 1.5;
+  text-align: center;
+}
+.game-floor.is-fallen { background: #ffd2d2; }
+.game-coin-face.is-tails { transform: rotateY(180deg); }
+/* Xúc xắc và hộp */
+.game-die, .game-box { display: grid; place-items: center; height: 160px; font-size: 110px; line-height: 1; }
+.game-box.is-open { filter: drop-shadow(0 0 18px #ffd84d); }
+/* Vòng quay */
+.game-wheel-wrap { position: relative; width: 240px; height: 240px; margin: 10px auto; }
+.game-wheel {
+  position: absolute;
+  inset: 0;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #d6ac45, 0 6px 14px rgb(0 0 0 / 18%);
+}
+.game-wheel-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  white-space: pre-line;
+  text-align: center;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  line-height: 1.1;
+  pointer-events: none;
+}
+.game-wheel-pointer {
+  position: absolute;
+  z-index: 1;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #c0392b;
+  font-size: 28px;
+  text-shadow: 0 2px 0 #fff;
+}
+/* Đua thú */
+.game-track { display: grid; gap: 6px; margin: 8px 0; }
+.game-lane {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: repeating-linear-gradient(90deg, #d9f5c8 0 22px, #c8ecb3 22px 44px);
+}
+.game-lane.is-picked { box-shadow: inset 0 0 0 2px #4f6cff; }
+.game-lane.is-winner { box-shadow: inset 0 0 0 3px #f2b705; }
+.game-runner { display: inline-block; font-size: 32px; }
+/* Biểu tượng con vật quay mặt về phía đích. */
+.game-runner-icon { display: inline-block; transform: scaleX(-1); }
+.game-finish { position: absolute; right: 6px; font-size: 22px; }
+/* Leo tháp */
+.game-tower { display: grid; gap: 4px; margin: 8px 0; padding: 0; list-style: none; }
+.game-floor {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #fff8dc;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  transition: background 250ms ease, transform 250ms ease;
+}
+.game-floor.is-cleared { background: #d9f5c8; }
+.game-floor.is-current { background: #ffe68b; transform: scale(1.03); }
+.game-doors { display: flex; justify-content: center; gap: 24px; }
+.game-door {
+  width: 92px;
+  height: 120px;
+  border: 3px solid #8a5a2b;
+  border-radius: 12px 12px 4px 4px;
+  background: linear-gradient(#c98b52, #a5683a);
+  font-size: 48px;
+  cursor: pointer;
+  transition: transform 150ms ease;
+}
+.game-door:hover:not(:disabled) { transform: translateY(-4px); }
+/* Xì dách */
+.game-hand-title { margin: 8px 0 4px; font-family: "Sriracha", cursive; font-size: 18px; }
+.game-hand { display: flex; justify-content: center; gap: 6px; min-height: 84px; perspective: 600px; }
+.game-card {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 80px;
+  border: 1px solid #b9b9b9;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 15%);
+  font-family: "Sriracha", cursive;
+  font-size: 20px;
+  color: #173247;
+}
+.game-card.is-red { color: #c0392b; }
+.game-card.is-hidden {
+  background: repeating-linear-gradient(45deg, #4f6cff 0 6px, #46cbfc 6px 12px);
+  color: transparent;
+}
+
+/* Nút ✕: vùng bấm 52×52px (lớn hơn hình tròn hiển thị) để đóng popup dễ hơn trên điện thoại. */
+.dialog-close,
+#close-activities {
+  width: 38px;
+  height: 38px;
+  right: 6px;
+  touch-action: manipulation;
+}
+.dialog-close::after,
+#close-activities::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+}
+.dialog-close:hover,
+#close-activities:hover { background: rgb(255 255 255 / 70%); }
+.dialog-close:active,
+#close-activities:active { transform: translateY(-50%) scale(0.92); }
+
+#life-box-items:empty::after {
+  content: "Chưa có vật phẩm nào. Thử vận may ở Trò chơi → Hộp bí ẩn.";
+  color: #5a6b78;
+  font-style: italic;
+}
+
+/* Ăn uống */
+#food-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#food-dialog::-webkit-scrollbar { display: none; }
+#food-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+@keyframes food-eaten {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.04); background: #e2f7d4; }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .food-item.is-eaten { animation: food-eaten 500ms ease; }
+}
+
+/* Du lịch */
+#travel-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 440px);
+  max-height: 85dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#travel-dialog::-webkit-scrollbar { display: none; }
+#travel-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+
+/* Tarot */
+#tarot-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 460px);
+  max-height: 88dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#tarot-dialog::-webkit-scrollbar { display: none; }
+#tarot-dialog::backdrop { background: rgb(20 10 40 / 65%); }
+.tarot-buff, .tarot-effect, .tarot-progress {
+  margin: 8px 0;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.7rem;
+  line-height: 1.4;
+}
+.tarot-effect { font-weight: 700; color: #4b2a7a; }
+.tarot-collection-open { display: block; width: 100%; margin-top: 12px; }
+.tarot-spread { display: flex; justify-content: center; gap: 12px; margin: 16px 0; perspective: 800px; }
+.tarot-card {
+  display: grid;
+  place-items: center;
+  width: 104px;
+  height: 168px;
+  padding: 0;
+  border: 3px solid #d6ac45;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgb(40 20 80 / 25%);
+}
+.tarot-back-card {
+  background:
+    radial-gradient(circle at 50% 50%, rgb(255 255 255 / 25%) 0 18%, transparent 19%),
+    repeating-linear-gradient(45deg, #3b2370 0 8px, #4f2f8f 8px 16px);
+  cursor: pointer;
+  transition: transform 180ms ease;
+}
+.tarot-back-card:hover:not(:disabled) { transform: translateY(-8px); }
+.tarot-back-card:focus-visible { outline: 3px solid #285a91; outline-offset: 4px; }
+.tarot-back-mark { font-size: 34px; }
+.tarot-revealed { width: 150px; height: 240px; margin: 4px auto 12px; background: #fffaf0; }
+.tarot-face {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 8px 4px;
+  font-family: "Sriracha", cursive;
+  text-align: center;
+}
+.tarot-number { font-size: 15px; color: #7a5b16; }
+.tarot-icon { font-size: 54px; line-height: 1; }
+.tarot-name { font-size: 16px; line-height: 1.15; }
+.tarot-major { background: linear-gradient(#fff6d8, #f6e2ff); }
+.tarot-wands { background: linear-gradient(#fff4e0, #ffd9b8); }
+.tarot-cups { background: linear-gradient(#eef8ff, #cfe8ff); }
+.tarot-swords { background: linear-gradient(#f4f6fb, #dde3ef); }
+.tarot-pentacles { background: linear-gradient(#f2fbe8, #d6f0c0); }
+.tarot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); gap: 6px; }
+.tarot-mini {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 5 / 8;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid #d6ac45;
+  border-radius: 8px;
+  font-family: "Sriracha", cursive;
+}
+.tarot-mini .tarot-icon { font-size: 22px; }
+.tarot-mini .tarot-name { font-size: 10px; }
+.tarot-mini .tarot-number { font-size: 9px; }
+.tarot-mini.is-known { cursor: pointer; }
+.tarot-mini.is-unknown {
+  background: repeating-linear-gradient(45deg, #3b2370 0 6px, #4f2f8f 6px 12px);
+  color: #f5e9ff;
+  font-size: 24px;
+}
+.tarot-mini:focus-visible { outline: 3px solid #285a91; outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  #tarot-body > .dialog-card, #tarot-body > .shop-groups { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+/* Phát triển bản thân */
+#self-development-dialog {
+  box-sizing: border-box;
+  width: min(92vw, 460px);
+  max-height: 88dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  background: #fff8dc;
+  color: #173247;
+  font-family: inherit;
+}
+#self-development-dialog::-webkit-scrollbar { display: none; }
+#self-development-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.dev-activity { margin-top: 12px; }
+.dev-packages { display: grid; gap: 8px; margin-top: 8px; }
+.dev-package {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #e0c878;
+  border-radius: 12px;
+  background: #fffdf3;
+}
+.dev-package-info { display: grid; gap: 2px; font-family: "Patrick Hand", cursive; font-size: 1.6rem; line-height: 1.3; }
+.dev-package-info .shop-figures { font-size: 1.5rem; }
+.dev-package .dev-buy { width: auto; margin: 0; white-space: nowrap; }
+.dev-done { margin: 6px 0 0; color: #286333; font-weight: 700; }
+@keyframes dev-trained {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.03); background: #e2f7d4; }
+  100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dev-activity.is-trained { animation: dev-trained 500ms ease; }
+  #self-development-body > .shop-groups, #self-development-body > .dialog-card { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+}
+
+/* ===== Tối ưu cho điện thoại (màn hình hẹp) ===== */
+@media (max-width: 480px) {
+  /* Popup: rộng gần hết màn hình, viền và đệm mỏng hơn để chữ không bị gãy dòng. */
+  :is(#restart-dialog, #relationships-dialog, #education-dialog, #activities-dialog, #shop-dialog, #license-dialog, #side-job-dialog, #hospital-dialog, #love-dialog, #games-dialog, #food-dialog, #travel-dialog, #self-development-dialog, #tarot-dialog, #life-profile-dialog, #study-block-dialog, #event-dialog, #achievements-dialog, #fortune-dialog) {
+    width: calc(100vw - 16px);
+    max-width: none;
+    max-height: calc(100dvh - 24px);
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .dialog-heading,
+  .activities-heading {
+    margin-bottom: 12px;
+    padding: 8px 44px;
+  }
+  .dialog-heading h2,
+  .activities-heading h2 {
+    font-size: 21px;
+    line-height: 1.3;
+  }
+  /* Nút đóng to, dễ bấm bằng ngón tay. */
+  .dialog-close,
+  #close-activities {
+    width: 36px;
+    height: 36px;
+    right: 6px;
+  }
+  .dialog-card {
+    padding: 10px 12px;
+  }
+  .dialog-card h3 {
+    font-size: 17px;
+  }
+
+  /* Hoạt động: 2 cột để thấy hết các mục mà không phải cuộn. */
+  .activities-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .activities-list button {
+    min-height: 56px;
+    padding: 8px 10px;
+    font-size: 16px;
+    line-height: 1.3;
+  }
+  #activity-self-development {
+    grid-column: 1 / -1;
+  }
+  .activities-list .activity-note {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+
+  /* Nhóm lựa chọn (Mua sắm, Phát triển bản thân, Tình yêu...). */
+  .shop-group {
+    padding: 12px 14px;
+    font-size: 18px;
+    line-height: 1.35;
+  }
+  .shop-back {
+    min-height: 40px;
+    font-size: 15px;
+  }
+  .shop-wallet {
+    font-size: 16px;
+  }
+  .dev-package {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .dev-package-info {
+    font-size: 1.5rem;
+  }
+  .dev-package .dev-buy {
+    padding-inline: 12px;
+  }
+
+  /* Nhật ký: chữ vừa đủ đọc, giãn dòng gọn để thấy nhiều năm hơn. */
+  .journal {
+    padding: 1.2rem 1.4rem;
+  }
+  .log-entry + .log-entry {
+    margin-top: 0.8rem;
+  }
+  .log-entry h3 {
+    margin-bottom: 0.2rem;
+    font-size: 1.9rem;
+  }
+  .log-entry p {
+    font-size: 1.75rem;
+    line-height: 1.45;
+  }
+
+  /* Nút Tuổi: dấu + nhỏ lại để chữ "Tuổi" không đè lên. */
+  .age-button .plus,
+  .plus {
+    font-size: 5.2rem;
+    line-height: 0.9;
+  }
+  .age-label {
+    font-size: 15px;
+  }
+
+  /* Popup sự kiện: ảnh và chữ gọn lại để các lựa chọn nằm trong màn hình. */
+  #event-title {
+    margin-bottom: 10px;
+    font-size: 21px;
+  }
+  #event-image {
+    max-height: 150px;
+    margin-bottom: 10px;
+  }
+  #event-image[src*="/events/openmoji/"] {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 10px;
+  }
+  #event-content {
+    margin-bottom: 14px;
+    font-size: 19px;
+    line-height: 1.5;
+  }
+  .event-choice {
+    padding: 12px 14px;
+    font-size: 17px;
   }
 }

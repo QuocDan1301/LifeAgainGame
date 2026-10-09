@@ -19,7 +19,7 @@
       for(const event of events) {
         assert(!ids.has(event.id)&&!titles.has(event.title),'Unique stories');
         ids.add(event.id);titles.add(event.title);
-        assert(event.text&&event.image&&event.imageAlt&&event.choices.length===2&&!isPriorityEvent(event),'Complete ordinary event');
+        assert(event.text&&event.image&&event.imageAlt&&[2,3].includes(event.choices.length)&&!isPriorityEvent(event),'Complete ordinary event');
         images.add(event.imageFallback);
         for(const choice of event.choices) {
           assert(choice.label&&choice.title&&choice.text&&choice.effects&&choice.image&&choice.imageFallback,'Complete choice and result');
@@ -45,7 +45,7 @@
     const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
     for(let age=40;age<=49;age++) {
       const events=getAgeEvents(age).filter(event=>!event.specialId);
-      for(let i=0;i<events.length;i++) for(let choice=0;choice<2;choice++) {
+      for(let i=0;i<events.length;i++) for(let choice=0;choice<events[i].choices.length;choice++) {
         Object.assign(state,createInitialState());
         Object.assign(state.player,{age:age-1,health:60,intelligence:60,happiness:60,appearance:60,
           studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null});

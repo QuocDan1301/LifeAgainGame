@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Food checks</title>
+<pre id="food-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("food-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const { dishes } = await import("../js/food.js");
+    assert(dishes.length === 5 && dishes.every(d => d.price > 0 && Object.keys(d.effects).length), "Five dishes with price and stat boosts");
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 20, health: 50, happiness: 99, intelligence: 50,
+      appearance: 50, money: 100_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const eatButton = id => $("food-body").querySelector(`.food-eat[data-dish="${id}"]`);
+
+    $("activities").click();
+    $("activity-food").click();
+    assert($("food-dialog").open && $("food-body").querySelectorAll(".food-eat").length === 5, "Food popup lists five dishes");
+    assert(eatButton("seafood").disabled, "Cannot buy without enough money");
+    eatButton("pho").click();
+    assert(state.player.money === 40_000 && state.player.health === 52 && state.player.happiness === 100, "Eating costs money and raises stats (max 100)");
+    assert(state.logs.at(-1).content.includes("Phở bò") && state.logs.at(-1).content.includes("Sức khỏe +2"), "Meal recorded in the diary");
+    assert($("health-value").textContent === "52%" && $("happiness-value").textContent === "100%", "Stats shown on screen update");
+    assert(eatButton("pho").disabled && eatButton("pho").textContent.includes("Đã ăn"), "Each dish once per year");
+    assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.mealsEaten.pho === 20, "Meal persists");
+    $("close-food").click();
+    state.player.age = 21;
+    state.player.money = 100_000;
+    $("activities").click();
+    $("activity-food").click();
+    assert(!eatButton("pho").disabled, "Dishes are available again next year");
+    result.textContent = "PASS: five dishes; money and stat changes; max 100; once per year; diary; save";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

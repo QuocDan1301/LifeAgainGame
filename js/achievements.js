@@ -1,4 +1,5 @@
 import { celebrateAchievement } from "./achievement-confetti.js";
+import { formatMoneyText } from "./money-format.js";
 import {
   achievements,
   achievementGroups,
@@ -28,7 +29,7 @@ const achieved = (id) => Object.hasOwn(unlocked, id) && Boolean(unlocked[id]);
 const create = (tag, className, text) => {
   const element = document.createElement(tag);
   if (className) element.className = className;
-  if (text !== undefined) element.textContent = text;
+  if (text !== undefined) element.textContent = formatMoneyText(text);
   return element;
 };
 
@@ -228,7 +229,7 @@ function showNextAchievement() {
   activeId = achievement.id;
   get("unlock-icon").textContent = achievement.icon;
   get("unlock-title").textContent = achievement.title;
-  get("unlock-description").textContent = achievement.description;
+  get("unlock-description").textContent = formatMoneyText(achievement.description);
   unlockDialog.showModal();
   stopConfetti();
   stopConfetti = celebrateAchievement(unlockDialog);

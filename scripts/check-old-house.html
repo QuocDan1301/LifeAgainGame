@@ -60,7 +60,7 @@
       const money=120000000+(finalChoice===0?200000000:100000000);
       assert(state.player.age===40&&state.player.isAlive&&state.player.money===money&&state.player.happiness===(finalChoice===0?65:70),'Exact final reward and one annual salary');
       assert(state.player.achievementFlags['story-reincarnation']&&state.logs.at(-1).content.includes('nụ cười của bà bên khung cửa'),'Achievement and supplied diary saved');
-      assert(document.getElementById('money-value').textContent===money.toLocaleString('vi-VN'),'Wallet shows reward');
+      assert(document.getElementById('money-value').textContent===`${money/1000000} triệu`,'Wallet shows reward');
       confirm.click();assert(state.player.money===money,'Repeated confirmation cannot duplicate reward');
     }
     for(let exitStep=1;exitStep<=6;exitStep++){

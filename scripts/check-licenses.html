@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Driving licence checks</title>
+<pre id="license-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("license-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const { licenseTypes } = await import("../js/licenses.js");
+    assert(licenseTypes.map(t => t.id).join() === "motorbike,car", "Two licence types");
+    assert(licenseTypes.every(t => t.questions.length === 5 && t.questions.every(q => q.answers.length === 2 && [0, 1].includes(q.correct))),
+      "Each licence has 5 questions with 2 answers");
+    assert(new Set(licenseTypes.flatMap(t => t.questions.map(q => q.text))).size === 10, "All questions are different");
+
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 20, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 0, studyBlock: "A00", datingActivitiesOnly: true, employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("license-body");
+    const typeButton = id => body().querySelector(`.license-type[data-license="${id}"]`);
+    const currentQuestion = type => licenseTypes.find(t => t.id === type).questions
+      .find(q => q.text === body().querySelector(".license-question").textContent);
+    const answerButton = (type, correct) => {
+      const question = currentQuestion(type);
+      const wanted = question.answers[correct ? question.correct : 1 - question.correct];
+      return [...body().querySelectorAll(".license-answer")].find(b => b.textContent.endsWith(wanted));
+    };
+
+    // Dưới 18 tuổi: chưa được học.
+    state.player.age = 17;
+    $("activities").click();
+    $("activity-degrees").click();
+    assert($("license-dialog").open && !$("activities-dialog").open, "Licence button opens its own popup");
+    assert(typeButton("motorbike").disabled && typeButton("car").disabled && body().textContent.includes("đủ 18 tuổi"),
+      "Under 18 cannot study for a licence");
+    $("close-license").click();
+    state.player.age = 18;
+    $("activities").click();
+    $("activity-degrees").click();
+    assert(typeButton("motorbike") && typeButton("car") && !typeButton("motorbike").disabled, "Two licence buttons");
+
+    // Trả lời sai: không có bằng, không lộ đáp án.
+    typeButton("motorbike").click();
+    assert(body().querySelectorAll(".license-answer").length === 2 && currentQuestion("motorbike"), "One random motorbike question with two answers");
+    assert(!/đáp án đúng/i.test(body().textContent), "The correct answer is never labelled");
+    const question = currentQuestion("motorbike");
+    answerButton("motorbike", false).click();
+    assert(!(state.player.licenses ?? []).length && body().textContent.includes("Chưa đạt"), "A wrong answer gives no licence");
+    assert(!body().textContent.includes(question.answers[question.correct]), "A wrong answer does not reveal the right one");
+
+    // Thử lại và trả lời đúng.
+    [...body().querySelectorAll("button")].find(b => b.textContent.includes("Thử lại")).click();
+    answerButton("motorbike", true).click();
+    assert(state.player.licenses.length === 1 && state.player.licenses[0].id === "motorbike", "A correct answer grants the licence");
+    assert(state.logs.at(-1).content.includes("Bằng lái xe máy"), "Licence is recorded in the diary");
+    assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.licenses.length === 1, "Licence persists");
+    [...body().querySelectorAll("button")].find(b => b.textContent.includes("chọn bằng")).click();
+    assert(typeButton("motorbike").disabled && typeButton("motorbike").textContent.includes("Đã có"), "Owned licence is marked");
+
+    // Bằng ô tô dùng bộ câu hỏi riêng.
+    typeButton("car").click();
+    assert(currentQuestion("car"), "Car licence asks a car question");
+    answerButton("car", true).click();
+    assert(state.player.licenses.map(l => l.id).join() === "motorbike,car", "Both licences can be earned");
+
+    // Hiện trong Tài sản.
+    $("close-license").click();
+    $("assets").click();
+    assert($("life-licenses").children.length === 2 && $("life-licenses").textContent.includes("Bằng lái ô tô"), "Licences appear in assets");
+    $("close-life-profile").click();
+    result.textContent = "PASS: age 18+; 2 licences x 5 questions; random question; hidden answers; retry; licence in assets and diary";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

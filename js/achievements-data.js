@@ -22,6 +22,7 @@ export const achievementGroups = [
       "Chuyên môn và lãnh đạo",
       "Thể thao và thể thao điện tử",
       "Sáng tạo nội dung",
+      "Làm thêm",
     ],
   },
   {
@@ -31,6 +32,7 @@ export const achievementGroups = [
       "May mắn và biến cố",
       "Những câu chuyện bí ẩn",
       "Chỉ số nhân vật",
+      "Tarot",
     ],
   },
 ];
@@ -316,6 +318,15 @@ export const achievements = [
     flag(),
   ),
 
+  item(
+    "side-job-all-stores",
+    "careers",
+    "Làm thêm",
+    "🏪",
+    "Bán mình cho tư bản",
+    "Cùng lúc làm nhân viên ở tất cả cửa hàng tiện lợi.",
+    flag(),
+  ),
   item(
     "career-actor",
     "careers",
@@ -697,6 +708,30 @@ export const achievements = [
     "Ngoại hình nổi bật",
     "Đưa ngoại hình lên mức 100%.",
     number("appearance", 100),
+  ),
+  item(
+    "tarot-first", "other", "Tarot", "🔮",
+    "Lời nhắn đầu tiên",
+    "Rút lá Tarot đầu tiên.",
+    flag(),
+  ),
+  item(
+    "tarot-major", "other", "Tarot", "🌟",
+    "Người nghe chuyện của sao",
+    "Khám phá đủ 22 lá Ẩn chính.",
+    flag(),
+  ),
+  item(
+    "tarot-suits", "other", "Tarot", "🍂",
+    "Bốn mùa trải nghiệm",
+    "Mỗi chất Ẩn phụ đã khám phá ít nhất 5 lá.",
+    flag(),
+  ),
+  item(
+    "tarot-all", "other", "Tarot", "🃏",
+    "Người giữ 78 lá",
+    "Khám phá toàn bộ bộ bài Tarot.",
+    flag(),
   ),
 ];
 

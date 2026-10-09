@@ -1,3 +1,5 @@
+import { formatMoney } from "./money-format.js";
+
 // Fixed yearly income in VNĐ for game balance, ordered by career levels 1–3.
 export const careerAnnualSalaries = {
   acting: [96_000_000, 240_000_000, 720_000_000],
@@ -35,7 +37,7 @@ export function getPlayerAnnualSalary(player) {
   return getCareerAnnualSalary(player.careerPath?.id, player.careerLevel);
 }
 
-export const formatSalary = amount => `${amount.toLocaleString("vi-VN")} VNĐ`;
+export const formatSalary = formatMoney;
 
 export function getAnnualSalaryPayment(player, age, updates = {}) {
   // Existing workers use their current rank; newly hired workers receive

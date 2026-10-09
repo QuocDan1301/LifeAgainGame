@@ -1,0 +1,92 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Hospital checks</title>
+<pre id="hospital-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("hospital-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const { diseases, planIllnesses, collectIllnessYear } = await import("../js/hospital.js");
+    assert(diseases.length === 10 && new Set(diseases.map(d => d.id)).size === 10 && diseases.every(d => d.cost > 0), "Ten diseases with fees");
+
+    // Lịch bệnh: 0–2 bệnh khác nhau, tuổi 18–95.
+    const counts = new Set();
+    for (let i = 0; i < 300; i++) {
+      const plan = planIllnesses({ age: 0 });
+      counts.add(plan.length);
+      assert(plan.length <= 2 && new Set(plan.map(p => p.id)).size === plan.length, "At most two different diseases");
+      assert(plan.every(p => p.age >= 18 && p.age <= 95), "Diseases appear between 18 and 95");
+      assert(plan.every(p => !["coronary", "early-cancer"].includes(p.id) || p.age >= 40), "Costly diseases only from 40");
+    }
+    assert([0, 1, 2].every(n => counts.has(n)), "A life can have 0, 1 or 2 diseases");
+    assert(planIllnesses({ age: 60 }).every(p => p.age > 60), "Old saves only schedule future diseases");
+    const fixed = { age: 5, illnessPlan: [{ id: "gout", age: 30 }] };
+    assert(planIllnesses(fixed) === fixed.illnessPlan, "The plan is made once per life");
+
+    // Chẩn đoán, trừ sức khỏe, tử vong sau 10 năm.
+    const sick = { age: 29, health: 80, isAlive: true, illnessPlan: [{ id: "gout", age: 30 }] };
+    assert(collectIllnessYear(sick, 29) === null, "Nothing before the scheduled age");
+    assert(collectIllnessYear(sick, 30).content.includes("chẩn đoán") && sick.illnesses.length === 1 && sick.health === 80,
+      "Diagnosis at the scheduled age without an immediate penalty");
+    for (let age = 31; age <= 39; age++) collectIllnessYear(sick, age);
+    assert(sick.health === 80 - 27 && sick.isAlive, "Untreated: -3 health per year, alive for 9 years");
+    collectIllnessYear(sick, 40);
+    assert(sick.isAlive === false && sick.health === 0, "Ten untreated years end the life");
+    const frail = { age: 50, health: 4, isAlive: true, illnessPlan: [], illnesses: [{ id: "gout", since: 49 }] };
+    collectIllnessYear(frail, 50);
+    assert(frail.isAlive && frail.health === 1, "Still alive while health remains");
+    assert(collectIllnessYear(frail, 51).content.includes("cạn kiệt") && frail.isAlive === false && frail.health === 0,
+      "Running out of health kills before 10 years");
+
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 40, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 20_000_000, studyBlock: "A00", datingActivitiesOnly: true, employmentStatus: "declined",
+      nextPromotionAge: null, illnessPlan: [], illnesses: [{ id: "gout", since: 38 }, { id: "early-cancer", since: 40 }] });
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const treatButton = id => $("hospital-body").querySelector(`.shop-buy[data-disease="${id}"]`);
+
+    $("activities").click();
+    $("activity-hospital").click();
+    assert($("hospital-dialog").open && $("hospital-body").querySelectorAll(".hospital-prices li").length === 10, "Hospital shows the fee table");
+    assert(treatButton("early-cancer").disabled && !treatButton("gout").disabled, "Treatment needs enough money");
+    treatButton("gout").click();
+    assert($("shop-confirm-dialog").open, "Treatment asks for confirmation");
+    $("shop-confirm").click();
+    assert(state.player.illnesses.length === 1 && state.player.money === 10_000_000, "Treatment cures and charges the fee");
+    assert(state.logs.at(-1).content.includes("Điều trị khỏi"), "Treatment is recorded");
+    $("close-hospital").click();
+
+    // Bệnh đủ 10 năm không điều trị: kết thúc game ngay cả khi năm đó không có sự kiện.
+    state.player.illnesses = [{ id: "early-cancer", since: 31 }];
+    $("age-up").click();
+    if (state.pendingEvent) {
+      document.querySelector("#event-choices button")?.click();
+      $("event-confirm").click();
+    }
+    assert(state.player.isAlive === false && $("death-dialog").open && $("age-up").disabled, "Untreated disease ends the game");
+    assert(state.logs.some(log => log.content.includes("không được điều trị suốt 10 năm")), "Death cause is in the diary");
+    result.textContent = "PASS: 10 diseases; 0-2 per life at 18-95; diagnosis; -3 health/year; treatment fee; death at 0 health or after 10 untreated years";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

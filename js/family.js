@@ -1,4 +1,7 @@
 import { maleNames, femaleNames } from "./character-data.js";
+import { collectAssetIncome } from "./shop.js";
+import { collectSideJobYear } from "./side-jobs.js";
+import { collectIllnessYear } from "./hospital.js";
 import { completeCareerYear, formatSalary } from "./career-salary.js";
 import { createSchoolEntryReward } from "./school-rewards.js";
 
@@ -83,6 +86,15 @@ export function getChildcareExpenses(player, age, updates = {}) {
 }
 
 // Every birthday pays income, then childcare, whether or not a story appears.
+// Chi phí sinh hoạt: từ 23 tuổi (học xong, tự lo cho bản thân), mỗi năm trừ một phần
+// thu nhập từ công việc (lương chính + làm thêm). Không có thu nhập thì không bị trừ.
+export const LIVING_COST_MIN_AGE = 23;
+export const LIVING_COST_RATE = 0.3;
+export function getLivingCost(age, income) {
+  if (!Number.isInteger(age) || age < LIVING_COST_MIN_AGE || !(income > 0)) return 0;
+  return Math.round((income * LIVING_COST_RATE) / 1000) * 1000;
+}
+
 export function migrateChildcareDebt(player, updates) {
   const debt = player.childcareDebt ?? 0;
   if (debt > 0) {
@@ -100,10 +112,19 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     ? { ...updates, ...schooling.updates } : updates;
   const childcare = getChildcareExpenses(player, age, updates);
   const salary = completeCareerYear(player, age, yearUpdates);
+  // Lãi vật nuôi, cho thuê và kinh doanh cộng sau khi kết quả sự kiện đã ghi đè tiền trong ví.
+  const livestock = collectAssetIncome(player, age);
+  const sideJobs = collectSideJobYear(player, age);
+  const illness = collectIllnessYear(player, age);
+  const livingAmount = getLivingCost(age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0));
+  const living = livingAmount
+    ? { amount: livingAmount, content: `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` }
+    : null;
+  if (living) player.money -= living.amount;
   if (childcare.amount) {
     player.money -= childcare.amount;
     player.children = (player.children ?? []).map(child => childcare.charges.some(charge => charge.id === child.id)
       ? { ...child, lastCarePaidAtAge: age } : child);
   }
-  return { salary, childcare, schooling };
+  return { salary, childcare, schooling, livestock, sideJobs, living, illness };
 }

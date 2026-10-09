@@ -1,3 +1,5 @@
+import { formatMoney } from "./money-format.js";
+
 const statNames = { health: "Sức khỏe", intelligence: "Trí tuệ", happiness: "Hạnh phúc", appearance: "Ngoại hình" };
 const milestones = {
   6: { id: "primary", title: "🎒 Vào cấp 1", minimum: 1, money: 0 },
@@ -27,7 +29,7 @@ export function createSchoolEntryReward(player, age, updates = {}, random = Math
   }
   if (milestone.money) {
     rewardUpdates.money = (updates.money ?? player.money) + milestone.money;
-    changes.push(`Tiền +${milestone.money.toLocaleString("vi-VN")} VNĐ`);
+    changes.push(`Tiền +${formatMoney(milestone.money)}`);
   }
   rewardUpdates.schoolRewardsReceived = { ...(player.schoolRewardsReceived ?? {}), [milestone.id]: true };
   return { id: milestone.id, updates: rewardUpdates, content: `${milestone.title}\n${changes.join(" · ")}` };

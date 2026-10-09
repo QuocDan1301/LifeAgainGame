@@ -1,4 +1,5 @@
 import { getCareerAnnualSalary, formatSalary } from "./career-salary.js";
+import { careerMilestones, hasCareerMilestone } from "./career-milestones.js";
 
 const sticker = (code) =>
   new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
@@ -633,14 +634,74 @@ const promotionScenarios = {
   ],
 };
 
+function promotionRetryText(player, age) {
+  const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
+  return retryAge === null
+    ? "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Cơ hội nâng bậc cuối đã kết thúc vì lần thử lại sẽ vượt quá 39 tuổi."
+    : `Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi ${retryAge}.`;
+}
+
+// Thay thế lượt nâng bậc 1 → 2 khi dấu mốc tuổi 16 có hiệu lực: 4 tình huống,
+// chọn sai ở bất kỳ bước nào thì giữ bậc 1 và thử lại sau 2 năm, không mất dấu mốc.
+export function createMilestonePromotionEvent(player, step = 1, age = player.age + 1, random = Math.random) {
+  const career = player.careerPath;
+  const data = careerMilestones[career?.id];
+  if (!data || step < 1 || step > 4) return null;
+  const profile = getCareerProfile(career.id);
+  const [stepTitle, text, correctLabel, wrongLabel] = data.promotion.steps[step - 1];
+  const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
+  const correct = step < 4
+    ? { label: correctLabel, nextStep: step + 1 }
+    : {
+        label: correctLabel,
+        correct: true,
+        title: `📈 Tiến lên bậc ${profile.ranks[1]}`,
+        text: `${data.promotion.result} Qua cả bốn tình huống, năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, 2))}/năm, áp dụng từ năm tiếp theo.`,
+        effects: { intelligence: 4, happiness: 3 },
+        job: profile.ranks[1],
+        careerLevel: 2,
+        employmentStatus: "employed",
+        achievementIds: [],
+        confirmText: "Tiếp tục cố gắng!",
+        logSummary: `${data.promotion.title}: vượt qua cả bốn tình huống.\nLên bậc ${profile.ranks[1]}.`,
+        ...art("1F4C5", "Thăng tiến trong công việc"),
+      };
+  const wrong = {
+    label: wrongLabel,
+    correct: false,
+    title: "📋 Chưa đạt yêu cầu",
+    text: `Người phụ trách ghi nhận nỗ lực của bạn, nhưng cách xử lý lần này chưa đạt yêu cầu. Bạn giữ nguyên bậc nghề hiện tại và có thể tham gia đánh giá lại sau 2 năm${retryAge ? `, ở tuổi ${retryAge}` : ""}.`,
+    effects: {},
+    achievementIds: [],
+    confirmText: "Lần sau làm tốt hơn!",
+    logSummary: `${data.promotion.title}: chưa đạt ở tình huống ${step}/4.\nGiữ bậc ${profile.ranks[0]}, thử lại sau 2 năm.`,
+    ...art("1F4CB", "Chưa đạt yêu cầu nâng bậc"),
+  };
+  const choices = [correct, wrong];
+  if (random() < 0.5) choices.reverse();
+  return {
+    id: `career-milestone-promotion-${career.id}-${step}`,
+    kind: "career-promotion",
+    specialStep: step,
+    title: `${stepTitle} (${step}/4)`,
+    text: step === 1 ? `${data.promotion.title.replace(/^\S+\s/u, "")}\n\n${text}` : text,
+    ...art(data.icon, `Nâng bậc ngành ${career.field}`),
+    choices,
+  };
+}
+
 export function createPromotionEvent(player, random = Math.random, age = player.age + 1) {
   const career = player.careerPath ?? { id: "general", field: "ngành đã chọn" };
   const profile = getCareerProfile(career.id);
   const level = Math.max(1, Math.min(2, Number(player.careerLevel) || 1));
+  const milestone = hasCareerMilestone(player) ? careerMilestones[career.id] : null;
+  if (level === 1 && milestone) return createMilestonePromotionEvent(player, 1, age, random);
   const targetLevel = level + 1;
   const finalPromotion = targetLevel === 3;
   const scenarios = promotionScenarios[level];
-  const scenarioIndex = Math.floor(random() * scenarios.length);
+  const scenarioIndex = finalPromotion && milestone
+    ? milestone.finalScenario
+    : Math.floor(random() * scenarios.length);
   const scenario = scenarios[scenarioIndex];
   const options = [
     {
@@ -678,11 +739,7 @@ export function createPromotionEvent(player, random = Math.random, age = player.
     },
   ];
   for (const option of options) {
-    if (option.correct) continue;
-    const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
-    option.text = retryAge === null
-      ? "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Cơ hội nâng bậc cuối đã kết thúc vì lần thử lại sẽ vượt quá 39 tuổi."
-      : `Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi ${retryAge}.`;
+    if (!option.correct) option.text = promotionRetryText(player, age);
   }
   for (let index = options.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
@@ -692,7 +749,9 @@ export function createPromotionEvent(player, random = Math.random, age = player.
     id: `career-promotion-${career.id}-${level}-${scenarioIndex + 1}`,
     kind: "career-promotion",
     title: scenario.title,
-    text: scenario.text.replace("{field}", career.field),
+    text: finalPromotion && milestone
+      ? `${milestone.mentor[0].toLocaleUpperCase("vi-VN")}${milestone.mentor.slice(1)} — người đồng hành từ năm 16 tuổi — giới thiệu bạn vào vòng xét bậc ${profile.ranks[2]}: ${milestone.finalHook}\nDấu mốc năm xưa chỉ mở cánh cửa; bước qua được hay không là ở cách bạn xử lý.\n\n${scenario.text.replace("{field}", career.field)}`
+      : scenario.text.replace("{field}", career.field),
     ...art(level === 1 ? "1F4CA" : "1F3AF", "Cơ hội thăng tiến nghề nghiệp"),
     choices: options,
   };
@@ -710,9 +769,10 @@ export function createEmploymentEvent(player, age) {
   const dueAge = player.nextPromotionAge === undefined
     ? (level === 1 ? 27 : null)
     : player.nextPromotionAge;
+  // Bậc 3 chỉ được xét khi dấu mốc tuổi 16 có hiệu lực cho đúng ngành.
   if (player.employmentStatus === "employed" && level >= 1 && level < 3 &&
       Number.isInteger(dueAge) && age >= 27 && age >= dueAge &&
-      (level === 1 || age <= 39)) {
+      (level === 1 || (age <= 39 && hasCareerMilestone(player)))) {
     return createPromotionEvent(player, Math.random, age);
   }
   return null;

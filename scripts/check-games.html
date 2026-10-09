@@ -1,0 +1,203 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Games checks</title>
+<pre id="games-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("games-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const until = async (test, message, timeout = 8000) => {
+    const start = Date.now();
+    while (!test()) {
+      if (Date.now() - start > timeout) throw new Error(`Timeout: ${message}`);
+      await wait(20);
+    }
+  };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  const matchMedia = window.matchMedia;
+  try {
+    const G = await import("../js/games.js");
+    const card = (rank, suit = "♠") => ({ rank, suit });
+    assert(G.games.map(g => g.name).join() === "Sấp ngửa,Đoán xúc xắc,Vòng quay tài lộc,Hộp bí ẩn,Leo tháp tài lộc,Đua thú may mắn,Xì dách", "Seven games");
+
+    // Tỷ lệ hoàn trả của bảng thưởng (89–95%).
+    const rtp = list => list.reduce((sum, item) => sum + item.chance * item.multiplier, 0);
+    for (const [name, value] of [["wheel", rtp(G.wheelPrizes)], ["box", rtp(G.boxPrizes)], ["coin", 0.5 * 1.9], ["dice parity", 0.5 * 1.9],
+      ["dice number", 5.7 / 6], ["tower 1", 0.5 * 1.9], ...G.racers.map(r => [r.name, r.chance * r.multiplier])]) {
+      assert(value >= 0.88 && value <= 0.951, `${name} returns ${value}`);
+    }
+    assert(Math.abs(G.wheelPrizes.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9 && Math.abs(G.boxPrizes.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9 &&
+      Math.abs(G.racers.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9, "Probabilities add up to 100%");
+
+    // Kết quả được quyết định khi tạo lượt.
+    const fixed = value => () => value;
+    assert(G.createRound("coin", 100_000, "heads", fixed(0.1)).payout === 190_000, "Coin win ×1,9");
+    assert(G.createRound("coin", 100_000, "tails", fixed(0.1)).payout === 0, "Coin loss");
+    assert(G.createRound("dice", 100_000, { mode: "number", value: 1 }, fixed(0)).payout === 570_000, "Dice exact ×5,7");
+    assert(G.createRound("dice", 100_000, { mode: "parity", value: "odd" }, fixed(0)).payout === 190_000, "Dice parity ×1,9");
+    assert(G.createRound("wheel", 100_000, "spin", fixed(0.999)).payout === 2_000_000, "Wheel jackpot ×20");
+    assert(G.createRound("box", 5_000_000, "rich", fixed(0.995)).payout === 75_000_000, "Box gem ×15");
+    assert(G.createRound("race", 100_000, "turtle", fixed(0.95)).payout === 900_000, "Turtle ×9");
+    const tower = G.createRound("tower", 100_000, "climb");
+    assert(tower.safeDoors.length === 5 && tower.safeDoors.every(d => d === 0 || d === 1), "Tower doors decided at start");
+    const bj = G.createRound("blackjack", 100_000, "deal");
+    assert(bj.deck.length === 52 && new Set(bj.deck.map(c => c.rank + c.suit)).size === 52 && bj.player.length === 2 && bj.dealer.length === 2,
+      "Fresh 52-card deck without duplicates");
+
+    // Luật xì dách.
+    assert(G.handPoints([card(1), card(13)]) === 21 && G.handType([card(1), card(13)]) === "blackjack", "Ace + K = xì dách");
+    assert(G.handType([card(1), card(1, "♥")]) === "doubleAce", "Two aces = xì bàn");
+    assert(G.handType([card(7), card(7), card(7)]) === "normal", "21 from three cards is not xì dách");
+    assert(G.handPoints([card(1), card(9), card(5)]) === 15, "Ace counts as 1 when 11 would bust");
+    assert(G.handType([card(2), card(3), card(2), card(4), card(5)]) === "five", "Five cards ≤ 21 = ngũ linh");
+    assert(G.handType([card(10), card(9), card(5)]) === "bust", "Over 21 = quắc");
+    assert(G.compareHands([card(1), card(1)], [card(1), card(12)]) === "doubleAce", "Xì bàn beats xì dách");
+    assert(G.compareHands([card(1), card(12)], [card(1, "♥"), card(13)]) === "draw", "Same xì dách draws");
+    assert(G.compareHands([card(2), card(3), card(2), card(4), card(5)], [card(2), card(3), card(4), card(2), card(6)]) === "five", "Lower ngũ linh wins");
+    assert(G.compareHands([card(10), card(9)], [card(10), card(9)]) === "draw", "Same points draw");
+    assert(G.compareHands([card(10), card(9), card(5)], [card(10), card(9), card(8)]) === "lose", "Player bust loses even if dealer busts");
+    assert(G.compareHands([card(10), card(7)], [card(10), card(6), card(9)]) === "normal", "Dealer bust, player wins");
+    assert(!G.canPlayerStand([card(10), card(5)]) && G.canPlayerStand([card(10), card(6)]), "Cannot stand under 16");
+    const dealerData = { deck: [card(5), card(10)], next: 0, dealer: [card(10), card(6)] };
+    G.playDealer(dealerData);
+    assert(G.handPoints(dealerData.dealer) === 21 && dealerData.next === 1, "Dealer draws under 17");
+    const soft = { deck: [card(5)], next: 0, dealer: [card(1), card(6)] };
+    G.playDealer(soft);
+    assert(soft.next === 0, "Dealer stands on soft 17");
+
+    // Giao diện, tắt hoạt ảnh để kiểm thử nhanh.
+    window.matchMedia = query => query.includes("reduced-motion") ? { matches: true, addEventListener() {} } : matchMedia.call(window, query);
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 10_000_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("games-body");
+    const pick = id => body().querySelector(`.game-pick[data-game="${id}"]`);
+    const option = value => body().querySelector(`.game-option[data-value="${value}"]`);
+    const open = () => { document.querySelectorAll("dialog[open]").forEach(d => d.close()); $("activities").click(); $("activity-games").click(); };
+    assert($("activity-games").textContent.includes("May thì giàu, còn chắc chắn thì không!"), "Motto under the button");
+
+    open();
+    assert(pick("coin").disabled && body().textContent.includes("đủ 18 tuổi"), "Under 18 cannot play");
+    state.player.age = 18;
+    open();
+    assert(!pick("coin").disabled && body().textContent.includes("Còn 5/5 lượt"), "Adults have 5 plays a year");
+    assert(!body().textContent.includes("%"), "No probabilities on screen");
+
+    // Sấp ngửa
+    pick("coin").click();
+    const start = () => body().querySelector(".game-start");
+    assert(start().disabled, "A choice is required");
+    option("heads").click();
+    body().querySelector('.game-option[data-bet="100000"]').click();
+    assert(body().querySelector(".game-summary").textContent.includes("Có thể nhận 190k VNĐ"), "Shows bet and possible payout");
+    start().click();
+    await until(() => body().querySelector(".game-result"), "coin result");
+    const coinLog = state.logs.at(-1).content;
+    assert(coinLog.includes("Sấp ngửa") && [9_900_000, 10_090_000].includes(state.player.money), "Coin settles once");
+    assert(!state.player.gameRound, "Instant games leave no pending round");
+
+    // Không cược quá số dư.
+    body().querySelector(".game-result .game-primary").click();
+    const input = body().querySelector(".game-bet-input");
+    input.value = String(state.player.money + 1000);
+    input.dispatchEvent(new Event("input"));
+    assert(start().disabled && body().textContent.includes("Không đủ tiền"), "Cannot bet more than the balance");
+
+    // Leo tháp: chọn đúng cửa rồi dừng.
+    body().querySelector(".shop-back").click();
+    pick("tower").click();
+    body().querySelector('.game-option[data-bet="100000"]').click();
+    const beforeTower = state.player.money;
+    start().click();
+    assert(state.player.gameRound?.game === "tower" && state.player.money === beforeTower - 100_000, "Bet taken and round saved at start");
+    const safe = state.player.gameRound.safeDoors[0];
+    body().querySelectorAll(".game-door")[safe].click();
+    await until(() => body().querySelector(".game-tower-stop"), "tower decision");
+    body().querySelector(".game-tower-stop").click();
+    await until(() => body().querySelector(".game-result"), "tower result");
+    assert(state.player.money === beforeTower - 100_000 + 190_000 && !state.player.gameRound, "Stopping after floor 1 pays ×1,9");
+
+    // Xì dách: đóng popup giữa ván rồi mở lại vẫn là ván cũ.
+    body().querySelector(".game-result .shop-back").click();
+    pick("blackjack").click();
+    body().querySelector('.game-option[data-bet="10000"]').click();
+    Math.random = (() => { let i = 0; const seq = [0.3, 0.6, 0.1, 0.9, 0.5, 0.7]; return () => seq[i++ % seq.length]; })();
+    start().click();
+    Math.random = random;
+    const round = state.player.gameRound;
+    if (round) {
+      const deck = JSON.stringify(round.deck);
+      $("close-games").click();
+      open();
+      assert(state.player.gameRound && JSON.stringify(state.player.gameRound.deck) === deck && body().querySelector(".game-hand"),
+        "Reopening resumes the same blackjack deal");
+      assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.gameRound, "Round is saved");
+      while (state.player.gameRound) {
+        const stand = body().querySelector(".game-stand");
+        if (stand && !stand.disabled) stand.click(); else body().querySelector(".game-hit").click();
+        await wait(30);
+      }
+    }
+    await until(() => body().querySelector(".game-result"), "blackjack result");
+
+    // Hết 5 lượt trong năm.
+    assert(body().textContent.includes("Hết lượt") || state.player.gamePlays.count < 5, "Plays counted");
+    state.player.gamePlays = { age: state.player.age, count: 5 };
+    open();
+    assert(pick("coin").disabled && body().textContent.includes("đủ 5 lượt"), "Five plays per year");
+    state.player.age = 19;
+    open();
+    assert(!pick("coin").disabled, "Plays reset next year");
+
+    // Các trò còn lại chạy đến kết quả.
+    for (const [game, select] of [["dice", () => { option("number").click(); option("4").click(); }], ["wheel", () => {}],
+      ["box", () => option("normal").click()], ["race", () => option("turtle").click()]]) {
+      const plays = state.player.gamePlays?.age === state.player.age ? state.player.gamePlays.count : 0;
+      open();
+      pick(game).click();
+      select();
+      start().click();
+      await until(() => body().querySelector(".game-result"), `${game} result`);
+      assert(state.logs.at(-1).content.includes(G.games.find(g => g.id === game).name), `${game} recorded`);
+      if (game === "box") {
+        const item = state.player.boxItems.at(-1);
+        assert(item && state.logs.at(-1).content.includes("cất vào Tài sản") && body().textContent.includes("Đã cất vào Tài sản"),
+          "Box prize goes to assets instead of cash");
+        assert(state.logs.at(-1).content.includes("Tiền -50k VNĐ"), "Opening a box only costs its price");
+        document.querySelectorAll("dialog[open]").forEach(d => d.close());
+        $("assets").click();
+        const sell = $("life-box-items").querySelector(".box-item-sell");
+        assert(sell && $("life-box-items").textContent.includes(item.label), "Box item listed in assets");
+        const before = state.player.money;
+        sell.click();
+        $("shop-confirm").click();
+        assert(state.player.money === before + item.value && !state.player.boxItems.length, "Selling pays the item value");
+        assert(sell.textContent.includes(item.value ? "Bán" : "Bỏ đi"), "Worthless items can be discarded");
+      }
+      assert(state.player.gamePlays.count === plays + 1, `${game} uses one play`);
+    }
+    result.textContent = "PASS: 7 games; payout tables 89–95%; outcomes fixed at start; blackjack rules; 18+; 5 plays/year; no probabilities shown; balance limit; tower stop; resume";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    window.matchMedia = matchMedia;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

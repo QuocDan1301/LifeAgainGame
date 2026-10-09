@@ -1,0 +1,141 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tarot checks</title>
+<pre id="tarot-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("tarot-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const until = async (test, message) => {
+    const start = Date.now();
+    while (!test()) { if (Date.now() - start > 5000) throw new Error(`Timeout: ${message}`); await wait(20); }
+  };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainTarotCollection"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const T = await import("../js/tarot.js");
+    const count = group => T.tarotCards.filter(c => c.group === group).length;
+    assert(T.tarotCards.length === 78 && count("major") === 22 && ["wands", "cups", "swords", "pentacles"].every(g => count(g) === 14),
+      "78 cards: 22 major + 4 suits × 14");
+    assert(new Set(T.tarotCards.map(c => c.id)).size === 78 && new Set(T.tarotCards.map(c => c.name)).size === 78, "Unique cards");
+    const readings = T.tarotCards.flatMap(c => T.tarotTopics.map(t => c.readings[t.id]));
+    assert(readings.length === 312 && readings.every(text => typeof text === "string" && text.length > 20), "312 readings");
+    assert(new Set(readings).size === 312, "Every reading is different");
+    assert(T.tarotCards.every(c => c.meaning && c.hint), "General meaning and diary hint for every card");
+    assert(T.tarotCards.filter(c => c.group === "major").every(c => c.effect && Object.keys(c.effect).length), "Every major card has an effect");
+    for (let i = 0; i < 200; i++) {
+      const drawn = T.drawTarotCards();
+      assert(drawn.length === 3 && new Set(drawn).size === 3, "Three different cards");
+    }
+    // Lá chưa khám phá được ưu tiên: rút mỗi năm một lá là đủ 78 lá trong 78 lần.
+    const seen = {};
+    for (let i = 0; i < 78; i++) {
+      const drawn = T.drawTarotCards(Math.random, seen);
+      assert(drawn.every(id => !seen[id]) || Object.keys(seen).length > 75, "Undiscovered cards first");
+      seen[drawn[0]] = 1;
+    }
+    assert(Object.keys(seen).length === 78, "Full deck in 78 readings");
+    const twoLeft = Object.fromEntries(T.tarotCards.slice(2).map(c => [c.id, 1]));
+    const mixed = T.drawTarotCards(Math.random, twoLeft);
+    assert(new Set(mixed).size === 3 && mixed.filter(id => !twoLeft[id]).length === 2, "Fills with known cards when few are left");
+    // Hiệu ứng chờ và quy tắc giảm giá.
+    const player = { age: 30, happiness: 99, intelligence: 50 };
+    T.applyTarotEffect(player, T.getTarotCard("cups-1"));
+    assert(player.happiness === 100, "Cups +2 happiness, max 100");
+    T.applyTarotEffect(player, T.getTarotCard("pentacles-8"));
+    assert(T.getTarotDiscountedFee(player, 1_000_000).discount === 50_000 && T.getTarotDiscountedFee(player, 200_000).discount === 20_000,
+      "Pentacles: 10% off, max 50.000 VNĐ");
+    player.age = 31;
+    assert(!T.getActiveTarotBuff(player), "Waiting effects expire on the next birthday");
+
+    // Thành tựu theo bộ sưu tập.
+    const ids = (filter) => T.tarotAchievementIds(Object.fromEntries(T.tarotCards.filter(filter).map(c => [c.id, 1])));
+    assert(ids(() => false).length === 0, "No card, no Tarot achievement");
+    assert(JSON.stringify(ids(c => c.id === "cups-3")) === '["tarot-first"]', "First card");
+    assert(JSON.stringify(ids(c => c.group === "major")) === '["tarot-first","tarot-major"]', "All 22 major arcana");
+    assert(!ids(c => c.group === "major" && c.id !== "major-0").includes("tarot-major"), "21 major arcana is not enough");
+    const fivePerSuit = c => c.group !== "major" && Number(c.id.split("-")[1]) <= 5;
+    assert(JSON.stringify(ids(fivePerSuit)) === '["tarot-first","tarot-suits"]', "5 cards in every suit");
+    assert(!ids(c => fivePerSuit(c) && c.id !== "swords-5").includes("tarot-suits"), "4 swords is not enough");
+    assert(JSON.stringify(ids(() => true)) === '["tarot-first","tarot-major","tarot-suits","tarot-all"]', "All 78 cards");
+
+    localStorage.removeItem("lifeAgainTarotCollection");
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 30, health: 50, happiness: 50, intelligence: 50,
+      appearance: 50, money: 300_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("tarot-body");
+    const open = () => { document.querySelectorAll("dialog[open]").forEach(d => d.close()); $("activities").click(); $("activity-tarot").click(); };
+
+    open();
+    assert(body().querySelectorAll(".tarot-topic").length === 4 && body().textContent.includes("1/1 lượt") &&
+      body().textContent.includes("Đã khám phá 0/78") && body().textContent.includes("lựa chọn cuộc đời vẫn nằm ở bạn"), "Home screen");
+    body().querySelector('.tarot-topic[data-topic="career"]').click();
+    assert(body().querySelector(".tarot-confirm").disabled && body().textContent.includes("còn thiếu 200k"), "Not enough money blocks the reading");
+    body().querySelector(".shop-back").click();
+    state.player.money = 3_000_000;
+    body().querySelector('.tarot-topic[data-topic="career"]').click();
+    body().querySelector(".tarot-confirm").click();
+    assert(state.player.money === 2_500_000 && state.player.tarotUsedAge === 30, "Fee taken and yearly turn used");
+    const reading = state.player.tarotReading;
+    assert(reading.cards.length === 3 && body().querySelectorAll(".tarot-back-card").length === 3, "Three face-down cards");
+    assert(!T.tarotCards.some(c => body().textContent.includes(c.name)), "Face-down cards are not revealed");
+
+    // Đóng rồi mở lại: vẫn là ba lá cũ.
+    const cards = JSON.stringify(reading.cards);
+    $("close-tarot").click();
+    open();
+    assert(JSON.stringify(state.player.tarotReading.cards) === cards && body().querySelectorAll(".tarot-back-card").length === 3, "Reopening keeps the same draw");
+
+    body().querySelectorAll(".tarot-back-card")[1].click();
+    await until(() => body().querySelector(".tarot-result"), "result");
+    const picked = T.getTarotCard(reading.cards[1]);
+    assert(body().textContent.includes(picked.name) && body().textContent.includes(picked.readings.career), "Shows the picked card and its career reading");
+    assert(!body().textContent.includes(T.getTarotCard(reading.cards[0]).name) && !body().textContent.includes(T.getTarotCard(reading.cards[2]).name),
+      "The two other cards stay hidden");
+    assert(body().textContent.includes("Lá mới! Bộ sưu tập: 1/78"), "New card counted");
+    assert(JSON.parse(localStorage.getItem("lifeAgainTarotCollection"))[picked.id] === 1, "Collection saved separately from the life");
+    assert(state.logs.at(-1).content.includes(`rút được ${picked.name}`) && state.logs.at(-1).content.includes("Chi phí"), "Diary entry");
+    $("close-tarot").click();
+    open();
+    assert(body().querySelector(".tarot-result") && body().textContent.includes(picked.name), "Result is not re-drawn after closing");
+    body().querySelector(".tarot-done").click();
+    assert(!$("tarot-dialog").open && !state.player.tarotReading, "Ghi nhớ lời nhắn closes the reading");
+    const unlocked = JSON.parse(localStorage.getItem("lifeAgainAchievements"));
+    assert(state.player.achievementFlags["tarot-first"] && unlocked["tarot-first"] && !unlocked["tarot-major"],
+      "Lời nhắn đầu tiên unlocks after the first card");
+    document.querySelectorAll("dialog[open]").forEach(d => d.close());
+
+    open();
+    assert(body().textContent.includes("Bạn đã xem Tarot năm nay") && body().querySelector(".tarot-topic").disabled, "One reading per year");
+    body().querySelector(".tarot-collection-open").click();
+    assert(body().querySelectorAll(".tarot-mini").length === 78 && body().querySelectorAll(".tarot-mini.is-known").length === 1 &&
+      body().querySelectorAll(".tarot-mini.is-unknown").length === 77, "Collection grid with unknown cards hidden");
+    const happiness = state.player.happiness;
+    body().querySelector(".tarot-mini.is-known").click();
+    assert(body().textContent.includes(picked.meaning) && body().textContent.includes("Đã rút 1 lần") && state.player.happiness === happiness,
+      "Reading a known card has no new effect");
+
+    state.player.age = 31;
+    open();
+    assert(body().textContent.includes("1/1 lượt") && !body().querySelector(".tarot-topic").disabled, "New turn next year");
+    result.textContent = "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 4 Tarot achievements";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

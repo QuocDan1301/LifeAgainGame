@@ -1,0 +1,134 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Career milestone checks</title>
+<pre id="milestone-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("milestone-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { getAgeEvents } = await import("../js/events.js");
+    const { createInitialState, state } = await import("../js/state.js");
+    const { careerMilestones } = await import("../js/career-milestones.js");
+    const { careerAnnualSalaries } = await import("../js/career-salary.js");
+    const { careerEvent } = await import("../js/career-event.js");
+    const { createEmploymentEvent, getCareerProfile } = await import("../js/career-jobs.js");
+    const ids = careerEvent.choices.map(choice => choice.careerPath.id);
+    assert(ids.length === 22 && ids.every(id => careerMilestones[id] && careerAnnualSalaries[id]), "Every career has milestone data");
+    for (const [id, data] of Object.entries(careerMilestones)) {
+      assert(data.spark.steps.length === 3 && data.promotion.steps.length === 4, `Chain length for ${id}`);
+      assert(data.spark.reward > 0 && [0, 1].includes(data.finalScenario), `Reward and final scenario for ${id}`);
+    }
+    const sixteen = getAgeEvents(16);
+    assert(sixteen.length === 22 && sixteen.every(event => event.kind === "career-spark" && !event.addedEveryday),
+      "Age 16 only offers the career discovery chain");
+    const { canChooseCareer } = await import("../js/study-blocks.js");
+    const free = ["military", "esports", "tiktok", "youtube"];
+    assert(free.every(id => canChooseCareer(id, "TD") && !["A00", "A01", "B00", "C00", "D01"].some(block => canChooseCareer(id, block))),
+      "The four free careers belong only to Khối Tự do");
+    for (const block of ["A00", "A01", "B00", "C00", "D01", "TD"]) {
+      const offered = getAgeEvents(16, null, { studyBlock: block }).map(event => event.careerSparkId);
+      assert(offered.length && offered.every(id => canChooseCareer(id, block)) &&
+        ids.filter(id => canChooseCareer(id, block)).every(id => offered.includes(id)),
+        `Age 16 offers exactly the careers allowed by block ${block}`);
+    }
+
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    const { achievements } = await import("../js/achievements-data.js");
+    localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(entry => [entry.id, true]))));
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    const reset = extra => {
+      Object.assign(state, createInitialState());
+      Object.assign(state.player, { name: "Test", gender: "male", age: 15, health: 80, happiness: 50,
+        intelligence: 50, appearance: 50, money: 0, studyBlock: "A00", datingActivitiesOnly: true }, extra);
+      document.getElementById("event-dialog")?.close();
+      document.getElementById("age-up").disabled = false;
+    };
+    reset();
+    Math.random = () => 0;
+    await import("../js/main.js");
+    const birthday = document.getElementById("age-up");
+    const confirm = document.getElementById("event-confirm");
+    const buttons = () => [...document.querySelectorAll("#event-choices button")];
+    const pick = predicate => buttons()[state.pendingEvent.choices.findIndex(predicate)].click();
+    const proceed = () => { pick(choice => choice.nextStep); confirm.click(); };
+
+    // Thành công: random 0 chọn ngành đầu tiên và ra kết quả thành công (< 60%).
+    birthday.click();
+    assert(state.pendingEvent?.kind === "career-spark" && state.pendingEvent.careerSparkId === "programming", "Age 16 always opens the chain");
+    proceed(); proceed(); proceed();
+    assert(state.pendingEvent.specialStep === 4 && state.pendingEvent.choices.length === 1, "Fourth situation reveals the random result");
+    buttons()[0].click();
+    confirm.click();
+    assert(state.player.age === 16 && state.player.careerSpark === "programming", "Success stores the career milestone");
+    assert(state.player.money === 3_000_000 && state.player.happiness === 53, "Success pays the reward and +3 happiness");
+
+    // Thất bại ở kết quả ngẫu nhiên.
+    reset();
+    Math.random = () => 0.99;
+    birthday.click();
+    assert(state.pendingEvent.careerSparkId === "marketing", "Random career selection within block A00");
+    proceed(); proceed(); proceed();
+    buttons()[0].click();
+    confirm.click();
+    assert(!state.player.careerSpark && state.player.money === 0 && state.player.happiness === 47, "Failure: -3 happiness, no milestone");
+
+    // Từ chối giữa chuỗi.
+    reset();
+    birthday.click();
+    proceed();
+    pick(choice => !choice.nextStep);
+    confirm.click();
+    assert(!state.player.careerSpark && state.player.money === 0 && state.player.happiness === 50, "Stopping gives no reward or milestone");
+
+    // Nâng bậc lần đầu thay thế: đủ 4 tình huống mới lên bậc 2.
+    const worker = extra => reset({ age: 26, employmentStatus: "employed", careerLevel: 1, nextPromotionAge: 27,
+      careerPath: { id: "acting", field: "Diễn xuất" }, job: getCareerProfile("acting").ranks[0], lastSalaryAge: 26, ...extra });
+    worker({ careerSpark: "acting" });
+    birthday.click();
+    assert(state.pendingEvent.kind === "career-promotion" && state.pendingEvent.specialStep === 1, "Milestone replaces the first promotion");
+    proceed(); proceed(); proceed();
+    pick(choice => choice.correct === true);
+    confirm.click();
+    assert(state.player.careerLevel === 2 && state.player.nextPromotionAge === 37, "Four correct answers reach rank 2 and schedule the final review");
+
+    worker({ careerSpark: "acting" });
+    birthday.click();
+    proceed();
+    pick(choice => choice.correct === false);
+    confirm.click();
+    assert(state.player.careerLevel === 1 && state.player.nextPromotionAge === 29 && state.player.careerSpark === "acting",
+      "A wrong answer keeps rank 1, retries after 2 years and keeps the milestone");
+    birthday.click();
+    if (state.pendingEvent) { buttons()[0].click(); confirm.click(); }
+    birthday.click();
+    assert(state.pendingEvent?.kind === "career-promotion" && state.pendingEvent.specialStep === 1, "Retry uses the milestone chain again");
+
+    // Chọn ngành khác ở tuổi 18: sự kiện cũ, không mở bậc 3.
+    worker({ careerSpark: "law" });
+    birthday.click();
+    assert(state.pendingEvent.kind === "career-promotion" && !state.pendingEvent.specialStep, "Other careers keep the old promotion");
+    pick(choice => choice.correct === true);
+    confirm.click();
+    assert(state.player.careerLevel === 2, "Old promotion still reaches rank 2");
+    assert(createEmploymentEvent({ ...state.player, age: 36 }, 37) === null, "Rank 3 stays locked without the milestone");
+    const final = createEmploymentEvent({ ...state.player, careerSpark: "acting", age: 36 }, 37);
+    assert(final?.kind === "career-promotion" && final.text.includes("Minh Khôi"), "Milestone opens the final review with the mentor");
+    result.textContent = "PASS: age-16 chain (success, failure, stop); milestone promotion chain; retry; rank-3 gate";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

@@ -741,10 +741,10 @@ export const ageEvents1To10 = {
         {
           label: "📴 Tắt màn hình và đi ngủ",
           title: "🛌 Giữ sức cho ngày mai",
-          text: "Bạn tiếc đoạn phim còn lại nhưng vẫn đi ngủ đúng giờ. Sáng hôm sau, bạn thức dậy tỉnh táo hơn. 😒",
+          text: "Bạn để dành đoạn phim cho ngày mai và đi ngủ đúng giờ. Sáng hôm sau, bạn thức dậy tỉnh táo, vui vì vẫn còn phim để xem tiếp. 🌤️",
           effects: {
             health: 4,
-            happiness: -1,
+            happiness: 1,
           },
           image: "",
           imageAlt: "Biểu tượng khuôn mặt đang cố gắng, chuyển động nhẹ.",

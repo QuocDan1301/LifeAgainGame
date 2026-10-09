@@ -1,0 +1,89 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Self-development checks</title>
+<pre id="self-development-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("self-development-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const D = await import("../js/self-development.js");
+    assert(D.developmentActivities.length === 8 && D.developmentStats.every(s => D.developmentActivities.filter(a => a.stat === s.id).length === 2),
+      "Two activities for each of the four stats");
+    assert(D.packageTiers.every((t, i) => i === 0 || (t.price > D.packageTiers[i - 1].price && t.gain > D.packageTiers[i - 1].gain)),
+      "Paying more raises the stat more");
+    assert(D.developmentActivities.every(a => a.packages.length === D.packageTiers.length), "Every activity has every package");
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 25, health: 50, happiness: 50, intelligence: 50,
+      appearance: 98, money: 1_500_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("self-development-body");
+    const buy = (activity, tier) => body().querySelector(`.dev-buy[data-activity="${activity}"][data-tier="${tier}"]`);
+    const open = () => { document.querySelectorAll("dialog[open]").forEach(d => d.close()); $("activities").click(); $("activity-self-development").click(); };
+    const confirm = () => { assert($("shop-confirm-dialog").open, "Confirm dialog"); $("shop-confirm").click(); };
+
+    open();
+    assert($("self-development-dialog").open && body().querySelectorAll(".shop-group").length === 4, "Four stat groups");
+    body().querySelector('.shop-group[data-stat="health"]').click();
+    assert(body().querySelectorAll(".dev-activity").length === 2 && body().querySelectorAll(".dev-buy").length === 6, "Two activities with three packages");
+    assert(buy("gym", "premium").disabled && !buy("gym", "standard").disabled, "Cannot afford the premium package");
+    buy("gym", "standard").click();
+    $("shop-cancel").click();
+    assert(state.player.money === 1_500_000 && state.player.health === 50, "Cancel changes nothing");
+    buy("gym", "standard").click();
+    confirm();
+    assert(state.player.money === 300_000 && state.player.health === 53, "Standard package: −1.200.000, health +3");
+    assert(state.logs.at(-1).content.includes("Tập gym") && state.logs.at(-1).content.includes("Sức khỏe +3"), "Diary entry");
+    assert(buy("gym", "basic").disabled && body().textContent.includes("Đã tham gia năm nay"), "Once per year per activity");
+    assert(!buy("yoga", "basic").disabled, "Other activity still available");
+    buy("yoga", "basic").click();
+    confirm();
+    assert(state.player.money === 0 && state.player.health === 54, "Basic package: health +1");
+
+    // Tối đa 100 và lá Gậy / lá Tiền.
+    state.player.money = 10_000_000;
+    state.player.tarotBuff = { type: "wands", age: 25 };
+    body().querySelector(".shop-back").click();
+    body().querySelector('.shop-group[data-stat="intelligence"]').click();
+    assert(body().textContent.includes("Lá Gậy") && body().textContent.includes("Trí tuệ +7"), "Wands buff shown");
+    buy("language", "premium").click();
+    confirm();
+    assert(state.player.intelligence === 57 && !state.player.tarotBuff, "Wands adds 1 and is used up");
+    state.player.tarotBuff = { type: "pentacles", age: 25 };
+    body().querySelector(".shop-back").click();
+    body().querySelector('.shop-group[data-stat="appearance"]').click();
+    buy("spa", "basic").click();
+    confirm();
+    assert(state.player.money === 6_000_000 - 270_000 && state.player.appearance === 99 && !state.player.tarotBuff, "Pentacles: 10% off");
+    buy("salon", "premium").click();
+    confirm();
+    assert(state.player.appearance === 100, "Stat max 100");
+    assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.developmentDone.salon === 25, "Saved");
+
+    state.player.age = 26;
+    open();
+    body().querySelector('.shop-group[data-stat="health"]').click();
+    assert(!buy("gym", "basic").disabled, "Available again next year");
+    $("close-self-development").click();
+    assert(!$("self-development-dialog").open, "Close button");
+    result.textContent = "PASS: 4 stats × 2 activities × 3 packages; price-based gains; confirm/cancel; once per year; max 100; Tarot wands/pentacles; diary; save";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

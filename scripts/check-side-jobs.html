@@ -1,0 +1,137 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Side job checks</title>
+<pre id="side-job-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("side-job-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const { convenienceStores, shiftTypes, collectSideJobYear, getSideJobTitle } = await import("../js/side-jobs.js");
+    const { getEducationStatus } = await import("../js/education.js");
+    const { achievements } = await import("../js/achievements-data.js");
+    assert(convenienceStores.map(s => s.name).join() === "Circle K,GS25,Mini Stop,FamilyMart,7-Eleven", "Five convenience stores");
+    assert(shiftTypes["part-time"].salary < shiftTypes["full-time"].salary, "Part-time pays less than full-time");
+    assert(shiftTypes["part-time"].health === -5 && shiftTypes["full-time"].health === -10, "Health cost per year");
+    assert(achievements.some(a => a.id === "side-job-all-stores" && a.title === "Bán mình cho tư bản"), "Achievement exists");
+    const sample = { money: 0, health: 50, sideJobs: [{ storeId: "gs25", shift: "part-time", startedAtAge: 20 },
+      { storeId: "circle-k", shift: "part-time", startedAtAge: 21 }] };
+    const year = collectSideJobYear(sample, 21);
+    assert(year.amount === 12_000_000 && sample.health === 45, "Only jobs started before this year pay and cost health");
+    assert(getSideJobTitle(sample) === "Nhân viên GS25", "Title uses the first store");
+    assert(getEducationStatus({ age: 20, sideJobs: sample.sideJobs }).text === "Nhân viên GS25", "No main job shows the store");
+    assert(getEducationStatus({ age: 25, employmentStatus: "employed", job: "💻 Lập trình viên tập sự", sideJobs: sample.sideJobs }).text
+      .includes("Lập trình viên"), "Main job takes priority");
+    const weak = { money: 0, health: 3, sideJobs: [{ storeId: "gs25", shift: "full-time", startedAtAge: 1 }] };
+    collectSideJobYear(weak, 30);
+    assert(weak.health === 1, "Overwork never kills the character by itself");
+
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 20, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 0, studyBlock: "A00", datingActivitiesOnly: true, employmentStatus: "declined", nextPromotionAge: null });
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("side-job-body");
+    const shiftButton = id => body().querySelector(`.side-job-shift[data-shift="${id}"]`);
+    const applyButton = id => body().querySelector(`.side-job-apply[data-store="${id}"]`);
+    const closeOthers = () => document.querySelectorAll("dialog[open]").forEach(d => d !== $("side-job-dialog") && d.close());
+    const hire = id => { applyButton(id).click(); $("shop-confirm").click(); closeOthers(); };
+
+    // Dưới 16 tuổi chưa được làm thêm.
+    state.player.age = 15;
+    $("activities").click();
+    $("activity-part-time").click();
+    assert(shiftButton("part-time").disabled && shiftButton("full-time").disabled && body().textContent.includes("đủ 16 tuổi"),
+      "Under 16 cannot take a side job");
+    $("close-side-job").click();
+    state.player.age = 16;
+    $("activities").click();
+    $("activity-part-time").click();
+    assert($("side-job-dialog").open && shiftButton("part-time") && !shiftButton("part-time").disabled, "Part-time and full-time buttons from 16");
+
+    // Part-time ở nhiều cửa hàng.
+    shiftButton("part-time").click();
+    assert(body().querySelectorAll(".side-job-apply").length === 5, "Five stores listed");
+    applyButton("gs25").click();
+    assert($("shop-confirm-dialog").open && !(state.player.sideJobs ?? []).length, "Taking a job asks for confirmation");
+    $("shop-cancel").click();
+    hire("gs25");
+    hire("circle-k");
+    assert(state.player.sideJobs.length === 2 && applyButton("gs25").disabled, "Several part-time stores at once");
+    assert($("education-status").textContent === "Nhân viên GS25", "Status shows the first store");
+    body().querySelector(".shop-back").click();
+    assert(shiftButton("full-time").disabled, "Part-time blocks full-time");
+
+    // Đủ 5 cửa hàng thì mở thành tựu.
+    shiftButton("part-time").click();
+    for (const id of ["ministop", "familymart", "7-eleven"]) hire(id);
+    assert(state.player.achievementFlags["side-job-all-stores"] &&
+      JSON.parse(localStorage.getItem("lifeAgainAchievements"))["side-job-all-stores"], "All five stores unlock the achievement");
+    $("close-side-job").click();
+    closeOthers();
+
+    // Lương và sức khỏe mỗi năm.
+    const health = state.player.health;
+    $("age-up").click();
+    if (state.pendingEvent) {
+      document.querySelector("#event-choices button")?.click();
+      $("event-confirm").click();
+    }
+    assert(state.logs.at(-1).content.includes("Lương làm thêm Part-time"), "Yearly side-job pay in the diary");
+    closeOthers();
+
+    // Công việc hiện tại trong Tài sản, nghỉ việc.
+    $("assets").click();
+    assert($("life-jobs").querySelectorAll(".shop-sell").length === 5, "Current jobs listed in assets with quit buttons");
+    for (let i = 0; i < 5; i++) {
+      $("life-jobs").querySelector(".shop-sell").click();
+      $("shop-confirm").click();
+    }
+    assert(!state.player.sideJobs.length && !$("life-jobs").children.length, "Quitting removes the jobs");
+    $("close-life-profile").click();
+    closeOthers();
+
+    // Full-time chỉ 1 cửa hàng và chặn part-time.
+    $("activities").click();
+    $("activity-part-time").click();
+    shiftButton("full-time").click();
+    hire("7-eleven");
+    assert(state.player.sideJobs.length === 1 && state.player.sideJobs[0].shift === "full-time", "Full-time job taken");
+    assert([...body().querySelectorAll(".side-job-apply")].every(b => b.disabled), "Only one full-time job");
+    body().querySelector(".shop-back").click();
+    assert(shiftButton("part-time").disabled && shiftButton("full-time").disabled, "Full-time blocks part-time");
+    $("close-side-job").click();
+    closeOthers();
+
+    // Công việc chính đứng đầu và có thể nghỉ.
+    Object.assign(state.player, { employmentStatus: "employed", careerLevel: 1, job: "💻 Lập trình viên tập sự",
+      careerPath: { id: "programming", field: "Công nghệ thông tin" } });
+    $("assets").click();
+    assert($("life-jobs").children.length === 2 && $("life-jobs").children[0].textContent.includes("Công việc chính"), "Main job is listed first");
+    $("life-jobs").querySelector(".shop-sell").click();
+    $("shop-confirm").click();
+    assert(state.player.employmentStatus === "declined" && !state.player.job, "Quitting the main job");
+    assert($("education-status").textContent === "Nhân viên 7-Eleven", "Without a main job the store shows again");
+    result.textContent = "PASS: age 16+; part-time/full-time rules; five stores; confirm; status title; achievement; yearly pay and health; current jobs; quitting";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

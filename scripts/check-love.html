@@ -1,0 +1,99 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Matchmaking checks</title>
+<pre id="love-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("love-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const { matchmakingCenters, createMatch } = await import("../js/matchmaking.js");
+    assert(matchmakingCenters.length >= 3, "Several centers");
+    assert(matchmakingCenters[0].maxAgeGap === 30, "Cheapest center allows up to 30 years apart");
+    for (let i = 1; i < matchmakingCenters.length; i++) {
+      const [low, high] = [matchmakingCenters[i - 1], matchmakingCenters[i]];
+      assert(high.fee > low.fee && high.minStat > low.minStat && high.maxStat >= low.maxStat, "Higher fee, higher stats");
+      assert(high.maxAgeGap < low.maxAgeGap, "Higher fee, smaller age gap");
+    }
+    for (const center of matchmakingCenters) {
+      for (let i = 0; i < 50; i++) {
+        const person = createMatch({ age: 30 }, center, i % 2 ? "female" : "male");
+        const stats = Object.values(person.stats);
+        assert(stats.every(v => v >= center.minStat && v <= center.maxStat), `Stats follow ${center.name}`);
+        assert(person.gender === (i % 2 ? "female" : "male") && person.name && person.zodiac && person.personality &&
+          person.birthDay && person.birthMonth, "Full profile with chosen gender");
+        assert(Math.abs(person.ageAtMeeting - 30) <= center.maxAgeGap, `Age gap within ${center.maxAgeGap}`);
+        const young = createMatch({ age: 19 }, center, "male");
+        assert(young.ageAtMeeting >= 18 && young.ageAtMeeting <= 19 + center.maxAgeGap, "Never younger than 18");
+      }
+    }
+
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 20_000_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("love-body");
+    const center = id => body().querySelector(`.love-center[data-center="${id}"]`);
+    const closeOthers = () => document.querySelectorAll("dialog[open]").forEach(d => d !== $("love-dialog") && d.close());
+
+    $("activities").click();
+    $("activity-love").click();
+    assert($("love-dialog").open && center("basic").disabled && body().textContent.includes("đủ 18 tuổi"), "Under 18 cannot use matchmaking");
+    $("close-love").click();
+
+    state.player.age = 25;
+    $("activities").click();
+    $("activity-love").click();
+    assert(!center("basic").disabled, "Single adults can choose a center");
+    center("kind").click();
+    const genders = [...body().querySelectorAll(".love-gender")];
+    assert(genders.map(b => b.dataset.gender).join() === "male,female", "Choose male or female");
+    genders[1].click();
+    assert($("shop-confirm-dialog").open && state.player.money === 20_000_000, "Fee asks for confirmation");
+    $("shop-confirm").click();
+    closeOthers();
+    const profile = body().querySelector(".love-profile-text").textContent;
+    assert(state.player.money === 10_000_000 && /Nữ · \d+ tuổi/.test(profile) && profile.includes("Sinh nhật") &&
+      profile.includes("Tính cách") && profile.includes("Sức khỏe"), "Profile shows name, age, birthday, zodiac, personality and stats");
+    assert(!state.player.partner, "Seeing a profile does not start a relationship");
+
+    // Gặp người khác tốn thêm phí.
+    body().querySelector(".love-another").click();
+    $("shop-confirm").click();
+    closeOthers();
+    assert(state.player.money === 0, "Another introduction costs the fee again");
+    assert(body().querySelector(".love-another").disabled, "Cannot pay for another without money");
+
+    body().querySelector(".love-accept").click();
+    assert(state.player.partner && state.player.partner.gender === "female" && state.player.relationshipHistory.at(-1).type === "dating",
+      "Accepting starts dating");
+    assert(state.player.happiness === 53 && state.player.achievementFlags["first-love"], "Happiness and first-love achievement");
+    $("close-love").click();
+    $("relationships").click();
+    assert($("relationship-current").textContent.includes(state.player.partner.name), "Relationship panel shows the new partner");
+    $("close-relationships").click();
+
+    $("activities").click();
+    $("activity-love").click();
+    assert(center("basic").disabled && body().textContent.includes("đang hẹn hò"), "Matchmaking is only for singles");
+    result.textContent = "PASS: centers by fee; age 18+; gender choice; paid profile; another match; accept updates relationships; singles only";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

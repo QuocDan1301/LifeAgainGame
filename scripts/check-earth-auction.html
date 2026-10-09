@@ -88,7 +88,7 @@
       'Confirm advances one year, adds salary once and awards both stats');
     assert(state.player.achievementFlags['story-alien'] && state.logs.at(-1).content.includes('hai quả cam'),
       'Achievement and the supplied diary entry persist');
-    assert(document.getElementById('money-value').textContent === '120.500.000' && state.logs.at(-1).content.includes('500.000 VNĐ'),
+    assert(document.getElementById('money-value').textContent === '120,5 triệu' && state.logs.at(-1).content.includes('500.000 VNĐ'),
       'Cash reward appears in the wallet and diary');
     birthday.click();
     assert(state.pendingEvent?.kind === 'marriage-proposal' && state.pendingEvent.age === 31, 'Deferred proposal appears at 31');

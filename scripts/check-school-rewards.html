@@ -62,7 +62,7 @@
     state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     assert(JSON.stringify(state.pendingEvent.schoolReward) === savedReward, 'Save preserves exact random reward');
     confirm.click();
-    assert(state.player.health === 51 && state.player.intelligence === 53 && state.player.happiness === 55,
+    assert(state.player.health === 51 && state.player.intelligence === 53 && state.player.happiness === 54,
       'School reward adds to choice effects without overwriting them');
     Object.assign(state.player,base(10)); birthday.click();
     assert(state.player.age === 11 && state.player.money === 500000 && state.player.health === 53,
@@ -70,7 +70,7 @@
     Object.assign(state.player,base(14),{studyBlock:'A00'}); birthday.click();
     assert(state.player.age === 15 && state.player.money === 1000000 && state.player.health === 54,
       'Age 15 special study flow awards stats and money');
-    assert(state.logs.at(-1).content.includes('Vào cấp 3') && document.getElementById('money-value').textContent === '1.000.000',
+    assert(state.logs.at(-1).content.includes('Vào cấp 3') && document.getElementById('money-value').textContent === '1 triệu',
       'Diary and wallet display reflect rewards');
     Object.assign(state.player,base(17),{studyBlock:'A00'}); birthday.click();
     choose(state.pendingEvent.choices.findIndex(c=>c.careerPath?.id==='programming'));
