@@ -8,7 +8,7 @@ Official package: https://registry.npmjs.org/openmoji/-/openmoji-17.0.0.tgz
 License: Creative Commons Attribution-ShareAlike 4.0 International.
 https://creativecommons.org/licenses/by-sa/4.0/
 
-`color/svg/` and `black/svg/` contain the complete, unmodified original SVGs.
+`color/svg/` contains the complete, unmodified original color SVGs.
 `openmoji.json` contains the official metadata. The full license is LICENSE.txt.
 The package integrity and source archive hash are recorded by sync-openmoji.py.
 

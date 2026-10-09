@@ -9,7 +9,7 @@ try {
   const {createEventImageRenderer}=await import('../js/event-image.js');
   const library=await(await fetch('../js/img/events/openmoji/library-manifest.json')).json();
   assert(Object.keys(openMojiCatalog).length===4495,'Complete official OpenMoji library');
-  assert(library.styles.color.count===4495&&library.styles.black.count===4495,'Both complete color and black libraries');
+  assert(library.styles.color.count===4495,'Complete color library');
   const hike=getAgeEvents(13).find(event=>event.id==='teen-13-2');
   assert(hike.imageOptions[0].plan.code==='1F6B6','Hike uses a walking OpenMoji');
   assert(hike.choices[0].imageOptions[0].plan.code==='1F4F8','Photo result uses a camera with flash');

@@ -25,7 +25,7 @@ for record in records:
         assert signature(reviewed[identity])==signature(record),f'Conflicting review: {identity}'
     reviewed[identity]=record
 
-audit=json.loads((ROOT/'js/img/events/expanded-media-audit.json').read_text(encoding='utf-8'))
+audit=json.loads((ROOT/'js/img/events/full-media-audit.json').read_text(encoding='utf-8'))
 missing=[]
 for row in audit:
     identity=(row['title'],(row.get('text') or '').strip(),'scene' if row['slot']=='scene' else 'result')

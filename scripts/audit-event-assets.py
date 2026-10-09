@@ -8,8 +8,7 @@ manifest=json.loads((DEST/'library-manifest.json').read_text(encoding='utf-8'))
 animations=json.loads((DEST/'animation-manifest.json').read_text(encoding='utf-8'))['assets']
 codes=manifest['styles']['color']['codes']
 assert len(codes)==4495 and len(animations)==len(codes)
-assert manifest['styles']['black']['codes']==codes
-for style in ('color','black'):
+for style in ('color',):
     for code in codes:
         root=ET.parse(DEST/style/'svg'/f'{code}.svg').getroot()
         assert root.tag.endswith('svg'),code
@@ -25,4 +24,4 @@ for row in rows:
         assert file.is_relative_to(DEST) and file.is_file(),row[field]
 assert not (ROOT/'js/img/events/emoji').exists(),'Old illustration directory remains'
 assert not list((ROOT/'js/img/events').rglob('*.gif')),'Old GIFs remain'
-print(f'PASS: {len(codes)} animated OpenMoji, {2*len(codes)} original SVGs, {len(rows)} event slots and no old illustration assets.')
+print(f'PASS: {len(codes)} animated OpenMoji, {len(codes)} original SVGs, {len(rows)} event slots and no old illustration assets.')
