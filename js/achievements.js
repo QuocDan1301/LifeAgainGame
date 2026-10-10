@@ -1,5 +1,7 @@
 import { celebrateAchievement } from "./achievement-confetti.js";
 import { formatMoneyText } from "./money-format.js";
+import { scrollerOf } from "./dialog-close.js";
+import { playOutcomeSound } from "./music.js";
 import {
   achievements,
   achievementGroups,
@@ -181,7 +183,7 @@ function makeCard(achievement) {
 }
 
 function renderAchievements() {
-  const scrollTop = listDialog.scrollTop;
+  const scrollTop = scrollerOf(listDialog).scrollTop;
   const total = achievements.filter((entry) => achieved(entry.id)).length;
   countElement.textContent = `${total}/${achievements.length}`;
   listElement.replaceChildren();
@@ -213,7 +215,7 @@ function renderAchievements() {
     }
     listElement.append(details);
   }
-  listDialog.scrollTop = scrollTop;
+  scrollerOf(listDialog).scrollTop = scrollTop;
 }
 
 function showNextAchievement() {
@@ -233,5 +235,6 @@ function showNextAchievement() {
   unlockDialog.showModal();
   stopConfetti();
   stopConfetti = celebrateAchievement(unlockDialog);
+  playOutcomeSound("achievement");
   get("achievement-unlock-confirm").focus({ preventScroll: true });
 }

@@ -2,6 +2,7 @@ import { maleNames, femaleNames } from "./character-data.js";
 import { collectAssetIncome } from "./shop.js";
 import { collectSideJobYear } from "./side-jobs.js";
 import { collectIllnessYear } from "./hospital.js";
+import { collectLotteryYear } from "./lottery.js";
 import { completeCareerYear, formatSalary } from "./career-salary.js";
 import { createSchoolEntryReward } from "./school-rewards.js";
 
@@ -116,6 +117,7 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
   const livestock = collectAssetIncome(player, age);
   const sideJobs = collectSideJobYear(player, age);
   const illness = collectIllnessYear(player, age);
+  const lottery = collectLotteryYear(player, age);
   const livingAmount = getLivingCost(age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0));
   const living = livingAmount
     ? { amount: livingAmount, content: `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` }
@@ -126,5 +128,5 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     player.children = (player.children ?? []).map(child => childcare.charges.some(charge => charge.id === child.id)
       ? { ...child, lastCarePaidAtAge: age } : child);
   }
-  return { salary, childcare, schooling, livestock, sideJobs, living, illness };
+  return { salary, childcare, schooling, livestock, sideJobs, living, illness, lottery };
 }

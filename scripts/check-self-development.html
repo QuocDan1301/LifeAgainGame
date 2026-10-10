@@ -33,7 +33,6 @@
     const body = () => $("self-development-body");
     const buy = (activity, tier) => body().querySelector(`.dev-buy[data-activity="${activity}"][data-tier="${tier}"]`);
     const open = () => { document.querySelectorAll("dialog[open]").forEach(d => d.close()); $("activities").click(); $("activity-self-development").click(); };
-    const confirm = () => { assert($("shop-confirm-dialog").open, "Confirm dialog"); $("shop-confirm").click(); };
 
     open();
     assert($("self-development-dialog").open && body().querySelectorAll(".shop-group").length === 4, "Four stat groups");
@@ -41,16 +40,12 @@
     assert(body().querySelectorAll(".dev-activity").length === 2 && body().querySelectorAll(".dev-buy").length === 6, "Two activities with three packages");
     assert(buy("gym", "premium").disabled && !buy("gym", "standard").disabled, "Cannot afford the premium package");
     buy("gym", "standard").click();
-    $("shop-cancel").click();
-    assert(state.player.money === 1_500_000 && state.player.health === 50, "Cancel changes nothing");
-    buy("gym", "standard").click();
-    confirm();
+    assert(!$("shop-confirm-dialog").open, "Registration runs immediately without confirmation");
     assert(state.player.money === 300_000 && state.player.health === 53, "Standard package: −1.200.000, health +3");
     assert(state.logs.at(-1).content.includes("Tập gym") && state.logs.at(-1).content.includes("Sức khỏe +3"), "Diary entry");
     assert(buy("gym", "basic").disabled && body().textContent.includes("Đã tham gia năm nay"), "Once per year per activity");
     assert(!buy("yoga", "basic").disabled, "Other activity still available");
     buy("yoga", "basic").click();
-    confirm();
     assert(state.player.money === 0 && state.player.health === 54, "Basic package: health +1");
 
     // Tối đa 100 và lá Gậy / lá Tiền.
@@ -60,16 +55,13 @@
     body().querySelector('.shop-group[data-stat="intelligence"]').click();
     assert(body().textContent.includes("Lá Gậy") && body().textContent.includes("Trí tuệ +7"), "Wands buff shown");
     buy("language", "premium").click();
-    confirm();
     assert(state.player.intelligence === 57 && !state.player.tarotBuff, "Wands adds 1 and is used up");
     state.player.tarotBuff = { type: "pentacles", age: 25 };
     body().querySelector(".shop-back").click();
     body().querySelector('.shop-group[data-stat="appearance"]').click();
     buy("spa", "basic").click();
-    confirm();
     assert(state.player.money === 6_000_000 - 270_000 && state.player.appearance === 99 && !state.player.tarotBuff, "Pentacles: 10% off");
     buy("salon", "premium").click();
-    confirm();
     assert(state.player.appearance === 100, "Stat max 100");
     assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.developmentDone.salon === 25, "Saved");
 
@@ -79,7 +71,7 @@
     assert(!buy("gym", "basic").disabled, "Available again next year");
     $("close-self-development").click();
     assert(!$("self-development-dialog").open, "Close button");
-    result.textContent = "PASS: 4 stats × 2 activities × 3 packages; price-based gains; confirm/cancel; once per year; max 100; Tarot wands/pentacles; diary; save";
+    result.textContent = "PASS: 4 stats × 2 activities × 3 packages; price-based gains; immediate registration; once per year; max 100; Tarot wands/pentacles; diary; save";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {

@@ -1,4 +1,3 @@
-import { askConfirm } from "./confirm-dialog.js";
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { TAROT_DISCOUNT_MAX, consumeTarotBuff, getActiveTarotBuff, getTarotDiscountedFee, getTarotStatBonus } from "./tarot.js";
 
@@ -104,7 +103,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       dialog.close();
       $("activities-dialog").showModal();
     });
-    const intro = element("p", "side-job-intro", "Chọn chỉ số muốn rèn luyện. Trả càng nhiều, chỉ số tăng càng nhiều. Mỗi hoạt động một lần mỗi năm, chỉ số tối đa 100.");
+    const intro = element("p", "game-motto", "Chọn chỉ số muốn rèn luyện. Trả càng nhiều, chỉ số tăng càng nhiều. Mỗi hoạt động một lần mỗi năm, chỉ số tối đa 100.");
     const picker = element("div", "shop-groups");
     for (const stat of developmentStats) {
       const group = button("shop-group", `${stat.icon} ${stat.name} — ${state.player[stat.id]}%`, () => renderStat(stat.id));
@@ -138,13 +137,8 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
           element("strong", "", `${tier.label}: ${activity.packages[index]}`),
           element("span", "shop-figures", `💰 ${formatMoney(fee)}${discount ? ` (giảm ${formatMoney(discount)})` : ""} · ✨ ${stat.name} +${tier.gain + bonus}`),
         );
-        const action = button("shop-buy dev-buy", done ? "Đã tham gia" : player.money < fee ? "Không đủ tiền" : "Tham gia", () =>
-          askConfirm(
-            `${activity.icon} ${activity.name}`,
-            `Đăng ký gói ${tier.label.toLocaleLowerCase("vi-VN")} "${activity.packages[index]}" với giá ${formatMoney(fee)}? ${stat.name} +${tier.gain + bonus}.`,
-            "Đăng ký",
-            () => train(activity, tier, statId),
-          ));
+        const action = button("shop-buy dev-buy", done ? "Đã tham gia" : player.money < fee ? "Không đủ tiền" : "Đăng ký", () =>
+          train(activity, tier, statId));
         action.dataset.activity = activity.id;
         action.dataset.tier = tier.id;
         action.disabled = done || player.money < fee || player.isAlive === false;

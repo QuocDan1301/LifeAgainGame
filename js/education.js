@@ -77,12 +77,22 @@ export function initEducation(state, save) {
   const icon = document.getElementById("education-icon");
   const dialog = document.getElementById("education-dialog");
   const history = document.getElementById("education-history");
+  // Đếm số dòng thật của chữ. Không dùng scrollHeight: nét chữ Sriracha cao hơn chiều cao
+  // dòng nên luôn "tràn" vài px, khiến chữ bị thu nhỏ tới mức tối thiểu dù vẫn đủ chỗ.
+  function lineCount() {
+    const range = document.createRange();
+    range.selectNodeContents(label);
+    return new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size;
+  }
   function fitLabel() {
     label.style.fontSize = "";
     if (label.textContent === "Học vấn" || !label.clientWidth) return;
-    let size = parseFloat(getComputedStyle(label).fontSize);
+    const style = getComputedStyle(label);
+    const maxHeight = parseFloat(style.maxHeight);
+    const lineRatio = parseFloat(style.lineHeight) / parseFloat(style.fontSize);
+    let size = parseFloat(style.fontSize);
     // Chênh lệch 1px có thể do trình duyệt làm tròn kích thước chữ.
-    while (size > 10 && (label.scrollWidth > label.clientWidth + 1 || label.scrollHeight > label.clientHeight + 1)) {
+    while (size > 10 && (label.scrollWidth > label.clientWidth + 1 || lineCount() * size * lineRatio > maxHeight + 0.5)) {
       size -= 0.5;
       label.style.fontSize = `${size}px`;
     }

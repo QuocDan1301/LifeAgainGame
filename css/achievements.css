@@ -45,15 +45,26 @@
 #achievement-unlock-dialog::backdrop {
   background: rgb(9 24 40 / 60%);
 }
+/* Tiêu đề dạng dải xanh giống các popup khác (nút ✕ đã được đưa ra góc khung). */
 #achievements-dialog .achievements-heading {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
+  margin-bottom: 14px;
+  padding: 10px 42px;
+  border: 1px solid #4f6cff;
+  border-radius: 14px;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  box-shadow: 0 3px 0 rgb(40 90 145 / 18%);
 }
 #achievements-dialog .achievements-heading h2 {
   margin: 0;
-  font-size: 24px;
+  font-family: "Sriracha", cursive;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #17394b;
 }
 #close-achievements {
   flex: 0 0 44px;

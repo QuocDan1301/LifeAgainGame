@@ -1,0 +1,63 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Life log checks</title>
+<pre id="life-log-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("life-log-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 20, health: 50, happiness: 50, intelligence: 50,
+      appearance: 50, money: 100_000_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    state.logs = [
+      { age: 19, content: "Sự kiện A", summary: "Sự kiện A" },
+      { age: 20, content: "Sự kiện B", summary: "Sự kiện B" },
+      { age: 20, content: "Sự kiện C", summary: "Sự kiện C" },
+      { age: 20, content: "Kéo bò: Hạnh phúc +1.", summary: "Kéo bò: Hạnh phúc +1." },
+      { age: 20, content: "Sự kiện D", summary: "Sự kiện D" },
+      { age: 20, content: "Kéo bò: Hạnh phúc +1.", summary: "Kéo bò: Hạnh phúc +1." },
+      { age: 20, content: "Kéo bò: Hạnh phúc +1.", summary: "Kéo bò: Hạnh phúc +1." },
+    ];
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const entries = () => [...$("life-log").querySelectorAll(".log-entry")];
+
+    assert(entries().length === 2, "Saved logs of the same age share one diary entry");
+    assert(entries()[1].querySelector("h3").textContent === "20 tuổi" && entries()[1].querySelectorAll("p").length === 4, "Same-age events listed under one heading");
+    const lines = () => [...entries()[1].querySelectorAll("p")];
+    assert(lines().length === 4, "Duplicate lines in the same age are merged");
+    const cow = lines().find(line => line.textContent.startsWith("Kéo bò"));
+    assert(cow.querySelector(".log-repeat").textContent === " ×3" && cow.querySelector(".stat-increase").textContent === "+1", "Merged line shows repeat count and keeps colours");
+    assert(lines().filter(line => line.textContent.startsWith("Sự kiện")).every(line => !line.querySelector(".log-repeat")), "Unique lines have no count");
+    $("activities").click();
+    $("activity-food").click();
+    $("food-body").querySelector('.food-eat[data-dish="pho"]').click();
+    assert(entries().length === 2 && entries()[1].querySelectorAll("p").length === 5, "New event of the same age joins the current entry");
+    $("food-dialog").close();
+    state.player.mealsEaten = {};
+    $("activities").click();
+    $("activity-food").click();
+    $("food-body").querySelector('.food-eat[data-dish="pho"]').click();
+    assert(lines().length === 5 && lines().at(-1).querySelector(".log-repeat")?.textContent === " ×2", "A live duplicate updates the count");
+    assert(state.logs.length === 9, "Saved log data is unchanged");
+    result.textContent = "PASS: same-age events merged; duplicate lines shown once with ×N; on load and live; save data unchanged";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

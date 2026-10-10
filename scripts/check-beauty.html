@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Beauty checks</title>
+<pre id="beauty-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("beauty-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const realRandom = Math.random;
+  try {
+    const { surgeryPackages } = await import("../js/beauty.js");
+    assert(surgeryPackages.length === 3, "Three surgery packages");
+    assert(surgeryPackages.every((p, i, all) => i === 0 || (p.price > all[i - 1].price && p.successRate > all[i - 1].successRate
+      && p.gain.appearance > all[i - 1].gain.appearance && p.loss.health > all[i - 1].loss.health)), "Pricier packages: higher success, bigger gains and losses");
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "female", age: 17, health: 50, happiness: 50, intelligence: 50,
+      appearance: 50, money: 300_000_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const surgery = id => $("beauty-body").querySelector(`.beauty-surgery[data-package="${id}"]`);
+    const open = () => { $("activities").click(); $("activity-beauty").click(); };
+
+    open();
+    assert($("beauty-dialog").open && $("beauty-body").querySelectorAll(".beauty-surgery").length === 3, "Beauty popup lists three packages");
+    assert(surgery("basic").disabled, "Surgery locked under 18");
+    $("beauty-body").querySelector(".beauty-nail").click();
+    assert(state.player.money === 299_700_000 && state.player.appearance === 51 && state.player.happiness === 52, "Nail costs money and raises stats");
+    assert($("beauty-body").querySelector(".beauty-nail").disabled, "Nail once per year");
+    $("close-beauty").click();
+
+    state.player.age = 18;
+    Math.random = () => 0.1;
+    open();
+    surgery("standard").click();
+    $("shop-confirm").click();
+    assert(state.player.money === 219_700_000 && state.player.appearance === 61 && state.player.happiness === 58, "Successful surgery raises appearance and happiness");
+    assert(state.logs.at(-1).content.includes("thành công"), "Success recorded");
+    assert(surgery("basic").disabled, "Surgery once per year");
+    $("close-beauty").click();
+
+    state.player.age = 19;
+    state.player.money = 300_000_000;
+    Math.random = () => 0.95;
+    open();
+    surgery("premium").click();
+    $("shop-confirm").click();
+    assert(state.player.health === 38 && state.player.appearance === 49 && state.player.happiness === 46, "Failed surgery lowers health, appearance and happiness");
+    assert(state.logs.at(-1).content.includes("thất bại") && $("beauty-body").querySelector(".beauty-result.is-failure"), "Failure recorded and shown");
+    assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.surgeryAge === 19, "Surgery persists");
+    result.textContent = "PASS: nail; three packages; age gate; success and failure; once per year; diary; save";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = realRandom;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

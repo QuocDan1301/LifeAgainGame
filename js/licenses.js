@@ -1,3 +1,4 @@
+import { playOutcomeSound } from "./music.js";
 // Học bằng lái: mỗi loại có 5 câu hỏi, mỗi câu 2 đáp án; correct là vị trí đáp án đúng.
 // Giao diện không bao giờ hiện đáp án đúng, kể cả khi người chơi trả lời sai.
 export const licenseTypes = [
@@ -106,6 +107,7 @@ export function initLicenses(state, { renderLogEntry }) {
   }
 
   function renderResult(type, passed) {
+    playOutcomeSound(passed ? "success" : "failure");
     const card = element("section", "dialog-card license-result");
     if (passed && !hasLicense(state.player, type.id) && state.player.age >= LICENSE_MIN_AGE) {
       state.player.licenses = [...(state.player.licenses ?? []), { id: type.id, receivedAtAge: state.player.age }];

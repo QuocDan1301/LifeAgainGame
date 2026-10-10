@@ -1,5 +1,7 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { askConfirm } from "./confirm-dialog.js";
+import { describeAges } from "./shop.js";
+import { hasActiveTienLen, initTienLen } from "./tien-len.js";
 
 // Trò chơi may rủi. Mọi hệ số là tổng tiền nhận về (đã gồm vốn): trừ tiền cược khi
 // bắt đầu, cộng tiền thưởng một lần khi kết thúc. Kết quả được quyết định và lưu
@@ -19,6 +21,8 @@ export const games = [
   { id: "tower", icon: "🪜", name: "Leo tháp tài lộc", tagline: "Dừng đúng lúc" },
   { id: "race", icon: "🏁", name: "Đua thú may mắn", tagline: "Cổ vũ bằng cả cái ví" },
   { id: "blackjack", icon: "🃏", name: "Xì dách", tagline: "Thêm lá nữa hay thôi?" },
+  // Tiến lên miền Nam có giao diện riêng (tien-len.js), mỗi ván tính 1 lượt trong năm.
+  { id: "tienlen", icon: "♠️", name: "Tiến lên miền Nam", tagline: "Ai hết bài trước, người đó ăn cả bàn!" },
 ];
 
 export const COIN_MULTIPLIER = 1.9;
@@ -176,6 +180,14 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
   const focusFirst = () => (body.querySelector(".game-primary:not(:disabled), .shop-group:not(:disabled)")
     ?? body.querySelector("button:not(:disabled)"))?.focus({ preventScroll: true });
   const walletText = (offset = 0) => `Ví hiện có: ${formatMoney(state.player.money - offset)} · Còn ${playsLeft()}/${GAMES_PER_YEAR} lượt năm nay`;
+  const tienLen = initTienLen(state, {
+    dialog, body, minAge: GAMES_MIN_AGE, playsLeft, renderMoney, renderLogEntry,
+    usePlay: () => { state.player.gamePlays = { age: state.player.age, count: playsUsed() + 1 }; },
+    onExit: () => {
+      renderPicker();
+      focusFirst();
+    },
+  });
 
   // Ghi kết quả vào ví và nhật ký; giao diện chỉ cập nhật sau khi hoạt ảnh kết thúc.
   function settle(round, payoutAmount, detail) {
@@ -227,7 +239,8 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     if (blocked) body.append(element("p", "license-age-note", blocked));
     const list = element("div", "shop-groups");
     for (const game of games) {
-      const choice = button("shop-group game-pick", `${game.icon} ${game.name}`, () => renderSetup(game.id));
+      const choice = button("shop-group game-pick", `${game.icon} ${game.name}`,
+        () => (game.id === "tienlen" ? tienLen.open() : renderSetup(game.id)));
       choice.dataset.game = game.id;
       choice.disabled = Boolean(blocked);
       choice.append(element("span", "side-job-note", `“${game.tagline}”`));
@@ -753,13 +766,24 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
   function renderBoxItems() {
     const list = $("life-box-items");
     list.replaceChildren();
-    for (const item of state.player.boxItems ?? []) {
+    // Gộp các vật phẩm giống nhau thành một dòng (×N); mỗi lần bán hoặc bỏ một món, món nhận sau cùng.
+    const groups = new Map();
+    for (const entry of state.player.boxItems ?? []) {
+      const key = `${entry.icon}|${entry.label}|${entry.value}`;
+      groups.set(key, [...(groups.get(key) ?? []), entry]);
+    }
+    for (const units of groups.values()) {
+      const item = units.at(-1);
+      const many = units.length > 1;
       const row = element("li", "shop-owned");
+      row.dataset.count = units.length;
       const worthless = !item.value;
-      const action = button("shop-sell box-item-sell", worthless ? "🗑️ Bỏ đi" : `Bán · ${formatMoney(item.value)}`, () => askConfirm(
+      const action = button("shop-sell box-item-sell",
+        worthless ? `🗑️ Bỏ${many ? " bớt 1" : " đi"}` : `${many ? "Bán bớt 1" : "Bán"} · ${formatMoney(item.value)}`, () => askConfirm(
         worthless ? `🗑️ Bỏ ${item.label}?` : `💸 Bán ${item.label}?`,
-        worthless ? `${item.icon} ${item.label} không bán được tiền. Bạn muốn bỏ đi cho gọn Tài sản?`
-          : `Bạn muốn bán ${item.icon} ${item.label} với giá ${formatMoney(item.value)}?`,
+        (worthless ? `${item.icon} ${item.label} không bán được tiền. Bạn muốn bỏ ${many ? "1 món" : "đi"} cho gọn Tài sản?`
+          : `Bạn muốn bán ${many ? "1 " : ""}${item.icon} ${item.label} với giá ${formatMoney(item.value)}?`) +
+          (many ? `\nBạn còn lại ${units.length - 1} món.` : ""),
         worthless ? "Bỏ đi" : "Xác nhận bán",
         () => {
           if (!(state.player.boxItems ?? []).some((entry) => entry.uid === item.uid)) return;
@@ -776,7 +800,9 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
         },
       ));
       action.disabled = state.player.isAlive === false;
-      row.append(element("span", "", `${item.icon} ${item.label} · Từ ${item.box} lúc ${item.receivedAtAge} tuổi · Trị giá ${formatMoney(item.value)}`), action);
+      const boxes = [...new Set(units.map((unit) => unit.box))].join(", ");
+      row.append(element("span", "", `${item.icon} ${item.label}${many ? ` ×${units.length}` : ""} · Từ ${boxes} lúc ` +
+        `${describeAges(units.map((unit) => unit.receivedAtAge))} · Trị giá ${formatMoney(item.value)}${many ? " mỗi món" : ""}`), action);
       list.append(row);
     }
   }
@@ -787,6 +813,8 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
   $("activity-games").addEventListener("click", () => {
     if (state.player.isAlive === false) return;
     $("activities-dialog").close();
+    // Đang ngồi bàn Tiến lên (kể cả ván đang dở sau khi tải lại trang) thì quay lại đúng bàn đó.
+    if (state.player.tienLen) return tienLen.open();
     const active = state.player.gameRound;
     if (active && ["tower", "blackjack"].includes(active.game)) renderPlay(active);
     else renderPicker();
@@ -795,7 +823,15 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
   });
   $("close-games").addEventListener("click", () => {
     flushReveal();
+    tienLen.stop();
     dialog.close();
   });
-  dialog.addEventListener("close", flushReveal);
+  dialog.addEventListener("close", () => {
+    flushReveal();
+    tienLen.stop();
+  });
+  return {
+    hasActiveTienLen: () => hasActiveTienLen(state.player),
+    openTienLen: (notice) => tienLen.open(notice),
+  };
 }

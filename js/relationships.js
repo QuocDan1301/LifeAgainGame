@@ -3,6 +3,7 @@ import { getEmploymentContext } from "./career-jobs.js";
 import { ensureEventOpenMoji } from "./event-openmoji.js";
 import { getChildAge, getAnnualChildcareCost } from "./family.js";
 import { formatSalary } from "./career-salary.js";
+import { initPanelTabs } from "./panel-tabs.js";
 
 const pick = (items, random) => items[Math.floor(random() * items.length)];
 const integer = (min, max, random) => min + Math.floor(random() * (max - min + 1));
@@ -209,6 +210,8 @@ export function getBreakupUpdates(player) {
 export function initRelationships(state, save = () => {}, onChange = () => {}) {
   const button = document.getElementById("relationships");
   const dialog = document.getElementById("relationships-dialog");
+  // Mỗi mục một tab như popup Tài sản, để popup không dài ra khi có nhiều con hay nhiều mốc tình cảm.
+  const selectTab = initPanelTabs(dialog, document.getElementById("relationship-tabs"));
   const current = document.getElementById("relationship-current");
   const history = document.getElementById("relationship-history");
   const breakup = document.getElementById("breakup-relationship");
@@ -244,6 +247,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
   button.addEventListener("click", () => {
     if (document.querySelector("dialog[open]")) return;
     render();
+    selectTab();
     dialog.showModal();
   });
   breakup.addEventListener("click", () => {

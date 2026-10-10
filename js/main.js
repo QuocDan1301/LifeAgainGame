@@ -52,8 +52,12 @@ import { initHospital } from "./hospital.js";
 import { initMatchmaking } from "./matchmaking.js";
 import { initGames } from "./games.js";
 import { initFood } from "./food.js";
+import { initBeauty } from "./beauty.js";
+import { initLottery, mergeLotteryPurchaseLogs } from "./lottery.js";
 import { initTravel } from "./travel.js";
+import { initGameCenter } from "./game-center.js";
 import { initTarot } from "./tarot.js";
+import { playEventSound, playOutcomeSound } from "./music.js";
 import { initSelfDevelopment } from "./self-development.js";
 import { createLostChildSpecialStep } from "./special-event-10.js";
 import {
@@ -91,7 +95,10 @@ document.getElementById("player-province").textContent =
   state.player.province || "";
 const ageButton = document.getElementById("age-up");
 const logElement = document.getElementById("life-log");
+// Dòng nhật ký đang hiển thị của từng log, để cập nhật tại chỗ khi log đổi nội dung.
+const logLines = new WeakMap();
 logElement.replaceChildren();
+state.logs = mergeLotteryPurchaseLogs(state.logs);
 state.logs.forEach((log) => {
   renderLogEntry(log);
 });
@@ -259,15 +266,51 @@ initRelationships(state, saveEventProgress, (log) => {
   renderMoney();
 });
 function renderLogEntry(log) {
+  const text = log.summary ?? summarizeLifeLog(log.content);
+  const last = logElement.lastElementChild;
+  const sameAge = last?.dataset.age === String(log.age);
+  // Nội dung trùng hệt trong cùng tuổi chỉ hiện một dòng kèm số lần (×2, ×3…).
+  const repeated =
+    sameAge &&
+    [...last.querySelectorAll("p")].find((line) => line.dataset.text === text);
+  if (repeated) {
+    repeated.dataset.count = Number(repeated.dataset.count ?? 1) + 1;
+    renderLogContent(repeated, text);
+    const badge = document.createElement("span");
+    badge.classList.add("log-repeat");
+    badge.textContent = ` ×${repeated.dataset.count}`;
+    repeated.append(badge);
+    logLines.set(log, repeated);
+    return;
+  }
+  const content = document.createElement("p");
+  content.dataset.text = text;
+  logLines.set(log, content);
+  // Giữ màu xanh/đỏ cho các số tăng, giảm
+  renderLogContent(content, text);
+  // Các sự kiện liền nhau cùng tuổi gộp chung một mục nhật ký.
+  if (sameAge) {
+    last.append(content);
+    return;
+  }
   const logItem = document.createElement("section");
   logItem.classList.add("log-entry");
+  logItem.dataset.age = log.age;
   const title = document.createElement("h3");
   title.textContent = `${log.age} tuổi`;
-  const content = document.createElement("p");
-  // Giữ màu xanh/đỏ cho các số tăng, giảm
-  renderLogContent(content, log.summary ?? summarizeLifeLog(log.content));
   logItem.append(title, content);
   logElement.append(logItem);
+}
+// Vẽ lại một dòng nhật ký đã hiển thị (ví dụ: thêm vé số mới mua trong năm).
+function updateLogEntry(log) {
+  const line = logLines.get(log);
+  if (!line) {
+    renderLogEntry(log);
+    return;
+  }
+  const text = log.summary ?? summarizeLifeLog(log.content);
+  line.dataset.text = text;
+  renderLogContent(line, text);
 }
 const activitiesButton = document.getElementById("activities");
 const activitiesDialog = document.getElementById("activities-dialog");
@@ -610,9 +653,16 @@ function showPendingEvent() {
     eventConfirm.textContent = pending.confirmText ?? "Xác nhận";
     eventConfirm.hidden = false;
   }
+  // Kết quả đậu/rớt có âm thanh ăn mừng hoặc tiếc nuối (chỉ phát một lần cho mỗi kết quả).
+  const outcomeSound =
+    pending.outcome && !pending.outcomeSoundPlayed ? pending.outcome : null;
+  if (outcomeSound) pending.outcomeSoundPlayed = true;
   if (!eventDialog.open) {
     eventDialog.showModal();
+    // Mỗi loại sự kiện có một âm thanh riêng khi popup bật lên.
+    if (!outcomeSound) playEventSound(pending.category);
   }
+  if (outcomeSound) playOutcomeSound(outcomeSound);
   if (pending.stage === "result") animateEventResult();
   // Đưa nội dung mới về đầu hộp thoại
   eventDialog.scrollTop = 0;
@@ -626,6 +676,21 @@ function showPendingEvent() {
   saveEventProgress(); // Persist refreshed OpenMoji and remove legacy media limits.
 }
 // Tính kết quả sau khi người chơi chọn hành động
+// Kết quả đậu/rớt của một lựa chọn để phát âm thanh phù hợp (null = kết quả bình thường).
+function getChoiceOutcome(pending, choice) {
+  if (choice.outcome === "success" || choice.outcome === "failure")
+    return choice.outcome;
+  if (
+    pending.kind === "career-promotion" &&
+    typeof choice.correct === "boolean"
+  ) {
+    return choice.correct ? "success" : "failure";
+  }
+  // Vào trường, đại học, học viện hoặc academy.
+  if (choice.careerPath?.school) return "success";
+  return null;
+}
+
 function chooseEventAction(index) {
   const pending = state.pendingEvent;
   // Không cho chọn lại khi đã chuyển sang bước kết quả
@@ -639,6 +704,8 @@ function chooseEventAction(index) {
       pending.age,
     );
     state.pendingEvent.category = pending.category;
+    state.pendingEvent.outcome =
+      choice.correct === true ? "success" : "failure";
     saveEventProgress();
     showPendingEvent();
     return;
@@ -768,6 +835,7 @@ function chooseEventAction(index) {
       },
       choice.correct ? "Bạn trả lời đúng." : "Bạn chưa trả lời đúng.",
     );
+    state.pendingEvent.outcome = choice.correct ? "success" : "failure";
     saveEventProgress();
     showPendingEvent();
     return;
@@ -1007,6 +1075,7 @@ function chooseEventAction(index) {
   state.pendingEvent = {
     stage: "result",
     category: pending.category,
+    outcome: getChoiceOutcome(pending, choice),
     nonFatal: choice.nonFatal === true,
     schoolReward: createSchoolEntryReward(state.player, pending.age, updates),
     age: pending.age,
@@ -1044,6 +1113,15 @@ function chooseEventAction(index) {
 // Bấm tăng tuổi: tạo tình huống, chưa áp dụng kết quả
 ageButton.addEventListener("click", () => {
   if (state.pendingEvent || state.player.isAlive === false) return;
+  // Ván Tiến lên chưa xong (chưa có người thắng, chưa xác nhận bỏ ván) thì chưa được sang năm mới.
+  if (gamesUi.hasActiveTienLen()) {
+    if (!document.querySelector("dialog[open]")) {
+      gamesUi.openTienLen(
+        "⏳ Ván Tiến lên đang dở: đánh xong hoặc bỏ ván rồi mới sang năm mới.",
+      );
+    }
+    return;
+  }
   if (state.player.age >= 15 && !state.player.studyBlock) {
     showStudyBlocks();
     return;
@@ -1125,10 +1203,16 @@ ageButton.addEventListener("click", () => {
         : Math.random() < eventChance));
 
   if (!hasEvent) {
-    const { salary, childcare, schooling, livestock, sideJobs, living, illness } = completeLifeYear(
-      state.player,
-      nextAge,
-    );
+    const {
+      salary,
+      childcare,
+      schooling,
+      livestock,
+      sideJobs,
+      living,
+      illness,
+      lottery,
+    } = completeLifeYear(state.player, nextAge);
 
     const log = {
       age: nextAge,
@@ -1143,7 +1227,9 @@ ageButton.addEventListener("click", () => {
         schooling.content +
         (salary || childcare.content ? `\n${log.content}` : "");
     // Thu nhập phụ thay câu "không có gì thay đổi" khi năm đó không có lương chính.
-    const extras = [livestock, sideJobs, living, illness].filter(Boolean).map((entry) => entry.content);
+    const extras = [livestock, sideJobs, living, illness, lottery]
+      .filter(Boolean)
+      .map((entry) => entry.content);
     if (extras.length)
       log.content =
         salary || childcare.content || schooling
@@ -1277,7 +1363,16 @@ eventConfirm.addEventListener("click", () => {
     checkAchievements();
     return;
   }
-  const { salary, childcare, schooling, livestock, sideJobs, living, illness } = completeLifeYear(
+  const {
+    salary,
+    childcare,
+    schooling,
+    livestock,
+    sideJobs,
+    living,
+    illness,
+    lottery,
+  } = completeLifeYear(
     state.player,
     pending.age,
     pending.updates,
@@ -1303,7 +1398,7 @@ eventConfirm.addEventListener("click", () => {
     log.content += `\n${schooling.content}`;
     log.summary += `\n${schooling.content}`;
   }
-  for (const extra of [livestock, sideJobs, living, illness]) {
+  for (const extra of [livestock, sideJobs, living, illness, lottery]) {
     if (!extra) continue;
     log.content += `\n${extra.content}`;
     log.summary += `\n${extra.content}`;
@@ -1316,6 +1411,11 @@ eventConfirm.addEventListener("click", () => {
     (!pending.nonFatal && state.player.health <= 0);
   if (died) {
     state.player.isAlive = false;
+    // Bệnh đã ghi nguyên nhân riêng; còn lại là do sự kiện của năm đó.
+    if (!state.player.deathCause) {
+      state.player.deathCause = "event";
+      state.player.deathEvent = pending.title;
+    }
     state.logs.push({
       age: state.player.age,
       content: "Hành trình cuộc đời của bạn đã khép lại.",
@@ -1335,10 +1435,7 @@ eventConfirm.addEventListener("click", () => {
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
   if (state.player.isAlive === false) {
-    document.getElementById("death-content").textContent =
-      `${state.player.name} đã kết thúc cuộc đời ở tuổi ${state.player.age}.`;
-    document.getElementById("death-dialog").showModal();
-    renderLifeSummary(state);
+    showLifeSummary();
   }
   checkAchievements();
 });
@@ -1366,15 +1463,44 @@ if (state.pendingEvent) {
 }
 initAchievements(state);
 initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements });
-initShop(state, { renderMoney, renderLogEntry, checkAchievements });
+initShop(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
 initLicenses(state, { renderLogEntry });
-initSideJobs(state, { renderMoney, renderStats, renderLogEntry, renderEducation, checkAchievements });
+initSideJobs(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  renderEducation,
+  checkAchievements,
+});
 initHospital(state, { renderMoney, renderLogEntry });
-initMatchmaking(state, { renderMoney, renderStats, renderLogEntry, checkAchievements });
-initGames(state, { renderMoney, renderLogEntry });
+initMatchmaking(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
+const gamesUi = initGames(state, { renderMoney, renderLogEntry });
 initFood(state, { renderMoney, renderStats, renderLogEntry });
+initBeauty(state, { renderMoney, renderStats, renderLogEntry });
+initLottery(state, { renderMoney, renderLogEntry, updateLogEntry });
 initTravel(state, { renderMoney, renderStats, renderLogEntry });
-initTarot(state, { renderMoney, renderStats, renderLogEntry, checkAchievements });
+initGameCenter(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
+initTarot(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
 initSelfDevelopment(state, { renderMoney, renderStats, renderLogEntry });
 checkAchievements();
 const fortunePredictions = [
@@ -1425,6 +1551,13 @@ closeFortuneButton.addEventListener("click", () => {
 
 // Nhân vật đã mất không thể tiếp tục tăng tuổi.
 const deathDialog = document.getElementById("death-dialog");
+// Mở trang tổng kết cuộc đời kèm nhạc buồn (nhạc nền lặng dần).
+function showLifeSummary() {
+  renderLifeSummary(state);
+  deathDialog.showModal();
+  deathDialog.scrollTop = 0;
+  playOutcomeSound("death");
+}
 deathDialog.addEventListener("cancel", (event) => event.preventDefault());
 document
   .getElementById("return-after-death")
@@ -1443,10 +1576,7 @@ function endLifeAfterYear() {
   ageButton.disabled = true;
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
-  document.getElementById("death-content").textContent =
-    `${state.player.name} đã kết thúc cuộc đời ở tuổi ${state.player.age}.`;
-  document.getElementById("death-dialog").showModal();
-  renderLifeSummary(state);
+  showLifeSummary();
   checkAchievements();
 }
 function checkOldAgeDeath(nextAge) {
@@ -1474,6 +1604,7 @@ function checkOldAgeDeath(nextAge) {
   state.player.age = nextAge;
   state.player.isAlive = false;
   state.player.health = 0;
+  state.player.deathCause = "old-age";
   state.pendingEvent = null;
 
   const log = {
@@ -1501,11 +1632,7 @@ function checkOldAgeDeath(nextAge) {
   logContainer.scrollTop = logContainer.scrollHeight;
 
   // Dùng lại popup kết thúc cuộc đời đã có.
-  document.getElementById("death-content").textContent =
-    `${state.player.name} đã kết thúc cuộc đời ở tuổi ${nextAge}.`;
-
-  document.getElementById("death-dialog").showModal();
-  renderLifeSummary(state);
+  showLifeSummary();
 
   checkAchievements();
 

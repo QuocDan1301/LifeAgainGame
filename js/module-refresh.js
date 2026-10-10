@@ -3,7 +3,16 @@
 // Hàm này tải lại mọi file JS mà game dùng, bỏ qua bộ nhớ đệm, để lần mở trang sau là bản mới.
 const IMPORT_PATTERN = /(?:\bfrom\s*|\bimport\s*\(?\s*)["'](\.{1,2}\/[^"']+\.js)["']/g;
 
-export async function refreshModuleCache(entries) {
+export function refreshModuleCache(entries) {
+  return crawlModules(entries, "reload");
+}
+
+// Tải sẵn (không bắt tải lại) để lần vào game sau dùng ngay từ bộ nhớ đệm.
+export function warmModuleCache(entries) {
+  return crawlModules(entries, "default");
+}
+
+async function crawlModules(entries, cache) {
   const seen = new Set();
   const queue = entries.map((entry) => new URL(entry, import.meta.url).href);
   while (queue.length) {
@@ -11,7 +20,7 @@ export async function refreshModuleCache(entries) {
     if (seen.has(url)) continue;
     seen.add(url);
     try {
-      const response = await fetch(url, { cache: "reload" });
+      const response = await fetch(url, { cache, priority: "low" });
       if (!response.ok) continue;
       const source = await response.text();
       for (const match of source.matchAll(IMPORT_PATTERN)) queue.push(new URL(match[1], url).href);

@@ -88,7 +88,7 @@ button:active {
   background: var(--cream);
   border: 3px solid var(--yellow-border);
   border-radius: 1.8rem;
-  background: #fff8dc url("../img/nendau.png") center / cover no-repeat;
+  background: #fff8dc url("../img/nendau.webp") center / cover no-repeat;
 }
 .menu-button {
   position: absolute;
@@ -483,7 +483,7 @@ progress::-moz-progress-bar {
   background: var(--cream);
   border: 2px solid #15b5e4;
   border-radius: 1.2rem;
-  background: #fff8dc url("../img/nenwallet.png") center / cover no-repeat;
+  background: #fff8dc url("../img/nenwallet.webp") center / cover no-repeat;
 }
 .wallet-icon {
   font-size: 3rem;
@@ -556,7 +556,7 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-image: url("../img/logobg.png");
+  background-image: url("../img/logobg.webp");
   background-repeat: repeat;
   background-size: 220px 170px;
   background-position: 0 0;
@@ -724,6 +724,13 @@ body::before {
   font-style: normal;
   white-space: pre-line;
 }
+.log-entry p + p {
+  margin-top: 0.4rem;
+}
+.log-entry .log-repeat {
+  color: #8a5a00;
+  font-weight: 700;
+}
 .log-entry .stat-increase {
   color: #218739;
 }
@@ -883,9 +890,10 @@ body::before {
 #restart-dialog {
   box-sizing: border-box;
   width: min(90vw, 380px);
-  padding: 24px;
-  border: 2px solid #e0c878;
-  border-radius: 18px;
+  padding: 22px;
+  border: 3px solid #ffdb58;
+  border-radius: 20px;
+  text-align: center;
   background: #fff8dc;
   color: #173247;
   font-family: inherit;
@@ -894,11 +902,15 @@ body::before {
   background: rgb(0 0 0 / 45%);
 }
 #restart-dialog h2 {
-  margin: 0 0 12px;
+  margin: 0 0 10px;
+  font-family: "Sriracha", cursive;
   font-size: 22px;
+  font-weight: 400;
 }
 #restart-dialog p {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.8rem;
   line-height: 1.5;
 }
 .restart-actions {
@@ -914,10 +926,12 @@ body::before {
   cursor: pointer;
 }
 #cancel-restart {
-  background: #e5e7eb;
+  border: 1px solid #d6ac45;
+  background: #fff1ad;
   color: #173247;
 }
 #confirm-restart {
+  border: 1px solid #a51f1f;
   background: #c62828;
   color: white;
 }
@@ -999,21 +1013,89 @@ body::before {
   gap: 12px;
 }
 .activities-list button {
-  padding: 14px 18px;
-  border: 1px solid #e0c878;
-  border-radius: 10px;
-  background: #fff1ad;
+  --tone: #fff1ad;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid #ecd48a;
+  border-radius: 14px;
+  background: linear-gradient(#fffcec, #fff3c4);
+  box-shadow: 0 3px 0 #e8cf80;
   color: inherit;
   font-family: "Sriracha", cursive;
-  font-size: 20px;
   font-weight: 400;
-  line-height: 1.5;
   text-align: left;
   cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+/* Mũi tên › báo hiệu bấm vào để mở. */
+.activities-list button::after {
+  content: "›";
+  flex: none;
+  margin-left: auto;
+  font-size: 28px;
+  line-height: 1;
+  color: #c9a54a;
+  transition: transform 150ms ease, color 150ms ease;
 }
 .activities-list button:hover {
-  background: #ffe68b;
+  background: linear-gradient(#fff8d6, #ffe89a);
   border-color: #d6ac45;
+  box-shadow: 0 5px 0 #d9b85a;
+  transform: translateY(-2px);
+}
+.activities-list button:hover::after {
+  color: #a57f1e;
+  transform: translateX(3px);
+}
+.activities-list button:active {
+  box-shadow: 0 1px 0 #d9b85a;
+  transform: translateY(2px);
+}
+.activity-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--tone);
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 8%), 0 1px 2px rgb(0 0 0 / 8%);
+  font-size: 26px;
+  line-height: 1;
+}
+.activity-text {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.activity-title {
+  font-size: 20px;
+  line-height: 1.25;
+  color: #17394b;
+}
+/* Mỗi hoạt động một màu nền riêng cho biểu tượng. */
+#activity-self-development { --tone: #d6f3c4; }
+#activity-games { --tone: #e2dbff; }
+#activity-love { --tone: #ffd6e4; }
+#activity-hospital { --tone: #d3ecff; }
+#activity-part-time { --tone: #ffdcc4; }
+#activity-degrees { --tone: #cff0ea; }
+#activity-tarot { --tone: #ead9ff; }
+#activity-travel { --tone: #cfe9ff; }
+#activity-game-center { --tone: #dcd6ff; }
+#activity-food { --tone: #ffe5c0; }
+#activity-shopping { --tone: #ffd3ea; }
+#activity-pets { --tone: #efe2c8; }
+@media (prefers-reduced-motion: reduce) {
+  .activities-list button,
+  .activities-list button::after { transition: none; }
+  .activities-list button:hover,
+  .activities-list button:active,
+  .activities-list button:hover::after { transform: none; }
 }
 .activities-list button:focus-visible,
 #close-activities:focus-visible {
@@ -1156,10 +1238,10 @@ body::before {
   display: block;
   width: 100%;
   min-width: 0;
-  max-height: 3.4rem;
+  max-height: 3.6rem;
   white-space: normal;
   overflow-wrap: anywhere;
-  line-height: 1.15;
+  line-height: 1.25;
   overflow: hidden;
 }
 .study-block-choices { display: grid; gap: 10px; }
@@ -1522,12 +1604,74 @@ body::before {
 #life-profile-dialog {
   width: min(520px, 92vw);
 }
+/* Tài sản: thanh tab 4 cột, dính ở đầu popup khi cuộn; mỗi lần chỉ hiện một thẻ. */
+.life-tabs {
+  position: sticky;
+  /* Dính sát mép popup: kéo lên đúng bằng lớp đệm 22px của popup. */
+  top: -22px;
+  z-index: 1;
+  display: grid;
+  /* 9 tab: 2 hàng 5 + 4. */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 -22px;
+  padding: 6px 22px;
+  background: #fff8dc;
+}
+/* Mối quan hệ: 4 tab trên một hàng. */
+#relationship-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.life-tab {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-height: 56px;
+  padding: 6px 4px;
+  border: 1px solid #e0c878;
+  border-radius: 12px;
+  background: #fff1ad;
+  color: #17394b;
+  font-family: "Sriracha", cursive;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.life-tab:hover { background: #ffe68b; border-color: #d6ac45; }
+.life-tab[aria-selected="true"] {
+  border-color: #4f6cff;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  box-shadow: 0 3px 0 rgb(40 90 145 / 18%);
+}
+.life-tab:focus-visible { outline: 3px solid #285a91; outline-offset: 2px; }
+.life-tab-icon { font-size: 20px; line-height: 1; }
+.life-tab-count {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  min-width: 20px;
+  padding: 1px 6px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #e2574c;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
+.life-tab-count[hidden] { display: none; }
+#life-keepsakes:empty::after {
+  content: "Chưa có kỷ vật.";
+  color: #5a6b78;
+  font-style: italic;
+}
 #life-memories {
   display: grid;
   gap: 10px;
 }
 #life-memories:empty::after {
-  content: "Chưa có trang kỷ niệm nào.";
+  content: "Chưa có trang kỷ niệm nào. Các trang kỷ niệm sẽ được lưu sau những dấu mốc đặc biệt.";
   color: #5a6b78;
   font-family: "Patrick Hand", cursive;
   font-size: 1.7rem;
@@ -1575,8 +1719,150 @@ body::before {
   border: 1px solid #ddc7a1;
   background: white;
 }
-#death-summary { text-align: left; }
-#death-summary li { margin-bottom: 8px; }
+/* ===== Tổng kết cuộc đời (popup khi nhân vật qua đời) ===== */
+/* Tông xám trầm cho lúc tiễn biệt; vẫn cuộn được nhưng ẩn thanh cuộn. */
+#death-dialog {
+  --mourn-ink: #2c3640;
+  --mourn-muted: #5d6874;
+  --mourn-line: #c4cbd2;
+  --mourn-card: #e8ebee;
+  --mourn-tile: #f4f5f6;
+  width: min(94vw, 480px);
+  padding: 20px;
+  border-color: #8f9aa5;
+  background: #f0f2f4;
+  color: var(--mourn-ink);
+  text-align: center;
+  scrollbar-width: none;
+}
+#death-dialog::-webkit-scrollbar { display: none; }
+#death-dialog::backdrop { background: rgb(22 27 33 / 72%); }
+/* Dải tiêu đề: xám cho kết thúc thường, xám ánh bạc viền vàng nhạt khi viên mãn, xám đậm khi lạnh lẽo. */
+#death-title {
+  padding: 10px 16px;
+  border: 1px solid #7d8994;
+  border-radius: 14px;
+  background: radial-gradient(circle, #d5dade 50%, #a3adb7 100%);
+  box-shadow: 0 3px 0 rgb(40 50 60 / 18%);
+  color: var(--mourn-ink);
+  text-wrap: balance;
+}
+#death-dialog[data-ending="fulfilled"] #death-title {
+  border-color: #b9a46a;
+  background: radial-gradient(circle, #eceae3 45%, #c3bba3 100%);
+}
+#death-dialog[data-ending="cold"] #death-title {
+  border-color: #2b3540;
+  background: radial-gradient(circle, #6c7884 45%, #3e4954 100%);
+  color: #f2f4f6;
+}
+#death-content {
+  width: fit-content;
+  max-width: 100%;
+  margin: 12px auto 0;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: #dde2e6;
+  color: #46525e;
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+.death-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--mourn-line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fafbfb, #e3e7ea);
+  text-align: left;
+}
+/* Ảnh chân dung ngả xám như ảnh thờ. */
+.death-hero .life-summary-portrait {
+  width: 92px;
+  height: 112px;
+  border-radius: 12px;
+  background: #eef0f2;
+  box-shadow: inset 0 0 0 1px var(--mourn-line);
+  filter: grayscale(0.85) contrast(0.95);
+}
+.death-identity p { margin: 0; }
+.death-name {
+  font-family: "Sriracha", cursive;
+  font-size: 24px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.death-origin { color: var(--mourn-muted); font-size: 17px; }
+.death-lifespan { margin-top: 2px; color: #4a5866; font-size: 17px; }
+.death-lifespan strong {
+  font-family: "Sriracha", cursive;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+#death-summary .death-section {
+  border-color: #d3d9de;
+  background: var(--mourn-card);
+  text-align: left;
+}
+#death-summary .death-section h3 { margin-bottom: 8px; color: var(--mourn-ink); }
+.death-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.death-stat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--mourn-tile);
+  font-size: 16px;
+  line-height: 1.3;
+}
+.death-stat strong { font-variant-numeric: tabular-nums; }
+.death-stat-bar {
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7f8c99 var(--value), #d5dbe0 var(--value));
+}
+.death-facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.4;
+}
+.death-facts dt { color: var(--mourn-muted); font-weight: 700; }
+.death-facts dd { margin: 0; overflow-wrap: anywhere; text-wrap: pretty; }
+#death-dialog #return-after-death {
+  width: 100%;
+  margin-top: 16px;
+  border-color: #4b5763;
+  background: #5f6c79;
+  color: #fff;
+}
+@media (hover: hover) {
+  #death-dialog #return-after-death:hover { background: #55616d; }
+}
+#death-dialog #return-after-death:focus-visible { outline-color: #2c3640; }
+#death-title:focus { outline: none; }
+@media (max-width: 380px) {
+  .death-facts { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .death-facts dd { margin-bottom: 6px; }
+  .death-hero { gap: 10px; }
+  .death-hero .life-summary-portrait { width: 76px; height: 94px; }
+}
 #event-content details {
   margin-top: 14px;
   padding: 10px;
@@ -1793,6 +2079,19 @@ body::before {
 }
 .shop-lease:disabled { opacity: 0.6; cursor: not-allowed; }
 .shop-lease:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+.shop-pet {
+  padding: 6px 14px;
+  border: 1px solid #d36b9a;
+  border-radius: 10px;
+  background: #ffdcec;
+  color: #6b1f42;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  cursor: pointer;
+}
+.shop-item .shop-pet { display: block; width: 100%; margin-top: 6px; }
+.shop-pet:disabled { opacity: 0.6; cursor: not-allowed; }
+.shop-pet:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
 
 /* Nội dung đổi bên trong popup (chọn nhóm cửa hàng, quay lại, xác nhận chia tay) cũng hiện ra mượt. */
 @keyframes popup-content-in {
@@ -1980,8 +2279,8 @@ body::before {
   display: block;
   font-family: "Patrick Hand", cursive;
   font-size: 15px;
-  font-style: italic;
-  color: #7a5b16;
+  line-height: 1.3;
+  color: #86692a;
 }
 #games-dialog {
   box-sizing: border-box;
@@ -2206,7 +2505,10 @@ body::before {
 }
 
 /* Ăn uống */
-#food-dialog {
+#food-dialog,
+#beauty-dialog,
+#lottery-dialog,
+#game-center-dialog {
   box-sizing: border-box;
   width: min(92vw, 440px);
   max-height: 85dvh;
@@ -2219,8 +2521,14 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
-#food-dialog::-webkit-scrollbar { display: none; }
-#food-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#food-dialog::-webkit-scrollbar,
+#beauty-dialog::-webkit-scrollbar,
+#lottery-dialog::-webkit-scrollbar,
+#game-center-dialog::-webkit-scrollbar { display: none; }
+#food-dialog::backdrop,
+#beauty-dialog::backdrop,
+#lottery-dialog::backdrop,
+#game-center-dialog::backdrop { background: rgb(0 0 0 / 55%); }
 @keyframes food-eaten {
   0% { transform: scale(1); }
   40% { transform: scale(1.04); background: #e2f7d4; }
@@ -2229,6 +2537,65 @@ body::before {
 @media (prefers-reduced-motion: no-preference) {
   .food-item.is-eaten { animation: food-eaten 500ms ease; }
 }
+
+/* Làm đẹp */
+.beauty-result {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+.beauty-result.is-success { background: #e2f7d4; color: #24592b; }
+.beauty-result.is-failure { background: #fde2e2; color: #a12f2f; }
+
+/* Mua vé số */
+.lottery-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.lottery-choices .shop-buy {
+  margin-top: 0;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+.lottery-shuffle,
+.lottery-tools .shop-back { margin-top: 8px; }
+.lottery-grid {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 4px;
+}
+dialog .lottery-grid .lottery-number {
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid #d6ac45;
+  border-radius: 50%;
+  background: #fff8dc;
+  color: #17394b;
+  font-size: 15px;
+  aspect-ratio: 1;
+}
+dialog .lottery-grid .lottery-number.is-picked {
+  border-color: #c62828;
+  background: #e53935;
+  color: #fff;
+}
+.lottery-grid .lottery-number:disabled:not(.is-picked) { opacity: 0.45; }
+.lottery-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+.lottery-picked {
+  margin: 8px 0 4px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.lottery-prizes { margin-top: 10px; font-size: 1.5rem; }
+.lottery-prizes li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px;
+}
+.lottery-empty { color: #5a6b78; font-style: italic; }
 
 /* Du lịch */
 #travel-dialog {
@@ -2381,7 +2748,7 @@ body::before {
 /* ===== Tối ưu cho điện thoại (màn hình hẹp) ===== */
 @media (max-width: 480px) {
   /* Popup: rộng gần hết màn hình, viền và đệm mỏng hơn để chữ không bị gãy dòng. */
-  :is(#restart-dialog, #relationships-dialog, #education-dialog, #activities-dialog, #shop-dialog, #license-dialog, #side-job-dialog, #hospital-dialog, #love-dialog, #games-dialog, #food-dialog, #travel-dialog, #self-development-dialog, #tarot-dialog, #life-profile-dialog, #study-block-dialog, #event-dialog, #achievements-dialog, #fortune-dialog) {
+  :is(#restart-dialog, #relationships-dialog, #education-dialog, #activities-dialog, #shop-dialog, #license-dialog, #side-job-dialog, #hospital-dialog, #love-dialog, #games-dialog, #food-dialog, #beauty-dialog, #lottery-dialog, #travel-dialog, #game-center-dialog, #self-development-dialog, #tarot-dialog, #life-profile-dialog, #study-block-dialog, #event-dialog, #achievements-dialog, #fortune-dialog) {
     width: calc(100vw - 16px);
     max-width: none;
     max-height: calc(100dvh - 24px);
@@ -2411,24 +2778,47 @@ body::before {
   .dialog-card h3 {
     font-size: 17px;
   }
+  /* Tài sản: popup đệm 14px nên thanh tab kéo ra đúng 14px. */
+  .life-tabs {
+    top: -14px;
+    gap: 5px;
+    margin: 0 -14px;
+    padding: 6px 14px;
+  }
+  .life-tab {
+    min-height: 52px;
+    padding: 5px 2px;
+    font-size: 12.5px;
+  }
+  .life-tab-icon { font-size: 18px; }
 
-  /* Hoạt động: 2 cột để thấy hết các mục mà không phải cuộn. */
+  /* Hoạt động: mỗi mục một hàng, giữ mô tả và biểu tượng dễ đọc. */
   .activities-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
   }
   .activities-list button {
-    min-height: 56px;
-    padding: 8px 10px;
-    font-size: 16px;
-    line-height: 1.3;
+    min-height: 84px;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
   }
-  #activity-self-development {
-    grid-column: 1 / -1;
+  .activities-list button::after {
+    display: block;
+    font-size: 28px;
+  }
+  .activity-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    font-size: 26px;
+  }
+  .activity-title {
+    font-size: 20px;
   }
   .activities-list .activity-note {
-    font-size: 12px;
-    line-height: 1.25;
+    font-size: 15px;
+    line-height: 1.3;
   }
 
   /* Nhóm lựa chọn (Mua sắm, Phát triển bản thân, Tình yêu...). */
@@ -2556,4 +2946,571 @@ body::before {
 }
 @media (prefers-reduced-motion: reduce) {
   .menu-gear { transition: none; }
+}
+
+/* ===== Game Center ===== */
+.gc-wallet {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.gc-chip {
+  padding: 4px 12px;
+  border: 1px solid #e0c878;
+  border-radius: 999px;
+  background: #fff1ad;
+  font-family: "Sriracha", cursive;
+  font-size: 17px;
+}
+.gc-chip strong { font-weight: 400; color: #17394b; font-size: 19px; }
+.gc-exchange {
+  padding: 4px 12px;
+  border: 1px solid #4f6cff;
+  border-radius: 999px;
+  background: radial-gradient(circle, #46cbfc 60%, #4f6cff 100%);
+  color: #17394b;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+  cursor: pointer;
+}
+.gc-games {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.gc-game {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 12px 8px;
+  border: 1px solid #ecd48a;
+  border-radius: 14px;
+  background: linear-gradient(#fffcec, #fff3c4);
+  box-shadow: 0 3px 0 #e8cf80;
+  color: inherit;
+  font-family: "Sriracha", cursive;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.gc-game:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 0 #d9b85a; }
+.gc-game:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #d9b85a; }
+.gc-game-icon { font-size: 34px; line-height: 1.1; }
+.gc-game-name { font-size: 18px; line-height: 1.2; color: #17394b; }
+.gc-game-meta { font-family: "Patrick Hand", cursive; font-size: 15px; color: #86692a; }
+.gc-game:disabled {
+  border-style: dashed;
+  background: #f3edd6;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.gc-game:disabled .gc-game-icon { filter: grayscale(1); opacity: 0.55; }
+.gc-game:disabled .gc-game-meta { color: #7a7462; font-style: italic; }
+.gc-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.gc-link { padding: 12px; font-size: 18px; text-align: center; }
+.gc-game:focus-visible, .gc-exchange:focus-visible, .gc-hole:focus-visible, .gc-move:focus-visible {
+  outline: 3px solid #285a91;
+  outline-offset: 3px;
+}
+.gc-rules li { border-left-color: #ffb347; }
+.gc-warning {
+  margin: 10px 0 6px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.6rem;
+  color: #8a4b12;
+}
+.gc-need-coins { width: 100%; }
+.gc-result-text { white-space: pre-line; }
+.gc-collection:empty::after {
+  content: "Chưa có món nào. Gắp thú hoặc đổi vé ở Game Center nhé!";
+  color: #5a6b78;
+  font-style: italic;
+}
+#life-collection:empty::after {
+  content: "Chưa có món nào. Ghé Hoạt động → Game Center để gắp thú, đổi quà.";
+  color: #5a6b78;
+  font-style: italic;
+}
+
+/* Sân chơi */
+.gc-stage { text-align: center; }
+.gc-canvas {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  margin: 0 auto;
+  border: 2px solid #e0c878;
+  border-radius: 12px;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gc-hud {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 8px;
+  font-family: "Sriracha", cursive;
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+}
+.gc-stage.is-final .gc-hud { color: #c0392b; }
+.gc-action { max-width: 360px; margin: 6px auto 0; font-size: 18px; touch-action: manipulation; }
+.gc-controls {
+  display: grid;
+  grid-template-columns: 64px 1fr 64px;
+  gap: 8px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+.gc-controls .gc-action { margin: 0; }
+.gc-move {
+  min-width: 0;
+  font-size: 22px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gc-move:active:not(:disabled) { background: #ffe68b; }
+.gc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 12px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.5rem;
+}
+
+/* Đập chuột */
+.gc-holes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 330px;
+  margin: 0 auto;
+  padding: 12px;
+  border-radius: 14px;
+  background: #8fcf6a;
+}
+.gc-hole {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: none;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 70%, #3b2a1a 0 45%, #6b4a2b 46% 100%);
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gc-hole-key {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: "Patrick Hand", cursive;
+  font-size: 12px;
+  color: rgb(255 255 255 / 55%);
+}
+.gc-mole {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(30px, 11vw, 44px);
+  transform: translateY(85%);
+  transition: transform 120ms ease-out;
+}
+.gc-hole.is-up .gc-mole { transform: translateY(8%); }
+.gc-hole.is-gold.is-up { box-shadow: 0 0 0 3px #ffd23f, 0 0 14px #ffd23f; }
+.gc-hole.is-hit { animation: gc-hit 260ms ease; }
+.gc-hole.is-wrong { animation: gc-wrong 320ms ease; }
+.gc-pop {
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  transform: translateX(-50%);
+  font-family: "Sriracha", cursive;
+  font-size: 22px;
+  pointer-events: none;
+  animation: gc-pop 600ms ease-out forwards;
+}
+.gc-pop.is-plus { color: #ffffff; text-shadow: 0 1px 2px #1f6f2f; }
+.gc-pop.is-minus { color: #ffd0d0; text-shadow: 0 1px 2px #8a1f1f; }
+@keyframes gc-hit { 50% { transform: scale(0.92); } }
+@keyframes gc-wrong { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+@keyframes gc-pop { to { transform: translate(-50%, -28px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .gc-game, .gc-mole { transition: none; }
+  .gc-hole.is-hit, .gc-hole.is-wrong { animation: none; }
+}
+@media (max-width: 480px) {
+  .gc-games, .gc-links { gap: 8px; }
+  .gc-game { padding: 10px 6px; }
+  .gc-game-icon { font-size: 28px; }
+  .gc-game-name { font-size: 16px; }
+  .gc-game-meta { font-size: 13px; }
+  .gc-link { font-size: 16px; }
+  .gc-chip { font-size: 15px; }
+  .gc-hud { font-size: 17px; }
+}
+
+/* Kéo bò: đồng cỏ dọc, thanh tiến độ và nút kéo lớn bên dưới để bấm bằng ngón cái. */
+.gc-stage-cow .gc-pasture { cursor: pointer; }
+.gc-stage-cow .gc-action { margin-top: 8px; }
+.gc-leave { display: block; margin: 8px auto 0; }
+.gc-leave[hidden], .gc-pull-info[hidden], .gc-pull-button[hidden], .gc-stage-cow .gc-action[hidden] { display: none; }
+.gc-pull-info {
+  display: grid;
+  gap: 6px;
+  max-width: 360px;
+  margin: 8px auto 0;
+}
+.gc-pull-timer {
+  font-family: "Sriracha", cursive;
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+}
+.gc-pull-bar {
+  height: 20px;
+  overflow: hidden;
+  border: 2px solid #c98a4b;
+  border-radius: 999px;
+  background: #f6e6b4;
+}
+.gc-pull-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffb347, #ffd23f 60%, #7ed957);
+}
+.gc-pull-button {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 100%;
+  max-width: 360px;
+  min-height: 112px;
+  margin: 10px auto 0;
+  padding: 10px;
+  border: 3px solid #c2410c;
+  border-radius: 24px;
+  background: radial-gradient(circle at 50% 35%, #ffd27a, #ff9f43 70%, #f07b1f);
+  box-shadow: 0 6px 0 #b45309;
+  color: #4a2304;
+  font-family: "Sriracha", cursive;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.gc-pull-hand { font-size: 46px; line-height: 1; }
+.gc-pull-label { font-size: 20px; }
+.gc-pull-button:active { transform: translateY(4px); box-shadow: 0 2px 0 #b45309; }
+.gc-pull-button.is-tap .gc-pull-hand { animation: gc-pull-tap 140ms ease-out; }
+.gc-pull-button:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+@keyframes gc-pull-tap { 50% { transform: translateY(6px) scale(0.9); } }
+@media (prefers-reduced-motion: reduce) {
+  .gc-pull-button.is-tap .gc-pull-hand { animation: none; }
+}
+@media (max-width: 480px) {
+  .gc-stage-cow { padding: 8px; }
+  .gc-stage-cow > h3 { display: none; }
+  .gc-pull-button { min-height: 120px; }
+  .gc-pull-label { font-size: 18px; }
+}
+
+/* ===== Tiến lên miền Nam ===== */
+#games-dialog { --tl-card-w: 44px; --tl-overlap: -15px; }
+.tl-info { margin-top: 10px; font-size: 16px; }
+.tl-rules { margin-top: 12px; font-family: "Patrick Hand", cursive; font-size: 1.6rem; }
+.tl-rules summary { cursor: pointer; font-family: "Sriracha", cursive; font-size: 17px; }
+.tl-rules .dialog-entries { margin-top: 8px; font-size: 1.5rem; }
+.tl-board {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  grid-template-areas: ". top ." "left center right";
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 3px solid #8a5a2b;
+  border-radius: 18px;
+  background: radial-gradient(ellipse at 50% 55%, #3aa565, #1f6b40 80%);
+}
+.tl-seat-top { grid-area: top; }
+.tl-seat-left { grid-area: left; }
+.tl-seat-right { grid-area: right; }
+.tl-center { grid-area: center; }
+.tl-seat {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1px;
+  padding: 6px 4px;
+  border-radius: 12px;
+  background: rgb(255 255 255 / 88%);
+  font-family: "Sriracha", cursive;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  transition: box-shadow 200ms ease, opacity 200ms ease;
+}
+.tl-seat.is-turn { box-shadow: 0 0 0 3px #ffd23f, 0 0 12px #ffd23f; }
+.tl-seat.is-passed { opacity: 0.6; }
+.tl-seat.is-winner { box-shadow: 0 0 0 3px #3f8f4c, 0 0 12px #9fe0b4; }
+.tl-avatar { font-size: 24px; line-height: 1.1; }
+.tl-count { font-family: "Patrick Hand", cursive; font-size: 14px; color: #5a6b78; }
+.tl-badge {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #e6e0cf;
+  font-family: "Patrick Hand", cursive;
+  font-size: 12px;
+}
+.tl-badge.is-turn { background: #ffd23f; }
+.tl-center {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 112px;
+}
+.tl-pile { display: flex; justify-content: center; flex-wrap: wrap; row-gap: 4px; }
+.tl-pile .tl-card + .tl-card { margin-left: -8px; }
+.tl-pile-caption {
+  margin: 6px 0 0;
+  font-family: "Patrick Hand", cursive;
+  font-size: 15px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 50%);
+}
+.tl-card {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-start;
+  width: var(--tl-card-w);
+  height: calc(var(--tl-card-w) * 1.4);
+  padding: 3px 4px;
+  border: 1px solid #b9b9b9;
+  border-radius: 7px;
+  background: #ffffff;
+  box-shadow: 0 2px 3px rgb(0 0 0 / 20%);
+  color: #17394b;
+  font-family: "Sriracha", cursive;
+  line-height: 1;
+}
+.tl-card.is-red { color: #c0392b; }
+.tl-rank { font-size: 16px; }
+.tl-suit { font-size: 15px; }
+.tl-card.is-small { --tl-card-w: 30px; padding: 2px 3px; }
+.tl-card.is-small .tl-rank { font-size: 12px; }
+.tl-card.is-small .tl-suit { font-size: 11px; }
+.tl-me {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 10px;
+  margin-top: 10px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: #fff1ad;
+  font-family: "Sriracha", cursive;
+  font-size: 16px;
+}
+.tl-me.is-turn { background: #d9f5c8; box-shadow: 0 0 0 2px #3f8f4c; }
+.tl-hand {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  padding: 18px 2px 4px;
+}
+.tl-hand .tl-card { cursor: pointer; transition: transform 120ms ease; touch-action: manipulation; }
+.tl-hand .tl-card + .tl-card { margin-left: var(--tl-overlap); }
+.tl-hand .tl-card[aria-pressed="true"] {
+  transform: translateY(-14px);
+  border-color: #4f6cff;
+  box-shadow: 0 0 0 2px #4f6cff, 0 4px 6px rgb(0 0 0 / 25%);
+}
+.tl-hand .tl-card:disabled { cursor: default; opacity: 0.85; }
+.tl-hand .tl-card:focus-visible { outline: 3px solid #285a91; outline-offset: 2px; position: relative; z-index: 1; }
+.tl-status { min-height: 2.8em; margin: 6px 0 0; }
+.tl-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 6px; }
+.tl-actions .tl-play { grid-column: 1 / -1; margin: 0; font-size: 18px; }
+.tl-actions .shop-back { margin: 0; padding: 8px 4px; font-size: 15px; }
+.tl-forfeit { display: block; margin: 10px auto 0; font-size: 14px; }
+.tl-result .game-summary { white-space: pre-line; }
+.tl-remaining li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.tl-pile.is-inline { display: inline-flex; justify-content: flex-start; }
+.tl-rest-count { font-size: 1.4rem; color: #5a6b78; }
+@media (prefers-reduced-motion: reduce) {
+  .tl-hand .tl-card, .tl-seat { transition: none; }
+}
+@media (max-width: 480px) {
+  #games-dialog { --tl-card-w: 38px; --tl-overlap: -15px; }
+  .tl-board { grid-template-columns: 1fr 1.3fr 1fr; gap: 6px; padding: 8px; }
+  .tl-seat { font-size: 12px; padding: 4px 2px; }
+  .tl-avatar { font-size: 20px; }
+  .tl-count { font-size: 12px; }
+  .tl-rank { font-size: 15px; }
+  .tl-suit { font-size: 13px; }
+  .tl-actions .shop-back { font-size: 13px; }
+}
+@media (max-width: 370px) {
+  #games-dialog { --tl-card-w: 36px; }
+}
+
+/* Gắp thú: máy nhìn từ trên xuống, bàn điều khiển 4 hướng và nút GẮP lớn. */
+.gc-claw-canvas { border-color: #b9a3e8; }
+.gc-claw-controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 14px;
+  max-width: 360px;
+  margin: 8px auto 0;
+}
+.gc-claw-controls[hidden] { display: none; }
+.gc-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 52px);
+  grid-template-rows: repeat(3, 52px);
+  grid-template-areas: ". up ." "left . right" ". down .";
+  gap: 4px;
+}
+.gc-dpad .gc-move { min-width: 0; padding: 0; font-size: 22px; }
+.gc-dpad-up { grid-area: up; }
+.gc-dpad-left { grid-area: left; }
+.gc-dpad-right { grid-area: right; }
+.gc-dpad-down { grid-area: down; }
+.gc-grab {
+  min-height: 112px;
+  margin: 0;
+  border-radius: 24px;
+  font-size: 26px;
+  letter-spacing: 2px;
+  touch-action: manipulation;
+}
+.gc-claw-start[hidden], .gc-stage-claw .gc-leave[hidden] { display: none; }
+.gc-claw-result {
+  display: grid;
+  gap: 4px;
+  max-width: 360px;
+  margin: 8px auto 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-family: "Patrick Hand", cursive;
+  font-size: 1.6rem;
+  text-align: center;
+}
+.gc-claw-result[hidden] { display: none; }
+.gc-claw-result strong { font-family: "Sriracha", cursive; font-size: 17px; font-weight: 400; }
+.gc-claw-result.is-win { border: 1px solid #3f8f4c; background: #e2f7d4; }
+.gc-claw-result.is-lose { border: 1px solid #d6ac45; background: #fff1ad; }
+.gc-claw-stock { margin: 8px 0 0; font-family: "Patrick Hand", cursive; font-size: 1.5rem; text-align: center; }
+#relationship-gifts:empty { display: none; }
+@media (max-width: 480px) {
+  .gc-dpad { grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(3, 48px); }
+  .gc-grab { min-height: 104px; font-size: 22px; }
+}
+
+/* ===== Nút ✕ của popup: nằm ngoài khung, đè lên góc trên bên phải (dialog-close.js bọc nội dung vào .dialog-scroll) ===== */
+dialog.has-corner-close { overflow: visible !important; }
+dialog.has-corner-close[open] { display: flex; flex-direction: column; }
+.dialog-scroll {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  border-radius: inherit;
+}
+.dialog-scroll::-webkit-scrollbar { display: none; }
+dialog > .dialog-corner-close {
+  position: absolute !important;
+  top: -16px !important;
+  right: -16px !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 3;
+  display: grid !important;
+  place-items: center;
+  width: 44px !important;
+  height: 44px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 3px solid #ffffff !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 30%, #ff8f8f, #e0453a 75%) !important;
+  box-shadow: 0 3px 8px rgb(0 0 0 / 30%) !important;
+  color: #ffffff !important;
+  font-family: system-ui, sans-serif;
+  font-size: 20px !important;
+  font-weight: 700;
+  line-height: 1 !important;
+  cursor: pointer;
+  transform: none !important;
+  touch-action: manipulation;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+/* Vùng bấm rộng hơn hình tròn để dễ chạm trên điện thoại. */
+dialog > .dialog-corner-close::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+}
+dialog > .dialog-corner-close:hover { filter: brightness(1.08); }
+dialog > .dialog-corner-close:active { transform: scale(0.92) !important; }
+dialog > .dialog-corner-close:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  dialog > .dialog-corner-close { transition: none; }
+}
+/* Điện thoại: popup cách mép màn hình 8px nên nút thò ra ít hơn để không bị cắt. */
+@media (max-width: 480px) {
+  dialog > .dialog-corner-close {
+    top: -12px !important;
+    right: -6px !important;
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 18px !important;
+  }
+}
+
+/* ===== Hoàn thiện chữ và số ===== */
+/* Tránh một chữ rơi lẻ xuống dòng cuối; tiêu đề ngắt dòng cân đối. */
+dialog :is(h2, h3, h4),
+.log-entry h3 {
+  text-wrap: balance;
+}
+dialog :is(p, li, .side-job-note),
+.log-entry p {
+  text-wrap: pretty;
+}
+/* Tiền và chỉ số dùng chữ số đều chiều rộng để không nhảy khi giá trị đổi. */
+.shop-wallet,
+.shop-figures,
+.dialog-entries strong,
+#money-value,
+:is(#health-value, #smarts-value, #happiness-value, #looks-value),
+.lottery-picked,
+.lottery-kien-thiet {
+  font-variant-numeric: tabular-nums;
+}
+/* Cuộn trong popup không kéo theo trang phía sau. */
+dialog {
+  overscroll-behavior: contain;
 }

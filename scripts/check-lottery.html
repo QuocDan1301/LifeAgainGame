@@ -1,0 +1,129 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Lottery checks</title>
+<pre id="lottery-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("lottery-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const L = await import("../js/lottery.js");
+    // Vé kiến thiết: so số cuối đúng thứ tự, chỉ nhận giải cao nhất.
+    assert(L.kienThietResult("123456", "000056").prize === 100_000, "2 last digits");
+    assert(L.kienThietResult("123456", "000456").prize === 200_000, "3 last digits");
+    assert(L.kienThietResult("123456", "003456").prize === 1_000_000, "4 last digits");
+    assert(L.kienThietResult("123456", "923456").prize === 30_000_000, "5 last digits");
+    assert(L.kienThietResult("123456", "123456").prize === 2_000_000_000, "All 6 digits");
+    assert(L.kienThietResult("123456", "123465").prize === 0 && L.kienThietResult("123456", "654321").prize === 0, "Order matters at the end");
+    // Vietlott: số trùng không cần thứ tự.
+    const draw = [3, 9, 17, 25, 33, 45];
+    assert(L.vietlottResult([1, 2, 4, 5, 6, 7], draw).prize === 0, "0 hits");
+    assert(L.vietlottResult([45, 2, 4, 9, 6, 7], draw).prize === 0, "2 hits");
+    assert(L.vietlottResult([45, 33, 4, 9, 6, 7], draw).prize === 30_000, "3 hits");
+    assert(L.vietlottResult([45, 33, 25, 9, 6, 7], draw).prize === 300_000, "4 hits");
+    assert(L.vietlottResult([45, 33, 25, 9, 17, 7], draw).prize === 10_000_000, "5 hits");
+    assert(L.vietlottResult([45, 33, 25, 9, 17, 3], draw).prize === 12_000_000_000, "Jackpot");
+    for (let i = 0; i < 50; i++) {
+      const numbers = L.randomVietlott();
+      assert(numbers.length === 6 && new Set(numbers).size === 6 && numbers.every(n => n >= 1 && n <= 45), "Quick pick: 6 distinct numbers 1-45");
+      assert(/^\d{6}$/.test(L.randomKienThiet()), "Kien thiet ticket has 6 digits");
+    }
+    // Dò vé: cộng tiền đúng, mỗi vé nhận thưởng một lần.
+    const player = { age: 19, money: 0, lotteryDraws: { 18: { kienThiet: "003456", vietlott: draw } }, lotteryTickets: [
+      { type: "kien-thiet", number: "123456", age: 18 }, { type: "kien-thiet", number: "111111", age: 18 },
+      { type: "vietlott", numbers: [3, 9, 17, 1, 2, 4], age: 18 }, { type: "kien-thiet", number: "000000", age: 19 } ] };
+    const year = L.collectLotteryYear(player, 19);
+    assert(player.money === 1_030_000 && year.amount === 1_030_000, "Prizes added to the wallet");
+    assert(year.content.includes("003456") && year.content.includes("03 09 17 25 33 45") && year.content.includes("1 vé kiến thiết không trúng"), "Result lists the draws");
+    assert(year.content.includes("khỏi rửa chén"), "Lucky diary line");
+    assert(player.lotteryTickets.length === 1 && player.lotteryTickets[0].age === 19 && !player.lotteryDraws[18], "Checked tickets are removed");
+    assert(L.collectLotteryYear(player, 19) === null && player.money === 1_030_000, "A ticket pays only once");
+
+    // Bản lưu cũ: mỗi vé một dòng, gộp lại theo tuổi.
+    const oldLogs = L.mergeLotteryPurchaseLogs([
+      { age: 20, content: "Ăn phở", summary: "Ăn phở" },
+      { age: 20, content: "🎟️ Mua vé số kiến thiết 547001: Tiền -10k VNĐ.", summary: "x" },
+      { age: 20, content: "🎟️ Mua vé số kiến thiết 823295: Tiền -10k VNĐ.", summary: "x" },
+      { age: 20, content: "🎟️ Mua vé Vietlott 01 02 03 10 11 12: Tiền -10k VNĐ.", summary: "x" },
+      { age: 21, content: "🎟️ Mua vé số kiến thiết 050703: Tiền -10k VNĐ.", summary: "x" },
+    ]);
+    assert(oldLogs.length === 3 && oldLogs[1].content === "🎟️ Mua 3 vé số: Tiền -30k VNĐ.\n• Kiến thiết: 547001, 823295\n• Vietlott: 01 02 03 10 11 12"
+      && oldLogs[1].summary === oldLogs[1].content && oldLogs[2].content.startsWith("🎟️ Mua 1 vé số"), "Old one-line-per-ticket logs merged by age");
+
+    const { createInitialState, state } = await import("../js/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 1_000_000, studyBlock: "A00", datingActivitiesOnly: true, employmentStatus: "declined",
+      nextPromotionAge: null, illnessPlan: [], illnesses: [] });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const body = () => $("lottery-body");
+    const open = () => { $("activities").click(); $("activity-lottery").click(); };
+
+    open();
+    assert($("lottery-dialog").open && body().querySelectorAll(".lottery-kien-thiet").length === 6 && body().querySelectorAll(".lottery-number").length === 45, "Popup lists tickets and numbers 01-45");
+    assert([...body().querySelectorAll(".lottery-kien-thiet, .lottery-number, .lottery-quick")].every(button => button.disabled), "Locked under 18");
+    $("close-lottery").click();
+
+    state.player.age = 18;
+    open();
+    const first = body().querySelector(".lottery-kien-thiet").dataset.number;
+    body().querySelector(".lottery-kien-thiet").click();
+    assert(state.player.money === 990_000 && state.player.lotteryTickets[0].number === first, "Buying a kien thiet ticket");
+    assert(state.logs.at(-1).content.includes(first), "Purchase recorded in the diary");
+    const savedDraw = JSON.parse(localStorage.getItem("lifeAgainSave")).player.lotteryDraws[18];
+    assert(/^\d{6}$/.test(savedDraw.kienThiet) && savedDraw.vietlott.length === 6, "Year's draw saved with the ticket");
+
+    const buyVietlott = () => body().querySelector(".lottery-vietlott-buy");
+    assert(buyVietlott().disabled, "Vietlott needs 6 numbers");
+    for (const n of [1, 2, 3, 10, 11, 12]) body().querySelector(`.lottery-number[data-number="${n}"]`).click();
+    assert(body().querySelector('.lottery-number[data-number="13"]').disabled && !buyVietlott().disabled, "No more than 6 numbers");
+    buyVietlott().click();
+    assert(state.player.lotteryTickets[1].numbers.join() === "1,2,3,10,11,12" && state.player.money === 980_000, "Buying a Vietlott ticket");
+    body().querySelector(".lottery-quick").click();
+    assert(body().querySelectorAll(".lottery-number.is-picked").length === 6, "Quick pick selects 6 numbers");
+    for (let i = 0; i < 8; i++) body().querySelector(".lottery-kien-thiet:not(:disabled)").click();
+    assert(state.player.lotteryTickets.length === 10 && state.player.money === 900_000, "Ten tickets bought");
+    assert([...body().querySelectorAll(".lottery-kien-thiet")].every(button => button.disabled) && buyVietlott().disabled, "Max 10 tickets per year for both types");
+    assert(body().querySelectorAll(".lottery-owned li").length === 10, "Bought tickets listed");
+    const purchaseLogs = state.logs.filter(log => log.age === 18 && log.lotteryPurchase);
+    assert(purchaseLogs.length === 1 && purchaseLogs[0].content.startsWith("🎟️ Mua 10 vé số: Tiền -100k VNĐ.")
+      && purchaseLogs[0].lotteryPurchase.kienThiet.length === 9 && purchaseLogs[0].content.includes("• Vietlott: 01 02 03 10 11 12"), "All purchases of the year share one diary line");
+    const diaryLines = [...$("life-log").querySelectorAll("p")].filter(line => line.textContent.includes("vé số"));
+    assert(diaryLines.length === 1 && diaryLines[0].textContent.includes("Mua 10 vé số") && diaryLines[0].textContent.includes(first), "Diary shows one updated line listing the tickets");
+    $("close-lottery").click();
+
+    // Đặt kết quả năm để biết trước: vé đầu trùng 4 số cuối, vé Vietlott trùng 3 số.
+    const other = first[1] === "0" ? "1" : "0";
+    state.player.lotteryDraws[18] = { kienThiet: `9${other}${first.slice(2)}`, vietlott: [1, 2, 3, 40, 41, 42] };
+    Math.random = () => 0.99;
+    $("age-up").click();
+    if (state.pendingEvent) {
+      document.querySelector("#event-choices button")?.click();
+      $("event-confirm").click();
+    }
+    const yearLog = state.logs.find(log => log.age === 19 && log.content.includes("Xổ số kiến thiết mở thưởng"));
+    assert(yearLog && yearLog.content.includes(`Vé ${first} trùng 4 số cuối`) && yearLog.content.includes("01 02 03 10 11 12 trùng 3 số"), "Age-up draws and records results");
+    assert(!state.player.lotteryTickets.length && !Object.keys(state.player.lotteryDraws).length, "Tickets cleared after the draw");
+    assert($("life-log").textContent.includes("Xổ số kiến thiết mở thưởng"), "Result shown in the diary");
+    result.textContent = "PASS: prize tables; quick pick; age 18+; 10 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

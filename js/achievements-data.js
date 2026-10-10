@@ -62,7 +62,8 @@ export const achievements = [
     "🎒",
     "Ngày đầu đến trường",
     "Bắt đầu hành trình học tập tại trường tiểu học.",
-    flag(),
+    // Tự mở khi vào cấp 1 lúc 6 tuổi, giống Lên cấp 2 (11 tuổi) và Lên cấp 3 (15 tuổi).
+    number("age", 6),
   ),
   item(
     "secondary-school",
@@ -188,8 +189,8 @@ export const achievements = [
     "Tiền bạc",
     "💸",
     "Triệu phú",
-    "Sở hữu số tiền vượt mốc 1.000.000 VNĐ.",
-    number("money", 1000000, true),
+    "Tích lũy ít nhất 500.000.000 VNĐ trong ví.",
+    number("money", 500000000),
   ),
   item(
     "billionaire",
@@ -561,6 +562,15 @@ export const achievements = [
     "Cờ bạc là bác thằng bần",
     "Để tổng tiền thua cờ bạc trong một cuộc đời chạm mốc 10.000.000 VNĐ.",
     number("gamblingLosses", 10000000),
+  ),
+  item(
+    "claw-rare-plush",
+    "other",
+    "May mắn và biến cố",
+    "🦄",
+    "Bàn tay vàng máy gắp",
+    "Gắp được một thú bông hiếm nhất (🦄 Kỳ lân, 🐉 Rồng con hoặc 🦊 Cáo lửa) ở máy gắp thú trong Game Center.",
+    flag(),
   ),
   item(
     "story-diamond",

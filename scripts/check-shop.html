@@ -11,7 +11,7 @@
   const random = Math.random;
   try {
     const { createInitialState, state } = await import("../js/state.js");
-    const { shopCatalog, shops, getSellPrice, collectAssetIncome, isAtLimit } = await import("../js/shop.js");
+    const { shopCatalog, shops, getSellPrice, collectAssetIncome, isAtLimit, isCompanion } = await import("../js/shop.js");
     const { achievements } = await import("../js/achievements-data.js");
     assert(shopCatalog.every(item => item.price > 0 && item.description && shops[item.shop].groups.some(g => g.id === item.group)),
       "Every item has a price, description and a valid group");
@@ -26,8 +26,21 @@
     const pigeon = shopCatalog.find(item => item.id === "pigeon");
     const five = { livestock: Array.from({ length: 5 }, (_, i) => ({ uid: `p${i}`, id: "pigeon", boughtAtAge: 20 })) };
     assert(isAtLimit(five, pigeon) && !isAtLimit({ livestock: five.livestock.slice(1) }, pigeon), "At most 5 of each animal");
-    assert(shopCatalog.filter(item => item.shop === "pets").every(item => item.limit === 5 && item.profit / item.price <= 0.2),
+    assert(shopCatalog.filter(item => ["cattle", "poultry"].includes(item.group)).every(item => item.limit === 5 && item.profit / item.price <= 0.2),
       "Animals earn at most 20% a year");
+    const companions = shopCatalog.filter(isCompanion);
+    assert(companions.map(item => item.id).join() === "hamster,cat,dog,capybara", "Hamster, cat, dog and capybara are companions");
+    assert(companions.every((item, i) => !item.profit && item.happiness > 0 && item.limit === 1 && (!i || item.price > companions[i - 1].price)),
+      "Companions cost more from small to big, earn nothing and give happiness");
+    assert(companions.every(item => item.food > 0) && companions.filter(item => item.vaccine).map(item => item.id).join() === "cat,dog",
+      "Every companion eats; only cats and dogs need vaccines");
+    const owner = { money: 0, livestock: [{ uid: "h", id: "hamster", boughtAtAge: 30 }, { uid: "d", id: "dog", boughtAtAge: 31 },
+      { uid: "g", id: "goat", boughtAtAge: 30 }] };
+    assert(collectAssetIncome(owner, 31).amount === 500_000 - 600_000 && owner.money === -100_000,
+      "Pet food is paid from the year after buying, netted with animal income");
+    const yearTwo = collectAssetIncome(owner, 32);
+    assert(yearTwo.amount === 500_000 - 600_000 - 5_600_000 && yearTwo.content.includes("Chó: thức ăn và tiêm ngừa") &&
+      yearTwo.content.includes("Chuột hamster: thức ăn;") && yearTwo.content.includes("Tiền -6,2 triệu"), "Dogs also pay vaccines");
     assert(!shopCatalog.find(item => item.id === "house").limit, "Real estate has no limit");
     const sample = { money: 0, livestock: [{ uid: "a", id: "cow", boughtAtAge: 30 }],
       purchases: [{ uid: "b", id: "cafe", boughtAtAge: 30, rentedAtAge: 30 }, { uid: "c", id: "car", boughtAtAge: 30 },
@@ -66,7 +79,7 @@
     $("activities").click();
     $("activity-pets").click();
     assert($("shop-dialog").open && $("shop-title").textContent.includes("vật nuôi"), "Pets button opens the pet shop");
-    assert(document.querySelectorAll(".shop-group").length === 2 && !document.querySelector(".shop-buy"), "Pet shop starts with two groups");
+    assert(document.querySelectorAll(".shop-group").length === 3 && !document.querySelector(".shop-buy"), "Pet shop starts with three groups");
     openGroup("poultry");
     buyButton("poultry", "chicken").click();
     assert($("shop-confirm-dialog").open && state.player.money === 80_000_000, "Buying asks for confirmation first");
@@ -144,7 +157,31 @@
     $("shop-confirm").click();
     assert(state.player.money === beforeSale + 15_000_000 && state.player.purchases.length === 1, "Selling a vehicle pays half price");
     assert(!document.querySelector("#life-vehicles .shop-sell"), "Assets list updates after selling");
-    result.textContent = "PASS: pet shop; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price";
+    // Vuốt ve thú cưng trong Tài sản: mỗi con một lần mỗi năm
+    $("close-life-profile").click();
+    state.player.livestock = [...state.player.livestock, { uid: "test-cat", id: "cat", boughtAtAge: state.player.age }];
+    state.player.happiness = 50;
+    $("assets").click();
+    document.querySelector("#life-livestock .shop-pet").click();
+    assert(state.player.happiness === 52 && state.logs.at(-1).content.includes("Vuốt ve"), "Petting a cat adds 2 happiness");
+    assert(document.querySelector("#life-livestock .shop-pet").disabled, "A pet can only be petted once a year");
+    $("close-life-profile").click();
+    // Gộp món cùng loại thành một dòng ×N; bán bớt từng món
+    state.player.livestock = [20, 21, 22].map(age => ({ uid: `test-pigeon-${age}`, id: "pigeon", boughtAtAge: age }));
+    state.player.purchases = ["a", "b"].map(uid => ({ uid: `test-house-${uid}`, id: "house", boughtAtAge: 30 }));
+    $("assets").click();
+    const pigeonRows = $("life-livestock").children;
+    assert(pigeonRows.length === 1 && pigeonRows[0].textContent.includes("Bồ câu ×3") && pigeonRows[0].textContent.includes("20, 21, 22 tuổi"),
+      "Same animals share one row");
+    assert($("life-realestate").children.length === 1 && $("life-realestate").textContent.includes("Cho thuê 1 căn"), "Unrented houses share one row");
+    document.querySelector("#life-realestate .shop-lease").click();
+    assert($("life-realestate").children.length === 2, "A leased house moves to its own row");
+    document.querySelector("#life-livestock .shop-sell").click();
+    $("shop-confirm").click();
+    assert(state.player.livestock.length === 2 && !state.player.livestock.some(entry => entry.boughtAtAge === 22) &&
+      $("life-livestock").textContent.includes("Bồ câu ×2"), "Selling from a group sells the newest one");
+    $("close-life-profile").click();
+    result.textContent = "PASS: pet shop; petting companions; grouped assets; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {

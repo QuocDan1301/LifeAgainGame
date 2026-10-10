@@ -67,6 +67,7 @@ export function initLobby(enterGame) {
       return;
     }
     get("ticket-error").textContent = "";
+    get("ticket-quantity").removeAttribute("aria-invalid");
     ticketsDialog.showModal();
   });
   get("close-tickets").addEventListener("click", () => close(ticketsDialog));
@@ -74,6 +75,7 @@ export function initLobby(enterGame) {
   get("ticket-max").addEventListener("click", () => {
     get("ticket-quantity").value = MAX_TICKETS_PER_PURCHASE;
     get("ticket-error").textContent = "";
+    get("ticket-quantity").removeAttribute("aria-invalid");
     get("ticket-quantity").dispatchEvent(new Event("input", { bubbles: true }));
   });
   get("ticket-form").addEventListener("submit", (event) => {
@@ -85,6 +87,7 @@ export function initLobby(enterGame) {
       showError("Vé đã sẵn sàng. Chúc bạn có một chuyến đi đáng nhớ!");
     } catch (e) {
       get("ticket-error").textContent = e.message;
+      get("ticket-quantity").setAttribute("aria-invalid", "true");
     }
   });
   newButton.addEventListener("click", () => {

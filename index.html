@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/achievements.css" />
     <link rel="stylesheet" href="./css/lobby.css" />
+    <link rel="stylesheet" href="./css/buttons.css" />
     <link
       rel="apple-touch-icon"
       sizes="57x57"
@@ -224,11 +225,11 @@
     </div>
     <section id="lobby-screen" aria-labelledby="lobby-title">
       <header class="lobby-brand">
-        <img src="./img/Logo.png" alt="Life Again" /><span
+        <img src="./img/logo.webp" alt="Life Again" /><span
           >MỖI CUỘC ĐỜI, MỘT HÀNH TRÌNH</span
         >
       </header>
-      <button type="button" class="lobby-music" data-music-toggle aria-pressed="true" aria-label="Tắt nhạc nền">
+      <button type="button" class="lobby-music" data-music-toggle aria-pressed="true" aria-label="Nhạc nền" title="Tắt nhạc nền">
         <span data-music-icon aria-hidden="true">🔊</span>
       </button>
       <div class="lobby-center">
@@ -267,11 +268,11 @@
         <button
           type="button"
           id="ticket-seller"
-          aria-label="Nhận vé miễn phí tại quầy"
+          aria-label="Ở đây có bán vé, mở quầy nhận vé miễn phí"
         >
           <span class="seller-speech">Ở đây có bán vé</span>
           <img
-            src="./img/ticket-seller.png"
+            src="./img/ticket-seller.webp"
             alt="Nhân viên bán vé đang mỉm cười"
           />
         </button>
@@ -309,9 +310,10 @@
             value="1"
             inputmode="numeric"
             required
+            aria-describedby="ticket-error"
           />
-          <button type="button" id="ticket-max" aria-label="Chọn tối đa 20 vé">
-            Max
+          <button type="button" id="ticket-max" aria-label="Tối đa 20 vé">
+            Tối đa
           </button>
         </div>
         <p id="ticket-error" class="lobby-error" role="alert"></p>
@@ -419,7 +421,8 @@
       class="lobby-dialog"
       aria-labelledby="death-title"
     >
-      <h2 id="death-title">Hành trình đã khép lại</h2>
+      <!-- Mở popup thì focus vào tiêu đề để đọc từ đầu, không bị cuộn xuống nút cuối. -->
+      <h2 id="death-title" tabindex="-1" autofocus>Hành trình đã khép lại</h2>
       <p id="death-content"></p>
       <div id="death-summary"></div>
       <button type="button" id="return-after-death" class="lobby-primary">
@@ -450,9 +453,13 @@
             <span data-music-icon aria-hidden="true">🔊</span>
             <span data-music-label>Nhạc nền: Bật</span>
           </button>
+          <button type="button" class="menu-music" data-sfx-toggle aria-pressed="true">
+            <span data-sfx-icon aria-hidden="true">🔔</span>
+            <span data-sfx-label>Hiệu ứng âm thanh: Bật</span>
+          </button>
           <button type="button" id="restart-button">Về bến xe</button>
         </div>
-        <img id="logo" src="./img/Logo.png" alt="Life Again" />
+        <img id="logo" src="./img/logo.webp" alt="Life Again" />
         <button
           type="button"
           class="achievement-button"
@@ -581,8 +588,8 @@
         </div>
       </section>
     </div>
-    <dialog id="restart-dialog">
-      <h2>Về bến xe?</h2>
+    <dialog id="restart-dialog" aria-labelledby="restart-title">
+      <h2 id="restart-title">Về bến xe?</h2>
       <p>
         Tiến trình được giữ lại. Bạn có thể chơi tiếp hoặc dùng vé để tạo cuộc
         đời mới.
@@ -597,7 +604,9 @@
         <h2 id="relationships-title">💞 Mối quan hệ</h2>
         <button type="button" class="dialog-close" id="close-relationships" aria-label="Đóng">✕</button>
       </div>
-      <section class="dialog-card" aria-labelledby="relationship-current-title">
+      <!-- Mỗi thẻ là một tab (data-icon, data-tab) giống popup Tài sản; panel-tabs.js dựng thanh tab. -->
+      <div id="relationship-tabs" class="life-tabs" role="tablist" aria-label="Mục quan hệ"></div>
+      <section class="dialog-card life-panel" id="relationship-current-panel" data-icon="💗" data-tab="Hiện tại" aria-labelledby="relationship-current-title">
         <h3 id="relationship-current-title">💗 Hiện tại</h3>
         <p id="relationship-current"></p>
         <button type="button" id="breakup-relationship" hidden>💔 Chia tay</button>
@@ -609,11 +618,16 @@
           </div>
         </div>
       </section>
-      <section class="dialog-card" aria-labelledby="relationship-children-title">
+      <section class="dialog-card life-panel" id="relationship-gifts-panel" data-icon="🎁" data-tab="Tặng quà" aria-labelledby="relationship-gifts-title">
+        <h3 id="relationship-gifts-title">🎁 Tặng thú bông</h3>
+        <p id="relationship-gifts-note" class="side-job-intro"></p>
+        <ul id="relationship-gifts" class="dialog-entries" data-tab-count></ul>
+      </section>
+      <section class="dialog-card life-panel" id="relationship-children-panel" data-icon="👶" data-tab="Con cái" aria-labelledby="relationship-children-title">
         <h3 id="relationship-children-title">👶 Con cái</h3>
         <ul id="relationship-children" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="relationship-history-title">
+      <section class="dialog-card life-panel" id="relationship-history-panel" data-icon="📖" data-tab="Kỷ niệm" aria-labelledby="relationship-history-title">
         <h3 id="relationship-history-title">📖 Các mốc tình cảm</h3>
         <ol id="relationship-history" class="dialog-entries" aria-label="Các mốc hẹn hò"></ol>
       </section>
@@ -648,25 +662,28 @@
         <button type="button" id="close-activities-locked" autofocus>Đã hiểu</button>
       </form>
     </dialog>
-    <dialog id="activities-dialog">
+    <dialog id="activities-dialog" aria-labelledby="activities-title">
       <div class="activities-heading">
-        <h2>🏃 Hoạt động</h2>
+        <h2 id="activities-title">🏃 Hoạt động</h2>
         <button type="button" id="close-activities" aria-label="Đóng hoạt động">
           ✕
         </button>
       </div>
       <div class="activities-list">
-        <button type="button" id="activity-self-development">🌱 Phát triển bản thân</button>
-        <button type="button" id="activity-games">🎮 Trò chơi<span class="activity-note">May thì giàu, còn chắc chắn thì không!</span></button>
-        <button type="button" id="activity-love">💘 Tình yêu</button>
-        <button type="button" id="activity-hospital">🏥 Bệnh viện</button>
-        <button type="button" id="activity-part-time">🧰 Làm thêm</button>
-        <button type="button" id="activity-degrees">🪪 Học bằng lái</button>
-        <button type="button" id="activity-tarot">🔮 Xem tarot</button>
-        <button type="button" id="activity-travel">✈️ Du lịch</button>
-        <button type="button" id="activity-food">🍲 Ăn uống</button>
-        <button type="button" id="activity-shopping">🛍️ Mua sắm</button>
-        <button type="button" id="activity-pets">🐾 Mua vật nuôi</button>
+        <button type="button" id="activity-self-development"><span class="activity-icon" aria-hidden="true">🌱</span><span class="activity-text"><span class="activity-title">Phát triển bản thân</span><span class="activity-note">Mỗi ngày tốt hơn một chút, tương lai khác đi một chút!</span></span></button>
+        <button type="button" id="activity-games"><span class="activity-icon" aria-hidden="true">🎮</span><span class="activity-text"><span class="activity-title">Trò chơi</span><span class="activity-note">May thì giàu, còn chắc chắn thì không!</span></span></button>
+        <button type="button" id="activity-love"><span class="activity-icon" aria-hidden="true">💘</span><span class="activity-text"><span class="activity-title">Tình yêu</span><span class="activity-note">Tim có thể rung động, còn duyên thì phải thử mới biết!</span></span></button>
+        <button type="button" id="activity-hospital"><span class="activity-icon" aria-hidden="true">🏥</span><span class="activity-text"><span class="activity-title">Bệnh viện</span><span class="activity-note">Chăm sức khỏe hôm nay, còn sức tận hưởng ngày mai!</span></span></button>
+        <button type="button" id="activity-part-time"><span class="activity-icon" aria-hidden="true">🧰</span><span class="activity-text"><span class="activity-title">Làm thêm</span><span class="activity-note">Ví dày thêm một chút, mồ hôi cũng thêm một chút!</span></span></button>
+        <button type="button" id="activity-degrees"><span class="activity-icon" aria-hidden="true">🪪</span><span class="activity-text"><span class="activity-title">Học bằng lái</span><span class="activity-note">Vững tay lái, tự tin trên mọi nẻo đường!</span></span></button>
+        <button type="button" id="activity-tarot"><span class="activity-icon" aria-hidden="true">🔮</span><span class="activity-text"><span class="activity-title">Xem tarot</span><span class="activity-note">Lật một lá bài, biết đâu tìm được chút gợi ý!</span></span></button>
+        <button type="button" id="activity-travel"><span class="activity-icon" aria-hidden="true">✈️</span><span class="activity-text"><span class="activity-title">Du lịch</span><span class="activity-note">Đi một chuyến, mang về cả trời kỷ niệm!</span></span></button>
+        <button type="button" id="activity-game-center"><span class="activity-icon" aria-hidden="true">🕹️</span><span class="activity-text"><span class="activity-title">Game Center</span><span class="activity-note">Chơi một ván cho vui, thắng thua không quan trọng!</span></span></button>
+        <button type="button" id="activity-food"><span class="activity-icon" aria-hidden="true">🍲</span><span class="activity-text"><span class="activity-title">Ăn uống</span><span class="activity-note">Bụng no một chút, đời vui thêm một chút!</span></span></button>
+        <button type="button" id="activity-beauty"><span class="activity-icon" aria-hidden="true">💄</span><span class="activity-text"><span class="activity-title">Làm đẹp</span><span class="activity-note">Đẹp thêm một chút, tự tin thêm nhiều chút!</span></span></button>
+        <button type="button" id="activity-lottery"><span class="activity-icon" aria-hidden="true">🎟️</span><span class="activity-text"><span class="activity-title">Mua vé số</span><span class="activity-note">Mười nghìn một tấm vé, gửi trọn một giấc mơ!</span></span></button>
+        <button type="button" id="activity-shopping"><span class="activity-icon" aria-hidden="true">🛍️</span><span class="activity-text"><span class="activity-title">Mua sắm</span><span class="activity-note">Thêm món đồ ưng ý, bớt chút tiền trong ví!</span></span></button>
+        <button type="button" id="activity-pets"><span class="activity-icon" aria-hidden="true">🐾</span><span class="activity-text"><span class="activity-title">Mua vật nuôi</span><span class="activity-note">Đón một người bạn nhỏ, thêm niềm vui mỗi ngày!</span></span></button>
       </div>
     </dialog>
     <dialog id="shop-dialog" aria-labelledby="shop-title">
@@ -719,12 +736,33 @@
       </div>
       <div id="food-body"></div>
     </dialog>
+    <dialog id="beauty-dialog" aria-labelledby="beauty-title">
+      <div class="dialog-heading">
+        <h2 id="beauty-title">💄 Làm đẹp</h2>
+        <button type="button" class="dialog-close" id="close-beauty" aria-label="Đóng">✕</button>
+      </div>
+      <div id="beauty-body"></div>
+    </dialog>
+    <dialog id="lottery-dialog" aria-labelledby="lottery-title">
+      <div class="dialog-heading">
+        <h2 id="lottery-title">🎟️ Mua vé số</h2>
+        <button type="button" class="dialog-close" id="close-lottery" aria-label="Đóng">✕</button>
+      </div>
+      <div id="lottery-body"></div>
+    </dialog>
     <dialog id="travel-dialog" aria-labelledby="travel-title">
       <div class="dialog-heading">
         <h2 id="travel-title">✈️ Du lịch</h2>
         <button type="button" class="dialog-close" id="close-travel" aria-label="Đóng">✕</button>
       </div>
       <div id="travel-body"></div>
+    </dialog>
+    <dialog id="game-center-dialog" aria-labelledby="game-center-title">
+      <div class="dialog-heading">
+        <h2 id="game-center-title">🕹️ Game Center</h2>
+        <button type="button" class="dialog-close" id="close-game-center" aria-label="Đóng">✕</button>
+      </div>
+      <div id="game-center-body"></div>
     </dialog>
     <dialog id="self-development-dialog" aria-labelledby="self-development-title">
       <div class="dialog-heading">
@@ -753,35 +791,41 @@
         <h2 id="life-profile-title">💳 Tài sản</h2>
         <button type="button" class="dialog-close" id="close-life-profile" aria-label="Đóng">✕</button>
       </div>
-      <section class="dialog-card" aria-labelledby="life-jobs-title">
+      <!-- Mỗi thẻ là một tab (data-icon, data-tab); life-profile.js dựng thanh tab và chỉ hiện một thẻ. -->
+      <div id="life-tabs" class="life-tabs" role="tablist" aria-label="Loại tài sản"></div>
+      <section class="dialog-card life-panel" id="life-jobs-panel" data-icon="💼" data-tab="Công việc" aria-labelledby="life-jobs-title">
         <h3 id="life-jobs-title">💼 Công việc hiện tại</h3>
         <ul id="life-jobs" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="life-livestock-title">
+      <section class="dialog-card life-panel" id="life-livestock-panel" data-icon="🐾" data-tab="Vật nuôi" aria-labelledby="life-livestock-title">
         <h3 id="life-livestock-title">🐾 Vật nuôi</h3>
         <ul id="life-livestock" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="life-realestate-title">
+      <section class="dialog-card life-panel" id="life-realestate-panel" data-icon="🏢" data-tab="Nhà đất" aria-labelledby="life-realestate-title">
         <h3 id="life-realestate-title">🏢 Bất động sản và kinh doanh</h3>
         <ul id="life-realestate" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="life-licenses-title">
-        <h3 id="life-licenses-title">🪪 Bằng lái</h3>
-        <ul id="life-licenses" class="dialog-entries"></ul>
-      </section>
-      <section class="dialog-card" aria-labelledby="life-vehicles-title">
+      <section class="dialog-card life-panel" id="life-vehicles-panel" data-icon="🚗" data-tab="Xe cộ" aria-labelledby="life-vehicles-title">
         <h3 id="life-vehicles-title">🚗 Phương tiện</h3>
         <ul id="life-vehicles" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="life-box-items-title">
+      <section class="dialog-card life-panel" id="life-licenses-panel" data-icon="🪪" data-tab="Bằng lái" aria-labelledby="life-licenses-title">
+        <h3 id="life-licenses-title">🪪 Bằng lái</h3>
+        <ul id="life-licenses" class="dialog-entries"></ul>
+      </section>
+      <section class="dialog-card life-panel" id="life-box-items-panel" data-icon="📦" data-tab="Hộp bí ẩn" aria-labelledby="life-box-items-title">
         <h3 id="life-box-items-title">📦 Vật phẩm hộp bí ẩn</h3>
         <ul id="life-box-items" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="life-keepsakes-title">
+      <section class="dialog-card life-panel" id="life-collection-panel" data-icon="🧸" data-tab="Sưu tập" aria-labelledby="life-collection-title">
+        <h3 id="life-collection-title">🧸 Bộ sưu tập thú bông &amp; quà</h3>
+        <ul id="life-collection" class="dialog-entries"></ul>
+      </section>
+      <section class="dialog-card life-panel" id="life-keepsakes-panel" data-icon="🎁" data-tab="Kỷ vật" aria-labelledby="life-keepsakes-title">
         <h3 id="life-keepsakes-title">🎁 Kỷ vật</h3>
         <ul id="life-keepsakes" class="dialog-entries"></ul>
       </section>
-      <section class="dialog-card" aria-labelledby="life-memories-title">
+      <section class="dialog-card life-panel" id="life-memories-panel" data-icon="📸" data-tab="Kỷ niệm" aria-labelledby="life-memories-title">
         <h3 id="life-memories-title">📸 Trang kỷ niệm</h3>
         <div id="life-memories"></div>
       </section>
@@ -859,8 +903,21 @@
           },
           hide: hide,
         };
-        if (document.readyState === "complete") hide();
-        else window.addEventListener("load", hide, { once: true });
+        // Không chờ mọi ảnh: bến xe sẵn sàng và font đã tải (tối đa 1,5 giây) là ẩn, ảnh hiện dần sau.
+        var done = false;
+        function ready() {
+          if (done) return;
+          done = true;
+          hide();
+        }
+        function whenFontsReady() {
+          var fonts = document.fonts && document.fonts.ready;
+          if (fonts) fonts.then(ready, ready);
+          else ready();
+          setTimeout(ready, 1500);
+        }
+        if (document.readyState !== "loading") whenFontsReady();
+        else document.addEventListener("DOMContentLoaded", whenFontsReady, { once: true });
       })();
     </script>
     <script>

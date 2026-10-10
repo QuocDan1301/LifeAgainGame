@@ -1,0 +1,91 @@
+/* Đồng bộ hình dáng nút; màu nền, viền và chữ do từng tính năng giữ nguyên. */
+:root {
+  --button-radius: 14px;
+  --button-shadow: 0 3px 0 rgb(16 40 63 / 18%);
+}
+
+/* Lá bài và nút tròn có hình dáng riêng để phù hợp với cách chơi. */
+:is(#game-screen, #lobby-screen, dialog) button:not(
+  .tl-card, .tarot-back-card, .tarot-mini,
+  .dialog-close, .dialog-corner-close, .menu-button, .age-button,
+  #close-activities, #close-achievements, #close-tickets,
+  #close-create-character, #close-random-gender
+) {
+  min-height: 44px;
+  border-radius: var(--button-radius);
+  box-shadow: var(--button-shadow);
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+  text-wrap: pretty;
+  transition: box-shadow 150ms ease, filter 150ms ease, transform 150ms ease;
+}
+
+:is(#game-screen, #lobby-screen, dialog) button:not(
+  .tl-card, .tarot-back-card, .tarot-mini,
+  .dialog-close, .dialog-corner-close, .menu-button, .age-button,
+  #close-activities, #close-achievements, #close-tickets,
+  #close-create-character, #close-random-gender
+):active:not(:disabled) {
+  box-shadow: 0 1px 0 rgb(16 40 63 / 18%);
+}
+
+:is(#game-screen, #lobby-screen, dialog) button:disabled {
+  cursor: not-allowed;
+}
+
+/* Nút mở nhóm dùng bố cục ngang và mũi tên giống bảng Hoạt động. */
+dialog .shop-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  line-height: 1.35;
+}
+dialog .shop-group::after {
+  content: "›";
+  flex: none;
+  margin-left: auto;
+  color: #c9a54a;
+  font-size: 28px;
+  line-height: 1;
+}
+/* Nút nhóm có dòng ghi chú (Tình yêu, Trò chơi, Làm thêm): ghi chú nằm dưới tiêu đề
+   thay vì bị ép thành cột hẹp bên phải; mũi tên vẫn ở giữa bên phải. */
+dialog .shop-group:has(> .side-job-note) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 14px;
+  row-gap: 2px;
+}
+dialog .shop-group:has(> .side-job-note) > .side-job-note {
+  grid-column: 1;
+  grid-row: 2;
+  margin-top: 0;
+  color: #5a6b78;
+  font-size: 1.5rem;
+  line-height: 1.35;
+}
+dialog .shop-group:has(> .side-job-note)::after {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+}
+dialog .shop-group:disabled::after {
+  opacity: 0.4;
+}
+
+/* Màu bóng của các mục trong mẫu vẫn là vàng. */
+#activities-dialog .activities-list button {
+  min-height: 84px;
+  box-shadow: 0 3px 0 #e8cf80;
+}
+#activities-dialog .activities-list button:active {
+  box-shadow: 0 1px 0 #d9b85a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(#game-screen, #lobby-screen, dialog) button {
+    transition: none;
+  }
+}
