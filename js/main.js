@@ -1217,7 +1217,7 @@ ageButton.addEventListener("click", () => {
     const log = {
       age: nextAge,
       content: salary
-        ? `Một năm làm việc bình thường.\n${salary.content}`
+        ? `${salary.retired ? "Một năm nghỉ hưu thong thả." : "Một năm làm việc bình thường."}\n${salary.content}`
         : "Không có gì thay đổi, mọi thứ vẫn vậy.",
     };
 

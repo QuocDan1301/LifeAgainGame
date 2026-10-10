@@ -1,4 +1,4 @@
-import { getCareerAnnualSalary, formatSalary } from "./career-salary.js";
+import { getCareerAnnualSalary, formatSalary, RETIREMENT_AGE } from "./career-salary.js";
 import { careerMilestones, hasCareerMilestone } from "./career-milestones.js";
 
 const sticker = (code) =>
@@ -758,7 +758,8 @@ export function createPromotionEvent(player, random = Math.random, age = player.
 }
 
 export function createEmploymentEvent(player, age) {
-  if (!player.careerPath) return null;
+  // Đã đến tuổi nghỉ hưu thì không còn phỏng vấn lại hay xét nâng bậc.
+  if (!player.careerPath || age >= RETIREMENT_AGE) return null;
   if (age === 22 && player.employmentStatus !== "employed") {
     return createJobInterview(player);
   }

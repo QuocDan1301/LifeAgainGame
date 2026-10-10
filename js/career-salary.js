@@ -39,6 +39,10 @@ export function getPlayerAnnualSalary(player) {
 
 export const formatSalary = formatMoney;
 
+// Từ tuổi nghỉ hưu, người đang có việc thôi đi làm và nhận lương hưu bằng một phần lương bậc cuối.
+export const RETIREMENT_AGE = 62;
+export const PENSION_RATE = 0.5;
+
 export function getAnnualSalaryPayment(player, age, updates = {}) {
   // Existing workers use their current rank; newly hired workers receive
   // their first salary as soon as the employment result is confirmed.
@@ -47,10 +51,18 @@ export function getAnnualSalaryPayment(player, age, updates = {}) {
   const annualAmount = getPlayerAnnualSalary(worker);
   if (!annualAmount || !Number.isInteger(age) || age < player.age || player.lastSalaryAge >= age) return null;
   const years = alreadyWorking ? Math.max(1, age - Math.max(player.age, player.lastSalaryAge ?? player.age)) : 1;
-  const amount = annualAmount * years;
   const rank = worker.job || `bậc ${worker.careerLevel}`;
+  const yearsText = years > 1 ? `${years} năm` : "năm";
+  if (age >= RETIREMENT_AGE) {
+    const pension = Math.round((annualAmount * PENSION_RATE) / 1000) * 1000;
+    const amount = pension * years;
+    const farewell = age === RETIREMENT_AGE ? `Nghỉ hưu sau những năm làm ${rank}. ` : "";
+    return { age, amount, annualAmount: pension, years, rank, retired: true,
+      content: `🌅 ${farewell}Nhận lương hưu ${yearsText}: +${formatSalary(amount)}.` };
+  }
+  const amount = annualAmount * years;
   return { age, amount, annualAmount, years, rank,
-    content: `💰 Nhận lương ${years > 1 ? `${years} năm` : "năm"} ở bậc ${rank}: +${formatSalary(amount)}.` };
+    content: `💰 Nhận lương ${yearsText} ở bậc ${rank}: +${formatSalary(amount)}.` };
 }
 
 // Resolve event money first, then add salary separately so a purchase or bonus

@@ -88,12 +88,17 @@ export function getChildcareExpenses(player, age, updates = {}) {
 
 // Every birthday pays income, then childcare, whether or not a story appears.
 // Chi phí sinh hoạt: từ 23 tuổi (học xong, tự lo cho bản thân), mỗi năm trừ một phần
-// thu nhập từ công việc (lương chính + làm thêm). Không có thu nhập thì không bị trừ.
+// thu nhập từ công việc (lương chính + làm thêm), nhưng không thấp hơn mức tối thiểu
+// để sống, kể cả khi không có thu nhập.
 export const LIVING_COST_MIN_AGE = 23;
 export const LIVING_COST_RATE = 0.3;
+export const LIVING_COST_FLOOR = 24_000_000;
+// Thiếu tiền trả chi phí sinh hoạt thì phải sống tằn tiện, hạnh phúc giảm.
+export const LIVING_SHORTFALL_HAPPINESS = 3;
 export function getLivingCost(age, income) {
-  if (!Number.isInteger(age) || age < LIVING_COST_MIN_AGE || !(income > 0)) return 0;
-  return Math.round((income * LIVING_COST_RATE) / 1000) * 1000;
+  if (!Number.isInteger(age) || age < LIVING_COST_MIN_AGE) return 0;
+  const share = income > 0 ? Math.round((income * LIVING_COST_RATE) / 1000) * 1000 : 0;
+  return Math.max(LIVING_COST_FLOOR, share);
 }
 
 export function migrateChildcareDebt(player, updates) {
@@ -119,8 +124,16 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
   const illness = collectIllnessYear(player, age);
   const lottery = collectLotteryYear(player, age);
   const livingAmount = getLivingCost(age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0));
+  // Ví không xuống dưới 0 vì sinh hoạt phí; phần thiếu được bù bằng cách sống tằn tiện.
+  const livingPaid = Math.min(livingAmount, Math.max(0, player.money));
+  const shortfall = livingAmount - livingPaid;
+  if (shortfall > 0) {
+    player.happiness = Math.max(0, (player.happiness ?? 0) - LIVING_SHORTFALL_HAPPINESS);
+  }
   const living = livingAmount
-    ? { amount: livingAmount, content: `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` }
+    ? { amount: livingPaid, content: shortfall === 0
+      ? `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.`
+      : `🏠 ${livingPaid ? `Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingPaid)}, còn thiếu` : "Không còn tiền trả chi phí sinh hoạt, thiếu"} ${formatSalary(shortfall)} nên phải sống tằn tiện (Hạnh phúc -${LIVING_SHORTFALL_HAPPINESS}).` }
     : null;
   if (living) player.money -= living.amount;
   if (childcare.amount) {
