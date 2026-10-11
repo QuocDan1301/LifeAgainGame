@@ -28,7 +28,7 @@ export function balanceEverydayChoices(event, age) {
 // Không trọn vẹn: phần được cộng còn một nửa. Lựa chọn chỉ có mất mát thì không đổi.
 // Chỉ kết quả không trọn vẹn mới thêm một dòng giải thích vào lời kể.
 export const LUCK_NOTES = {
-  poor: "🌧️ Có điều, kết quả không trọn vẹn như mong muốn.",
+  poor: "",
 };
 export function rollEverydayLuck(choice, player, random = Math.random) {
   const gains = Object.entries(choice.effects ?? {}).filter(([, value]) => value > 0);

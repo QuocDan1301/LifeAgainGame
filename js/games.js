@@ -681,41 +681,119 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
 
   // ---------- Xì dách ----------
   const rankLabel = (rank) => ({ 1: "A", 11: "J", 12: "Q", 13: "K" })[rank] ?? String(rank);
+  // Hình trên lá J, Q, K: quân cờ vua theo màu chất bài.
+  const faceMarks = { 11: "♞", 12: "♛", 13: "♚" };
   function cardView(card, hidden = false) {
     const node = element("div", `game-card${hidden ? " is-hidden" : ""}${["♥", "♦"].includes(card.suit) ? " is-red" : ""}`);
-    node.append(element("span", "", hidden ? "🂠" : `${rankLabel(card.rank)}${card.suit}`));
+    node.setAttribute("role", "img");
+    node.setAttribute("aria-label", hidden ? "Lá bài đang úp" : `${rankLabel(card.rank)}${card.suit}`);
+    const inner = element("div", "game-card-inner");
+    const front = element("div", "game-card-face game-card-front");
+    // Lá úp không ghi giá trị vào DOM để không lộ bài.
+    if (!hidden) {
+      const corner = (place) => {
+        const node = element("span", `game-card-corner ${place}`);
+        node.append(element("b", "", rankLabel(card.rank)), element("i", "", card.suit));
+        return node;
+      };
+      const face = card.rank >= 11;
+      front.append(corner("is-top"), element("span", `game-card-pip${face ? " is-face" : ""}`, face ? faceMarks[card.rank] : card.suit),
+        corner("is-bottom"));
+    }
+    inner.append(front, element("div", "game-card-face game-card-back"));
+    node.append(inner);
     return node;
   }
   const handNames = { doubleAce: "👑 Xì bàn", blackjack: "🃏 Xì dách", five: "✨ Ngũ linh", bust: "💥 Quắc", normal: "" };
+  const payoutText = (value) => `×${String(value).replace(".", ",")}`;
 
   function playBlackjack(stage, round) {
-    const dealerRow = element("div", "game-hand");
-    const playerRow = element("div", "game-hand");
-    const dealerInfo = element("p", "game-hint");
-    const playerInfo = element("p", "game-hint");
+    const seat = (title, place) => {
+      const box = element("div", `bj-seat ${place}`);
+      const head = element("div", "bj-seat-head");
+      const score = element("span", "bj-score");
+      score.setAttribute("aria-hidden", "true");
+      head.append(element("p", "game-hand-title", title), score);
+      const row = element("div", "game-hand");
+      const info = element("p", "bj-info");
+      box.append(head, row, info);
+      return { box, score, row, info };
+    };
+    const dealer = seat("🎩 Nhà cái", "is-dealer");
+    const player = seat("🙋 Bạn", "is-player");
+    const shoe = element("div", "bj-shoe");
+    shoe.setAttribute("aria-hidden", "true");
+    // Sấp tiền polymer Việt Nam, tờ mệnh giá lớn nằm trên cùng.
+    const cash = element("div", "bj-cash");
+    cash.setAttribute("aria-hidden", "true");
+    for (const value of ["100000", "200000", "500000"]) {
+      const note = element("span", `bj-note is-${value}`);
+      note.dataset.value = Number(value).toLocaleString("vi-VN");
+      cash.append(note);
+    }
+    const pot = element("div", "bj-pot");
+    pot.append(cash, element("span", "bj-bet", `Cược ${formatMoney(round.bet)}`));
+    const rules = element("p", "bj-rules",
+      `Xì dách ${payoutText(BLACKJACK_PAYOUTS.blackjack)} · Xì bàn ${payoutText(BLACKJACK_PAYOUTS.doubleAce)} · Ngũ linh ${payoutText(BLACKJACK_PAYOUTS.five)}`);
+    const felt = element("div", "bj-felt");
+    felt.append(shoe, dealer.box, rules, pot, player.box);
+    const table = element("div", "bj-table");
+    table.append(felt);
     const actions = element("div", "license-actions game-bj-actions");
-    stage.append(element("p", "game-hand-title", "🎩 Nhà cái"), dealerRow, dealerInfo,
-      element("p", "game-hand-title", "🙋 Bạn"), playerRow, playerInfo, actions);
+    stage.append(table, actions);
 
     const describe = (cards) => `${handPoints(cards)} điểm${handNames[handType(cards)] ? ` · ${handNames[handType(cards)]}` : ""}`;
-    const render = (revealDealer, animateFrom = Infinity) => {
-      const paint = (row, cards, hideSecond) => {
-        row.replaceChildren(...cards.map((card, index) => cardView(card, hideSecond && index === 1)));
-        [...row.children].forEach((node, index) => {
-          if (index >= animateFrom) node.animate([{ transform: "translateY(-30px) rotateY(90deg)", opacity: 0 }, { transform: "none", opacity: 1 }],
-            { duration: time(350), delay: time((index - animateFrom) * 120), fill: "backwards" });
-        });
-      };
-      paint(dealerRow, round.dealer, !revealDealer);
-      paint(playerRow, round.player, false);
-      dealerInfo.textContent = revealDealer ? describe(round.dealer) : "Một lá đang úp";
-      playerInfo.textContent = describe(round.player);
+    const showHand = (spot, cards, hidden) => {
+      const type = handType(cards);
+      spot.score.textContent = hidden ? "?" : String(handPoints(cards));
+      spot.score.className = `bj-score${hidden ? "" : type === "bust" ? " is-bust" : handNames[type] ? " is-special" : ""}`;
+      spot.info.textContent = hidden ? "Một lá đang úp" : describe(cards);
     };
-    const finish = () => {
+    // Lá bài bay từ hộp bài tới chỗ của nó, vừa bay vừa lật mặt.
+    const dealIn = (node, delay, staysHidden) => {
+      const from = shoe.getBoundingClientRect();
+      const to = node.getBoundingClientRect();
+      const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+      const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+      node.animate([{ transform: `translate(${dx}px, ${dy}px) rotate(-30deg) scale(0.7)`, opacity: 0.3 }, { transform: "none", opacity: 1 }],
+        { duration: time(460), delay: time(delay), easing: "cubic-bezier(0.2, 0.8, 0.3, 1)", fill: "backwards" });
+      if (!staysHidden) {
+        node.firstChild.animate([{ transform: "rotateY(180deg)" }, { transform: "rotateY(180deg)", offset: 0.5 }, { transform: "none" }],
+          { duration: time(460), delay: time(delay), easing: "ease-out", fill: "backwards" });
+      }
+    };
+    const flipOpen = (node, delay) => node.firstChild.animate([{ transform: "rotateY(180deg)" }, { transform: "none" }],
+      { duration: time(520), delay: time(delay), easing: "ease-in-out", fill: "backwards" });
+    const paint = (spot, cards, hideSecond, from, delayOf) => {
+      spot.row.replaceChildren(...cards.map((card, index) => cardView(card, hideSecond && index === 1)));
+      [...spot.row.children].forEach((node, index) => {
+        node.style.setProperty("--i", index);
+        node.style.setProperty("--n", cards.length);
+        if (index >= from) dealIn(node, delayOf(index - from), hideSecond && index === 1);
+      });
+    };
+    let dealerShown = false;
+    // deal: chia ván mới, lá lần lượt cho bạn và nhà cái. player/dealer: chỉ số lá đầu tiên cần bay vào.
+    const render = (revealDealer, motion = {}) => {
+      const deal = motion.deal === true;
+      const dealerFrom = deal ? 0 : motion.dealer ?? Infinity;
+      paint(player, round.player, false, deal ? 0 : motion.player ?? Infinity, (step) => (deal ? step * 2 * 170 : step * 170));
+      paint(dealer, round.dealer, !revealDealer, dealerFrom,
+        (step) => (deal ? (step * 2 + 1) * 170 : (motion.dealerDelay ?? 0) + step * 380));
+      if (revealDealer && !dealerShown && round.dealer.length > 1 && dealerFrom > 1) {
+        flipOpen(dealer.row.children[1], motion.revealDelay ?? 0);
+      }
+      dealerShown = revealDealer;
+      // Điểm nhà cái chỉ hiện khi lá cuối đã nằm yên, tránh lộ kết quả trước hoạt ảnh.
+      if (motion.scoreDelay) setTimeout(() => showHand(dealer, round.dealer, !revealDealer), time(motion.scoreDelay));
+      else showHand(dealer, round.dealer, !revealDealer);
+      showHand(player, round.player, false);
+    };
+    const finish = ({ rendered = false, wait = 600 } = {}) => {
       round.phase = "done";
       const outcome = compareHands(round.player, round.dealer);
       const multiplier = outcome === "lose" ? 0 : outcome === "draw" ? BLACKJACK_PAYOUTS.draw : BLACKJACK_PAYOUTS[outcome];
-      render(true);
+      if (!rendered) render(true);
       actions.replaceChildren();
       const texts = {
         doubleAce: ["👑 Xì bàn!", "Hai con Át! Hôm nay tay thơm hơn cả nước rửa tay!"],
@@ -729,38 +807,49 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       };
       const [title, quote] = texts[outcome];
       settle(round, payout(round.bet, multiplier), `${title.replace(/^\S+\s/u, "")} (bạn ${handPoints(round.player)} điểm, nhà cái ${handPoints(round.dealer)} điểm)`);
-      setTimeout(() => showResult(stage, round, multiplier > 1, title, quote), time(500));
+      // Chip trượt về phía người thắng sau khi lá cuối đã nằm yên.
+      setTimeout(() => felt.classList.add(multiplier > 1 ? "is-win" : multiplier === 1 ? "is-draw" : "is-lose"), time(wait));
+      setTimeout(() => showResult(stage, round, multiplier > 1, title, quote), time(wait + 700));
     };
-    const dealerTurn = () => {
-      if (handType(round.player) !== "bust") {
-        const before = round.dealer.length;
-        playDealer(round);
-        render(true);
-        [...dealerRow.children].slice(before).forEach((node, index) =>
-          node.animate([{ transform: "translateY(-30px)", opacity: 0 }, { transform: "none", opacity: 1 }],
-            { duration: time(350), delay: time(index * 250), fill: "backwards" }));
+    // fromHit: lá bạn vừa rút vẫn đang bay, nhà cái chờ lá đó tới rồi mới lật bài.
+    const dealerTurn = (fromHit = false) => {
+      actions.replaceChildren();
+      const lastPlayerCard = fromHit ? round.player.length - 1 : Infinity;
+      const revealDelay = fromHit ? 460 : 0;
+      if (handType(round.player) === "bust") {
+        render(true, { player: lastPlayerCard, revealDelay, scoreDelay: revealDelay + 520 });
+        return finish({ rendered: true, wait: revealDelay + 650 });
       }
-      finish();
+      const before = round.dealer.length;
+      playDealer(round);
+      const dealerDelay = revealDelay + 560;
+      const settled = dealerDelay + (round.dealer.length - before) * 380 + 120;
+      render(true, { player: lastPlayerCard, dealer: before, dealerDelay, revealDelay, scoreDelay: settled });
+      finish({ rendered: true, wait: settled + 300 });
     };
     const controls = () => {
       actions.replaceChildren();
-      const hit = button("shop-buy game-primary game-hit", "➕ Rút thêm", () => {
+      const hit = button("shop-buy game-primary game-hit bj-button", "➕ Rút thêm", () => {
         round.player.push(round.deck[round.next++]);
         save();
-        render(false, round.player.length - 1);
-        if (!canPlayerHit(round.player)) return dealerTurn();
+        if (!canPlayerHit(round.player)) return dealerTurn(true);
+        render(false, { player: round.player.length - 1 });
         controls();
       });
-      const stand = button("license-answer game-stand", "✋ Dừng", dealerTurn);
+      const stand = button("license-answer game-stand bj-button", "✋ Dừng", () => dealerTurn());
       stand.disabled = !canPlayerStand(round.player);
       if (stand.disabled) stand.textContent = "✋ Dừng (cần từ 16 điểm)";
       actions.append(hit, stand);
       focusFirst();
     };
 
-    render(false, round.phase === "player" && round.player.length === 2 ? 0 : Infinity);
+    const freshDeal = round.phase === "player" && round.player.length === 2;
     // Xì bàn hoặc xì dách ngay khi chia: mở bài và phân thắng thua luôn.
-    if (isNaturalHand(round.player) || isNaturalHand(round.dealer)) return finish();
+    if (isNaturalHand(round.player) || isNaturalHand(round.dealer)) {
+      render(true, { deal: freshDeal });
+      return finish({ rendered: true, wait: freshDeal ? 4 * 170 + 600 : 600 });
+    }
+    render(false, { deal: freshDeal });
     if (!canPlayerHit(round.player)) return dealerTurn();
     controls();
   }

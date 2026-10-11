@@ -18,6 +18,7 @@ import { createLaterSpecialEvent, createCentennialMemorial } from "./special-lat
 import { createEverydayAdditions } from "./everyday-additions.js";
 import { reviewEventMedia } from "./semantic-event-media.js";
 import { enrichEverydayRewards } from "./everyday-rewards.js";
+import { createVietnamEverydayEvents } from "./vietnam-stories.js";
 import { createCareerSparkEvents } from "./career-milestones.js";
 export const ageEvents = {};
 
@@ -68,6 +69,9 @@ export function getBaseAgeEvents(age, careerPath, player = {}) {
 }
 
 export function getAgeEvents(age, careerPath, player = {}) {
-  const additions = age === 16 ? [] : createEverydayAdditions(age);
-  return [...(getBaseAgeEvents(age, careerPath, player) ?? []), ...additions].map(event => reviewEventMedia(enrichEverydayRewards({ ...event, age }, age)));
+  const reserved = (getBaseAgeEvents(age, careerPath, player) ?? []).filter(event =>
+    isPriorityEvent(event) || event.specialId || event.choices?.some(choice => choice.memory || choice.keepsake),
+  ).map(event => event.choices?.some(choice => choice.memory) && !event.specialId
+    ? { ...event, category: "special" } : event);
+  return [...reserved, ...createVietnamEverydayEvents(age, player)].map(event => reviewEventMedia({ ...event, age }));
 }

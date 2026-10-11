@@ -1,5 +1,6 @@
 // 30 sự kiện • 60 lựa chọn • Emoji ở cả hai popup.
 // Đặt file này cùng thư mục js/events.js; media ở img/events/childhood.
+import { applyChildhoodHumor } from "./childhood-humor.js";
 const asset = () => "";
 
 export const ageEvents1To10 = {
@@ -1103,8 +1104,9 @@ export const ageEvents1To10 = {
 };
 
 // Chuyển tên Emoji thành đường dẫn dựa trên vị trí file JS.
-for (const events of Object.values(ageEvents1To10)) {
-  for (const event of events) {
+for (const [age, events] of Object.entries(ageEvents1To10)) {
+  for (const [index, event] of events.entries()) {
+    Object.assign(event, applyChildhoodHumor(event, Number(age), index));
     event.image = asset(event.image);
     for (const choice of event.choices) choice.image = asset(choice.image);
   }

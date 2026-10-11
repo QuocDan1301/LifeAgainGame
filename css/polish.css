@@ -1,0 +1,244 @@
+/* ===== Lớp trau chuốt giao diện =====
+   Nạp sau cùng. Chỉ thêm chiều sâu, chuyển động và nhịp điệu thị giác;
+   không đổi bố cục, màu nhận diện hay chức năng của từng phần. */
+:root {
+  --polish-shadow: 16 40 63;
+  --polish-gold: #ffc93c;
+  --polish-gold-edge: #d9a21c;
+  --polish-spring: cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+/* ----- Nền: thêm ánh sáng nhẹ thay cho màu phẳng ----- */
+body {
+  background:
+    radial-gradient(circle at 12% 8%, rgb(255 228 120 / 55%), transparent 38%),
+    radial-gradient(circle at 88% 92%, rgb(110 205 240 / 45%), transparent 42%),
+    #e8f3f8;
+}
+/* Khung game trong suốt: các khối nằm thẳng trên nền trang */
+.game {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* ----- Thanh tiêu đề ----- */
+.game-header {
+  box-shadow: 0 3px 0 #e6b92e, 0 6px 14px rgb(150 110 0 / 14%);
+}
+
+/* ----- Nhật ký: dòng thời gian, năm mới nhất nổi bật ----- */
+.journal {
+  border-color: #ffd34d;
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 75%),
+    0 4px 0 #e6b92e,
+    0 8px 18px rgb(150 110 0 / 14%);
+}
+#life-log {
+  position: relative;
+  padding-left: 2rem;
+}
+#life-log::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0.6rem;
+  width: 2px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(to bottom, rgb(180 130 0 / 45%) 0 6px, transparent 6px 11px);
+}
+.log-entry {
+  position: relative;
+  padding: 0.5rem 0.9rem 0.6rem;
+  border-radius: 1.2rem;
+  background: rgb(255 255 255 / 58%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 85%), 0 2px 6px rgb(150 110 0 / 10%);
+}
+/* Nhãn tuổi nằm cùng dòng đầu tiên để tiết kiệm một dòng mỗi năm */
+.log-entry::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.log-entry p {
+  font-size: 1.7rem;
+  line-height: 1.45;
+}
+.log-entry p + p { margin-top: 0.15rem; }
+.log-entry::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  left: -1.9rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--polish-gold);
+  box-shadow: 0 0 0 3px #fff8dc, 0 0 0 4px rgb(180 130 0 / 35%);
+}
+.log-entry + .log-entry { margin-top: 0.6rem; }
+.log-entry h3 {
+  float: left;
+  margin: 0.15rem 0.6rem 0 0;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  background: linear-gradient(#ffe27a, var(--polish-gold));
+  box-shadow: 0 2px 0 var(--polish-gold-edge);
+  font-size: 1.45rem;
+  line-height: 1.55;
+}
+.log-entry:last-child {
+  background: #fff;
+  box-shadow: 0 0 0 2px #ffd34d, 0 6px 16px rgb(150 110 0 / 18%);
+  animation: polish-log-in 460ms var(--polish-spring) both;
+}
+.log-entry:last-child::before {
+  background: #ff8a3d;
+  box-shadow: 0 0 0 3px #fff8dc, 0 0 0 6px rgb(255 138 61 / 35%);
+}
+.log-entry .stat-increase,
+.log-entry .stat-decrease {
+  padding: 0 0.5rem;
+  border-radius: 0.6rem;
+  font-weight: 700;
+}
+.log-entry .stat-increase { background: rgb(33 135 57 / 12%); }
+.log-entry .stat-decrease { background: rgb(198 40 40 / 10%); }
+@keyframes polish-log-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+}
+
+/* Dải cảnh báo sức khỏe dính ở đầu nhật ký: che phần chữ cuộn phía sau nó */
+.health-alert {
+  box-shadow: 0 -1.6rem 0 0.6rem #f0dd7d, 0 4px 10px rgb(160 40 40 / 14%);
+}
+
+/* ----- Bốn nút chức năng: nổi khối, ấn xuống khi chạm ----- */
+#game-screen .game-actions :is(#assets, #relationships, #education, #activities) {
+  border-color: #1d3a6e;
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 45%),
+    inset 0 -3px 0 rgb(20 50 140 / 25%),
+    0 4px 0 #1d3a6e,
+    0 7px 12px rgb(29 58 110 / 25%);
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 150ms ease;
+}
+#game-screen .game-actions :is(#assets, #relationships, #education, #activities):active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 35%),
+    inset 0 -2px 0 rgb(20 50 140 / 25%),
+    0 1px 0 #1d3a6e,
+    0 2px 4px rgb(29 58 110 / 25%);
+}
+@media (hover: hover) {
+  #game-screen .game-actions :is(#assets, #relationships, #education, #activities):hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+}
+#game-screen .action-icon {
+  background: rgb(255 255 255 / 28%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 60%);
+}
+
+/* ----- Nút tăng tuổi: khối tròn nổi, vòng sáng nhịp thở mời bấm ----- */
+.age-button {
+  background: radial-gradient(circle at 35% 30%, #e4ff9a 0%, var(--green) 45%, #8fd11e 100%);
+  box-shadow:
+    0 0 0 0.5rem #e8f3f8,
+    inset 0 -5px 0 rgb(60 110 0 / 28%),
+    inset 0 4px 0 rgb(255 255 255 / 55%),
+    0 0.9rem 1.6rem rgb(60 110 0 / 35%);
+}
+.age-button::after {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
+  border-radius: 50%;
+  border: 3px solid rgb(185 242 56 / 80%);
+  opacity: 0;
+  pointer-events: none;
+}
+.age-button:not(:disabled)::after {
+  animation: polish-breathe 2.4s ease-out infinite;
+}
+.age-button:disabled {
+  filter: grayscale(0.4) brightness(0.95);
+}
+@keyframes polish-breathe {
+  0% { opacity: 0.85; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(1.28); }
+}
+
+/* ----- Chỉ số: thanh bóng loáng, viền mềm ----- */
+progress {
+  height: 1.6rem;
+  border-color: rgb(8 134 186 / 70%);
+  box-shadow: inset 0 1px 2px rgb(var(--polish-shadow) / 18%);
+}
+progress::-webkit-progress-value {
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / 50%) 0 40%, transparent 41%),
+    var(--bar-color);
+  transition: width 500ms var(--polish-spring);
+}
+progress::-moz-progress-bar {
+  background:
+    linear-gradient(to bottom, rgb(255 255 255 / 50%) 0 40%, transparent 41%),
+    var(--bar-color);
+}
+.character .avatar img {
+  transition: transform 300ms var(--polish-spring);
+}
+@media (hover: hover) {
+  .character .avatar:hover img { transform: scale(1.06) rotate(-2deg); }
+}
+
+/* ----- Hộp thoại: nền mờ phía sau, lựa chọn nổi lên khi rê chuột ----- */
+dialog::backdrop {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+#event-dialog .event-choice {
+  box-shadow: 0 3px 0 #e2c565;
+  transition: transform 140ms ease, box-shadow 140ms ease, background 150ms ease;
+}
+@media (hover: hover) {
+  #event-dialog .event-choice:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 #e2c565, 0 8px 14px rgb(150 110 0 / 16%);
+  }
+}
+#event-dialog .event-choice:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #e2c565;
+}
+
+/* ----- Bến xe: nút chính có vệt sáng lướt qua mời bấm ----- */
+#new-life-button {
+  position: relative;
+  overflow: hidden;
+}
+#new-life-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 55%) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: polish-shine 3.6s ease-in-out 1.2s infinite;
+  pointer-events: none;
+}
+@keyframes polish-shine {
+  0%, 60% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .log-entry:last-child,
+  .age-button:not(:disabled)::after,
+  #new-life-button::after { animation: none; }
+  #game-screen .game-actions :is(#assets, #relationships, #education, #activities),
+  #event-dialog .event-choice,
+  .character .avatar img { transition: none; }
+}

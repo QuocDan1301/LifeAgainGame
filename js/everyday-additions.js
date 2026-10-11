@@ -1,4 +1,5 @@
 import { everydayAdditions } from "./everyday-additions-data.js";
+import { applyChildhoodHumor } from "./childhood-humor.js";
 import { openMojiArt } from "./event-art.js";
 import { enrichEverydayRewards } from "./everyday-rewards.js";
 
@@ -12,5 +13,5 @@ export function createEverydayAdditions(age) {
       effects: {},
       ...openMojiArt(code, title), confirmText: "Tiếp tục", achievementIds: [],
     })),
-  })).map(event => enrichEverydayRewards(event, age));
+  })).map((event, index) => applyChildhoodHumor(enrichEverydayRewards(event, age), age, index + 3));
 }

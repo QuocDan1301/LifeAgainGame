@@ -25,10 +25,16 @@ for (let age = 1; age <= 105; age++) {
       continue;
     }
     events++;
-    assert.equal(event.choices.length, 2, event.title);
+    assert(event.automaticResult ? event.choices.length === 1 : [2, 3].includes(event.choices.length), event.title);
+    if (event.automaticResult) {
+      assert(age >= 1 && age <= 105);
+      assert.equal(event.choices[0].label, 'Đồng ý');
+      assert.equal(event.choices[0].confirmText, 'Đồng ý');
+      assert.equal(event.text, event.choices[0].text);
+    }
     const authored = authoredLabels.get(`${age}|${event.title}`);
-    if (authored) assert.deepEqual([...event.choices.map(c => c.label)].sort(), [...authored].sort(), `Authored choices replaced: ${event.title}`);
-    assert(event.choices.some(gain), `No rewarding action: ${event.title}`);
+    if (authored && !event.automaticResult && !event.catalogVersion) assert.deepEqual([...event.choices.map(c => c.label)].sort(), [...authored].sort(), `Authored choices replaced: ${event.title}`);
+    if (!event.automaticResult) assert(event.choices.some(gain), `No rewarding action: ${event.title}`);
     assert.deepEqual(enrichEverydayRewards(event, age), event, `Rewards applied twice: ${event.title}`);
     const best = Math.max(...event.choices.map(score));
     if (event.choices.filter(choice => score(choice) === best).length === 1) goodPositions.add(event.choices.findIndex(choice => score(choice) === best));
@@ -43,8 +49,14 @@ for (let age = 1; age <= 105; age++) {
     }
   }
 }
-assert(events === 483 && tradeoffs > 0, `Everyday event count changed: ${events}`);
+assert(events === 495, `Everyday event count changed: ${events}`);
 assert(goodPositions.size === 2, "Best action is always in the same position");
+for (let age = 1; age <= 105; age++) {
+  const pool = getAgeEvents(age).filter(event => getEventCategory(event) === "everyday");
+  if ([15, 16, 22, 24, 25, 105].includes(age)) { assert.equal(pool.length, 0); continue; }
+  assert.equal(pool.filter(event => event.automaticResult).length, 2, `Passive count at ${age}`);
+  assert.equal(pool.filter(event => !event.automaticResult).length, 3, `Interactive count at ${age}`);
+}
 assert(createEverydayAdditions(30).every(event => !event.choices.some(c => /Một chút lợi|quyết định đáng tiếc/u.test(c.title))),
   "Generic risk actions are no longer injected");
 

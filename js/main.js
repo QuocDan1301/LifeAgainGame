@@ -5,7 +5,7 @@ import {
   canChooseCareer,
   getStudyBlockLabel,
 } from "./study-blocks.js";
-import { createEventLogSummary, summarizeLifeLog } from "./log-summary.js";
+import { compactLogText, createEventLogSummary, summarizeLifeLog } from "./log-summary.js";
 import { createEventImageRenderer } from "./event-image.js";
 import { formatMoney, formatMoneyAmount, formatMoneyText } from "./money-format.js";
 import {
@@ -652,7 +652,7 @@ initRelationships(state, saveEventProgress, (log) => {
   renderStats();
 });
 function renderLogEntry(log) {
-  const text = log.summary ?? summarizeLifeLog(log.content);
+  const text = compactLogText(log.summary ?? summarizeLifeLog(log.content));
   const last = logElement.lastElementChild;
   const sameAge = last?.dataset.age === String(log.age);
   // Nội dung trùng hệt trong cùng tuổi chỉ hiện một dòng kèm số lần (×2, ×3…).
@@ -694,7 +694,7 @@ function updateLogEntry(log) {
     renderLogEntry(log);
     return;
   }
-  const text = log.summary ?? summarizeLifeLog(log.content);
+  const text = compactLogText(log.summary ?? summarizeLifeLog(log.content));
   line.dataset.text = text;
   renderLogContent(line, text);
 }
@@ -883,6 +883,7 @@ function showPendingEvent() {
       pending.stage === "choice"
         ? events.find(
             (event) =>
+              (pending.id && event.id === pending.id) ||
               event.title === pending.title ||
               event.title
                 .replace(
@@ -907,6 +908,12 @@ function showPendingEvent() {
     if (current) {
       if (pending.stage === "choice" && pending.category === "everyday") {
         pending.choices = current.choices;
+        pending.automaticResult = current.automaticResult === true;
+        pending.catalogVersion = current.catalogVersion;
+        if (current.catalogVersion || pending.automaticResult) {
+          pending.title = current.title;
+          pending.text = current.text;
+        }
       }
       if (pending.age >= 23 && pending.stage === "choice" && !pending.kind) {
         pending.title = current.title;
@@ -928,6 +935,11 @@ function showPendingEvent() {
         }
       }
     }
+  }
+  // Passive stories open directly on their saved result, with one acknowledgement.
+  if (pending.stage === "choice" && pending.automaticResult) {
+    chooseEventAction(0);
+    return;
   }
   reviewPendingMedia(pending);
   // Remove the old introductory line from events already saved mid-choice.
@@ -1339,7 +1351,7 @@ function chooseEventAction(index) {
     return;
   }
   // Sự kiện thường ngày có may rủi theo chỉ số; kết quả lưu ngay nên tải lại không tung lại.
-  if (pending.category === "everyday")
+  if (pending.category === "everyday" && !pending.automaticResult && !pending.catalogVersion)
     choice = rollEverydayLuck(choice, state.player);
   // Hạnh phúc từ 70: thất bại nhỏ chỉ trừ một nửa hạnh phúc (không đổi sức khỏe, tiền).
   choice = softenSetback(state.player, choice, pending.category);
@@ -1562,19 +1574,20 @@ function chooseEventAction(index) {
     achievementIds: choice.achievementIds ?? [],
     logSummary:
       choice.logSummary ??
-      createEventLogSummary({
+      (pending.automaticResult ? `${pending.title}\n${resultContent}` : createEventLogSummary({
         title: pending.title,
-        choiceLabel: choice.label,
+        choiceLabel: pending.automaticResult ? "" : choice.label,
         resultTitle: choice.title,
         resultText: choice.text,
         changes,
-      }),
+      })),
     // Nhật ký ghi cả tình huống, lựa chọn và kết quả
     logContent:
       choice.logContent ??
-      `${pending.logPrefix ?? ""}${pending.text}\n` +
-        `Bạn chọn: ${choice.label}\n` +
-        resultContent,
+      (pending.automaticResult
+        ? resultContent
+        : `${pending.logPrefix ?? ""}${pending.text}\n` +
+          `Bạn chọn: ${choice.label}\n` + resultContent),
     updates: updates,
   };
   saveEventProgress();
@@ -1623,6 +1636,10 @@ ageButton.addEventListener("click", () => {
   let childEvent = createChildProposalEvent(state.player, nextAge);
   const fixedPriorityEvent =
     (nextAge === 105 ? ageStories[0] : null) ??
+    (nextAge === 16 ? (() => {
+      const sparks = ageStories.filter(event => event.kind === "career-spark");
+      return sparks[Math.floor(Math.random() * sparks.length)] ?? null;
+    })() : null) ??
     promotionEvent ??
     orientationEvent ??
     schoolYearEvent ??
@@ -1836,6 +1853,8 @@ ageButton.addEventListener("click", () => {
     id: story.id,
     kind: story.kind,
     addedEveryday: story.addedEveryday === true,
+    automaticResult: story.automaticResult === true,
+    catalogVersion: story.catalogVersion,
     category: story.category,
     person: story.person,
     specialId: story.specialId,
