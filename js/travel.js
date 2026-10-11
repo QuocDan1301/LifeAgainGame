@@ -1,6 +1,8 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
+import { getTravelGain } from "./mood-rules.js";
 
 // Du lịch: trả chi phí chuyến đi để tăng hạnh phúc. Mỗi năm đi được một chuyến.
+// Cùng một điểm đến nhiều năm liên tiếp thì hiệu quả giảm dần (xem TRAVEL_REPEAT_RATES).
 export const destinations = [
   { id: "da-nang", icon: "🌉", name: "Đà Nẵng", country: "Việt Nam", cost: 3_000_000, happiness: 5 },
   { id: "hoi-an", icon: "🏮", name: "Hội An", country: "Việt Nam", cost: 4_000_000, happiness: 6 },
@@ -37,13 +39,15 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
   function travel(place) {
     const player = state.player;
     if (player.isAlive === false || player.money < place.cost || hasTripThisYear(player)) return;
+    const { count, rate, gain } = getTravelGain(player, place);
     player.money -= place.cost;
     player.tripsTaken = { ...(player.tripsTaken ?? {}), [place.id]: player.age };
+    player.travelStreak = { id: place.id, lastAge: player.age, count };
     const before = player.happiness;
-    player.happiness = Math.min(100, before + place.happiness);
+    player.happiness = Math.min(100, before + gain);
     const gained = player.happiness - before;
     const content = `✈️ Du lịch ${place.icon} ${place.name} (${place.country}): Tiền -${formatMoneyAmount(place.cost)} VNĐ` +
-      `${gained ? ` · Hạnh phúc +${gained}` : ""}.`;
+      `${gained ? ` · Hạnh phúc +${gained}` : ""}${rate < 1 ? ` (lần thứ ${count} liên tiếp, hiệu quả ${Math.round(rate * 100)}%)` : ""}.`;
     const log = { age: player.age, content, summary: content };
     state.logs.push(log);
     localStorage.setItem("lifeAgainSave", JSON.stringify(state));
@@ -51,6 +55,15 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
     renderStats();
     renderLogEntry(log);
     render(place.id);
+  }
+
+  // Số điểm thực nhận hiển thị trước khi trả tiền: đã tính lặp lại điểm đến và mức trần 100.
+  function travelFigures(place) {
+    const { count, rate, raw, gain } = getTravelGain(state.player, place);
+    const notes = [];
+    if (rate < 1) notes.push(`lần thứ ${count} liên tiếp: ${Math.round(rate * 100)}% hiệu quả`);
+    if (gain < raw) notes.push("chạm mức 100");
+    return `💰 Chi phí: ${formatMoney(place.cost)}\n😊 Hạnh phúc +${gain}${notes.length ? ` (${notes.join(", ")})` : ""}`;
   }
 
   function render(justVisited = null) {
@@ -78,7 +91,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
         action.disabled = traveled || !affordable || player.isAlive === false;
         item.append(
           element("h4", "", `${place.icon} ${place.name} · ${place.country}`),
-          element("p", "shop-figures", `💰 Chi phí: ${formatMoney(place.cost)}\n😊 Hạnh phúc +${place.happiness}`),
+          element("p", "shop-figures", travelFigures(place)),
           action,
         );
         items.append(item);
@@ -87,7 +100,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
       return card;
     });
     body.replaceChildren(back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)}`),
-      element("p", "game-motto", "Mỗi năm đi được một chuyến. Hạnh phúc tối đa 100."), ...cards);
+      element("p", "game-motto", "Mỗi năm đi được một chuyến. Hạnh phúc tối đa 100. Cùng một nơi nhiều năm liền sẽ bớt hào hứng: năm thứ hai 75%, từ năm thứ ba 50%; đổi nơi hoặc nghỉ một năm thì vui trọn vẹn."), ...cards);
   }
 
   $("activity-travel").addEventListener("click", () => {

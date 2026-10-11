@@ -1,0 +1,98 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Polish checks</title>
+<pre id="polish-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("polish-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const M = await import("../js/career-milestones.js");
+    const { createEmploymentEvent, createPromotionEvent } = await import("../js/career-jobs.js");
+    const { createLostChildSpecialStep } = await import("../js/special-event-10.js");
+    const { getTrainingGain, developmentActivities } = await import("../js/self-development.js");
+    const A = await import("../js/appearance-rules.js");
+    const { renderLifeSummary } = await import("../js/life-profile.js");
+
+    // 4. Khóa bậc nghề: một hàm dùng chung, theo mã ngành, tiến độ thuộc từng cuộc đời.
+    const law = { id: "law", field: "Luật" };
+    assert(M.getRankLock({ careerSpark: "law", careerPath: law }).maxRank === 3, "Age-16 success + same career at 18 unlocks rank 3");
+    assert(M.getRankLock({ careerSpark: null, careerPath: law }).maxRank === 2, "Failed or skipped age-16 chain: max rank 2");
+    const other = M.getRankLock({ careerSpark: "acting", careerPath: law });
+    assert(other.maxRank === 2 && other.reason.includes("ngành khác") === false && other.reason.includes("Điện ảnh"), "Success in another career: max rank 2 with the reason");
+    const worker = extra => ({ ...createInitialState().player, age: 36, intelligence: 60, employmentStatus: "employed", careerLevel: 2,
+      careerPath: law, employedSince: 25, nextPromotionAge: 37, ...extra });
+    assert(createEmploymentEvent(worker(), 37) === null, "Without the milestone there is no rank-3 review");
+    assert(createEmploymentEvent(worker({ careerSpark: "law" }), 37)?.kind === "career-promotion", "With the milestone the rank-3 review follows");
+    assert(createEmploymentEvent({ ...worker({ careerSpark: "law", careerLevel: 1, nextPromotionAge: 27, age: 26 }) }, 27)?.specialStep === 1,
+      "The milestone chain replaces the first promotion");
+    assert(createEmploymentEvent({ ...worker({ careerLevel: 1, nextPromotionAge: 27, age: 26 }) }, 27)?.specialStep === undefined,
+      "The original first promotion stays as the fallback");
+    // Chuỗi tuổi 16: random vẫn giữ, tỉ lệ dựa trên chỉ số và công khai trước; dừng lại thì nói rõ không quay lại.
+    const step1 = M.createCareerSparkStep("football", 1, () => 0.5, { health: 90 });
+    assert(step1.text.includes("khả năng thành công khoảng 80%") && step1.text.includes("Sức khỏe"), "Odds shown before choosing, based on a matching stat");
+    assert(M.getSparkChance("law", { intelligence: 20 }).chance < M.getSparkChance("law", { intelligence: 90 }).chance, "Higher stat, better odds");
+    const stop = step1.choices.find(c => c.title);
+    assert(stop.confirmText === "Dừng tại đây" && stop.text.includes("không quay lại"), "Stopping says the chance will not come back");
+    assert(M.createCareerSparkStep("law", 4, () => 0.99, { intelligence: 90 }).choices[0].outcome === "failure" &&
+      M.createCareerSparkStep("law", 4, () => 0, { intelligence: 10 }).choices[0].outcome === "success", "The random success/failure step is kept");
+
+    // 3. Trường đặc biệt tuổi 10–11: nâng chỉ số thấp lên ít nhất 80.
+    const school = createLostChildSpecialStep(5);
+    assert(school.choices[0].minimumStats === 80 && school.choices[0].text.includes("80%"), "School year lifts low stats to at least 80");
+    // Hoạt động lặp lại khi chỉ số đã cao: tăng chậm hơn.
+    const gym = developmentActivities.find(a => a.id === "gym");
+    const spa = developmentActivities.find(a => a.id === "spa");
+    assert(getTrainingGain({ health: 85, illnesses: [] }, gym, 6).gain === 3 && getTrainingGain({ health: 60, illnesses: [] }, gym, 6).gain === 6, "Training slows down from 80");
+    assert(getTrainingGain({ appearance: 90 }, spa, 3).gain === 2, "Applies to every stat");
+    // Công khai tỉ lệ trước khi chọn.
+    let rolls = [0, 0];
+    assert(createPromotionEvent(worker({ careerLevel: 1, age: 30 }), () => rolls.shift() ?? 0, 31).text.includes("khả năng được chọn khoảng"), "Promotion odds shown");
+    assert(A.createCastingEvent({ employmentStatus: "employed", careerPath: { id: "acting" }, employedSince: 25, money: 0, appearance: 50 }, 30, () => 0)
+      .choices.every(c => /khả năng \d+%/.test(c.label)), "Casting odds shown on each option");
+
+    // Giao diện: tuổi già với sức khỏe cao được giải thích; khóa bậc ở màn chọn ngành; trò chuyện với bạn.
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    const $ = id => document.getElementById(id);
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", age: 99, health: 88, isAlive: false, deathCause: "old-age", oldAgeDeath: { health: 88, chance: 0.12 } });
+    renderLifeSummary(state);
+    assert($("death-content").textContent.includes("Dù sức khỏe vẫn còn 88%") && $("death-content").textContent.includes("12%"), "Old-age death with high health is explained");
+    const { careerEvent } = await import("../js/career-event.js");
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 80, happiness: 60, intelligence: 60, appearance: 50, money: 0,
+      studyBlock: "D01", careerSpark: "law", illnessPlan: [], relatives: [], friends: [{ id: "f1", name: "Hải", since: 15, bond: 50 }], healthCheckAge: 17 });
+    state.pendingEvent = { ...careerEvent, stage: "choice", age: 18 };
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const choiceButton = text => [...$("event-choices").querySelectorAll("button")].find(b => b.textContent.includes(text));
+    assert(choiceButton("Luật").textContent.includes("mở được bậc 3") && choiceButton("Kế toán").textContent.includes("🔒 Tối đa bậc 2"),
+      "Career choice shows the lock icon and reason");
+    document.querySelectorAll("dialog[open]").forEach(d => d.close());
+    state.pendingEvent = null;
+    state.player.age = 20;
+    $("relationships").click();
+    const talk = () => $("relationship-family").querySelector('[data-action="friend-talk"]');
+    talk().click();
+    assert(state.player.friends[0].bond === 53 && state.player.friends[0].talkedAt === 20 && talk().disabled, "Friends can chat once a year for a little closeness");
+    result.textContent = "PASS: shared rank lock (success+same career / failure / other career), milestone chain replaces first promotion with fallback kept, rank-3 gate; age-16 odds shown and stat-based, random step kept, stop text; school minimum 80; diminishing training from 80; odds shown for promotion and casting; old-age death explained; lock note on career choice; yearly friend chat";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

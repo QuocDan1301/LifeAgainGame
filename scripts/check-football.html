@@ -1,0 +1,50 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Football fitness checks</title>
+<pre id="football-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("football-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const { careerEvent } = await import("../js/career-event.js");
+    const { FOOTBALL_MIN_HEALTH } = await import("../js/health-rules.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 45, happiness: 50, intelligence: 50,
+      appearance: 50, money: 0, studyBlock: "B00", illnessPlan: [] });
+    state.pendingEvent = { ...careerEvent, stage: "choice", age: 18 };
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const football = () => [...$("event-choices").querySelectorAll("button")]
+      .find(button => button.textContent.includes("Bóng đá"));
+    assert($("event-dialog").open && football(), "Age-18 career choice is open");
+    football().click();
+    assert(state.pendingEvent.id === careerEvent.id && state.pendingEvent.stage === "choice", "Unfit players cannot study football");
+    assert(!$("career-eligibility-feedback").hidden && $("career-eligibility-feedback").textContent.includes(`${FOOTBALL_MIN_HEALTH}%`),
+      "The feedback explains the fitness requirement");
+    state.player.health = FOOTBALL_MIN_HEALTH;
+    football().click();
+    assert(state.pendingEvent.id !== careerEvent.id || state.pendingEvent.stage !== "choice", "Fit players can study football");
+    result.textContent = `PASS: football needs health ${FOOTBALL_MIN_HEALTH}% to be chosen at 18`;
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

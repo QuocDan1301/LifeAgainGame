@@ -40,7 +40,7 @@ ageEvents[10] = [...ageEvents[10], lostChildSpecialEvent];
 export function getBaseAgeEvents(age, careerPath, player = {}) {
   if (age === 24) return [];
   // Tuổi 16 chỉ có chuỗi khám phá một ngành, thay cho mọi sự kiện đời thường.
-  if (age === 16) return createCareerSparkEvents(player.studyBlock);
+  if (age === 16) return createCareerSparkEvents(player.studyBlock, Math.random, player);
   if (age === 50) return [...createLaterLifeEvents(age), theaterSpecialEvent, ...(ageEvents[age] ?? [])];
   if (age === 55) return [...createLaterLifeEvents(age), luggageSpecialEvent, ...(ageEvents[age] ?? [])];
   if (age === 105) return [createLaterSpecialEvent(age, player)];

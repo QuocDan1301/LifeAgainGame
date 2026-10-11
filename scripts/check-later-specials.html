@@ -72,7 +72,7 @@
       birthday.disabled=false;document.getElementById('game-screen').hidden=false;
       const pool=getAgeEvents(age,state.player.careerPath,state.player);
       const index=pool.findIndex(e=>e.specialId==='later-'+age);
-      let rolls=age>=98&&age<105?[0,0.1,(index+0.1)/pool.length]:[0.1,(index+0.1)/pool.length];
+      let rolls=age>=70&&age<105?[0.99,0.1,(index+0.1)/pool.length]:[0.1,(index+0.1)/pool.length];
       Math.random=()=>rolls.shift()??0.1;birthday.click();Math.random=()=>0.99;
       if(age===105){assert(state.pendingEvent.addedEveryday,'Ordinary scene before finale');choose(0);confirm.click();Object.assign(state.player,{intelligence:50,happiness:50});}
       assert(state.pendingEvent?.specialId==='later-'+age,'Random special selected at '+age);

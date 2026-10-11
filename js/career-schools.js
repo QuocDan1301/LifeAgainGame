@@ -1,5 +1,7 @@
 import { openMojiArt } from "./event-art.js";
 import { ensureEventOpenMoji } from "./event-openmoji.js";
+import { getAnnualTuition, TUITION_FIRST_AGE, TUITION_LAST_AGE } from "./family.js";
+import { formatMoney } from "./money-format.js";
 // Nguồn ngành đào tạo được lưu theo từng lựa chọn để tiện cập nhật.
 const school = (id, name, city, program, source) => ({
   id, name, city, program, source,
@@ -132,7 +134,7 @@ function createSchoolEventData(careerPath) {
       title: "🏫 Chọn trường theo học",
       text: `Bạn đã chọn ${careerPath.field}. Hãy chọn trường bạn muốn theo học.${isContentCreator ? "\nNgành Truyền thông đa phương tiện giúp bạn học kỹ năng sản xuất nội dung cho hướng này." : ""}`,
       choices: schools.slice(0, 3).map((entry) => ({
-        label: `🏫 ${entry.name} (${entry.city})`,
+        label: `🏫 ${entry.name} (${entry.city}) · Học phí ${formatMoney(getAnnualTuition({ id: careerPath.id, school: entry }))}/năm (${TUITION_FIRST_AGE}–${TUITION_LAST_AGE} tuổi)`,
         title: "🎓 Bắt đầu học tại trường mới",
         text: `Bạn chọn ${careerPath.field}.\nTrường: ${entry.name} (${entry.city}).\nChương trình: ${entry.program}.\nHành trình học tập của bạn bắt đầu!`,
         careerPath: {

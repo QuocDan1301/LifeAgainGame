@@ -96,7 +96,11 @@
     worker({ careerSpark: "acting" });
     birthday.click();
     assert(state.pendingEvent.kind === "career-promotion" && state.pendingEvent.specialStep === 1, "Milestone replaces the first promotion");
-    proceed(); proceed(); proceed();
+    for (const step of [2, 3, 4]) {
+      pick(choice => choice.nextStep);
+      assert(state.pendingEvent.stage === "choice" && state.pendingEvent.specialStep === step && confirm.hidden,
+        "Promotion goes straight to the next situation, without a 'Bạn chọn' screen");
+    }
     pick(choice => choice.correct === true);
     confirm.click();
     assert(state.player.careerLevel === 2 && state.player.nextPromotionAge === 37, "Four correct answers reach rank 2 and schedule the final review");
@@ -115,7 +119,11 @@
 
     // Chọn ngành khác ở tuổi 18: sự kiện cũ, không mở bậc 3.
     worker({ careerSpark: "law" });
+    // Khả năng được chọn khi xử lý đúng tung lúc sự kiện xuất hiện; cố định ở mức được chọn.
+    const promotionRandom = Math.random;
+    Math.random = () => 0;
     birthday.click();
+    Math.random = promotionRandom;
     assert(state.pendingEvent.kind === "career-promotion" && !state.pendingEvent.specialStep, "Other careers keep the old promotion");
     pick(choice => choice.correct === true);
     confirm.click();

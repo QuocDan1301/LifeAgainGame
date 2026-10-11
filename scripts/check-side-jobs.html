@@ -26,9 +26,11 @@
     assert(getEducationStatus({ age: 20, sideJobs: sample.sideJobs }).text === "Nhân viên GS25", "No main job shows the store");
     assert(getEducationStatus({ age: 25, employmentStatus: "employed", job: "💻 Lập trình viên tập sự", sideJobs: sample.sideJobs }).text
       .includes("Lập trình viên"), "Main job takes priority");
+    // Không còn kẹp sức khỏe ở 1: làm đến kiệt sức thì phải cấp cứu (lần đầu không tử vong).
     const weak = { money: 0, health: 3, sideJobs: [{ storeId: "gs25", shift: "full-time", startedAtAge: 1 }] };
-    collectSideJobYear(weak, 30);
-    assert(weak.health === 1, "Overwork never kills the character by itself");
+    const collapse = collectSideJobYear(weak, 30, () => 0.99);
+    assert(weak.health === 10 && weak.isAlive !== false && weak.money === 62_000_000 && collapse.content.includes("cấp cứu"),
+      "Overwork to exhaustion means an emergency with a fee, not a health floor at 1");
 
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
@@ -124,7 +126,9 @@
     assert($("life-jobs").children.length === 2 && $("life-jobs").children[0].textContent.includes("Công việc chính"), "Main job is listed first");
     $("life-jobs").querySelector(".shop-sell").click();
     $("shop-confirm").click();
-    assert(state.player.employmentStatus === "declined" && !state.player.job, "Quitting the main job");
+    // Nghỉ công việc chính: ghi lịch sử (chức danh, thời điểm, nguyên nhân), giữ việc làm thêm và kinh nghiệm.
+    assert(state.player.employmentStatus !== "employed" && state.player.jobHistory.at(-1)?.cause === "quit" && state.player.sideJobs.length > 0 &&
+      state.player.careerExperience?.level >= 1 && $("life-jobs").textContent.includes("chủ động nghỉ việc"), "Quitting the main job");
     assert($("education-status").textContent === "Nhân viên 7-Eleven", "Without a main job the store shows again");
     result.textContent = "PASS: age 16+; part-time/full-time rules; five stores; confirm; status title; achievement; yearly pay and health; current jobs; quitting";
   } catch (error) {

@@ -131,6 +131,9 @@ export function describeAges(ages) {
 const ownedOf = (player) => [...(player.livestock ?? []), ...(player.purchases ?? [])];
 export const countOwned = (player, id) => ownedOf(player).filter((entry) => entry.id === id).length;
 export const isAtLimit = (player, item) => Boolean(item.limit) && countOwned(player, item.id) >= item.limit;
+// Số món còn mua được một lần: không vượt giới hạn sở hữu và số tiền trong ví.
+export const maxBuyable = (player, item) =>
+  Math.max(0, Math.min(item.limit - countOwned(player, item.id), Math.floor(player.money / item.price)));
 
 export const getPetUpkeep = (item) => (item.food ?? 0) + (item.vaccine ?? 0);
 const describeUpkeep = (item) => item.vaccine ? "thức ăn và tiêm ngừa" : "thức ăn";
@@ -283,27 +286,49 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
             `Chi phí ${describeUpkeep(item)}: -${formatMoney(getPetUpkeep(item))}/năm, bắt đầu từ năm sau.\n` : "") +
         `Nếu bán lại chỉ nhận ${formatMoney(getSellPrice(item))}.`,
       "Xác nhận mua",
-      () => {
-        if (state.player.money < item.price || isAtLimit(state.player, item) ||
-            (item.license && !hasLicense(state.player, item.license))) return;
-        const key = shops[item.shop].owned;
-        state.player.money -= item.price;
-        state.player[key] = [...(state.player[key] ?? []), {
-          uid: `${item.id}-${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
-          id: item.id,
-          boughtAtAge: state.player.age,
-        }];
-        if (item.achievement) recordAchievementFlags(state, [item.achievement]);
-        record(`${item.shop === "pets" ? "🐾" : "🛍️"} Mua ${item.icon} ${item.name}: Tiền -${formatMoneyAmount(item.price)} VNĐ.`);
-        checkAchievements();
-        renderShop();
-      },
+      () => purchase(item, 1),
     ));
     const figureText = element("p", "shop-figures", figures.join("\n"));
     card.append(element("h4", "", `${item.icon} ${item.name}`), element("p", "", item.description), figureText, buy);
+    // Vật nuôi lấy lãi: mua một lần đủ số con còn được phép mà ví trả nổi.
+    if (item.shop === "pets" && item.limit > 1) {
+      const count = maxBuyable(state.player, item);
+      const buyMax = element("button", "shop-buy shop-buy-max", count ? `⏫ Mua tối đa · ${count} con` : "⏫ Mua tối đa");
+      buyMax.type = "button";
+      buyMax.disabled = buy.disabled;
+      buyMax.addEventListener("click", () => ask(
+        `⏫ Mua ${count} ${item.name}?`,
+        `Bạn muốn mua ${count} ${item.icon} ${item.name} với tổng giá ${formatMoney(item.price * count)}?\n` +
+          `Lãi mỗi năm: +${formatMoney(item.profit * count)}, bắt đầu từ năm sau.\n` +
+          `Nếu bán lại mỗi con chỉ nhận ${formatMoney(getSellPrice(item))}.`,
+        "Xác nhận mua",
+        () => purchase(item, count),
+      ));
+      card.append(buyMax);
+    }
     const companion = isCompanion(item) && (state.player.livestock ?? []).find((entry) => entry.id === item.id);
     if (companion) card.append(petButton(item, companion, renderShop));
     return card;
+  }
+
+  // Kiểm tra lại khi xác nhận: chỉ mua khi ví, giới hạn sở hữu và giấy phép còn đủ cho cả count món.
+  function purchase(item, count) {
+    const player = state.player;
+    if (count < 1 || player.money < item.price * count ||
+        (item.limit && countOwned(player, item.id) + count > item.limit) ||
+        (item.license && !hasLicense(player, item.license))) return;
+    const key = shops[item.shop].owned;
+    const stamp = Date.now();
+    player.money -= item.price * count;
+    player[key] = [...(player[key] ?? []), ...Array.from({ length: count }, (_, index) => ({
+      uid: `${item.id}-${stamp}-${index}-${Math.floor(Math.random() * 1e6)}`,
+      id: item.id,
+      boughtAtAge: player.age,
+    }))];
+    if (item.achievement) recordAchievementFlags(state, [item.achievement]);
+    record(`${item.shop === "pets" ? "🐾" : "🛍️"} Mua ${count > 1 ? `${count} ` : ""}${item.icon} ${item.name}: Tiền -${formatMoneyAmount(item.price * count)} VNĐ.`);
+    checkAchievements();
+    renderShop();
   }
 
   function renderShop() {

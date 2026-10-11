@@ -1,6 +1,6 @@
 import { openMojiArt } from "./event-art.js";
 // Chọn ngành học hoặc hướng nghề nghiệp ở tuổi 18.
-const careerPaths = [
+export const careerPaths = [
   ["acting", "🎬", "Diễn xuất"],
   ["military", "🪖", "Nhập ngũ"],
   ["singing", "🎤", "Thanh nhạc"],

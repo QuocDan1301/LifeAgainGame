@@ -39,7 +39,8 @@
     const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
     const start=(age,health=80,working=false)=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
-      Object.assign(state.player,{age:age-1,health,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',nextPromotionAge:null,
+      // healthCheckAge: người chơi đã xem cảnh báo sức khỏe năm nay và chọn tiếp tục.
+      Object.assign(state.player,{age:age-1,healthCheckAge:age-1,health,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',nextPromotionAge:null,
         employmentStatus:working?'employed':'declined',careerLevel:working?1:0,lastSalaryAge:age-1,
         careerPath:working?{id:'programming',field:'Công nghệ thông tin'}:null,
         job:working?getCareerProfile('programming').ranks[0]:null});

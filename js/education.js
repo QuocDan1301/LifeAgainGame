@@ -1,4 +1,5 @@
 import { getCareerProfile } from "./career-jobs.js";
+import { getRankLock } from "./career-milestones.js";
 import { getStudyBlockLabel } from "./study-blocks.js";
 import { getSideJobTitle } from "./side-jobs.js";
 import { getCareerAnnualSalary, getPlayerAnnualSalary, formatSalary } from "./career-salary.js";
@@ -25,6 +26,8 @@ export function getEducationStatus(player) {
       icon: careerIcons[player.careerPath?.id] ?? "💼" };
   }
   const career = player.careerPath;
+  // Học xong mà chưa có việc (chưa nộp hồ sơ hoặc chưa đậu) thì không còn là sinh viên.
+  if (career && player.age >= 22) return { text: "Chưa có việc làm", icon: "🔎" };
   if (career) {
     return { text: career.status || `Học ${career.field}`,
       icon: career.id === "military" || career.id === "esports"
@@ -105,16 +108,23 @@ export function initEducation(state, save) {
     const salaryDetails = document.getElementById("career-salary-details");
     const salaryRanks = document.getElementById("career-salary-ranks");
     const annualSalary = getPlayerAnnualSalary(state.player);
-    salaryDetails.hidden = !annualSalary;
+    // Hồ sơ nghề: hiện danh sách cấp bậc khi đã chọn ngành, kèm khóa bậc 3 và lý do.
+    const lock = getRankLock(state.player);
+    salaryDetails.hidden = !state.player.careerPath;
     salaryRanks.replaceChildren();
-    if (annualSalary) {
+    if (state.player.careerPath) {
       document.getElementById("career-salary-current").textContent =
-        `Hiện tại: ${formatSalary(annualSalary)}/năm. Lương được cộng vào ví khi nhận việc và mỗi năm tiếp theo.`;
+        (annualSalary
+          ? `Hiện tại: ${formatSalary(annualSalary)}/năm. Lương được cộng vào ví khi nhận việc và mỗi năm tiếp theo.`
+          : "Chưa có việc chính trong ngành.") + `
+${lock.unlocked ? "⭐" : "🔒"} ${lock.reason}`;
       getCareerProfile(state.player.careerPath?.id).ranks.forEach((rank, index) => {
         const row = document.createElement("tr");
         const name = document.createElement("th");
         name.scope = "row";
-        name.textContent = `${rank}${state.player.careerLevel === index + 1 ? " (hiện tại)" : ""}`;
+        const locked = index + 1 > lock.maxRank;
+        if (locked) row.className = "is-locked";
+        name.textContent = `${locked ? "🔒 " : ""}${rank}${state.player.careerLevel === index + 1 ? " (hiện tại)" : ""}`;
         const amount = document.createElement("td");
         amount.textContent = formatSalary(getCareerAnnualSalary(state.player.careerPath?.id, index + 1));
         row.append(name, amount);

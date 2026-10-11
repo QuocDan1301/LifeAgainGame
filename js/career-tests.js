@@ -1,5 +1,6 @@
 import { openMojiArt } from "./event-art.js";
 import { ensureEventOpenMoji } from "./event-openmoji.js";
+import { EXAM_HINT_INTELLECT, EXAM_PREP, EXAM_RETAKES, formatPercent, getExamOverallChance } from "./intellect-rules.js";
 // Mỗi ngành có ba câu nhập môn, mỗi câu có ba đáp án và một đáp án đúng.
 const question = (text, answers, correct) => ({ text, answers, correct });
 export const careerTests = {
@@ -105,35 +106,89 @@ export const careerTests = {
   ],
 };
 
-export function createCareerTest(careerPath, random = Math.random) {
+// Trước bài test: chọn cách chuẩn bị (ôn đều, học nhóm, học dồn, không chuẩn bị).
+export function createExamPrepEvent(careerPath, player, retakesLeft = EXAM_RETAKES) {
+  if (!createCareerTest(careerPath)) return null;
+  return {
+    kind: "exam-prep",
+    category: "education",
+    testedCareer: { ...careerPath },
+    retakesLeft,
+    ...openMojiArt("1F4DA", "Chuẩn bị cho bài test"),
+    title: `📚 Chuẩn bị bài test ${careerPath.field}`,
+    text: `Còn ít ngày nữa là đến bài test đầu vào ngành ${careerPath.field}. Trả lời đúng là đỗ; nếu chưa đúng, phần thi tổng thể vẫn có thể giúp tôi đạt, tùy cách chuẩn bị và năng lực. Tôi chuẩn bị thế nào?`,
+    choices: Object.entries(EXAM_PREP).map(([id, prep]) => ensureEventOpenMoji({
+      label: prep.label + (prep.health ? ` (Sức khỏe ${prep.health})` : ""),
+      examPrep: id,
+      transitionText: `${prep.text} Khả năng đạt phần thi tổng thể nếu trả lời chưa đúng: ${formatPercent(getExamOverallChance(player, id))}.`,
+      ...openMojiArt("1F4DA", "Chuẩn bị cho bài test"),
+    })),
+  };
+}
+
+// Bài test: đáp án đúng luôn đỗ. Đáp án sai vẫn có thể đỗ nhờ phần thi tổng thể (tung một lần khi tạo bài).
+// Trí tuệ từ 80 hoặc học nhóm có gợi ý: loại sẵn một đáp án chắc chắn sai (không đổi đáp án đúng).
+export function createCareerTest(careerPath, random = Math.random, options = {}) {
   // Nhập ngũ tự nguyện đi thẳng tới hướng huấn luyện.
   if (["military", "tiktok", "youtube"].includes(careerPath.id)) return null;
   const bank = careerTests[careerPath.id];
   if (!bank) return null;
   const entry = bank[Math.floor(random() * bank.length)];
+  const { player, prep, retakesLeft = EXAM_RETAKES } = options;
+  const overall = player ? getExamOverallChance(player, prep) : 0;
+  const passedOverall = player ? random() < overall : false;
+  const hinted = player && ((player.intelligence ?? 0) >= EXAM_HINT_INTELLECT || EXAM_PREP[prep]?.hint);
+  const wrong = entry.answers.findIndex((_, index) => index !== entry.correct);
   return {
     kind: "career-test",
+    category: "education",
     ...openMojiArt("1F4DD", "Câu hỏi kiểm tra kiến thức trước khi chọn trường"),
     testedCareer: { ...careerPath },
+    retakesLeft,
+    examPrep: prep ?? null,
     title: `📝 Bài test ${careerPath.field}`,
-    text: `Một câu hỏi nhỏ trước khi bắt đầu hành trình!\n${entry.text}`,
-    choices: entry.answers.map((answer, index) => ({ label: answer, correct: index === entry.correct })),
+    text: `Một câu hỏi nhỏ trước khi bắt đầu hành trình!\n${entry.text}` +
+      (hinted ? `\n\n💡 Gợi ý: "${entry.answers[wrong]}" chắc chắn không phải đáp án đúng.` : ""),
+    choices: entry.answers.map((answer, index) => ({ label: answer, correct: index === entry.correct,
+      ...(index === entry.correct ? {} : { passedOverall }) })),
   };
 }
 
-export function createFailedTestEvent() {
+// Chưa đạt: không khóa ngành. Học bổ sung rồi thi lại (một lần), chọn ngành khác hoặc nhập ngũ.
+export function createFailedTestEvent(testedCareer = null, retakesLeft = 0) {
+  const choices = [];
+  if (testedCareer && retakesLeft > 0) {
+    choices.push(ensureEventOpenMoji({
+      label: `📚 Học bổ sung rồi thi lại ${testedCareer.field} (Trí tuệ +2)`,
+      retakeTest: true,
+      transitionText: "Tôi dành thêm thời gian học lại phần còn hổng, nhờ người hướng dẫn chữa bài rồi đăng ký thi lại.",
+      ...openMojiArt("1F4DA", "Học bổ sung để thi lại"),
+    }));
+  }
+  choices.push(ensureEventOpenMoji({
+    label: "🔄 Chọn ngành khác phù hợp hơn",
+    reselectCareer: true,
+    transitionText: "Tôi nhìn lại điểm mạnh của mình và chọn lại hướng đi.",
+    ...openMojiArt("1F504", "Chọn ngành khác"),
+  }));
+  choices.push(ensureEventOpenMoji({
+    label: "🪖 Lên đường nhập ngũ",
+    title: "🪖 Hành trình quân ngũ bắt đầu",
+    text: "Bạn nhập ngũ tại đơn vị được phân công và bắt đầu học tập, huấn luyện cùng đồng đội.",
+    careerPath: { id: "military", field: "Nhập ngũ", school: null, status: "Nhập ngũ" },
+    confirmText: "Bắt đầu hành trình!",
+    ...openMojiArt("1FA96", "Bắt đầu huấn luyện quân ngũ"),
+  }));
   return {
     kind: "enlistment-failure",
-    ...openMojiArt("1FA96", "Lựa chọn con đường nhập ngũ"),
-    title: "🪖 Tiếng gọi của Tổ quốc",
-    text: "Bạn đã tạch, đi theo tiếng gọi của tổ quốc thôi",
-    choices: [ensureEventOpenMoji({
-      label: "🪖 Lên đường nhập ngũ",
-      title: "🪖 Hành trình quân ngũ bắt đầu",
-      text: "Bạn nhập ngũ tại đơn vị được phân công và bắt đầu học tập, huấn luyện cùng đồng đội.",
-      careerPath: { id: "military", field: "Nhập ngũ", school: null, status: "Nhập ngũ" },
-      confirmText: "Bắt đầu hành trình!",
-      ...openMojiArt("1FA96", "Bắt đầu huấn luyện quân ngũ"),
-    })],
+    category: "education",
+    testedCareer,
+    retakesLeft,
+    ...openMojiArt("1F4DA", "Chưa đạt bài test"),
+    title: "📋 Chưa đạt bài test lần này",
+    text: testedCareer
+      ? `Lần này tôi chưa đạt bài test ngành ${testedCareer.field}. Một bài test không quyết định cả con đường: tôi vẫn có thể học bổ sung để thi lại, chọn ngành khác hoặc nhập ngũ.`
+      : "Lần này tôi chưa đạt. Tôi vẫn có thể chọn ngành khác hoặc nhập ngũ.",
+    choices,
   };
 }

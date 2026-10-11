@@ -5,6 +5,9 @@ export const eventCategories = {
   family: { label: '🏡 Gia đình' },
   education: { label: '📚 Học tập' },
   career: { label: '💼 Nghề nghiệp' },
+  wellbeing: { label: '🌱 Tinh thần' },
+  finance: { label: '💰 Tài chính' },
+  social: { label: '👫 Kết bạn' },
 };
 
 export function getEventCategory(event) {
@@ -12,6 +15,10 @@ export function getEventCategory(event) {
   if (event.specialId || ['special-chain', 'lost-child-chain'].includes(event.kind)) return 'special';
   if (['workplace-dating', 'marriage-proposal', 'orientation-chain'].includes(event.kind)) return 'love';
   if (event.kind === 'child-proposal') return 'family';
+  if (['happiness-support', 'low-mood'].includes(event.kind)) return 'wellbeing';
+  if (['work-pressure', 'project-bug', 'job-warning', 'job-review', 'layoff-notice', 'contract-notice'].includes(event.kind)) return 'career';
+  if (event.kind === 'relative-death') return 'family';
+  if (['exam-prep'].includes(event.kind)) return 'education';
   if (['job-interview', 'job-interview-retry', 'career-promotion', 'career-spark', 'enlistment-failure'].includes(event.kind)) return 'career';
   if (event.kind === 'career-test' || event.testedCareer) return 'education';
   // Older saves and ordinary stories do not always carry a structured kind.

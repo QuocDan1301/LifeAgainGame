@@ -73,7 +73,7 @@
     const $ = id => document.getElementById(id);
     const closeOthers = () => document.querySelectorAll("dialog[open]").forEach(d => d !== $("shop-dialog") && d.close());
     const openGroup = group => document.querySelector(`.shop-group[data-group="${group}"]`).click();
-    const buyButton = (group, id) => document.querySelectorAll(".shop-buy")[shopCatalog.filter(i => i.group === group).findIndex(i => i.id === id)];
+    const buyButton = (group, id) => document.querySelectorAll(".shop-buy:not(.shop-buy-max)")[shopCatalog.filter(i => i.group === group).findIndex(i => i.id === id)];
 
     // Mua vật nuôi
     $("activities").click();
@@ -88,6 +88,14 @@
     buyButton("poultry", "chicken").click();
     $("shop-confirm").click();
     assert(state.player.money === 79_850_000 && state.player.livestock.length === 1, "Confirm buys the animal");
+    const maxButton = id => document.querySelectorAll(".shop-buy-max")[shopCatalog.filter(i => i.group === "poultry").findIndex(i => i.id === id)];
+    assert(maxButton("chicken").textContent.includes("4 con"), "Buy max counts the animals still allowed");
+    maxButton("pigeon").click();
+    $("shop-confirm").click();
+    assert(state.player.money === 79_350_000 && state.player.livestock.filter(e => e.id === "pigeon").length === 5 &&
+      maxButton("pigeon").disabled && state.logs.at(-1).content.includes("Mua 5 🕊️"), "Buy max buys up to the limit at once");
+    state.player.livestock = state.player.livestock.filter(e => e.id !== "pigeon");
+    state.player.money = 79_850_000;
     $("close-shop").click();
 
     // Mua sắm

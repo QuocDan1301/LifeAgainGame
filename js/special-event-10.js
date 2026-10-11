@@ -43,8 +43,8 @@ const steps = {
   5: {
     title: "🌟 Một năm học thay đổi bản thân",
     text: "Một năm ở trường mới trôi qua với biết bao trải nghiệm. Tôi được thầy cô hướng dẫn tận tình, học bơi, chơi thể thao và làm quen với những người bạn tốt. Tôi còn biết chăm sóc bản thân, ăn ngủ điều độ và tự tin hơn trước.\n\nNgày đầu vào trường, tôi còn đứng nhầm lớp. Cuối năm, tôi đã tự tin lên sân khấu nhận giấy khen. Ba mẹ ngồi dưới vỗ tay, còn cậu bé năm nào hét to: “Anh chị cứu con kìa!” khiến cả hội trường quay lại nhìn.",
-    choices: [ending("Giúp người, mình cũng lớn lên!", "🎁 Sau một năm học, sức khỏe, trí tuệ, hạnh phúc và ngoại hình đều đạt ít nhất 85%.", {
-      title: "🌟 Một năm học đáng nhớ", minimumStats: 85, schoolYearDueAge: null,
+    choices: [ending("Giúp người, mình cũng lớn lên!", "🎁 Sau một năm học, sức khỏe, trí tuệ, hạnh phúc và ngoại hình đều đạt ít nhất 80%.", {
+      title: "🌟 Một năm học đáng nhớ", minimumStats: 80, schoolYearDueAge: null,
       confirmText: "Nhận phần thưởng", logContent: completionLog, logSummary: completionLog,
     })],
   },

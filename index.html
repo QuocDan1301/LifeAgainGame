@@ -480,6 +480,8 @@
             </span>
           </button>
         </div>
+        <!-- Thẻ bệnh/sức khỏe: hiện khi đang mắc bệnh hoặc sức khỏe yếu -->
+        <section id="health-alert" class="health-alert" aria-label="Sức khỏe và tinh thần" aria-live="polite" hidden></section>
         <div id="life-log" role="log" aria-label="Sự kiện cuộc đời"></div>
       </main>
       <!-- Các nút chức năng -->
@@ -583,6 +585,7 @@
             <div>
               <p>Ví tiền</p>
               <strong id="money"><span id="money-value"></span> VNĐ</strong>
+              <small id="money-forecast" class="money-forecast" hidden></small>
             </div>
           </div>
         </div>
@@ -617,6 +620,11 @@
             <button type="button" id="confirm-breakup">Đồng ý chia tay</button>
           </div>
         </div>
+      </section>
+      <section class="dialog-card life-panel" id="relationship-family-panel" data-icon="👪" data-tab="Gia đình" aria-labelledby="relationship-family-title">
+        <h3 id="relationship-family-title">👪 Gia đình</h3>
+        <p class="side-job-intro">Gọi điện luôn miễn phí. Mỗi cách kết nối một lần mỗi năm; không đủ tiền về thăm thì không bị trừ gắn kết. Bạn bè và cách chủ động kết nối ở cuối mục.</p>
+        <div id="relationship-family"></div>
       </section>
       <section class="dialog-card life-panel" id="relationship-gifts-panel" data-icon="🎁" data-tab="Tặng quà" aria-labelledby="relationship-gifts-title">
         <h3 id="relationship-gifts-title">🎁 Tặng thú bông</h3>
@@ -674,6 +682,7 @@
         <button type="button" id="activity-games"><span class="activity-icon" aria-hidden="true">🎮</span><span class="activity-text"><span class="activity-title">Trò chơi</span><span class="activity-note">May thì giàu, còn chắc chắn thì không!</span></span></button>
         <button type="button" id="activity-love"><span class="activity-icon" aria-hidden="true">💘</span><span class="activity-text"><span class="activity-title">Tình yêu</span><span class="activity-note">Tim có thể rung động, còn duyên thì phải thử mới biết!</span></span></button>
         <button type="button" id="activity-hospital"><span class="activity-icon" aria-hidden="true">🏥</span><span class="activity-text"><span class="activity-title">Bệnh viện</span><span class="activity-note">Chăm sức khỏe hôm nay, còn sức tận hưởng ngày mai!</span></span></button>
+        <button type="button" id="activity-jobs"><span class="activity-icon" aria-hidden="true">💼</span><span class="activity-text"><span class="activity-title">Xin việc</span><span class="activity-note">Hồ sơ gọn gàng, trả lời vững vàng, việc tốt sẽ tới!</span></span></button>
         <button type="button" id="activity-part-time"><span class="activity-icon" aria-hidden="true">🧰</span><span class="activity-text"><span class="activity-title">Làm thêm</span><span class="activity-note">Ví dày thêm một chút, mồ hôi cũng thêm một chút!</span></span></button>
         <button type="button" id="activity-degrees"><span class="activity-icon" aria-hidden="true">🪪</span><span class="activity-text"><span class="activity-title">Học bằng lái</span><span class="activity-note">Vững tay lái, tự tin trên mọi nẻo đường!</span></span></button>
         <button type="button" id="activity-tarot"><span class="activity-icon" aria-hidden="true">🔮</span><span class="activity-text"><span class="activity-title">Xem tarot</span><span class="activity-note">Lật một lá bài, biết đâu tìm được chút gợi ý!</span></span></button>
@@ -707,6 +716,26 @@
         <button type="button" class="dialog-close" id="close-side-job" aria-label="Đóng">✕</button>
       </div>
       <div id="side-job-body"></div>
+    </dialog>
+    <dialog id="finance-check-dialog" aria-labelledby="finance-check-title">
+      <div class="dialog-heading">
+        <h2 id="finance-check-title">💸 Phương án tài chính</h2>
+        <button type="button" class="dialog-close" id="close-finance-check" aria-label="Đóng">✕</button>
+      </div>
+      <div id="finance-check-body"></div>
+    </dialog>
+    <dialog id="health-check-dialog" aria-labelledby="health-check-title">
+      <div class="dialog-heading">
+        <h2 id="health-check-title">🩺 Cảnh báo sức khỏe</h2>
+      </div>
+      <div id="health-check-body"></div>
+    </dialog>
+    <dialog id="job-dialog" aria-labelledby="job-title">
+      <div class="dialog-heading">
+        <h2 id="job-title">💼 Xin việc</h2>
+        <button type="button" class="dialog-close" id="close-job" aria-label="Đóng">✕</button>
+      </div>
+      <div id="job-body"></div>
     </dialog>
     <dialog id="hospital-dialog" aria-labelledby="hospital-title">
       <div class="dialog-heading">

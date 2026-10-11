@@ -22,9 +22,9 @@
       assert(extra.length===expected&&pool.length===(getBaseAgeEvents(age)?.length??0)+expected,'Ordinary additions except the orientation-only age 24 and career-discovery age 16 at '+age);
       for(const event of extra){
         assert(!ids.has(event.id)&&!titles.has(event.title),'Distinct authored situations');ids.add(event.id);titles.add(event.title);
-        assert([2,3].includes(event.choices.length)&&event.text&&!event.specialId,'Ordinary event with two or three actions');
+        assert(event.choices.length===2&&event.text&&!event.specialId,'Ordinary event keeps its two authored actions');
         assert(event.choices.some(c=>Object.values(c.effects).some(v=>v>0)&&!Object.values(c.effects).some(v=>v<0)),'Every event has a beneficial action');
-        assert(event.choices.some(c=>Object.values(c.effects).some(v=>v<0)),'Every event has a costly action');
+        assert(!event.choices.some(c=>/Một chút lợi|quyết định đáng tiếc/u.test(c.title)),'No generic risk action replaces the story');
         for(const slot of [event,...event.choices]){
           assert(slot.image&&slot.imageFallback&&slot.imageAlt&&slot.imageFallbackAlt,'Every scene and outcome has media');assets.add(slot.image);assets.add(slot.imageFallback);
         }
@@ -59,8 +59,9 @@
     for(let age=1;age<=105;age++)for(let i=0;i<2;i++)for(let action=0;action<(createEverydayAdditions(age)[i]?.choices.length??0);action++){
       if ([16, 18, 24, 25, 105].includes(age)) continue;
       reset(age);const pool=getAgeEvents(age),index=pool.findIndex(e=>e.id==='everyday-added-'+age+'-'+(i+1));
-      let rolls=[...(age>=98?[0.1]:[]),0.1,(index+0.1)/pool.length];
-      Math.random=()=>rolls.shift()??0.1;birthday.click();Math.random=()=>0.99;
+      // Từ 70 tuổi có một lượt tung nguy cơ tuổi già trước (số lớn = qua khỏi).
+      let rolls=[...(age>=70?[0.99]:[]),0.1,(index+0.1)/pool.length];
+      Math.random=()=>rolls.shift()??0.99;birthday.click();Math.random=()=>0.99;
       assert(state.pendingEvent?.id==='everyday-added-'+age+'-'+(i+1)||state.pendingEvent?.title===createEverydayAdditions(age)[i].title,'Every new event is reachable at '+age+' #'+i);
       choose(action);restore();assert(state.pendingEvent.stage==='result'&&state.player.age===age-1,'Saved selection waits for confirmation');
       confirm.click();

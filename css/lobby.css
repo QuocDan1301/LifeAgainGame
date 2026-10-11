@@ -474,9 +474,10 @@
 }
 
 #game-screen .stat-row {
-  grid-template-columns: 72px minmax(0, 1fr) 32px;
-  gap: 5px;
-  font-size: 11px;
+  grid-template-columns: 96px minmax(0, 1fr) 40px;
+  gap: 6px;
+  font-size: 15px;
+  line-height: 1.3;
 }
 
 #game-screen .stats progress {
@@ -498,6 +499,10 @@
 
 #game-screen .wallet p {
   font-size: 14px;
+}
+
+#game-screen .wallet.is-debt strong {
+  color: #c62828;
 }
 
 #game-screen .wallet strong {
@@ -533,9 +538,9 @@
   }
 
   #game-screen .stat-row {
-    grid-template-columns: 65px minmax(0, 1fr) 28px;
-    gap: 3px;
-    font-size: 10px;
+    grid-template-columns: 84px minmax(0, 1fr) 36px;
+    gap: 4px;
+    font-size: 13px;
   }
 
   #game-screen #player-name {

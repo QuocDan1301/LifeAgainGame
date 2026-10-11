@@ -1,5 +1,7 @@
 import { getCareerAnnualSalary, formatSalary, RETIREMENT_AGE } from "./career-salary.js";
 import { careerMilestones, hasCareerMilestone } from "./career-milestones.js";
+import { FOOTBALL_MIN_HEALTH, failsFootballFitness } from "./health-rules.js";
+import { INTERVIEW, getPromotionChance } from "./intellect-rules.js";
 
 const sticker = (code) =>
   new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
@@ -338,6 +340,9 @@ const fallbackEmploymentContext = {
   apply: "gửi hồ sơ ứng tuyển",
 };
 
+// Tình huống nghề nghiệp riêng của từng ngành (dùng cho phỏng vấn và sự cố công việc).
+export const getCareerTopic = (careerId) => careerInterviewTopics[careerId] ?? null;
+
 export function getEmploymentContext(careerId) {
   return employmentContexts[careerId] ?? fallbackEmploymentContext;
 }
@@ -486,12 +491,23 @@ function shuffledAnswers(question, random) {
   const answers = question.answers.map((label, index) => ({
     label,
     correct: index < 2,
+    // Đáp án gốc theo thứ tự: tốt, chấp nhận được, chưa phù hợp.
+    quality: ["good", "acceptable", "weak"][index],
   }));
   for (let index = answers.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
     [answers[index], answers[swapIndex]] = [answers[swapIndex], answers[index]];
   }
   return answers;
+}
+
+const capitalize = (text) => `${text[0].toLocaleUpperCase("vi-VN")}${text.slice(1)}`;
+// Phỏng vấn nhận việc của người hoàn thành chuỗi tuổi 16 đúng ngành là phần tiếp nối của chuỗi ấy:
+// người hướng dẫn năm xưa giữ lời hẹn, mời phỏng vấn, báo kết quả và hẹn thử lại.
+function getMilestoneMentor(player) {
+  if (!hasCareerMilestone(player)) return null;
+  const data = careerMilestones[player.careerPath.id];
+  return { name: data.mentor, Name: capitalize(data.mentor), challenge: data.spark.title.replace(/^\S+\s/u, "") };
 }
 
 export function createJobInterview(player, random = Math.random) {
@@ -501,6 +517,18 @@ export function createJobInterview(player, random = Math.random) {
   const question = createInterviewQuestion(career, profile, random);
   const isEsports = career.id === "esports";
   const academy = career.school?.name ?? "academy";
+  const mentor = getMilestoneMentor(player);
+  if (mentor) {
+    return {
+      id: `job-interview-${career.id}`,
+      kind: "job-interview",
+      interviewCareerId: career.id,
+      title: "📞 Lời hẹn từ năm 16 tuổi",
+      text: `Bạn vừa khép lại chặng học tập thì nhận được cuộc gọi từ ${mentor.name}, người đã cùng bạn đi qua thử thách “${mentor.challenge}” năm 16 tuổi. “Tôi vẫn nhớ lời hẹn năm ấy. Em đến ${context.place} dự buổi ${context.round} nhé, tôi sẽ ngồi hội đồng.”\n\nTrong buổi ${context.round}, ${mentor.name} lật hồ sơ của bạn rồi hỏi:\n\n“${capitalize(question.text)}”`,
+      ...art("1F4DE", `Cuộc gọi từ ${mentor.name}`),
+      choices: shuffledAnswers(question, random),
+    };
+  }
   return {
     id: `job-interview-${career.id}`,
     kind: "job-interview",
@@ -514,12 +542,69 @@ export function createJobInterview(player, random = Math.random) {
   };
 }
 
-export function createInterviewResult(player, passed, age) {
+// Kết quả phỏng vấn. \`passed\` là kết quả tổng thể đã tung (chất lượng câu trả lời, trí tuệ, chuẩn bị — xem
+// intellect-rules.js); \`assessment\` ghi lại cách tính để người chơi thấy. Câu trả lời tốt luôn được ghi nhận là tốt,
+// kể cả khi lần này chưa được nhận. Bóng đá còn cần thể lực: thiếu thể lực thì không đậu.
+export function createInterviewResult(player, passed, age, assessment = null) {
+  const unfit = failsFootballFitness(player.careerPath?.id, player.health);
+  const hired = passed && !unfit;
+  const result = createAnsweredInterviewResult(player, hired, age);
+  const notes = [];
+  if (unfit) notes.push(`⚽ Bạn không qua bài kiểm tra thể lực: Sức khỏe ${player.health}%, ngành Bóng đá cần từ ${FOOTBALL_MIN_HEALTH}%.`);
+  if (assessment && !hired && !unfit && assessment.quality !== "weak") {
+    notes.push(`Câu trả lời của bạn được đánh giá ${INTERVIEW.qualityLabel[assessment.quality].toLowerCase()}, nhưng lần này hội đồng chọn ứng viên khác.`);
+  }
+  const tail = [
+    assessment ? `📊 ${assessment.note}` : "",
+    !hired ? "Bước tiếp theo: học bổ sung (Phát triển bản thân → Trí tuệ), luyện phỏng vấn (Xin việc) hoặc tìm công việc phù hợp hơn." : "",
+  ].filter(Boolean);
+  if (!notes.length && !tail.length) return result;
+  const head = notes.length ? `${notes.join("\n")}\n` : "";
+  const foot = tail.length ? `\n${tail.join("\n")}` : "";
+  return {
+    ...result,
+    ...(unfit ? { title: "🏃 Chưa đạt thể lực" } : {}),
+    content: `${head}${result.content}${foot}`,
+    logContent: `${head}${result.logContent}${assessment ? `\n📊 ${assessment.note}` : ""}`,
+    logSummary: `${head}${result.logSummary}`,
+    updates: { ...result.updates, interviewPrepAge: null },
+  };
+}
+
+function createAnsweredInterviewResult(player, passed, age) {
   const career = player.careerPath ?? { id: "general", field: "ngành đã chọn" };
   const profile = getCareerProfile(career.id);
   const context = getEmploymentContext(career.id);
   const isEsports = career.id === "esports";
   const academy = career.school?.name ?? "academy";
+  const mentor = getMilestoneMentor(player);
+  if (mentor) {
+    const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1))}/năm.`;
+    return passed ? {
+      stage: "result",
+      age,
+      title: "🤝 Giữ trọn lời hẹn năm 16 tuổi",
+      content: `${mentor.Name} bắt tay bạn: “Đúng là em của thử thách ‘${mentor.challenge}’ năm nào.” Bạn chính thức gia nhập ${context.place} ở vị trí ${profile.ranks[0]}, và ${mentor.name} sẽ tiếp tục dõi theo chặng đường phía trước.\n${salaryText} Lương năm đầu được cộng ngay vào ví khi xác nhận nhận việc; các năm sau tiếp tục nhận mỗi năm.`,
+      confirmText: "Đi làm thôi!",
+      updates: { age, job: profile.ranks[0], employmentStatus: "employed", careerLevel: 1 },
+      achievementIds: [],
+      logSummary: `Giữ lời hẹn với ${mentor.name} từ năm 16 tuổi.\nBắt đầu ở bậc ${profile.ranks[0]}.\n${salaryText}`,
+      logContent: `${mentor.Name} giữ lời hẹn từ năm 16 tuổi và mời bạn dự buổi ${context.round}. Bạn vượt qua và bắt đầu làm việc tại ${context.place} ở vị trí ${profile.ranks[0]}.\n${salaryText}`,
+      ...art("1F91D", `Giữ lời hẹn với ${mentor.name}`),
+    } : {
+      stage: "result",
+      age,
+      title: "📋 Lời hẹn chưa trọn",
+      content: `${mentor.Name} khẽ lắc đầu: “Câu trả lời này chưa giống người tôi gặp năm 16 tuổi.” ${capitalize(context.place)} chưa thể nhận bạn lần này, nhưng ${mentor.name} vẫn để ngỏ cánh cửa: năm sau có thể dự buổi ${context.round} lại.`,
+      confirmText: "Năm sau thử lại!",
+      // Tuyển thủ Liên Quân trượt vẫn tập ở academy như trước.
+      updates: { age, job: isEsports ? `🎮 Tuyển thủ ${academy}` : "Thất nghiệp", employmentStatus: "unemployed", careerLevel: 0 },
+      achievementIds: [],
+      logSummary: `Chưa vượt qua buổi ${context.round} do ${mentor.name} mời.\nTạm thời thất nghiệp; có thể thử lại vào năm sau.`,
+      logContent: `Bạn chưa vượt qua buổi ${context.round} do ${mentor.name} mời và tạm thời thất nghiệp. ${mentor.Name} hẹn bạn thử lại vào năm sau.`,
+      ...art("1F4CB", `${mentor.Name} hẹn năm sau`),
+    };
+  }
   if (passed) {
     const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1))}/năm.`;
     return {
@@ -575,6 +660,22 @@ export function createInterviewRetryPrompt(player) {
   const isEsports = player.careerPath?.id === "esports";
   const context = getEmploymentContext(player.careerPath?.id);
   const academy = player.careerPath?.school?.name ?? "academy";
+  const mentor = getMilestoneMentor(player);
+  if (mentor) {
+    return {
+      id: `job-retry-${player.careerPath.id}`,
+      kind: "job-interview-retry",
+      title: `📞 ${mentor.Name} gọi lại`,
+      text: `Một năm sau lần trước, ${mentor.name} lại gọi: “Lời hẹn từ năm em 16 tuổi vẫn còn đó. ${capitalize(context.place)} mở buổi ${context.round} mới, em có muốn thử lại không?”`,
+      ...art("1F4DE", `${mentor.Name} gọi lại`),
+      skipLogContent: `Bạn cảm ơn ${mentor.name} nhưng quyết định không dự buổi ${context.round} nữa.`,
+      skipLogSummary: `Từ chối lời mời thử lại của ${mentor.name}.`,
+      choices: [
+        { label: "💪 Có, lần này em sẽ làm tốt hơn!", retryInterview: true },
+        { label: "🙅 Em xin để dịp khác.", skipInterview: true },
+      ],
+    };
+  }
   return {
     id: `job-retry-${player.careerPath?.id ?? "general"}`,
     kind: "job-interview-retry",
@@ -741,6 +842,21 @@ export function createPromotionEvent(player, random = Math.random, age = player.
   for (const option of options) {
     if (!option.correct) option.text = promotionRetryText(player, age);
   }
+  // Xử lý đúng là điều kiện cần; được chọn hay không còn tùy kinh nghiệm, trí tuệ (theo nghề) và thành tích.
+  // Kết quả được quyết định khi sự kiện xuất hiện (tải lại không đổi). Không tăng lương chỉ vì chỉ số cao.
+  const chance = getPromotionChance(player, age);
+  if (random() < chance) {
+    options[0].playerUpdates = { workMerit: 0 };
+  } else {
+    options[0] = {
+      ...options[0], correct: false, job: undefined, careerLevel: undefined, employmentStatus: undefined, achievementIds: [],
+      title: "📋 Xử lý tốt, nhưng chưa đến lượt",
+      text: `Cách xử lý của bạn được đánh giá đúng hướng và có trách nhiệm. Lần này hội đồng chọn người có nhiều kinh nghiệm hơn. ${promotionRetryText(player, age)}`,
+      effects: { intelligence: 2 },
+      confirmText: "Lần sau sẽ đến lượt!",
+      ...art("1F4CB", "Xử lý tốt nhưng chưa được chọn"),
+    };
+  }
   for (let index = options.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
     [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
@@ -749,9 +865,13 @@ export function createPromotionEvent(player, random = Math.random, age = player.
     id: `career-promotion-${career.id}-${level}-${scenarioIndex + 1}`,
     kind: "career-promotion",
     title: scenario.title,
-    text: finalPromotion && milestone
-      ? `${milestone.mentor[0].toLocaleUpperCase("vi-VN")}${milestone.mentor.slice(1)} — người đồng hành từ năm 16 tuổi — giới thiệu bạn vào vòng xét bậc ${profile.ranks[2]}: ${milestone.finalHook}\nDấu mốc năm xưa chỉ mở cánh cửa; bước qua được hay không là ở cách bạn xử lý.\n\n${scenario.text.replace("{field}", career.field)}`
-      : scenario.text.replace("{field}", career.field),
+    // Công khai khả năng được chọn nếu xử lý đúng (kinh nghiệm, trí tuệ theo nghề, thành tích).
+    text: (finalPromotion && milestone
+      ? `${capitalize(milestone.mentor)} — người đồng hành từ năm 16 tuổi — giới thiệu bạn vào vòng xét bậc ${profile.ranks[2]}: ${milestone.finalHook}\nDấu mốc năm xưa chỉ mở cánh cửa; bước qua được hay không là ở cách bạn xử lý.\n\n${scenario.text.replace("{field}", career.field)}`
+      : scenario.text.replace("{field}", career.field)) +
+      `
+
+📊 Nếu xử lý đúng, khả năng được chọn khoảng ${Math.round(chance * 100)}%.`,
     ...art(level === 1 ? "1F4CA" : "1F3AF", "Cơ hội thăng tiến nghề nghiệp"),
     choices: options,
   };
@@ -760,10 +880,13 @@ export function createPromotionEvent(player, random = Math.random, age = player.
 export function createEmploymentEvent(player, age) {
   // Đã đến tuổi nghỉ hưu thì không còn phỏng vấn lại hay xét nâng bậc.
   if (!player.careerPath || age >= RETIREMENT_AGE) return null;
-  if (age === 22 && player.employmentStatus !== "employed") {
+  // Chỉ người hoàn thành chuỗi tuổi 16 và học đúng ngành đó mới được tự động phỏng vấn ở tuổi 22
+  // (và được hỏi thử lại mỗi năm). Những người khác tự nộp hồ sơ ở Hoạt động → Xin việc.
+  const milestone = hasCareerMilestone(player);
+  if (milestone && age === 22 && player.employmentStatus !== "employed") {
     return createJobInterview(player);
   }
-  if (age > 22 && player.employmentStatus === "unemployed") {
+  if (milestone && age > 22 && player.employmentStatus === "unemployed") {
     return createInterviewRetryPrompt(player);
   }
   const level = Number(player.careerLevel) || 0;
@@ -771,7 +894,8 @@ export function createEmploymentEvent(player, age) {
     ? (level === 1 ? 27 : null)
     : player.nextPromotionAge;
   // Bậc 3 chỉ được xét khi dấu mốc tuổi 16 có hiệu lực cho đúng ngành.
-  if (player.employmentStatus === "employed" && level >= 1 && level < 3 &&
+  // Đang trong diện cảnh báo thì chưa xét nâng bậc.
+  if (player.employmentStatus === "employed" && !player.jobWarning && level >= 1 && level < 3 &&
       Number.isInteger(dueAge) && age >= 27 && age >= dueAge &&
       (level === 1 || (age <= 39 && hasCareerMilestone(player)))) {
     return createPromotionEvent(player, Math.random, age);

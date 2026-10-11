@@ -4,6 +4,9 @@ import { ensureEventOpenMoji } from "./event-openmoji.js";
 import { getChildAge, getAnnualChildcareCost } from "./family.js";
 import { formatSalary } from "./career-salary.js";
 import { initPanelTabs } from "./panel-tabs.js";
+import { MOOD_EFFECTS, PARTNER_ACTIONS, addMoodEffect } from "./mood-rules.js";
+import { CONDITIONS, RELATIVE_ACTIONS, ensureRelatives, getPartnerAge, getRelativeAge } from "./family-members.js";
+import { formatMoney } from "./money-format.js";
 
 const pick = (items, random) => items[Math.floor(random() * items.length)];
 const integer = (min, max, random) => min + Math.floor(random() * (max - min + 1));
@@ -187,7 +190,7 @@ export function getMarriageUpdates(player, person, age, decision) {
   }
   history.push({ age, type: "breakup", person,
     text: `${person.name} chia tay và cắt đứt mối quan hệ vì tôi tiếp tục từ chối cưới sau thời gian chờ đợi.` });
-  return { partner: null, marriedAtAge: null, nextMarriageProposalAge: null,
+  return { moodEffects: addMoodEffect(player, "breakup", age), partnerPromise: null, partner: null, marriedAtAge: null, nextMarriageProposalAge: null,
     marriageProposalDeclines: 0, relationshipStartedAtAge: null,
     nextChildProposalAge: null, childProposalDeclines: 0,
     childProposalStopped: false, childProposalCompleted: false,
@@ -199,7 +202,10 @@ export function getBreakupUpdates(player) {
   const person = player.partner;
   const text = player.marriedAtAge != null
     ? `Tôi và ${person.name} kết thúc hôn nhân.` : `Tôi chủ động chia tay ${person.name}.`;
-  return { partner: null, marriedAtAge: null, relationshipStartedAtAge: null,
+  const grief = MOOD_EFFECTS.breakup;
+  return { partner: null, marriedAtAge: null, relationshipStartedAtAge: null, partnerPromise: null,
+    happiness: Math.max(0, (player.happiness ?? 0) - grief.immediate),
+    moodEffects: addMoodEffect(player, "breakup", player.age),
     nextMarriageProposalAge: null, marriageProposalDeclines: 0,
     nextChildProposalAge: null, childProposalDeclines: 0,
     childProposalStopped: false, childProposalCompleted: false, datingActivitiesOnly: true,
@@ -216,10 +222,272 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
   const history = document.getElementById("relationship-history");
   const breakup = document.getElementById("breakup-relationship");
   const confirmation = document.getElementById("breakup-confirmation");
+  const actions = document.createElement("div");
+  actions.id = "relationship-actions";
+  actions.className = "shop-groups relationship-actions";
+  current.after(actions);
+
+  // Trò chuyện và dành thời gian cùng nhau: mỗi lựa chọn một lần mỗi năm. Xin không gian riêng
+  // kèm lời hẹn trò chuyện sau; giữ lời hẹn thì không bị trừ quan hệ.
+  function act(type) {
+    const player = state.player;
+    const partner = player.partner;
+    if (!partner || player.isAlive === false) return;
+    const done = player.partnerActions ?? {};
+    if (done[type] === player.age) return;
+    const promise = player.partnerPromise?.partnerId === partner.id ? player.partnerPromise : null;
+    let text;
+    if (type === "care") {
+      player.health = Math.max(1, (player.health ?? 0) - 2);
+      player.partner = { ...partner, relationship: Math.min(100, (partner.relationship ?? 80) + 3), caredAt: player.age,
+        interactions: { ...(partner.interactions ?? {}), cares: (partner.interactions?.cares ?? 0) + 1 } };
+      text = `🩺 Tôi dành thời gian chăm sóc ${partner.name} lúc ốm yếu. Quan hệ +3% · Sức khỏe -2.`;
+    } else if (type === "space") {
+      if (promise) return;
+      player.partnerPromise = { partnerId: partner.id, madeAt: player.age, dueAge: player.age + PARTNER_ACTIONS.promiseYears };
+      text = `🤫 Tôi xin ${partner.name} cho mình chút không gian riêng và hẹn sẽ nói chuyện lại trước sinh nhật ${player.partnerPromise.dueAge + 1} tuổi.`;
+    } else {
+      const reward = PARTNER_ACTIONS[type];
+      const beforeHappiness = player.happiness;
+      const beforeRelationship = partner.relationship ?? 80;
+      player.happiness = Math.min(100, beforeHappiness + reward.happiness);
+      player.partner = { ...partner, relationship: Math.min(100, beforeRelationship + reward.relationship) };
+      const gains = [
+        player.happiness > beforeHappiness ? `Hạnh phúc +${player.happiness - beforeHappiness}` : "",
+        player.partner.relationship > beforeRelationship ? `Quan hệ +${player.partner.relationship - beforeRelationship}%` : "",
+      ].filter(Boolean).join(" · ");
+      text = (type === "talk"
+        ? `💬 Tôi và ${partner.name} ngồi trò chuyện, kể cho nhau nghe những điều trong lòng.`
+        : `🌿 Tôi và ${partner.name} dành trọn một ngày cho nhau, không điện thoại, không công việc.`) +
+        (type === "talk" && promise ? " Tôi đã giữ lời hẹn nói chuyện." : "") + (gains ? ` ${gains}.` : "");
+      if (type === "talk" && promise) player.partnerPromise = null;
+      const counter = type === "talk" ? "talks" : "together";
+      player.partner = { ...player.partner, interactions: { ...(player.partner.interactions ?? {}), [counter]: (player.partner.interactions?.[counter] ?? 0) + 1 } };
+    }
+    player.partnerActions = { ...done, [type]: player.age };
+    const log = { age: player.age, content: text, summary: text };
+    state.logs.push(log);
+    save();
+    render();
+    onChange(log);
+  }
+
+  function renderActions() {
+    actions.replaceChildren();
+    const player = state.player;
+    const partner = player.partner;
+    if (!partner || player.isAlive === false) return;
+    const done = player.partnerActions ?? {};
+    const promise = player.partnerPromise?.partnerId === partner.id ? player.partnerPromise : null;
+    const option = (type, label, note, disabled) => {
+      const node = document.createElement("button");
+      node.type = "button";
+      node.className = "shop-group relationship-action";
+      node.dataset.action = type;
+      node.textContent = label;
+      const small = document.createElement("span");
+      small.className = "side-job-note";
+      small.textContent = note;
+      node.append(small);
+      node.disabled = disabled;
+      node.addEventListener("click", () => act(type));
+      actions.append(node);
+    };
+    option("talk", "💬 Trò chuyện, tâm sự",
+      done.talk === player.age ? "Đã trò chuyện năm nay." : `Hạnh phúc +${PARTNER_ACTIONS.talk.happiness}, Quan hệ +${PARTNER_ACTIONS.talk.relationship}%${promise ? " · giữ lời hẹn" : ""}. Mỗi năm một lần.`,
+      done.talk === player.age);
+    option("together", "🌿 Dành thời gian cùng nhau",
+      done.together === player.age ? "Đã dành thời gian cùng nhau năm nay." : `Hạnh phúc +${PARTNER_ACTIONS.together.happiness}, Quan hệ +${PARTNER_ACTIONS.together.relationship}%. Mỗi năm một lần.`,
+      done.together === player.age);
+    if (["weak", "severe"].includes(partner.condition)) {
+      option("care", `🩺 Chăm sóc ${partner.name}`, done.care === player.age
+        ? "Đã chăm sóc năm nay."
+        : `${partner.name} đang ${CONDITIONS[partner.condition].label.toLowerCase()}. Quan hệ +3%, Sức khỏe của bạn -2 vì vất vả. Giúp ích nhưng không bảo đảm khỏi bệnh.`,
+        done.care === player.age);
+    }
+    option("space", "🤫 Xin không gian riêng, hẹn trò chuyện sau",
+      promise ? `Đã hẹn: trò chuyện trước sinh nhật ${promise.dueAge + 1} tuổi để giữ lời.` : `Không bị trừ quan hệ nếu giữ lời hẹn; bỏ hẹn thì Quan hệ -${PARTNER_ACTIONS.brokenPromise}%.`,
+      Boolean(promise) || done.space === player.age);
+  }
+
+  const family = document.getElementById("relationship-family");
+  function relativeAction(id, type) {
+    const player = state.player;
+    const relative = (player.relatives ?? []).find((entry) => entry.id === id);
+    const config = RELATIVE_ACTIONS[type];
+    if (!relative?.alive || !config || player.isAlive === false || relative.done?.[type] === player.age) return;
+    if (config.cost && player.money < config.cost) return;
+    const next = { ...relative, done: { ...(relative.done ?? {}), [type]: player.age }, interactions: { ...(relative.interactions ?? {}) } };
+    const who = `${relative.role.toLowerCase()} ${relative.name}`;
+    const count = (key) => { next.interactions[key] = (next.interactions[key] ?? 0) + 1; };
+    let text;
+    if (type === "postpone") {
+      next.promise = { dueAge: player.age + 1 };
+      text = `🗓️ Tôi xin ${who} hẹn lần sau vì đang bận, hứa sẽ gọi hoặc về thăm trước sinh nhật ${player.age + 2} tuổi.`;
+    } else {
+      player.money -= config.cost;
+      next.bond = Math.min(100, (next.bond ?? 70) + config.bond);
+      if (config.happiness) player.happiness = Math.min(100, (player.happiness ?? 0) + config.happiness);
+      if (config.health) player.health = Math.max(1, (player.health ?? 0) + config.health);
+      const kept = next.promise && ["call", "visit"].includes(type);
+      if (kept) next.promise = null;
+      if (type === "call") { count("calls"); text = `📞 Tôi gọi điện hỏi thăm ${who}.`; }
+      if (type === "visit") { count("visits"); text = `🏠 Tôi về thăm ${who}, cả nhà ăn cơm và trò chuyện đến khuya.`; }
+      if (type === "care") { count("cares"); next.caredAt = player.age; next.careBy = "self"; text = `🩺 Tôi trực tiếp chăm sóc ${who} khi đang ${CONDITIONS[next.condition].label.toLowerCase()}.`; }
+      if (type === "helper") { count("helpers"); next.caredAt = player.age; next.careBy = "helper"; text = `🤝 Tôi nhờ người hỗ trợ chăm sóc ${who} hằng ngày.`; }
+      if (type === "treatment") {
+        count("treatments");
+        next.treatedAt = player.age;
+        next.condition = "weak";
+        text = `💊 Tôi tìm nơi điều trị cho ${who}; bệnh tình đã đỡ hơn (còn yếu, cần tiếp tục chăm sóc).`;
+      }
+      const parts = [config.cost ? `Tiền -${formatMoney(config.cost)}` : "", `Gắn kết +${config.bond}`,
+        config.happiness ? `Hạnh phúc +${config.happiness}` : "", config.health ? `Sức khỏe ${config.health}` : "", kept ? "giữ lời hẹn" : ""];
+      text += ` ${parts.filter(Boolean).join(" · ")}.`;
+    }
+    player.relatives = player.relatives.map((entry) => (entry.id === id ? next : entry));
+    const log = { age: player.age, content: text, summary: text };
+    state.logs.push(log);
+    save();
+    render();
+    onChange(log);
+  }
+  function renderFamily() {
+    if (!family) return;
+    family.replaceChildren();
+    const player = state.player;
+    ensureRelatives(player);
+    for (const relative of player.relatives) {
+      const card = document.createElement("article");
+      card.className = `family-member${relative.alive ? "" : " is-passed"}`;
+      const title = document.createElement("h4");
+      const info = document.createElement("p");
+      if (!relative.alive) {
+        title.textContent = `🕯️ ${relative.role} ${relative.name}`;
+        info.textContent = relative.passedBeforeTracking ? "Đã mất từ trước." : `Đã mất khi bạn ${relative.diedAtAge} tuổi, hưởng thọ ${getRelativeAge(relative, player.age)}.`;
+        card.append(title, info);
+        family.append(card);
+        continue;
+      }
+      const condition = CONDITIONS[relative.condition ?? "healthy"];
+      title.textContent = `${relative.role === "Bố" ? "👨" : "👩"} ${relative.role} ${relative.name} · ${getRelativeAge(relative, player.age)} tuổi`;
+      info.textContent = `💞 Gắn kết: ${relative.bond}% · ${condition.icon} Sức khỏe: ${condition.label}` +
+        (relative.promise ? `\n🗓️ Đã hẹn: gọi hoặc về thăm trước sinh nhật ${relative.promise.dueAge + 1} tuổi.` : "");
+      const actions = document.createElement("div");
+      actions.className = "family-actions";
+      for (const [type, config] of Object.entries(RELATIVE_ACTIONS)) {
+        if (config.needsCare && !["weak", "severe"].includes(relative.condition)) continue;
+        if (config.needsSevere && relative.condition !== "severe") continue;
+        if (type === "postpone" && relative.promise) continue;
+        const done = relative.done?.[type] === player.age;
+        const short = config.cost > 0 && player.money < config.cost;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "shop-group relationship-action";
+        button.dataset.relative = relative.id;
+        button.dataset.action = type;
+        button.textContent = config.label;
+        const note = document.createElement("span");
+        note.className = "side-job-note";
+        note.textContent = done ? "Đã làm năm nay." : short ? `Cần ${formatMoney(config.cost)}. Gọi điện vẫn miễn phí.`
+          : [config.cost ? formatMoney(config.cost) : "Miễn phí", config.bond ? `Gắn kết +${config.bond}` : "",
+            type === "care" ? "Sức khỏe của bạn -2" : "", type === "postpone" ? "Không bị trừ nếu giữ lời hẹn" : "",
+            config.needsCare ? "Giúp ích nhưng không bảo đảm khỏi bệnh" : ""].filter(Boolean).join(" · ");
+        button.append(note);
+        button.disabled = done || short || player.isAlive === false;
+        button.addEventListener("click", () => relativeAction(relative.id, type));
+        actions.append(button);
+      }
+      card.append(title, info, actions);
+      family.append(card);
+    }
+    if (player.partner) {
+      const partner = player.partner;
+      const card = document.createElement("article");
+      card.className = "family-member";
+      const condition = CONDITIONS[partner.condition ?? "healthy"];
+      const title = document.createElement("h4");
+      title.textContent = `💞 ${player.marriedAtAge != null ? "Bạn đời" : "Người yêu"} ${partner.name} · ${getPartnerAge(partner, player.age)} tuổi`;
+      const info = document.createElement("p");
+      info.textContent = `💞 Quan hệ: ${partner.relationship ?? 80}% · ${condition.icon} Sức khỏe: ${condition.label}. Trò chuyện, chăm sóc ở tab Hiện tại.`;
+      card.append(title, info);
+      family.append(card);
+    }
+    // Bạn bè từ những lời làm quen, và cách chủ động kết nối (không phụ thuộc ngoại hình).
+    const friends = document.createElement("article");
+    friends.className = "family-member";
+    const friendsTitle = document.createElement("h4");
+    friendsTitle.textContent = "👫 Bạn bè";
+    const friendsInfo = document.createElement("p");
+    friendsInfo.textContent = (player.friends ?? []).length
+      ? "Trò chuyện mỗi năm một lần để giữ tình bạn: thân thiết +3%, Hạnh phúc +1."
+      : "Chưa có người bạn mới nào được ghi lại.";
+    // Mỗi người bạn: độ thân thiết và lượt trò chuyện một lần mỗi năm.
+    const friendButtons = (player.friends ?? []).map((friend) => {
+      const talked = friend.talkedAt === player.age;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "shop-group relationship-action";
+      button.dataset.action = "friend-talk";
+      button.dataset.friend = friend.id;
+      button.textContent = `💬 Trò chuyện với ${friend.name}`;
+      const note = document.createElement("span");
+      note.className = "side-job-note";
+      note.textContent = `Quen từ ${friend.since} tuổi · thân thiết ${friend.bond ?? 50}%${talked ? " · đã trò chuyện năm nay" : ""}`;
+      button.append(note);
+      button.disabled = talked || player.isAlive === false;
+      button.addEventListener("click", () => {
+        const current = (state.player.friends ?? []).find((entry) => entry.id === friend.id);
+        if (!current || current.talkedAt === state.player.age || state.player.isAlive === false) return;
+        const bond = Math.min(100, (current.bond ?? 50) + 3);
+        state.player.friends = state.player.friends.map((entry) => (entry.id === friend.id ? { ...entry, bond, talkedAt: state.player.age } : entry));
+        const before = state.player.happiness ?? 0;
+        state.player.happiness = Math.min(100, before + 1);
+        const text = `💬 Tôi hẹn ${friend.name} đi uống nước, kể nhau nghe chuyện dạo này. Thân thiết +${bond - (current.bond ?? 50)}%${state.player.happiness > before ? " · Hạnh phúc +1" : ""}.`;
+        const log = { age: state.player.age, content: text, summary: text };
+        state.logs.push(log);
+        save();
+        render();
+        onChange(log);
+      });
+      return button;
+    });
+    const reachOut = document.createElement("button");
+    reachOut.type = "button";
+    reachOut.className = "shop-group relationship-action";
+    reachOut.dataset.action = "reach-out";
+    reachOut.textContent = "🙋 Chủ động kết nối";
+    const reachNote = document.createElement("span");
+    reachNote.className = "side-job-note";
+    const reached = player.reachOutAge === player.age;
+    reachNote.textContent = reached
+      ? "Đã chủ động kết nối năm nay."
+      : "Miễn phí, mỗi năm một lần: tham gia câu lạc bộ, nhắn hỏi thăm người quen. Hạnh phúc +1, tăng cơ hội làm quen năm sau.";
+    reachOut.append(reachNote);
+    reachOut.disabled = reached || player.isAlive === false;
+    reachOut.addEventListener("click", () => {
+      if (state.player.reachOutAge === state.player.age || state.player.isAlive === false) return;
+      state.player.reachOutAge = state.player.age;
+      state.player.happiness = Math.min(100, (state.player.happiness ?? 0) + 1);
+      const text = "🙋 Tôi chủ động tham gia một câu lạc bộ và nhắn hỏi thăm vài người quen. Hạnh phúc +1.";
+      const log = { age: state.player.age, content: text, summary: text };
+      state.logs.push(log);
+      save();
+      render();
+      onChange(log);
+    });
+    friends.append(friendsTitle, friendsInfo, ...friendButtons, reachOut);
+    family.append(friends);
+  }
+
   function render() {
+    renderActions();
+    renderFamily();
     current.textContent = state.player.partner
       ? `${state.player.marriedAtAge != null ? `💍 Đã kết hôn từ tuổi ${state.player.marriedAtAge}` : "💞 Đang hẹn hò"}\n💞 Quan hệ: ${state.player.partner.relationship ?? 80}%\n${describePerson(state.player.partner, state.player.age)}`
-      : state.player.datingActivitiesOnly
+      : state.player.widowedAtAge != null
+        ? `🕯️ Bạn đã góa từ năm ${state.player.widowedAtAge} tuổi. Những kỷ niệm hôn nhân vẫn còn trong tab Kỷ niệm.`
+        : state.player.datingActivitiesOnly
         ? "Bạn đang độc thân sau chia tay."
         : "Bạn chưa hẹn hò với ai. Mọi cuộc gặp gỡ đều có thời điểm riêng!";
     history.replaceChildren();
@@ -237,7 +505,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       const item = document.createElement("li");
       const title = document.createElement("strong");
       title.textContent = `${({ dating: "💞", married: "💍", "marriage-postponed": "💬", breakup: "💔",
-        "child-born": "👶", "adopted-child": "🧸", "child-discussion": "💬" })[entry.type] ?? "🍂"} ${entry.age} tuổi`;
+        "child-born": "👶", "adopted-child": "🧸", "child-discussion": "💬", widowed: "🕯️", farewell: "🕯️" })[entry.type] ?? "🍂"} ${entry.age} tuổi`;
       const content = document.createElement("p");
       content.textContent = entry.text + (entry.type === "dating" ? `\n${describePerson(entry.person, entry.age)}` : "");
       item.append(title, content);
@@ -262,7 +530,9 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     if (!Object.hasOwn(updates, "partner")) return;
     Object.assign(state.player, updates);
     const entry = state.player.relationshipHistory.at(-1);
-    const log = { age: state.player.age, content: entry.text, summary: entry.text };
+    const grief = MOOD_EFFECTS.breakup;
+    const text = `${entry.text} Hạnh phúc -${grief.immediate}; nỗi buồn còn ảnh hưởng ${grief.yearly.length} năm tới, nhẹ dần theo thời gian.`;
+    const log = { age: state.player.age, content: text, summary: text };
     state.logs.push(log);
     save();
     render();

@@ -1,5 +1,10 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { TAROT_DISCOUNT_MAX, consumeTarotBuff, getActiveTarotBuff, getTarotDiscountedFee, getTarotStatBonus } from "./tarot.js";
+import { HEAVY_TRAINING, LIGHT_TRAINING, RECOVERY_ACTIVITIES, getHealthBand, isWeakForTraining } from "./health-rules.js";
+import { MOOD_ACTIVITIES, getHappinessBand } from "./mood-rules.js";
+import { HIGH_INTELLECT_TRAINING_RATE, INTELLECT_ACTIVITIES, PROMOTION, getIntellectBand } from "./intellect-rules.js";
+import { APPEARANCE_ACTIVITIES, getAppearanceBand } from "./appearance-rules.js";
+import { getIllnessStage } from "./hospital.js";
 
 // Phát triển bản thân: mỗi chỉ số có 2 hoạt động, mỗi hoạt động có 3 gói.
 // Trả càng nhiều tiền, chỉ số chính tăng càng nhiều. Mỗi hoạt động một lần mỗi năm.
@@ -46,6 +51,45 @@ export const developmentActivities = [
 const statName = (id) => developmentStats.find((stat) => stat.id === id).name;
 export const hasTrainedThisYear = (player, id) => (player.developmentDone?.[id] ?? -1) === player.age;
 
+// Bệnh đang ở mức Nặng hoặc Nguy kịch (tập luyện không chữa được bệnh).
+const hasSeriousIllness = (player) => (player.illnesses ?? [])
+  .some((illness) => getIllnessStage(illness, player.age, player.health) !== "mild");
+// Gym (tập nặng) khi đang yếu hoặc bệnh nặng chỉ còn một nửa hiệu quả; yoga (tập nhẹ) khi yếu được cộng thêm.
+export const HIGH_STAT_THRESHOLD = 80;
+export function getTrainingGain(player, activity, tierGain) {
+  const high = (player[activity.stat] ?? 0) >= HIGH_STAT_THRESHOLD;
+  if (activity.stat === "intelligence" && getIntellectBand(player.intelligence).id === "sharp") {
+    return { gain: Math.max(1, Math.ceil(tierGain * HIGH_INTELLECT_TRAINING_RATE)),
+      note: "📈 Trí tuệ đã cao: học thêm vẫn có ích nhưng tăng chậm hơn (một nửa)." };
+  }
+  if (high && !(activity.stat === "health" && isWeakForTraining(player.health))) {
+    return { gain: Math.max(1, Math.ceil(tierGain * HIGH_INTELLECT_TRAINING_RATE)),
+      note: `📈 ${statName(activity.stat)} đã từ ${HIGH_STAT_THRESHOLD}: vẫn có ích nhưng tăng chậm hơn (một nửa).` };
+  }
+  if (activity.stat !== "health") return { gain: tierGain };
+  if (HEAVY_TRAINING.ids.includes(activity.id) && (isWeakForTraining(player.health) || hasSeriousIllness(player))) {
+    return { gain: Math.max(1, Math.ceil(tierGain * HEAVY_TRAINING.weakRate)),
+      note: "⚠️ Cơ thể đang yếu hoặc bệnh nặng: tập nặng dễ quá sức, hiệu quả chỉ còn một nửa. Nên chọn yoga, đi bộ nhẹ hoặc nghỉ ngơi." };
+  }
+  if (LIGHT_TRAINING.ids.includes(activity.id) && isWeakForTraining(player.health)) {
+    return { gain: tierGain + LIGHT_TRAINING.weakBonus, note: `🌿 Đang yếu: tập nhẹ giúp hồi phục, được thêm ${LIGHT_TRAINING.weakBonus} điểm.` };
+  }
+  return { gain: tierGain };
+}
+// Hoạt động miễn phí theo chỉ số: Sức khỏe (nghỉ ngơi, đi bộ nhẹ) và Hạnh phúc (sở thích, cộng đồng, tâm sự).
+// Chỉ số càng thấp, mức hồi phục càng nhiều; mỗi hoạt động một lần mỗi năm.
+export const freeActivities = {
+  health: RECOVERY_ACTIVITIES.map((activity) => ({ stat: "health", ...activity })),
+  happiness: MOOD_ACTIVITIES,
+  intelligence: INTELLECT_ACTIVITIES,
+  appearance: APPEARANCE_ACTIVITIES,
+};
+const bandOf = { health: getHealthBand, happiness: getHappinessBand, intelligence: getIntellectBand, appearance: getAppearanceBand };
+export const getRecoveryGain = (player, activity) => {
+  const stat = activity.stat ?? "health";
+  return activity.gain[bandOf[stat](player[stat]).id];
+};
+
 export function initSelfDevelopment(state, { renderMoney, renderStats, renderLogEntry }) {
   const $ = (id) => document.getElementById(id);
   const dialog = $("self-development-dialog");
@@ -79,12 +123,13 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
     const { fee, discount } = getTarotDiscountedFee(player, tier.price);
     if (player.isAlive === false || player.money < fee || hasTrainedThisYear(player, activity.id)) return;
     const bonus = getTarotStatBonus(player);
+    const { gain } = getTrainingGain(player, activity, tier.gain);
     player.money -= fee;
     player.developmentDone = { ...(player.developmentDone ?? {}), [activity.id]: player.age };
     if (discount) consumeTarotBuff(player, "pentacles");
     if (bonus) consumeTarotBuff(player, "wands");
     const before = player[activity.stat];
-    player[activity.stat] = Math.min(100, before + tier.gain + bonus);
+    player[activity.stat] = Math.min(100, before + gain + bonus);
     const gained = player[activity.stat] - before;
     const content = `${activity.icon} ${activity.name} (${activity.packages[packageTiers.indexOf(tier)]}): ` +
       `Tiền -${formatMoneyAmount(fee)} VNĐ${gained ? ` · ${statName(activity.stat)} +${gained}` : ""}` +
@@ -96,6 +141,67 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
     renderStats();
     renderLogEntry(log);
     renderStat(statId, activity.id);
+  }
+
+  // Hồi phục miễn phí: mỗi hoạt động một lần mỗi năm.
+  function recover(activity) {
+    const player = state.player;
+    if (player.isAlive === false || hasTrainedThisYear(player, activity.id)) return;
+    const stat = activity.stat ?? "health";
+    const before = player[stat];
+    player[stat] = Math.min(100, before + getRecoveryGain(player, activity));
+    player.developmentDone = { ...(player.developmentDone ?? {}), [activity.id]: player.age };
+    const extras = [];
+    if (activity.together) {
+      if (player.happiness < 100) extras.push("Hạnh phúc +1");
+      player.happiness = Math.min(100, (player.happiness ?? 0) + 1);
+      if (player.partner) {
+        player.partner = { ...player.partner, relationship: Math.min(100, (player.partner.relationship ?? 80) + 1) };
+        extras.push(`gắn kết với ${player.partner.name} +1%`);
+      }
+    }
+    if (activity.once) player.styleSkill = true;
+    if (activity.needsJob) {
+      player.workMerit = Math.min(PROMOTION.maxMerit, (player.workMerit ?? 0) + 1);
+      extras.push("thêm kinh nghiệm cho lần xét nâng bậc");
+    }
+    const content = `${activity.icon} ${activity.name} (miễn phí)${player[stat] > before ? `: ${statName(stat)} +${player[stat] - before}` : ""}` +
+      `${extras.length ? ` · ${extras.join(" · ")}` : ""}.`;
+    const log = { age: player.age, content, summary: content };
+    state.logs.push(log);
+    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    renderStats();
+    renderLogEntry(log);
+    renderStat(stat, activity.id);
+  }
+
+  function recoveryCard(statId) {
+    const player = state.player;
+    const stat = developmentStats.find((entry) => entry.id === statId);
+    const card = element("section", "dialog-card dev-activity dev-recovery");
+    card.append(element("h3", "", { health: "🌱 Hồi phục miễn phí", happiness: "🌱 Hồi phục tinh thần miễn phí", intelligence: "📚 Học miễn phí", appearance: "🪞 Chăm sóc cá nhân miễn phí" }[statId]),
+      element("p", "side-job-intro", statId === "intelligence"
+        ? "Không tốn tiền, chỉ cần thời gian và sự kiên trì. Mỗi hoạt động một lần mỗi năm; trí tuệ càng cao tăng càng chậm."
+        : `Không tốn tiền, mỗi hoạt động một lần mỗi năm. ${stat.name} càng thấp, hồi phục càng nhiều.`));
+    const list = element("div", "dev-packages");
+    for (const activity of freeActivities[statId]) {
+      const done = hasTrainedThisYear(player, activity.id);
+      const row = element("div", "dev-package");
+      const info = element("div", "dev-package-info");
+      info.append(element("strong", "", `${activity.icon} ${activity.name}`),
+        element("span", "shop-figures", `${activity.description} · ${stat.icon} ${stat.name} +${getRecoveryGain(player, activity)}`));
+      const action = button("shop-buy dev-recover", done ? "Đã làm năm nay" : "Thực hiện", () => recover(activity));
+      action.dataset.activity = activity.id;
+      const needsJob = activity.needsJob && player.employmentStatus !== "employed";
+      const learned = activity.once && player.styleSkill;
+      if (needsJob) action.textContent = "Cần có việc chính";
+      if (learned) action.textContent = "Đã có phong cách riêng";
+      action.disabled = done || needsJob || learned || player.isAlive === false || (player[statId] >= 100 && !activity.once);
+      row.append(info, action);
+      list.append(row);
+    }
+    card.append(list);
+    return card;
   }
 
   function renderHome() {
@@ -116,17 +222,27 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
 
   function renderStat(statId, justTrained = null) {
     const player = state.player;
+    // Điểm thực nhận (không vượt 100) hiển thị trước khi trả tiền.
+    const realGain = (gain) => Math.max(0, Math.min(gain, 100 - (player[statId] ?? 0)));
     const stat = developmentStats.find((entry) => entry.id === statId);
     const back = button("shop-back", "← Chọn chỉ số khác", renderHome);
     const nodes = [back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)} · ${stat.icon} ${stat.name}: ${player[statId]}%`)];
     const note = buffNote();
     if (note) nodes.push(note);
+    if (statId === "health") {
+      if ((player.illnesses ?? []).length) {
+        nodes.push(element("p", "side-job-health-warning", "🩺 Tập luyện giúp khỏe hơn nhưng không chữa được bệnh. Hãy vào Bệnh viện để điều trị."));
+      }
+    }
+    if (freeActivities[statId]) nodes.push(recoveryCard(statId));
     for (const activity of developmentActivities.filter((entry) => entry.stat === statId)) {
       const done = hasTrainedThisYear(player, activity.id);
       const card = element("section", `dialog-card dev-activity${activity.id === justTrained ? " is-trained" : ""}`);
       card.dataset.activity = activity.id;
       card.append(element("h3", "", `${activity.icon} ${activity.name}`), element("p", "side-job-intro", activity.description));
       if (done) card.append(element("p", "dev-done", "✅ Đã tham gia năm nay. Hẹn bạn năm sau!"));
+      const training = getTrainingGain(player, activity, 0);
+      if (training.note) card.append(element("p", "side-job-health-warning dev-health-note", training.note));
       const list = element("div", "dev-packages");
       packageTiers.forEach((tier, index) => {
         const { fee, discount } = getTarotDiscountedFee(player, tier.price);
@@ -135,7 +251,8 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
         const info = element("div", "dev-package-info");
         info.append(
           element("strong", "", `${tier.label}: ${activity.packages[index]}`),
-          element("span", "shop-figures", `💰 ${formatMoney(fee)}${discount ? ` (giảm ${formatMoney(discount)})` : ""} · ✨ ${stat.name} +${tier.gain + bonus}`),
+          element("span", "shop-figures", `💰 ${formatMoney(fee)}${discount ? ` (giảm ${formatMoney(discount)})` : ""} · ✨ ${stat.name} +${realGain(getTrainingGain(player, activity, tier.gain).gain + bonus)}` +
+            (player[statId] + getTrainingGain(player, activity, tier.gain).gain + bonus > 100 ? " (chạm mức 100)" : "")),
         );
         const action = button("shop-buy dev-buy", done ? "Đã tham gia" : player.money < fee ? "Không đủ tiền" : "Đăng ký", () =>
           train(activity, tier, statId));

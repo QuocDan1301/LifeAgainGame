@@ -32,7 +32,9 @@
     const reward = createSchoolEntryReward(freshman,18,{careerPath:path});
     assert(reward.updates.money === 2000000 && !reward.updates.health, 'University awards cash only');
     completeLifeYear(freshman,18,{careerPath:path},reward);
-    assert(freshman.money === 2000000 && !createSchoolEntryReward(freshman,19,{careerPath:path}), 'University cash only once per life');
+    // Năm nhập học cũng trừ học phí năm nhất (ví có thể âm).
+    const { getAnnualTuition } = await import('../js/family.js');
+    assert(freshman.money === 2000000 - getAnnualTuition(path) && !createSchoolEntryReward(freshman,19,{careerPath:path}), 'University cash (minus first-year tuition) only once per life');
     for (const careerPath of [{id:'military',school:null}, {id:'military',school:{name:'Học viện Quân sự'}},
       {id:'esports',school:{name:'Team Flash Academy',type:'academy'}}, {id:'culinary',school:{name:'Trường Cao đẳng Du lịch'}}]) {
       assert(!createSchoolEntryReward(base(17),18,{careerPath}), 'Enlistment, academy and college do not grant university cash');
@@ -55,14 +57,16 @@
     const birthday = document.getElementById('age-up');
     const confirm = document.getElementById('event-confirm');
     const choose = i => document.querySelectorAll('#event-choices button')[i].click();
-    birthday.click(); choose(0);
+    // May rủi của sự kiện thường ngày ở mức trung tính để kết quả đúng bằng điểm tác giả viết.
+    birthday.click(); const rolls = [0.5]; Math.random = () => rolls.shift() ?? 0;
+    choose(state.pendingEvent.choices.findIndex(c => c.label.includes('Chào cô'))); Math.random = () => 0;
     const savedReward = JSON.stringify(state.pendingEvent.schoolReward);
     assert(state.player.age === 5 && state.player.health === 50, 'Result preview does not mutate stats');
     Math.random = () => 0.999;
     state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     assert(JSON.stringify(state.pendingEvent.schoolReward) === savedReward, 'Save preserves exact random reward');
     confirm.click();
-    assert(state.player.health === 51 && state.player.intelligence === 53 && state.player.happiness === 54,
+    assert(state.player.health === 51 && state.player.intelligence === 53 && state.player.happiness === 55,
       'School reward adds to choice effects without overwriting them');
     Object.assign(state.player,base(10)); birthday.click();
     assert(state.player.age === 11 && state.player.money === 500000 && state.player.health === 53,

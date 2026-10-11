@@ -1,0 +1,179 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Happiness mechanic checks</title>
+<pre id="happiness-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("happiness-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const { createInitialState, state } = await import("../js/state.js");
+    const M = await import("../js/mood-rules.js");
+    const { completeLifeYear } = await import("../js/family.js");
+    const { getBreakupUpdates } = await import("../js/relationships.js");
+    const player = extra => ({ ...createInitialState().player, age: 30, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 1_000_000_000, illnessPlan: [], illnesses: [], ...extra });
+
+    // 1. Các mức hạnh phúc.
+    assert(["steady", "normal", "low", "crisis"].join() === [100, 69, 39, 19].map(h => M.getHappinessBand(h).id).join() &&
+      M.getHappinessBand(70).id === "steady" && M.getHappinessBand(40).id === "normal" && M.getHappinessBand(20).id === "low", "Happiness bands 70/40/20");
+    const setback = { text: "Kế hoạch đổ bể.", effects: { happiness: -4, health: -3 } };
+    const softened = M.softenSetback({ happiness: 80 }, setback, "career");
+    assert(softened.effects.happiness === -2 && softened.effects.health === -3, "Steady mood halves small happiness setbacks only");
+    assert(M.softenSetback({ happiness: 60 }, setback, "career") === setback, "Normal mood: no softening");
+    assert(M.softenSetback({ happiness: 90 }, { text: "x", effects: { happiness: -10 } }, "career").effects.happiness === -10, "Big blows are not made harmless");
+    assert(M.softenSetback({ happiness: 90 }, setback, "special") === setback, "Story chains keep their weight");
+
+    // 2. Hạnh phúc thấp kéo dài: mở chuỗi sau 3 năm, đặt lại khi từ 20, không lặp khi đang hỗ trợ.
+    const sad = player({ age: 29, happiness: 15 });
+    for (const age of [30, 31]) completeLifeYear(sad, age);
+    assert(sad.lowHappinessYears === 2 && !M.createSupportEvent(sad, 32), "Two low years are not enough");
+    completeLifeYear(sad, 32);
+    const support = M.createSupportEvent(sad, 33);
+    assert(support?.title.includes("giai đoạn khó khăn") && support.choices.length === 4, "Three low years open the support chain");
+    assert(support.choices[0].label.includes("Tâm sự") && !support.choices[0].money, "Confiding is free (singles and poor players have basic support)");
+    assert(support.choices.some(c => c.label.includes("chuyên môn") && c.money < 0) && support.choices.some(c => c.label.includes("Điều chỉnh lịch")),
+      "Schedule and professional support options");
+    assert(support.choices.at(-1).text.includes("⚠️"), "Postponing warns about consequences");
+    assert(!support.text.includes("trầm cảm"), "No automatic depression diagnosis");
+    const recovering = player({ age: 33, happiness: 15, lowHappinessYears: 3 });
+    Object.assign(recovering, support.choices[0].playerUpdates);
+    assert(!M.createSupportEvent(recovering, 34) && !M.createSupportEvent(recovering, 35), "No repeat while the chain is running");
+    const better = player({ age: 29, happiness: 15, lowHappinessYears: 2 });
+    better.happiness = 25;
+    completeLifeYear(better, 30);
+    assert(better.lowHappinessYears === 0, "Reaching 20 resets the streak");
+    const postponed = player({ age: 33, happiness: 15, lowHappinessYears: 3 });
+    Object.assign(postponed, support.choices.at(-1).playerUpdates);
+    assert(!M.createSupportEvent(postponed, 34) && M.createSupportEvent({ ...postponed, lowHappinessYears: 4 }, 35), "Postponed support returns after 2 years");
+    // Hạnh phúc thấp không gây tử vong, mất việc hay chia tay.
+    const gloomy = player({ age: 40, happiness: 0, employmentStatus: "employed", careerLevel: 1, careerPath: { id: "law" }, lastSalaryAge: 40,
+      partner: { id: "p1", name: "An", relationship: 80 } });
+    for (let age = 41; age <= 45; age++) completeLifeYear(gloomy, age);
+    assert(gloomy.isAlive !== false && gloomy.employmentStatus === "employed" && gloomy.partner?.relationship === 80,
+      "Low happiness alone never kills, fires or breaks up");
+
+    // 3. Áp lực công việc: hạnh phúc thấp kéo dài làm tăng khả năng gặp.
+    assert(M.getWorkPressureChance({ strainedYears: 3 }) > M.getWorkPressureChance({ strainedYears: 0 }), "Long low mood raises work pressure");
+    const pressure = M.createMoodEvent(player({ employmentStatus: "employed", nextPromotionAge: 33, strainedYears: 3 }), 31, () => 0);
+    assert(pressure.kind === "work-pressure" && pressure.choices.length === 3, "Deadline event with three choices");
+    assert(pressure.choices[1].playerUpdates.nextPromotionAge === 34 && pressure.choices[1].effects.happiness > 0, "Reducing tasks restores mood but delays promotion");
+    assert(pressure.choices[2].effects.health < 0 && pressure.choices[2].effects.happiness < 0, "Taking everything on costs health and mood");
+    assert(!pressure.choices.some(c => c.salary || c.playerUpdates?.careerLevel), "No automatic salary or rank cut");
+    const lowMood = M.createMoodEvent(player({ happiness: 30 }), 31, () => 0);
+    assert(lowMood.kind === "low-mood" && ["Nghỉ ngơi", "Tâm sự", "tiếp tục"].every(word => lowMood.choices.some(c => c.label.includes(word))),
+      "20–39: low-mood event with rest, confide or keep working");
+    assert(!M.createMoodEvent(player({ happiness: 60 }), 31, () => 0), "Normal mood: no low-mood event");
+
+    // 6. Biến cố kéo dài: chia tay ảnh hưởng thêm 2 năm, giảm dần; nghỉ ngơi/hỗ trợ giảm nhẹ.
+    const couple = player({ age: 30, happiness: 60, partner: { id: "p2", name: "Bình", relationship: 80 } });
+    Object.assign(couple, getBreakupUpdates(couple));
+    assert(couple.happiness === 55 && couple.moodEffects.length === 1, "Breakup: immediate drop plus a lingering effect");
+    const first = completeLifeYear(couple, 31);
+    assert(couple.happiness === 52 && first.mood.content.includes("còn 1 năm"), "Year 1 after: -3 with time remaining shown");
+    completeLifeYear(couple, 32);
+    assert(couple.happiness === 50 && !couple.moodEffects.length, "Year 2 after: -2, then it ends");
+    const resting = player({ age: 30, happiness: 60, restYear: 31, moodEffects: M.addMoodEffect({}, "breakup", 30) });
+    completeLifeYear(resting, 31);
+    assert(resting.happiness === 58, "Rest halves the lingering effect");
+
+    // Giao diện.
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, player({ name: "Test", gender: "male", age: 30, happiness: 30, money: 100_000_000, studyBlock: "A00",
+      datingActivitiesOnly: false, employmentStatus: "declined", nextPromotionAge: null,
+      partner: { id: "p3", name: "Chi", gender: "female", relationship: 80, metAtAge: 28, ageAtMeeting: 28, stats: { health: 50, intelligence: 50, happiness: 50, appearance: 50 },
+        birthday: "1/1", zodiac: "Ma Kết", personality: "Hiền", workplace: "công ty", reason: "vui tính" } }));
+    Math.random = () => 0.99;
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const closeAll = () => document.querySelectorAll("dialog[open]").forEach(d => d.close());
+
+    // 4. Tương tác với người yêu: mỗi lựa chọn một lần mỗi năm; xin không gian riêng giữ hẹn thì không bị phạt.
+    closeAll();
+    $("relationships").click();
+    const action = type => $("relationships-dialog").querySelector(`.relationship-action[data-action="${type}"]`);
+    assert(action("talk") && action("together") && action("space"), "Three partner interactions");
+    action("space").click();
+    assert(state.player.partnerPromise && state.player.partner.relationship === 80 && action("space").disabled, "Asking for space is not penalised");
+    action("talk").click();
+    assert(state.player.happiness === 33 && state.player.partner.relationship === 82 && !state.player.partnerPromise && action("talk").disabled,
+      "Talking keeps the promise, raises mood and bond, once per year");
+    action("together").click();
+    assert(state.player.happiness === 37 && state.player.partner.relationship === 85 && action("together").disabled, "Time together, once per year");
+    closeAll();
+    // Bỏ hẹn mới bị trừ quan hệ.
+    const promiser = player({ age: 30, partner: { id: "p4", name: "Dũng", relationship: 70 }, partnerPromise: { partnerId: "p4", madeAt: 30, dueAge: 31 } });
+    completeLifeYear(promiser, 31);
+    assert(promiser.partner.relationship === 70 && promiser.partnerPromise, "Promise is still open next year");
+    completeLifeYear(promiser, 32);
+    assert(promiser.partner.relationship === 65 && !promiser.partnerPromise, "Breaking the promise costs the relationship");
+
+    // 5. Hoạt động miễn phí cho hạnh phúc: mỗi hoạt động một lần mỗi năm, không tốn tiền.
+    const money = state.player.money;
+    $("activities").click();
+    $("activity-self-development").click();
+    $("self-development-body").querySelector('.shop-group[data-stat="happiness"]').click();
+    const free = id => $("self-development-body").querySelector(`.dev-recover[data-activity="${id}"]`);
+    assert(free("hobby") && free("community") && free("call-family"), "Three free mood activities");
+    free("hobby").click();
+    assert(state.player.happiness === 41 && free("hobby").disabled && state.player.money === money, "Free hobby: +4 when low, once per year, no cost");
+    free("call-family").click();
+    assert(state.player.happiness === 43 && free("call-family").disabled, "Gain shrinks as mood recovers (+2 once back to normal)");
+    closeAll();
+
+    // Du lịch lặp lại: hiển thị điểm thực nhận trước khi trả tiền.
+    const travelFigures = id => $("travel-body").querySelector(`.travel-go[data-place="${id}"]`).parentElement.textContent;
+    state.player.happiness = 50;
+    state.player.travelStreak = { id: "da-nang", lastAge: 29, count: 1 };
+    $("activities").click();
+    $("activity-travel").click();
+    assert(travelFigures("da-nang").includes("Hạnh phúc +4") && travelFigures("da-nang").includes("75%"), "Second year in a row: 75% shown before paying");
+    assert(travelFigures("hoi-an").includes("Hạnh phúc +6") && !travelFigures("hoi-an").includes("%"), "A different destination is full value");
+    closeAll();
+    state.player.happiness = 98;
+    $("activities").click();
+    $("activity-travel").click();
+    assert(travelFigures("hoi-an").includes("Hạnh phúc +2") && travelFigures("hoi-an").includes("chạm mức 100"), "Near 100 the real gain is shown");
+    closeAll();
+
+    // Thẻ tinh thần hiển thị nguyên nhân và thời gian ảnh hưởng còn lại.
+    state.player.happiness = 50;
+    $("relationships").click();
+    $("breakup-relationship").click();
+    $("confirm-breakup").click();
+    closeAll();
+    assert(!state.player.partner && state.player.happiness === 45 && state.logs.at(-1).content.includes("2 năm"), "Breakup through the UI: -5 now, 2 more years");
+    assert(!$("health-alert").hidden && $("health-alert").textContent.includes("Chia tay") && $("health-alert").textContent.includes("còn 2 năm"),
+      "The card shows the cause and the remaining time");
+    // Chuỗi hỗ trợ trong luồng thật: xuất hiện khi sang tuổi, chọn tâm sự thì bắt đầu hồi phục.
+    closeAll();
+    Object.assign(state.player, { happiness: 10, lowHappinessYears: 3, moodSupport: null, supportOfferAge: null });
+    $("age-up").disabled = false;
+    $("age-up").click();
+    assert(state.pendingEvent?.kind === "happiness-support" && state.pendingEvent.category === "wellbeing" &&
+      $("event-category").textContent.includes("Tinh thần"), "The support chain opens on the birthday");
+    document.querySelector("#event-choices button").click();
+    $("event-confirm").click();
+    assert(state.player.moodSupport?.type === "confide" && state.player.age === 31 && state.player.happiness >= 10,
+      "Choosing to confide starts a recovery plan");
+    result.textContent = "PASS: happiness bands; resilience for small setbacks; 3-year low streak opens support (free confide, schedule, professional, postpone with warning); no repeat while running; reset at 20; no death/firing/breakup from mood; work pressure and low-mood events; partner talk/time/space with kept or broken promises; free mood activities with yearly limit; travel repeats 100/75/50% shown before paying; lingering breakup grief with visible cause and time";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

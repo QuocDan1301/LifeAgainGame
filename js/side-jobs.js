@@ -2,6 +2,9 @@ import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { recordAchievementFlags } from "./achievements-data.js";
 import { askConfirm } from "./confirm-dialog.js";
 import { getPlayerAnnualSalary } from "./career-salary.js";
+import { SICK_LEAVE, getHealthBand, getJobHealthRule } from "./health-rules.js";
+import { applyEmergency } from "./hospital.js";
+import { describeJobLossCause, getJobLossUpdates } from "./job-loss.js";
 
 // Làm thêm ở cửa hàng tiện lợi. Lương và sức khỏe tính cho mỗi cửa hàng, mỗi năm.
 export const convenienceStores = [
@@ -33,24 +36,50 @@ export function getSideJobTitle(player) {
   return first ? `Nhân viên ${first.name}` : null;
 }
 
-// Trả lương và trừ sức khỏe khi sang tuổi mới, cho mỗi việc đã làm từ năm trước.
-export function collectSideJobYear(player, age) {
+// Trả lương và trừ sức khỏe khi sang tuổi mới, cho mỗi việc đã làm từ năm trước (trả theo ca).
+// Sức khỏe yếu: có thể phải nghỉ ốm một phần ca (mất lương và hao sức của các ca đó).
+// Năm nghỉ dưỡng: tạm nghỉ mọi ca, không lương ca, không hao sức.
+// Làm đến kiệt sức (sức khỏe về 0): nhập viện cấp cứu, không tự động tử vong.
+export function collectSideJobYear(player, age, random = Math.random) {
   const working = jobsOf(player).filter((job) => job.startedAtAge < age && getStore(job.storeId) && shiftTypes[job.shift]);
   if (!working.length) return null;
-  const amount = working.reduce((sum, job) => sum + shiftTypes[job.shift].salary, 0);
-  const strain = working.reduce((sum, job) => sum + shiftTypes[job.shift].health, 0);
+  const stores = working.map((job) => getStore(job.storeId).name).join(", ");
+  const shiftName = shiftTypes[working[0].shift].name;
+  if (player.restYear === age) {
+    return { amount: 0, content: `🛌 Nghỉ dưỡng: tạm nghỉ ca làm thêm ${shiftName} (${stores}) cả năm, không có lương ca và không hao sức.` };
+  }
+  let amount = working.reduce((sum, job) => sum + shiftTypes[job.shift].salary, 0);
+  let strain = working.reduce((sum, job) => sum + shiftTypes[job.shift].health, 0);
+  const sick = SICK_LEAVE[getHealthBand(player.health).id];
+  const sickLeave = Boolean(sick) && random() < sick.chance;
+  if (sickLeave) {
+    amount = Math.round((amount * (1 - sick.missed)) / 1000) * 1000;
+    strain = Math.round(strain * (1 - sick.missed));
+  }
   player.money += amount;
-  // Làm thêm khiến mệt mỏi nhưng không tự gây tử vong.
-  const health = Math.max(1, player.health + strain);
+  const health = Math.max(0, player.health + strain);
   const lost = player.health - health;
   player.health = health;
-  const stores = working.map((job) => getStore(job.storeId).name).join(", ");
-  return {
-    amount,
-    content: `🏪 Lương làm thêm ${shiftTypes[working[0].shift].name} (${stores}): Tiền +${formatMoneyAmount(amount)} VNĐ.` +
-      (lost ? ` Sức khỏe -${lost}.` : ""),
-  };
+  let content = `🏪 Lương làm thêm ${shiftName} (${stores}): Tiền +${formatMoneyAmount(amount)} VNĐ.` +
+    (lost ? ` Sức khỏe -${lost}.` : "") +
+    (sickLeave ? " Sức khỏe yếu nên phải nghỉ ốm nhiều ca, mất một nửa lương ca." : "");
+  if (health === 0) content += `\n${applyEmergency(player, "Làm thêm quá sức khiến cơ thể kiệt sức.", age, random)}`;
+  return { amount, content };
 }
+
+// Giảm ca khi sức khỏe nguy hiểm: chỉ giữ một ca part-time (ca full-time chuyển thành part-time).
+export function reduceSideJobs(player) {
+  const [first] = jobsOf(player);
+  if (!first) return false;
+  player.sideJobs = [{ ...first, shift: "part-time" }];
+  return true;
+}
+export function quitSideJobs(player) {
+  const had = jobsOf(player).length > 0;
+  player.sideJobs = [];
+  return had;
+}
+export const canReduceSideJobs = (player) => jobsOf(player).length > 1 || jobsOf(player)[0]?.shift === "full-time";
 
 export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, renderEducation, checkAchievements }) {
   const $ = (id) => document.getElementById(id);
@@ -95,6 +124,10 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       body.append(element("p", "license-age-note",
         `🔞 Bạn cần đủ ${SIDE_JOB_MIN_AGE} tuổi mới được đi làm thêm. Còn ${SIDE_JOB_MIN_AGE - state.player.age} năm nữa nhé!`));
     }
+    const health = getJobHealthRule(state.player);
+    if (!tooYoung && (health.message || health.warning)) {
+      body.append(element("p", health.allowed ? "side-job-health-warning" : "license-age-note", health.message ?? health.warning));
+    }
     const list = element("div", "shop-groups");
     for (const shift of Object.values(shiftTypes)) {
       const blocked = working && working !== shift.id;
@@ -106,7 +139,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         focusFirst();
       });
       choice.dataset.shift = shift.id;
-      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken);
+      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken || !health.allowed);
       const note = element("span", "side-job-note", tooYoung ? `Từ ${SIDE_JOB_MIN_AGE} tuổi.` : blocked
         ? `Đang làm ${shiftTypes[working].name}, cần nghỉ hết mới chuyển được.`
         : fullTimeTaken ? "Bạn đã có một việc full-time." : shift.rule);
@@ -127,12 +160,15 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       const hired = jobsOf(state.player).some((job) => job.storeId === store.id);
       const otherShift = getSideJobShift(state.player) && getSideJobShift(state.player) !== shift.id;
       const fullTimeTaken = shift.id === "full-time" && jobsOf(state.player).length > 0;
-      const apply = button("shop-buy side-job-apply", hired ? "✅ Đang làm ở đây" : "📝 Nhận việc", () => askConfirm(
+      const health = getJobHealthRule(state.player);
+      const apply = button("shop-buy side-job-apply", hired ? "✅ Đang làm ở đây" : health.allowed ? "📝 Nhận việc" : "🛑 Sức khỏe chưa cho phép", () => askConfirm(
         `📝 Làm ${shift.name} ở ${store.name}?`,
-        `Bạn sẽ làm ${shift.name} tại ${store.name}.\nLương: +${formatMoney(shift.salary)}/năm, sức khỏe ${shift.health}/năm, tính từ năm sau.`,
+        `Bạn sẽ làm ${shift.name} tại ${store.name}.\nLương: +${formatMoney(shift.salary)}/năm, sức khỏe ${shift.health}/năm, tính từ năm sau.` +
+          (health.warning ? `\n${health.warning}` : ""),
         "Nhận việc",
         () => {
           const jobs = jobsOf(state.player);
+          if (!getJobHealthRule(state.player).allowed) return;
           if (state.player.age < SIDE_JOB_MIN_AGE || jobs.some((job) => job.storeId === store.id) ||
               (jobs.length && (jobs[0].shift !== shift.id || shift.id === "full-time"))) return;
           state.player.sideJobs = [...jobs, { storeId: store.id, shift: shift.id, startedAtAge: state.player.age }];
@@ -145,7 +181,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         },
       ));
       apply.dataset.store = store.id;
-      apply.disabled = hired || otherShift || fullTimeTaken;
+      apply.disabled = hired || otherShift || fullTimeTaken || !health.allowed;
       row.append(element("h4", "", `🏪 ${store.name}`), apply);
       items.append(row);
     }
@@ -174,9 +210,9 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
           `Bạn sẽ nghỉ việc ${player.job}.\nBạn sẽ không còn nhận lương và không được xét nâng bậc nghề nữa.`,
           () => {
             const job = state.player.job;
-            Object.assign(state.player, { employmentStatus: "declined", job: null, careerLevel: 0, nextPromotionAge: null });
+            Object.assign(state.player, getJobLossUpdates(state.player, state.player.age, "quit"));
             record(`🚪 Nghỉ công việc chính: ${job}.`);
-            renderCurrentJobs();
+            renderJobsPanel();
           }));
       list.append(row);
     }
@@ -189,8 +225,17 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         quit(`🚪 Nghỉ việc ở ${store.name}?`, `Bạn sẽ nghỉ ${shift.name} tại ${store.name}.`, () => {
           state.player.sideJobs = jobsOf(state.player).filter((entry) => entry.storeId !== job.storeId);
           record(`🚪 Nghỉ việc ${shift.name} tại ${store.name}.`);
-          renderCurrentJobs();
+          renderJobsPanel();
         }));
+      list.append(row);
+    }
+  }
+
+  function renderJobHistory() {
+    const list = $("life-jobs");
+    for (const entry of [...(state.player.jobHistory ?? [])].reverse()) {
+      const row = element("li", "shop-owned job-history");
+      row.append(element("span", "", `📜 ${entry.age} tuổi · ${entry.title} · ${describeJobLossCause(entry.cause)}`));
       list.append(row);
     }
   }
@@ -204,5 +249,10 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
   });
   $("close-side-job").addEventListener("click", () => dialog.close());
   // Popup Tài sản tự mở trong life-profile.js; ở đây chỉ vẽ thẻ công việc.
-  $("assets").addEventListener("click", renderCurrentJobs);
+  // Thẻ Công việc: việc hiện tại và lịch sử công việc chính đã mất hoặc đã nghỉ.
+  function renderJobsPanel() {
+    renderCurrentJobs();
+    renderJobHistory();
+  }
+  $("assets").addEventListener("click", renderJobsPanel);
 }

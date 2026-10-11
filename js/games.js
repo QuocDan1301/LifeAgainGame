@@ -349,6 +349,14 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
         option.dataset.bet = String(amount);
         quick.append(option);
       }
+      // All in: cược toàn bộ ví (không vượt mức cược tối đa).
+      const allIn = button("game-option game-all-in", "💥 All in", () => {
+        bet = allInBet();
+        betInput.value = String(bet);
+        update();
+      });
+      allIn.dataset.bet = "all";
+      quick.append(allIn);
       Object.assign(betInput, { type: "number", min: String(BET_MIN), step: "1000", value: String(bet), inputMode: "numeric" });
       betInput.setAttribute("aria-label", "Số tiền cược (VNĐ)");
       betInput.addEventListener("input", () => {
@@ -358,6 +366,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       card.append(element("p", "game-hint", "Tiền cược:"), quick, betInput);
     }
 
+    const allInBet = () => Math.min(Math.floor(state.player.money), BET_MAX);
     const currentBet = () => (gameId === "box" ? boxTypes.find((box) => box.id === choice)?.price ?? 0 : bet);
     function valid() {
       const amount = currentBet();
@@ -367,7 +376,9 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     function update() {
       const amount = currentBet();
       body.querySelectorAll(".game-quick-bets .game-option").forEach((node) =>
-        node.setAttribute("aria-pressed", String(Number(node.dataset.bet) === bet)));
+        node.setAttribute("aria-pressed", String(node.dataset.bet === "all" ? bet === allInBet() : Number(node.dataset.bet) === bet)));
+      const allInButton = body.querySelector(".game-all-in");
+      if (allInButton) allInButton.disabled = allInBet() < BET_MIN;
       const most = payout(amount, maxMultiplier());
       const partial = ["wheel", "box", "tower", "blackjack"].includes(gameId) ? "tối đa " : "";
       summary.textContent = !choice ? "Hãy chọn một lựa chọn để xem tiền có thể nhận."

@@ -1,5 +1,5 @@
 import { renderAvatar, getAvatarSource } from "./avatar.js";
-import { createCareerTest, createFailedTestEvent } from "./career-tests.js";
+import { createCareerTest, createExamPrepEvent, createFailedTestEvent } from "./career-tests.js";
 import {
   studyBlocks,
   canChooseCareer,
@@ -7,19 +7,64 @@ import {
 } from "./study-blocks.js";
 import { createEventLogSummary, summarizeLifeLog } from "./log-summary.js";
 import { createEventImageRenderer } from "./event-image.js";
-import { formatMoneyAmount, formatMoneyText } from "./money-format.js";
-import { createMediaTransition } from "./event-media-transition.js";
+import { formatMoney, formatMoneyAmount, formatMoneyText } from "./money-format.js";
+import {
+  createChainStep,
+  createMediaTransition,
+} from "./event-media-transition.js";
+import { rollEverydayLuck } from "./everyday-difficulty.js";
+import { createAcquaintanceEvent } from "./acquaintance.js";
+import { createCastingEvent, createMeetFamilyEvent } from "./appearance-rules.js";
+import {
+  EXAM_PREP,
+  createProjectBugEvent,
+  createRiskOfferEvent,
+  rollInterview,
+} from "./intellect-rules.js";
+import {
+  LOW_HAPPINESS,
+  SUPPORT_OPTIONS,
+  createMoodEvent,
+  createSupportEvent,
+  getMoodEffectLoss,
+  isSupportActive,
+  softenSetback,
+} from "./mood-rules.js";
+import {
+  EMERGENCY,
+  FOOTBALL_MIN_HEALTH,
+  failsFootballFitness,
+  formatChance,
+  getHealthBand,
+  getOldAgeDeathChance,
+} from "./health-rules.js";
 import { eventCategories, getEventCategory } from "./event-category.js";
 import { getSpecialDialogue } from "./special-dialogue.js";
 import { state } from "./state.js";
 import { initEducation } from "./education.js";
 import { createSchoolEntryReward } from "./school-rewards.js";
 import {
+  LIVING_MODES,
   createChildProposalEvent,
+  forecastNextYear,
   getChildProposalUpdates,
   getChildcareExpenses,
   completeLifeYear,
 } from "./family.js";
+import {
+  createContractNoticeEvent,
+  createJobReviewEvent,
+  createLayoffNoticeEvent,
+  createWorkProblemEvent,
+} from "./job-loss.js";
+import {
+  CONDITIONS,
+  FAMILY_SUPPORT,
+  canGetFamilySupport,
+  createRelativeDeathEvent,
+  ensureRelatives,
+  getLivingFamily,
+} from "./family-members.js";
 import {
   completeCareerYear,
   getAnnualSalaryPayment,
@@ -47,8 +92,21 @@ import { reviewPendingMedia } from "./semantic-event-media.js";
 import { initLifeProfile, renderLifeSummary } from "./life-profile.js";
 import { initShop } from "./shop.js";
 import { initLicenses } from "./licenses.js";
-import { initSideJobs } from "./side-jobs.js";
-import { initHospital } from "./hospital.js";
+import {
+  initSideJobs,
+  canReduceSideJobs,
+  quitSideJobs,
+  reduceSideJobs,
+} from "./side-jobs.js";
+import { initJobApplications } from "./job-applications.js";
+import {
+  ILLNESS_STAGES,
+  describeIllness,
+  getDangerousIllnesses,
+  getDisease,
+  getIllnessStage,
+  initHospital,
+} from "./hospital.js";
 import { initMatchmaking } from "./matchmaking.js";
 import { initGames } from "./games.js";
 import { initFood } from "./food.js";
@@ -71,7 +129,7 @@ import {
   createMilestonePromotionEvent,
   getPromotionUpdates,
 } from "./career-jobs.js";
-import { createCareerSparkStep } from "./career-milestones.js";
+import { createCareerSparkStep, getRankLock } from "./career-milestones.js";
 import {
   initAchievements,
   checkAchievements,
@@ -150,6 +208,8 @@ confirmRestart.addEventListener("click", () => {
   saveEventProgress();
   window.location.reload();
 });
+ensureRelatives(state.player);
+let hospitalUi = null;
 function renderStats() {
   // Sức khỏe
   document.getElementById("health").value = state.player.health;
@@ -171,6 +231,319 @@ function renderStats() {
   updateStatColor("smarts", state.player.intelligence);
   updateStatColor("happiness", state.player.happiness);
   updateStatColor("looks", state.player.appearance);
+  renderHealthAlert();
+}
+// Thẻ sức khỏe & tinh thần ở đầu nhật ký: một dòng tóm tắt gọn để không che nhật ký; bấm vào để xem
+// chi tiết bệnh (mức độ, nguy cơ, viện phí), sức khỏe yếu, biến cố đang ảnh hưởng tinh thần (nguyên nhân,
+// thời gian còn lại), hỗ trợ tinh thần đang diễn ra và lời hẹn với người yêu. Ẩn khi không có gì cần lưu ý.
+let healthAlertOpen = false;
+function getMoodAlertItems(player) {
+  const nextAge = player.age + 1;
+  const items = [];
+  for (const effect of player.moodEffects ?? []) {
+    const { config, loss, yearsLeft, label } = getMoodEffectLoss(player, effect, nextAge);
+    if (!config || yearsLeft <= 0) continue;
+    items.push({
+      short: `${config.icon} ${config.label}`,
+      title: `${config.icon} ${label} lúc ${effect.startedAt} tuổi · còn ${yearsLeft} năm ảnh hưởng`,
+      detail: `Năm tới: Hạnh phúc -${loss}. Nghỉ ngơi và hỗ trợ tinh thần giúp nhẹ bớt; một chuyến du lịch không xóa hết nỗi buồn.`,
+    });
+  }
+  if (isSupportActive(player, nextAge)) {
+    const support = player.moodSupport;
+    items.push({
+      short: "🌱 Đang hồi phục",
+      title: `🌱 Đang được hỗ trợ tinh thần · còn ${support.untilAge - player.age} năm`,
+      detail: `Mỗi sinh nhật: Hạnh phúc +${SUPPORT_OPTIONS[support.type].perYear}.`,
+    });
+  }
+  if ((player.lowHappinessYears ?? 0) > 0 && !isSupportActive(player, nextAge)) {
+    items.push({
+      short: `😔 ${player.lowHappinessYears} năm buồn`,
+      title: `😔 Hạnh phúc dưới ${LOW_HAPPINESS}: ${player.lowHappinessYears} năm liên tiếp`,
+      detail: "Thử làm sở thích, gọi điện tâm sự (Phát triển bản thân → Hạnh phúc) hoặc trò chuyện với người thân. Kéo dài 3 năm sẽ mở chuỗi hỗ trợ.",
+    });
+  }
+  const promise = player.partnerPromise;
+  if (promise && player.partner?.id === promise.partnerId) {
+    items.push({
+      short: "🤫 Lời hẹn",
+      title: `🤫 Đã hẹn nói chuyện với ${player.partner.name}`,
+      detail: `Vào Quan hệ → Trò chuyện trước sinh nhật ${promise.dueAge + 1} tuổi để giữ lời hẹn.`,
+    });
+  }
+  return items;
+}
+function renderHealthAlert() {
+  const box = document.getElementById("health-alert");
+  if (!box) return;
+  const player = state.player;
+  const illnesses = (player.illnesses ?? []).filter((illness) => getDisease(illness.id));
+  const band = getHealthBand(player.health);
+  const lowHealth = ["weak", "critical", "empty"].includes(band.id);
+  const moodItems = player.isAlive === false ? [] : [...getLifeAlertItems(player), ...getMoodAlertItems(player)];
+  box.replaceChildren();
+  box.hidden = player.isAlive === false || (!illnesses.length && !lowHealth && !moodItems.length);
+  if (box.hidden) return;
+  const node = (tag, className, text) => {
+    const element = document.createElement(tag);
+    element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
+  };
+  const infos = illnesses.map((illness) => describeIllness(player, illness));
+  const details = node("details", "health-alert-details");
+  details.open = healthAlertOpen;
+  details.addEventListener("toggle", () => {
+    healthAlertOpen = details.open;
+  });
+  const summary = node("summary", "health-alert-summary", [
+    ...infos.map((info) => `${info.disease.icon} ${info.disease.name} (${ILLNESS_STAGES[info.stage].label})`),
+    ...(lowHealth ? [`💪 ${player.health}% (${band.label})`] : []),
+    ...moodItems.map((item) => item.short),
+  ].join(" · "));
+  if (infos.some((info) => info.stage !== "mild") || ["critical", "empty"].includes(band.id)) {
+    summary.classList.add("is-danger");
+  }
+  details.append(summary);
+  for (const info of infos) {
+    details.append(
+      node("p", `health-alert-title is-${info.stage}`, `${info.disease.icon} ${info.disease.name} · ${ILLNESS_STAGES[info.stage].label} · chưa điều trị ${info.years} năm`),
+      node("p", "health-alert-risk", `${info.risk} · Viện phí ${formatMoney(info.cost)}`),
+    );
+  }
+  if (lowHealth) {
+    details.append(
+      node("p", "health-alert-title is-severe", `💪 Sức khỏe ${player.health}% (${band.label})`),
+      node("p", "health-alert-risk", band.id === "weak"
+        ? "Dễ phải nghỉ ốm, không nhận thêm việc khi đã có việc. Nghỉ ngơi, đi bộ nhẹ (Phát triển bản thân) hoặc nghỉ dưỡng (Bệnh viện) để hồi phục."
+        : `Không nhận thêm việc; làm quá sức đến kiệt sẽ phải cấp cứu (${formatMoney(EMERGENCY.cost)}). Nên nghỉ dưỡng hoặc giảm ca.`),
+    );
+  }
+  for (const item of moodItems) {
+    details.append(node("p", "health-alert-title is-mood", item.title), node("p", "health-alert-risk", item.detail));
+    if (item.action) {
+      const button = node("button", "health-alert-button", item.action.label);
+      button.type = "button";
+      button.addEventListener("click", item.action.run);
+      details.append(button);
+    }
+  }
+  if (infos.length || lowHealth) {
+    const go = node("button", "health-alert-button", "🏥 Đến bệnh viện");
+    go.type = "button";
+    go.addEventListener("click", () => hospitalUi?.open());
+    details.append(go);
+  }
+  box.append(details);
+}
+// Tài chính trước sinh nhật: dự báo luôn hiện cạnh ví; khi thu nhập không đủ chi phí bắt buộc và ví sẽ âm,
+// thẻ cảnh báo có nút mở các phương án ứng phó (không chặn nút tăng tuổi để tránh popup mỗi năm).
+// Không ai chết hay mất tài sản ngay vì hết tiền: thiếu hụt được ghi thành ví âm (nợ).
+function needsFinanceCheck() {
+  const forecast = forecastNextYear(state.player);
+  return state.player.age >= 22 && forecast.after < 0 && forecast.income < forecast.costs;
+}
+function showFinanceCheck() {
+  const dialog = document.getElementById("finance-check-dialog");
+  const body = document.getElementById("finance-check-body");
+  const player = state.player;
+  const forecast = forecastNextYear(player);
+  const node = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
+  };
+  const action = (text, onClick, className = "shop-group health-check-action") => {
+    const button = node("button", className, text);
+    button.type = "button";
+    button.addEventListener("click", onClick);
+    return button;
+  };
+  const record = (content) => {
+    const log = { age: player.age, content, summary: content };
+    state.logs.push(log);
+    saveEventProgress();
+    renderLogEntry(log);
+    renderMoney();
+    renderStats();
+  };
+  const list = node("ul", "dialog-entries health-check-risks");
+  list.append(
+    node("li", "", `💵 Thu nhập dự kiến: ${formatMoney(forecast.income)}`),
+    node("li", "", `🏠 Sinh hoạt phí (${(LIVING_MODES[player.livingMode] ?? LIVING_MODES.normal).label.toLowerCase()}): ${formatMoney(forecast.living)}` +
+      (forecast.childcare ? ` · Nuôi con: ${formatMoney(forecast.childcare)}` : "") + (forecast.tuition ? ` · Học phí: ${formatMoney(forecast.tuition)}` : "")),
+    node("li", "", `👛 Ví hiện có ${formatMoney(player.money)} → sau sinh nhật khoảng ${formatMoney(forecast.after)}`),
+  );
+  const choices = node("div", "shop-groups");
+  if (player.livingMode !== "frugal") {
+    choices.append(action(`📉 Giảm mức sống (sinh hoạt phí tối thiểu ${formatMoney(LIVING_MODES.frugal.floor)}, Hạnh phúc -1/năm)`, () => {
+      state.player.livingMode = "frugal";
+      record("📉 Chuyển sang sống tiết kiệm để giảm chi phí sinh hoạt.");
+      showFinanceCheck();
+    }));
+  }
+  if (canGetFamilySupport(player)) {
+    choices.append(action(`👪 Nhận hỗ trợ từ bố mẹ (+${formatMoney(FAMILY_SUPPORT.amount)})`, () => {
+      state.player.money += FAMILY_SUPPORT.amount;
+      state.player.familySupportAge = state.player.age;
+      record(`👪 Bố mẹ hỗ trợ một khoản lúc khó khăn: Tiền +${formatMoneyAmount(FAMILY_SUPPORT.amount)} VNĐ.`);
+      showFinanceCheck();
+    }));
+  }
+  choices.append(action("🧰 Tìm việc làm thêm", () => {
+    dialog.close();
+    document.getElementById("activity-part-time").click();
+  }));
+  if (player.employmentStatus !== "employed") {
+    choices.append(action("💼 Tìm việc chính (Xin việc)", () => {
+      dialog.close();
+      document.getElementById("activity-jobs").click();
+    }));
+  }
+  if (player.livingMode === "frugal") {
+    choices.append(action("↩️ Trở lại mức sống bình thường", () => {
+      state.player.livingMode = "normal";
+      record("↩️ Trở lại mức sống bình thường.");
+      showFinanceCheck();
+    }));
+  }
+  choices.append(action(player.money > 0 ? "💰 Dùng tiền tiết kiệm" : "▶️ Chấp nhận thiếu hụt (ví âm)", () => dialog.close(),
+    "shop-group health-check-action is-risky"));
+  body.replaceChildren(
+    node("p", "side-job-intro", forecast.after < 0 ? "Thu nhập năm tới chưa đủ chi phí bắt buộc. Bạn muốn xử lý thế nào trước khi sang tuổi mới?" : "Chi phí và thu nhập dự kiến cho năm tới."),
+    list,
+    node("p", "health-check-note", "Thiếu hụt được ghi thành số âm trong ví (nợ) và sẽ trả dần khi có thu nhập. Từ 23 tuổi, kết thúc năm với ví âm thì phải sống tằn tiện (Hạnh phúc -3)."),
+    choices,
+  );
+  if (!dialog.open) dialog.showModal();
+  choices.querySelector("button")?.focus({ preventScroll: true });
+}
+// Mục gia đình và công việc trong thẻ cảnh báo.
+function getLifeAlertItems(player) {
+  const items = [];
+  if (needsFinanceCheck()) {
+    const forecast = forecastNextYear(player);
+    items.push({
+      short: "💸 Thiếu hụt dự kiến",
+      title: `💸 Năm tới: thu ${formatMoney(forecast.income)}, chi ${formatMoney(forecast.costs)}`,
+      detail: `Ví sau sinh nhật khoảng ${formatMoney(forecast.after)}. Có thể giảm mức sống, nhận hỗ trợ người thân, làm thêm hoặc dùng tiết kiệm.`,
+      action: { label: "💸 Phương án tài chính", run: showFinanceCheck },
+    });
+  }
+  for (const member of getLivingFamily(player)) {
+    if (member.condition === "healthy") continue;
+    const condition = CONDITIONS[member.condition];
+    items.push({
+      short: `${condition.icon} ${member.role} ${condition.label.toLowerCase()}`,
+      title: `${condition.icon} ${member.role} ${member.name} (${member.age} tuổi) · ${condition.label}`,
+      detail: "Gọi điện, về thăm hoặc chăm sóc trong Quan hệ → Gia đình. Chăm sóc giúp ích nhưng không bảo đảm khỏi bệnh.",
+    });
+  }
+  if (player.jobWarning && player.employmentStatus === "employed") {
+    items.push({
+      short: "⚠️ Cảnh báo công việc",
+      title: `⚠️ Đang trong diện cảnh báo · đánh giá lại ở sinh nhật ${player.jobWarning.issuedAt + 1} tuổi`,
+      detail: "Kết quả phụ thuộc kế hoạch cải thiện đã chọn, Trí tuệ, Sức khỏe và động lực.",
+    });
+  }
+  if (player.layoffDue && player.employmentStatus === "employed") {
+    items.push({
+      short: "📉 Sắp bị cắt giảm",
+      title: `📉 Bị cắt giảm nhân sự ở sinh nhật ${player.layoffDue} tuổi`,
+      detail: `Nhận trợ cấp ${formatMoney(player.layoffSeverance ?? 0)}. Có thể chuẩn bị trước: Xin việc, làm thêm, tiết kiệm.`,
+    });
+  }
+  if (Number.isInteger(player.contractEndAge) && player.employmentStatus === "employed" && player.contractEndAge - player.age <= 1) {
+    items.push({
+      short: "📄 Hợp đồng sắp hết",
+      title: `📄 Hợp đồng hết hạn ở sinh nhật ${player.contractEndAge} tuổi`,
+      detail: player.contractEnding ? "Hợp đồng sẽ không gia hạn. Có thể tìm việc mới qua Xin việc khi hết hạn." : "Sẽ có thông báo để xin gia hạn hoặc chọn hướng khác.",
+    });
+  }
+  return items;
+}
+// Trước khi sang tuổi mới: bệnh sắp nặng/nguy kịch hoặc sức khỏe nguy kịch thì hỏi người chơi.
+function getAgeUpHealthRisks() {
+  const player = state.player;
+  const nextAge = player.age + 1;
+  const illnesses = getDangerousIllnesses(player, nextAge);
+  const band = getHealthBand(player.health).id;
+  const lowHealth = (band === "critical" || band === "empty") && player.restYear !== nextAge;
+  return { nextAge, illnesses, lowHealth, any: illnesses.length > 0 || lowHealth };
+}
+function showHealthCheck() {
+  const dialog = document.getElementById("health-check-dialog");
+  const body = document.getElementById("health-check-body");
+  const player = state.player;
+  const { nextAge, illnesses, lowHealth } = getAgeUpHealthRisks();
+  const node = (tag, className, text) => {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text !== undefined) element.textContent = text;
+    return element;
+  };
+  const action = (text, onClick, className = "shop-group health-check-action") => {
+    const button = node("button", className, text);
+    button.type = "button";
+    button.addEventListener("click", onClick);
+    return button;
+  };
+  const record = (content) => {
+    const log = { age: player.age, content, summary: content };
+    state.logs.push(log);
+    saveEventProgress();
+    renderLogEntry(log);
+    renderStats();
+    renderEducation();
+  };
+  const proceed = () => {
+    state.player.healthCheckAge = state.player.age;
+    saveEventProgress();
+    dialog.close();
+    ageButton.click();
+  };
+  const list = node("ul", "dialog-entries health-check-risks");
+  for (const entry of illnesses) {
+    list.append(node("li", "", `${entry.disease.icon} ${entry.disease.name}: năm tới mức ${ILLNESS_STAGES[entry.stage].label}, Sức khỏe -${entry.loss}` +
+      (entry.deathChance ? `, nguy cơ tử vong ${formatChance(entry.deathChance)}` : "") + "."));
+  }
+  if (lowHealth) {
+    list.append(node("li", "", `💪 Sức khỏe ${player.health}%: ${(player.sideJobs ?? []).length ? "làm thêm dễ phải nghỉ ốm, làm đến kiệt sức sẽ phải cấp cứu" : "cơ thể rất yếu, bệnh tiến triển nhanh hơn"} (${formatMoney(EMERGENCY.cost)} nếu cấp cứu).`));
+  }
+  const choices = node("div", "shop-groups");
+  if (illnesses.length) choices.append(action("🏥 Đến bệnh viện điều trị", () => hospitalUi?.open()));
+  if (lowHealth && (player.sideJobs ?? []).length) {
+    if (canReduceSideJobs(player)) {
+      choices.append(action("✂️ Giảm ca: chỉ giữ 1 ca part-time", () => {
+        reduceSideJobs(state.player);
+        record("✂️ Giảm ca làm thêm vì sức khỏe: chỉ giữ 1 ca part-time.");
+        showHealthCheck();
+      }));
+    }
+    choices.append(action("🚪 Nghỉ hết việc làm thêm", () => {
+      quitSideJobs(state.player);
+      record("🚪 Nghỉ hết việc làm thêm để giữ sức khỏe.");
+      showHealthCheck();
+    }));
+  }
+  if (player.restYear !== nextAge) {
+    choices.append(action("🛌 Nghỉ dưỡng năm tới rồi sang tuổi mới", () => {
+      state.player.restYear = nextAge;
+      record(`🛌 Đăng ký nghỉ dưỡng trong năm tới (${nextAge} tuổi).`);
+      proceed();
+    }));
+  }
+  choices.append(action("▶️ Vẫn tiếp tục sang tuổi mới", proceed, "shop-group health-check-action is-risky"));
+  body.replaceChildren(
+    node("p", "side-job-intro", "Sức khỏe của bạn đang gặp nguy cơ. Bạn muốn xử lý thế nào trước khi sang tuổi mới?"),
+    list,
+    node("p", "health-check-note", "Nghỉ dưỡng miễn phí: hồi phục sức khỏe, tạm nghỉ ca làm thêm, bệnh hao sức ít hơn nhưng không khỏi nếu không điều trị. Tiếp tục mà không xử lý có thể phải cấp cứu hoặc nguy hiểm đến tính mạng."),
+    choices,
+  );
+  if (!dialog.open) dialog.showModal();
+  choices.querySelector("button")?.focus({ preventScroll: true });
 }
 // Hiển thị chỉ số khi mở game
 renderStats();
@@ -227,6 +600,18 @@ function updateStatColor(id, value) {
 function renderMoney() {
   const moneyElement = document.getElementById("money-value");
   moneyElement.textContent = formatMoneyAmount(state.player.money);
+  // Ví âm (đang nợ) hiện màu đỏ.
+  moneyElement.closest(".wallet")?.classList.toggle("is-debt", state.player.money < 0);
+  // Dự báo năm tới (thu nhập trừ chi phí bắt buộc) để thấy khả năng tài chính trước khi tăng tuổi.
+  const forecastElement = document.getElementById("money-forecast");
+  if (forecastElement) {
+    const forecast = forecastNextYear(state.player);
+    const net = forecast.income - forecast.costs;
+    forecastElement.hidden = state.player.isAlive === false || (!forecast.income && !forecast.costs);
+    forecastElement.textContent = `Năm tới: ${net >= 0 ? "+" : "−"}${formatMoneyAmount(Math.abs(net))}`;
+    forecastElement.title = `Thu ${formatMoney(forecast.income)} · Chi ${formatMoney(forecast.costs)} · Ví sau sinh nhật ${formatMoney(forecast.after)}`;
+    forecastElement.classList.toggle("is-negative", forecast.after < 0);
+  }
 }
 // Hiển thị tiền khi mở game
 // Bản lưu từ trước lần trả lương đầu: cộng lương năm hiện tại vào ví một lần.
@@ -264,6 +649,7 @@ renderEducation();
 initRelationships(state, saveEventProgress, (log) => {
   renderLogEntry(log);
   renderMoney();
+  renderStats();
 });
 function renderLogEntry(log) {
   const text = log.summary ?? summarizeLifeLog(log.content);
@@ -445,6 +831,9 @@ motionPreference.addEventListener("change", () => {
 function saveEventProgress() {
   localStorage.setItem("lifeAgainSave", JSON.stringify(state));
 }
+// Thời điểm nút lựa chọn/xác nhận vừa hiện: chạm thật trong khoảng này được coi là nhấn đúp và bỏ qua.
+const DOUBLE_TAP_GUARD_MS = 350;
+let choicesReadyAt = 0;
 // Hiển thị bước chọn hành động hoặc bước kết quả
 function showPendingEvent() {
   const pending = state.pendingEvent;
@@ -549,6 +938,7 @@ function showPendingEvent() {
     pending.text = pending.text.replace(/^Bạn đang theo đuổi [^\n]*\n/u, "");
   }
   ageButton.disabled = true;
+  choicesReadyAt = performance.now() + DOUBLE_TAP_GUARD_MS;
   eventChoices.replaceChildren();
   eventTitle.textContent = `${pending.title}`;
   setEventImage(
@@ -615,7 +1005,19 @@ function showPendingEvent() {
         label.textContent = choice.label.replace(/^🎮\s*/u, "");
         button.replaceChildren(emblem, label);
       }
-      button.addEventListener("click", () => {
+      // Màn chọn ngành tuổi 18: cho biết ngành này mở được bậc 3 hay tối đa bậc 2 (và vì sao).
+      if (choice.careerPath && !Object.hasOwn(choice.careerPath, "school")) {
+        const lock = getRankLock(state.player, choice.careerPath.id);
+        const note = document.createElement("small");
+        note.className = "event-choice-note";
+        note.textContent = lock.unlocked
+          ? "⭐ Có dấu mốc tuổi 16: mở được bậc 3"
+          : "🔒 Tối đa bậc 2 · bậc 3 cần chuỗi tuổi 16 của chính ngành này";
+        button.append(note);
+      }
+      button.addEventListener("click", (event) => {
+        // Chạm thật quá sát lúc lựa chọn vừa hiện (nhấn đúp) thì bỏ qua, tránh chọn nhầm bước kế tiếp.
+        if (event.isTrusted && performance.now() < choicesReadyAt) return;
         chooseEventAction(index);
       });
       eventChoices.append(button);
@@ -695,23 +1097,32 @@ function chooseEventAction(index) {
   const pending = state.pendingEvent;
   // Không cho chọn lại khi đã chuyển sang bước kết quả
   if (!pending || pending.stage !== "choice") return;
-  const choice = pending.choices[index];
+  let choice = pending.choices[index];
   if (!choice) return;
   if (pending.kind === "job-interview") {
+    // Kết quả tổng thể: chất lượng câu trả lời, trí tuệ và chuẩn bị (intellect-rules.js), tung một lần.
+    const assessment = rollInterview(
+      state.player,
+      choice.quality ?? (choice.correct === true ? "good" : "weak"),
+    );
     state.pendingEvent = createInterviewResult(
       state.player,
-      choice.correct === true,
+      assessment.passed,
       pending.age,
+      assessment,
     );
     state.pendingEvent.category = pending.category;
+    // Kết quả thật (Bóng đá còn xét thể lực), không chỉ dựa vào câu trả lời.
     state.pendingEvent.outcome =
-      choice.correct === true ? "success" : "failure";
+      state.pendingEvent.updates.employmentStatus === "employed"
+        ? "success"
+        : "failure";
     saveEventProgress();
     showPendingEvent();
     return;
   }
   if (pending.kind === "job-interview-retry" && choice.retryInterview) {
-    state.pendingEvent = createMediaTransition(choice, pending, {
+    state.pendingEvent = createChainStep(choice, pending, {
       ...createJobInterview(state.player),
       stage: "choice",
       age: pending.age,
@@ -737,7 +1148,7 @@ function chooseEventAction(index) {
   if (pending.kind === "orientation-chain" && choice.nextStep) {
     const nextStep = createOrientationEvent(state.player, choice.nextStep);
     if (!nextStep) return;
-    state.pendingEvent = createMediaTransition(choice, pending, {
+    state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
       stage: "choice",
       age: pending.age,
@@ -753,14 +1164,14 @@ function chooseEventAction(index) {
   ) {
     const nextStep =
       pending.kind === "career-spark"
-        ? createCareerSparkStep(pending.careerSparkId, choice.nextStep)
+        ? createCareerSparkStep(pending.careerSparkId, choice.nextStep, Math.random, state.player)
         : createMilestonePromotionEvent(
             state.player,
             choice.nextStep,
             pending.age,
           );
     if (!nextStep) return;
-    state.pendingEvent = createMediaTransition(choice, pending, {
+    state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
       stage: "choice",
       age: pending.age,
@@ -773,7 +1184,7 @@ function chooseEventAction(index) {
   if (pending.kind === "lost-child-chain" && choice.nextStep) {
     const nextStep = createLostChildSpecialStep(choice.nextStep);
     if (!nextStep) return;
-    state.pendingEvent = createMediaTransition(choice, pending, {
+    state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
       stage: "choice",
       age: pending.age,
@@ -797,7 +1208,7 @@ function chooseEventAction(index) {
       : pending.specialId === "earth-auction"
         ? createEarthAuctionSpecialStep(choice.nextStep)
         : pending.specialId === "save-life"
-          ? createSaveLifeSpecialStep(choice.nextStep)
+          ? createSaveLifeSpecialStep(choice.nextStep, state.player)
           : pending.specialId === "old-house"
             ? createOldHouseSpecialStep(choice.nextStep)
             : pending.specialId === "last-train"
@@ -808,7 +1219,7 @@ function chooseEventAction(index) {
                   ? createLuggageSpecialStep(choice.nextStep)
                   : createDiamondSpecialStep(choice.nextStep, inventory);
     if (!nextStep) return;
-    state.pendingEvent = createMediaTransition(choice, pending, {
+    state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
       stage: "choice",
       age: pending.age,
@@ -819,10 +1230,31 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
+  // Chuẩn bị trước bài test: học dồn hao sức khỏe ngay; bài test nhận mức chuẩn bị để tính phần thi tổng thể.
+  if (pending.kind === "exam-prep" && choice.examPrep) {
+    const prep = EXAM_PREP[choice.examPrep];
+    if (prep?.health) state.player.health = Math.max(1, state.player.health + prep.health);
+    const test = createCareerTest(pending.testedCareer, Math.random, {
+      player: state.player,
+      prep: choice.examPrep,
+      retakesLeft: pending.retakesLeft,
+    });
+    state.pendingEvent = createChainStep(choice, pending, {
+      ...test,
+      stage: "choice",
+      age: pending.age,
+      logPrefix: `${pending.logPrefix ?? ""}Chuẩn bị bài test: ${choice.label}\n`,
+    });
+    saveEventProgress();
+    showPendingEvent();
+    return;
+  }
+  // Bài test: trả lời đúng luôn đạt; trả lời chưa đúng vẫn có thể đạt nhờ phần thi tổng thể.
   if (pending.kind === "career-test") {
-    const next = choice.correct
+    const passed = choice.correct === true || choice.passedOverall === true;
+    const next = passed
       ? createSchoolEvent(pending.testedCareer)
-      : createFailedTestEvent();
+      : createFailedTestEvent(pending.testedCareer, pending.retakesLeft ?? 0);
     state.pendingEvent = createMediaTransition(
       choice,
       pending,
@@ -831,13 +1263,43 @@ function chooseEventAction(index) {
         stage: "choice",
         age: pending.age,
         text: next.text,
-        logPrefix: `${pending.logPrefix ?? ""}Bài test ${pending.testedCareer.field}: ${choice.correct ? "đạt" : "không đạt"}.\n`,
+        logPrefix: `${pending.logPrefix ?? ""}Bài test ${pending.testedCareer.field}: ${passed ? "đạt" : "không đạt"}.\n`,
       },
-      choice.correct ? "Bạn trả lời đúng." : "Bạn chưa trả lời đúng.",
+      choice.correct
+        ? "Bạn trả lời đúng."
+        : passed
+          ? "Câu trả lời chưa đúng, nhưng phần thi tổng thể (nhờ chuẩn bị và năng lực) vẫn đạt."
+          : "Câu trả lời chưa đúng và phần thi tổng thể chưa đạt lần này.",
     );
-    state.pendingEvent.outcome = choice.correct ? "success" : "failure";
+    state.pendingEvent.outcome = passed ? "success" : "failure";
     saveEventProgress();
     showPendingEvent();
+    return;
+  }
+  // Chưa đạt: học bổ sung rồi thi lại, hoặc chọn lại ngành.
+  if (pending.kind === "enlistment-failure" && (choice.retakeTest || choice.reselectCareer)) {
+    const next = choice.retakeTest
+      ? createExamPrepEvent(pending.testedCareer, state.player, (pending.retakesLeft ?? 1) - 1)
+      : careerEvent;
+    if (choice.retakeTest) state.player.intelligence = Math.min(100, state.player.intelligence + 2);
+    state.pendingEvent = createChainStep(choice, pending, {
+      ...next,
+      stage: "choice",
+      age: pending.age,
+      logPrefix: `${pending.logPrefix ?? ""}${choice.retakeTest ? "Học bổ sung rồi thi lại (Trí tuệ +2)." : "Chọn lại ngành."}\n`,
+    });
+    saveEventProgress();
+    showPendingEvent();
+    return;
+  }
+  // Bóng đá cần thể lực: Sức khỏe dưới mức tối thiểu thì chưa được chọn học.
+  if (
+    choice.careerPath &&
+    !Object.hasOwn(choice.careerPath, "school") &&
+    failsFootballFitness(choice.careerPath.id, state.player.health)
+  ) {
+    eligibilityFeedback.textContent = `${choice.careerPath.field} cần Sức khỏe từ ${FOOTBALL_MIN_HEALTH}% (hiện ${state.player.health}%). Hãy chọn ngành khác.`;
+    eligibilityFeedback.hidden = false;
     return;
   }
   if (
@@ -853,16 +1315,17 @@ function chooseEventAction(index) {
     eligibilityFeedback.textContent = `${choice.careerPath.field} không phù hợp với ${getStudyBlockLabel(state.player.studyBlock).replace(/^K/u, "k") || "khối chưa chọn"}. Hãy chọn lại. Ngành phù hợp: ${
       suggestions.map((entry) => entry.careerPath.field).join(", ") ||
       "cần chọn khối học trước"
-    }. Nhập ngũ, Liên Quân, TikTok và YouTube thuộc khối Tự do.`;
+    }.`;
     eligibilityFeedback.hidden = false;
     return;
   }
   // Cả lựa chọn cũ đã lưu cũng chuyển sang chọn trường nếu chưa chọn trường/hướng huấn luyện.
   if (choice.careerPath && !Object.hasOwn(choice.careerPath, "school")) {
+    // Ngành có bài test: chọn cách chuẩn bị trước; ngành không có test đi thẳng tới chọn trường.
     const schoolEvent =
-      createCareerTest(choice.careerPath) ??
+      createExamPrepEvent(choice.careerPath, state.player) ??
       createSchoolEvent(choice.careerPath);
-    state.pendingEvent = createMediaTransition(choice, pending, {
+    state.pendingEvent = createChainStep(choice, pending, {
       ...schoolEvent,
       stage: "choice",
       age: pending.age,
@@ -875,6 +1338,11 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
+  // Sự kiện thường ngày có may rủi theo chỉ số; kết quả lưu ngay nên tải lại không tung lại.
+  if (pending.category === "everyday")
+    choice = rollEverydayLuck(choice, state.player);
+  // Hạnh phúc từ 70: thất bại nhỏ chỉ trừ một nửa hạnh phúc (không đổi sức khỏe, tiền).
+  choice = softenSetback(state.player, choice, pending.category);
   const updates = { age: pending.age };
   if (pending.kind === "child-proposal") {
     Object.assign(
@@ -927,6 +1395,8 @@ function chooseEventAction(index) {
     updates.lostChildSchoolYearDueAge = choice.schoolYearDueAge;
   }
   if (choice.careerPath) updates.careerPath = choice.careerPath;
+  // Trạng thái riêng của lựa chọn (ví dụ kế hoạch hỗ trợ tinh thần), áp dụng khi xác nhận kết quả.
+  if (choice.playerUpdates) Object.assign(updates, choice.playerUpdates);
   if (typeof choice.careerSpark === "string")
     updates.careerSpark = choice.careerSpark;
   if (typeof choice.job === "string") updates.job = choice.job;
@@ -1126,6 +1596,10 @@ ageButton.addEventListener("click", () => {
     showStudyBlocks();
     return;
   }
+  if (state.player.healthCheckAge !== state.player.age && getAgeUpHealthRisks().any) {
+    showHealthCheck();
+    return;
+  }
   const nextAge = state.player.age + 1;
 
   // Kiểm tra tuổi thọ trước khi chọn có/không có sự kiện.
@@ -1152,7 +1626,11 @@ ageButton.addEventListener("click", () => {
     promotionEvent ??
     orientationEvent ??
     schoolYearEvent ??
-    employmentEvent;
+    employmentEvent ??
+    createRelativeDeathEvent(state.player, nextAge) ??
+    createJobReviewEvent(state.player, nextAge) ??
+    createContractNoticeEvent(state.player, nextAge) ??
+    createSupportEvent(state.player, nextAge);
   const randomSpecialYear = ageStories?.some(
     (story) => story.kind === "special-chain" && story.priority === false,
   );
@@ -1182,6 +1660,24 @@ ageButton.addEventListener("click", () => {
       ? createDatingEvent(state.player, nextAge)
       : null;
   const stories = [...ageStories, ...(datingEvent ? [datingEvent] : [])];
+  // Sự kiện tinh thần trong năm (áp lực công việc, một quãng chán nản) thay cho chuyện đời thường.
+  const moodEvent =
+    nextAge > 18 &&
+    !priorityEvent &&
+    !randomAgeStory &&
+    !marriageEvent &&
+    !childEvent &&
+    !datingEvent &&
+    !orientationEvent &&
+    !employmentEvent
+      ? (createWorkProblemEvent(state.player, nextAge) ??
+        createProjectBugEvent(state.player, nextAge) ??
+        createLayoffNoticeEvent(state.player, nextAge) ??
+        createCastingEvent(state.player, nextAge) ??
+        createMeetFamilyEvent(state.player, nextAge) ??
+        createRiskOfferEvent(state.player, nextAge) ??
+        createMoodEvent(state.player, nextAge))
+      : null;
   // Tuổi này chưa có sự kiện: ghi nhật kí và tăng tuổi trực tiếp.
   // 80% có sự kiện, 20% không có sự kiện.
   const eventChance = 0.8;
@@ -1194,6 +1690,7 @@ ageButton.addEventListener("click", () => {
     Boolean(orientationEvent) ||
     Boolean(schoolYearEvent) ||
     Boolean(employmentEvent) ||
+    Boolean(moodEvent) ||
     nextAge === 16 ||
     nextAge === 18 ||
     (Array.isArray(stories) &&
@@ -1202,7 +1699,26 @@ ageButton.addEventListener("click", () => {
         ? Boolean(randomAgeStory)
         : Math.random() < eventChance));
 
-  if (!hasEvent) {
+  // Lời làm quen (tối đa một lần mỗi năm): chỉ thay cho chuyện đời thường hoặc năm không có sự kiện,
+  // tung sau các lượt chọn sự kiện khác để không chen vào mốc quan trọng.
+  const ordinaryYear =
+    !priorityEvent &&
+    !promotionEvent &&
+    !marriageEvent &&
+    !childEvent &&
+    !orientationEvent &&
+    !schoolYearEvent &&
+    !employmentEvent &&
+    !moodEvent &&
+    !randomAgeStory &&
+    !(nextAge === 25 && datingEvent) &&
+    nextAge !== 16 &&
+    nextAge !== 18;
+  const quietYearAcquaintance =
+    !hasEvent && ordinaryYear
+      ? createAcquaintanceEvent(state.player, nextAge)
+      : null;
+  if (!hasEvent && !quietYearAcquaintance) {
     const {
       salary,
       childcare,
@@ -1212,6 +1728,13 @@ ageButton.addEventListener("click", () => {
       living,
       illness,
       lottery,
+      graduation,
+      tuition,
+      health,
+      mood,
+      employment,
+      family,
+      cognition,
     } = completeLifeYear(state.player, nextAge);
 
     const log = {
@@ -1227,7 +1750,7 @@ ageButton.addEventListener("click", () => {
         schooling.content +
         (salary || childcare.content ? `\n${log.content}` : "");
     // Thu nhập phụ thay câu "không có gì thay đổi" khi năm đó không có lương chính.
-    const extras = [livestock, sideJobs, living, illness, lottery]
+    const extras = [employment, family, health, illness, cognition, mood, tuition, livestock, sideJobs, living, lottery, graduation]
       .filter(Boolean)
       .map((entry) => entry.content);
     if (extras.length)
@@ -1263,7 +1786,8 @@ ageButton.addEventListener("click", () => {
     // Kết thúc lượt, không mở popup sự kiện.
     return;
   }
-  const story =
+  const pickedStory =
+    quietYearAcquaintance ??
     (nextAge === 25 ? datingEvent : null) ??
     priorityEvent ??
     promotionEvent ??
@@ -1272,6 +1796,7 @@ ageButton.addEventListener("click", () => {
     orientationEvent ??
     schoolYearEvent ??
     employmentEvent ??
+    moodEvent ??
     (nextAge === 18
       ? careerEvent
       : (randomAgeStory ??
@@ -1282,6 +1807,10 @@ ageButton.addEventListener("click", () => {
               text: "Một năm nữa đã trôi qua.",
               effects: {},
             })));
+  const story =
+    !quietYearAcquaintance && ordinaryYear
+      ? (createAcquaintanceEvent(state.player, nextAge) ?? pickedStory)
+      : pickedStory;
   // Sự kiện cũ chưa có choices vẫn chạy với một nút Tiếp tục
   const choices = story.choices?.length
     ? story.choices
@@ -1307,6 +1836,7 @@ ageButton.addEventListener("click", () => {
     id: story.id,
     kind: story.kind,
     addedEveryday: story.addedEveryday === true,
+    category: story.category,
     person: story.person,
     specialId: story.specialId,
     specialStep: story.specialStep,
@@ -1331,9 +1861,10 @@ ageButton.addEventListener("click", () => {
   showPendingEvent();
 });
 // Xác nhận kết quả: cập nhật nhân vật và ghi nhật ký
-eventConfirm.addEventListener("click", () => {
+eventConfirm.addEventListener("click", (event) => {
   const pending = state.pendingEvent;
   if (!pending || pending.stage === "choice") return;
+  if (event.isTrusted && performance.now() < choicesReadyAt) return;
   if (pending.mediaTransition && pending.nextScene) {
     state.pendingEvent = pending.nextScene;
     saveEventProgress();
@@ -1372,6 +1903,13 @@ eventConfirm.addEventListener("click", () => {
     living,
     illness,
     lottery,
+    graduation,
+    tuition,
+    health,
+    mood,
+    employment,
+    family,
+    cognition,
   } = completeLifeYear(
     state.player,
     pending.age,
@@ -1398,7 +1936,20 @@ eventConfirm.addEventListener("click", () => {
     log.content += `\n${schooling.content}`;
     log.summary += `\n${schooling.content}`;
   }
-  for (const extra of [livestock, sideJobs, living, illness, lottery]) {
+  for (const extra of [
+    employment,
+    family,
+    health,
+    illness,
+    cognition,
+    mood,
+    tuition,
+    livestock,
+    sideJobs,
+    living,
+    lottery,
+    graduation,
+  ]) {
     if (!extra) continue;
     log.content += `\n${extra.content}`;
     log.summary += `\n${extra.content}`;
@@ -1477,7 +2028,22 @@ initSideJobs(state, {
   renderEducation,
   checkAchievements,
 });
-initHospital(state, { renderMoney, renderLogEntry });
+initJobApplications(state, {
+  renderMoney,
+  renderLogEntry,
+  renderEducation,
+  checkAchievements,
+});
+document
+  .getElementById("close-finance-check")
+  .addEventListener("click", () =>
+    document.getElementById("finance-check-dialog").close(),
+  );
+hospitalUi = initHospital(state, {
+  renderMoney,
+  renderLogEntry,
+  onChange: renderStats,
+});
 initMatchmaking(state, {
   renderMoney,
   renderStats,
@@ -1582,35 +2148,31 @@ function endLifeAfterYear() {
 function checkOldAgeDeath(nextAge) {
   // Survivors of age 104 always see the final story at 105.
   if (nextAge === 105) return false;
-  let survivalChance = 1;
-
-  if (nextAge >= 106) {
-    survivalChance = 0;
-  } else if (nextAge >= 100) {
-    survivalChance = 0.4;
-  } else if (nextAge >= 98) {
-    survivalChance = 0.7;
-  }
-
-  // Chưa đến tuổi kiểm tra hoặc đã vượt qua lần kiểm tra.
-  if (
-    survivalChance === 1 ||
-    (survivalChance > 0 && Math.random() < survivalChance)
-  ) {
+  // Nguy cơ tuổi già xét đồng thời tuổi, sức khỏe và bệnh chưa điều trị (xem health-rules.js).
+  const stages = (state.player.illnesses ?? [])
+    .filter((illness) => getDisease(illness.id))
+    .map((illness) => getIllnessStage(illness, nextAge, state.player.health));
+  const deathChance = getOldAgeDeathChance(nextAge, state.player.health, stages);
+  if (!deathChance || (deathChance < 1 && Math.random() >= deathChance)) {
     return false;
   }
 
   // Nhân vật qua đời tại tuổi mới.
+  const healthBefore = state.player.health;
   state.player.age = nextAge;
   state.player.isAlive = false;
   state.player.health = 0;
   state.player.deathCause = "old-age";
+  state.player.oldAgeDeath = { health: healthBefore, chance: deathChance };
   state.pendingEvent = null;
 
   const log = {
     age: nextAge,
     content:
       `Bạn đã qua đời ở tuổi ${nextAge}. ` +
+      (healthBefore >= 50
+        ? `Dù sức khỏe vẫn còn ${healthBefore}%, ở tuổi ${nextAge} cơ thể đã rất già: nguy cơ ra đi năm ấy khoảng ${Math.round(deathChance * 100)}%. `
+        : "") +
       "Hành trình khép lại, những kỷ niệm vẫn còn mãi.",
   };
 

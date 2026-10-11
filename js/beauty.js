@@ -20,6 +20,9 @@ export const surgeryPackages = [
 ];
 
 export const statLabels = { health: "Sức khỏe", intelligence: "Trí tuệ", happiness: "Hạnh phúc", appearance: "Ngoại hình" };
+// Mức tăng thực nhận khi chỉ số đã gần 100.
+const realGains = (player, stats) => Object.fromEntries(Object.entries(stats)
+  .map(([stat, value]) => [stat, Math.max(0, Math.min(value, 100 - (player[stat] ?? 0)))]));
 const listText = (stats, sign) => Object.entries(stats).map(([stat, value]) => `${statLabels[stat]} ${sign}${value}`).join(" · ");
 export const hasNailThisYear = (player) => (player.nailAge ?? -1) === player.age;
 export const hasSurgeryThisYear = (player) => (player.surgeryAge ?? -1) === player.age;
@@ -112,7 +115,7 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
     nailAction.disabled = nailDone || !nailAffordable || player.isAlive === false;
     nailItem.append(
       element("h4", "", `${NAIL.icon} ${NAIL.name}`),
-      element("p", "shop-figures", `💰 Giá: ${formatMoney(NAIL.price)}\n✨ ${listText(NAIL.effects, "+")}`),
+      element("p", "shop-figures", `💰 Giá: ${formatMoney(NAIL.price)}\n✨ ${listText(realGains(state.player, NAIL.effects), "+")}`),
       nailAction,
     );
     nailCard.append(nailItem);
@@ -143,7 +146,7 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
         element("p", "", pack.description),
         element("p", "shop-figures",
           `💰 Giá: ${formatMoney(pack.price)}\n🎯 Thành công: ${Math.round(pack.successRate * 100)}%\n` +
-          `✨ Thành công: ${listText(pack.gain, "+")}\n⚠️ Thất bại: ${listText(pack.loss, "-")}`),
+          `✨ Thành công: ${listText(realGains(state.player, pack.gain), "+")}\n⚠️ Thất bại: ${listText(pack.loss, "-")}`),
         action,
       );
       items.append(item);

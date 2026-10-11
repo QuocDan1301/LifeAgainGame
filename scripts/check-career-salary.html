@@ -83,7 +83,11 @@
     assert(document.getElementById("career-salary-ranks").children.length === 3, "Career dialog shows every salary tier");
     document.getElementById("close-education").click();
     Object.assign(state.player, { age: 27 - ageStep, money: 0, lastSalaryAge: null, nextPromotionAge: 27 });
+    // Khả năng được chọn khi xử lý đúng tung lúc sự kiện xuất hiện; cố định để kiểm tra luồng lương sau thăng chức.
+    const promotionRandom = Math.random;
+    Math.random = () => 0;
     birthday.click();
+    Math.random = promotionRandom;
     const correct = state.pendingEvent.choices.findIndex(choice => choice.correct);
     document.querySelectorAll("#event-choices button")[correct].click();
     assert(state.player.money === 0, "Preview must not pay before confirmation");

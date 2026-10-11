@@ -77,6 +77,13 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       choice.append(element("span", "side-job-note", `Góp ${formatMoney(stake)} · Thắng nhận ${formatMoney(stake * 4)} (lời ${formatMoney(stake * 3)})`));
       tables.append(choice);
     }
+    // Bàn All in: góp toàn bộ ví; các ván sau ở bàn này giữ nguyên mức góp đó.
+    const allInStake = Math.floor(state.player.money);
+    const allIn = button("shop-group tl-table-pick tl-all-in", "💥 Bàn All in", () => sitDown(allInStake));
+    allIn.dataset.stake = "all";
+    allIn.disabled = allInStake < 1 || Boolean(startBlocker(allInStake));
+    allIn.append(element("span", "side-job-note", `Góp cả ví ${formatMoney(allInStake)} · Thắng nhận ${formatMoney(allInStake * 4)} (lời ${formatMoney(allInStake * 3)})`));
+    tables.append(allIn);
     const rules = element("details", "tl-rules");
     rules.append(element("summary", "", "📜 Luật chơi tóm tắt"));
     const list = element("ul", "dialog-entries");

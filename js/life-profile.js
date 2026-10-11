@@ -4,6 +4,9 @@ import { getLicenseType } from "./licenses.js";
 import { destinations } from "./travel.js";
 import { getDisease } from "./hospital.js";
 import { getCareerProfile } from "./career-jobs.js";
+import { RETIREMENT_AGE } from "./career-salary.js";
+import { describeJobLossCause } from "./job-loss.js";
+import { getRelativeAge } from "./family-members.js";
 import { initPanelTabs } from "./panel-tabs.js";
 
 const node = (tag, text) => {
@@ -16,8 +19,14 @@ const node = (tag, text) => {
 // sự nghiệp, tài sản để lại, gia đình và những dấu ấn trong đời.
 function describeDeathCause(player) {
   const disease = getDisease(player.deathCause);
-  if (disease) return `🩺 Ra đi vì ${disease.name} không được điều trị kịp thời.`;
-  if (player.deathCause === "old-age") return "🕯️ Ra đi thanh thản khi tuổi đã cao.";
+  if (disease) return `🩺 Ra đi vì ${disease.name} chuyển nặng đến mức nguy kịch khi chưa được điều trị.`;
+  if (player.deathCause === "old-age") {
+    const info = player.oldAgeDeath;
+    return info && info.health >= 50
+      ? `🕯️ Ra đi thanh thản khi tuổi đã cao. Dù sức khỏe vẫn còn ${info.health}%, ở tuổi ${player.age} nguy cơ ra đi mỗi năm khoảng ${Math.round(info.chance * 100)}%.`
+      : "🕯️ Ra đi thanh thản khi tuổi đã cao.";
+  }
+  if (player.deathCause === "exhaustion") return "🚑 Ra đi vì cơ thể kiệt quệ sau nhiều lần làm việc quá sức.";
   if (player.deathCause === "event" && player.deathEvent) return `🍂 Khép lại sau biến cố: ${player.deathEvent}.`;
   if (player.ending === "fulfilled") return "🌅 Khép lại một cuộc đời trọn vẹn.";
   if (player.ending === "cold") return "🌑 Ra đi lặng lẽ, ít người ở bên.";
@@ -92,8 +101,15 @@ export function renderLifeSummary(state) {
   const rank = player.careerLevel > 0 && ranks.length ? `Bậc ${player.careerLevel}/${ranks.length}` : "";
   const licenses = (player.licenses ?? []).map((license) => getLicenseType(license.id))
     .filter(Boolean).map((type) => `${type.icon} ${type.name}`);
+  const retired = jobName && player.age >= RETIREMENT_AGE;
+  const lastJob = (player.jobHistory ?? []).at(-1);
+  const pastJobs = (player.jobHistory ?? [])
+    .map((entry) => `${entry.title?.replace(/^\p{Extended_Pictographic}\S*\s+/u, "") ?? "Công việc"} (${describeJobLossCause(entry.cause)} lúc ${entry.age} tuổi)`);
   const career = factList([
-    ["Công việc", jobName ? `${jobName}${rank ? ` · ${rank}` : ""}` : "Chưa có công việc chính thức"],
+    ["Công việc", jobName
+      ? `${jobName}${rank ? ` · ${rank}` : ""}${retired ? " · đã nghỉ hưu" : ""}`
+      : lastJob ? "Không có công việc chính lúc cuối đời" : "Chưa có công việc chính thức"],
+    ["Đã từng làm", pastJobs.join(", ")],
     ["Học vấn", [player.careerPath?.school?.name, player.careerPath?.field && `Ngành ${player.careerPath.field}`].filter(Boolean).join(" · ")],
     ["Bằng lái", licenses.join(", ")],
   ]);
@@ -105,7 +121,7 @@ export function renderLifeSummary(state) {
   const items = [...counts].map(([id, count]) => [getShopItem(id), count]).filter(([item]) => item);
   const assetValue = items.reduce((sum, [item, count]) => sum + item.price * count, 0);
   const assets = factList([
-    ["Tiền trong ví", formatMoney(player.money ?? 0)],
+    [(player.money ?? 0) < 0 ? "Khoản nợ còn lại" : "Tiền trong ví", formatMoney(Math.abs(player.money ?? 0))],
     ["Tài sản", items.length
       ? items.map(([item, count]) => `${item.icon} ${item.name}${count > 1 ? ` ×${count}` : ""}`).join(", ")
       : "Không có tài sản đứng tên"],
@@ -114,16 +130,26 @@ export function renderLifeSummary(state) {
 
   // Gia đình.
   const children = player.children ?? [];
+  const widowed = [...(player.relationshipHistory ?? [])].reverse().find((entry) => entry.type === "widowed");
+  const lateSpouse = widowed?.person?.name;
   const pastLoves = (player.relationshipHistory ?? []).filter((entry) => entry.type === "dating"
-    && entry.person?.name && entry.person.name !== player.partner?.name).map((entry) => entry.person.name);
+    && entry.person?.name && entry.person.name !== player.partner?.name && entry.person.name !== lateSpouse).map((entry) => entry.person.name);
+  const parents = (player.relatives ?? []).map((relative) => relative.alive
+    ? `${relative.role} ${relative.name} (${getRelativeAge(relative, player.age)} tuổi)`
+    : relative.passedBeforeTracking
+      ? `${relative.role} ${relative.name} (đã mất từ trước)`
+      : `${relative.role} ${relative.name} (mất khi bạn ${relative.diedAtAge} tuổi)`);
   const family = factList([
+    ["Cha mẹ", parents.join(", ")],
     [player.marriedAtAge != null ? "Bạn đời" : "Người yêu", player.partner
       ? `${player.partner.name}${player.marriedAtAge != null ? ` · kết hôn năm ${player.marriedAtAge} tuổi` : ""}` : ""],
+    ["Người bạn đời đã khuất", lateSpouse ? `${lateSpouse} · góa từ năm ${widowed.age} tuổi` : ""],
+    ["Bạn bè", (player.friends ?? []).map((friend) => friend.name).join(", ")],
     ["Con cái", children.length
       ? children.map((child) => `${child.name}${child.adopted ? " (con nuôi)" : ""}`).join(", ") : "Không có con"],
     ["Mối tình cũ", [...new Set(pastLoves)].join(", ")],
   ]);
-  if (!player.partner && !pastLoves.length) family.prepend(node("dt", "Tình duyên"), node("dd", "Sống một mình, tự do theo cách riêng"));
+  if (!player.partner && !pastLoves.length && !lateSpouse) family.prepend(node("dt", "Tình duyên"), node("dd", "Sống một mình, tự do theo cách riêng"));
 
   // Dấu ấn trong đời.
   const trips = Object.keys(player.tripsTaken ?? {}).map((id) => destinations.find((place) => place.id === id))
@@ -133,6 +159,7 @@ export function renderLifeSummary(state) {
     ["Đã đi du lịch", trips.join(", ")],
     ["Kỷ niệm", player.memories?.length ? `${player.memories.length} trang kỷ niệm` : ""],
     ["Kỷ vật", (player.keepsakes ?? []).map((item) => item.name).join(", ")],
+    ["Tưởng nhớ", (player.familyMemories ?? []).map((memory) => `${memory.role} ${memory.name}: ${memory.text}`).join("\n")],
     ["Thú bông", plushes ? `${plushes} thú bông trong bộ sưu tập` : ""],
     ["Nhật ký", `${new Set(state.logs.map((log) => log.age)).size} năm có ghi chép`],
   ]);

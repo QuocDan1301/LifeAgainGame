@@ -1,3 +1,5 @@
+import { RESCUE_CARRY_MIN_HEALTH } from "./health-rules.js";
+
 const art = (code, alt) => {
   const image = new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
   return { image, imageAlt: alt, imageFallback: image, imageFallbackAlt: alt };
@@ -67,9 +69,17 @@ const steps = {
   },
 };
 
-export function createSaveLifeSpecialStep(stepNumber) {
-  const step = steps[stepNumber];
+// Bước 3: chỉ người đủ sức khỏe mới tự dìu người bị nạn ra; người yếu gọi đội cứu hộ vào khiêng.
+const callRescueTeam = next("Tôi không đủ sức dìu. Gọi cứu hộ vào khiêng ông ra!", 4,
+  "Tôi khuyên ông buông túi tài liệu, rồi gọi to chỉ lối nền khô cho đội cứu hộ vừa tới. Họ vào khiêng ông ra khỏi khu vực.\n\n");
+
+export function createSaveLifeSpecialStep(stepNumber, player) {
+  let step = steps[stepNumber];
   if (!step) return null;
+  if (stepNumber === 3 && (player?.health ?? 100) < RESCUE_CARRY_MIN_HEALTH) {
+    step = { ...step, text: `${step.text}\n\nNgười tôi đang yếu (Sức khỏe ${player.health}%), không đủ sức dìu một người trưởng thành.`,
+      choices: step.choices.map((choice) => (choice.nextStep === 4 ? callRescueTeam : choice)) };
+  }
   return { ...step, id: `special-save-life-${stepNumber}`, kind: "special-chain",
     priority: false, specialId: "save-life", specialStep: stepNumber };
 }
