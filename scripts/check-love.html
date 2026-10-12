@@ -88,8 +88,38 @@
 
     $("activities").click();
     $("activity-love").click();
-    assert(center("basic").disabled && body().textContent.includes("đang hẹn hò"), "Matchmaking is only for singles");
-    result.textContent = "PASS: centers by fee; age 18+; gender choice; paid profile; another match; accept updates relationships; singles only";
+    assert(!center("basic").disabled && body().textContent.includes("người thứ hai"), "Dating adults can meet a second person");
+    state.player.money = 5_000_000;
+    const firstId = state.player.partner.id;
+    center("basic").click();
+    body().querySelector('.love-gender[data-gender="female"]').click();
+    $("shop-confirm").click();
+    closeOthers();
+    body().querySelector(".love-accept").click();
+    assert(state.player.partner.id === firstId && state.player.otherPartners.length === 1, "Second acceptance preserves first relationship");
+    const secondId = state.player.otherPartners[0].id;
+    $("close-love").click();
+    closeOthers();
+    $("activities").click();
+    $("activity-love").click();
+    assert(center("basic").disabled, "Two partners block a third introduction");
+    $("close-love").click();
+    closeOthers();
+    $("relationships").click();
+    assert($("dating-partner-picker").querySelectorAll("button").length === 2, "Both partners have selectors");
+    $("dating-partner-picker").querySelector(`button[data-partner-id="${secondId}"]`).click();
+    assert(state.player.partner.id === secondId && $("relationship-current").textContent.includes(state.player.partner.name), "Selector switches the displayed person");
+    document.querySelector('#relationship-actions [data-action="talk"]').click();
+    assert(state.player.partnerActions.talk === 25, "Interaction applies to selected person");
+    $("dating-partner-picker").querySelector(`button[data-partner-id="${firstId}"]`).click();
+    assert(state.player.partnerActions.talk !== 25, "Other person's interaction remains available");
+    $("dating-partner-picker").querySelector(`button[data-partner-id="${secondId}"]`).click();
+    $("breakup-relationship").click();
+    $("confirm-breakup").click();
+    assert(state.player.partner.id === firstId && state.player.otherPartners.length === 0, "Breakup keeps the unrelated partner");
+    const stored = JSON.parse(localStorage.getItem("lifeAgainSave"));
+    assert(stored.player.partner.id === firstId && stored.player.otherPartners.length === 0, "Updated relationship persists");
+    result.textContent = "PASS: matchmaking, second partner, capacity, UI selection, individual interactions, breakup and persistence";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {

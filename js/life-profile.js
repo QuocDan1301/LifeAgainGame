@@ -1,7 +1,9 @@
+import { getDatingPartners } from './concurrent-dating.js';
 import { formatMoney, formatMoneyText } from "./money-format.js";
 import { getShopItem } from "./shop.js";
 import { getLicenseType } from "./licenses.js";
 import { destinations } from "./travel.js";
+import { applyActivityGain } from "./stat-budget.js";
 import { getDisease } from "./hospital.js";
 import { getCareerProfile } from "./career-jobs.js";
 import { RETIREMENT_AGE } from "./career-salary.js";
@@ -109,6 +111,8 @@ export function renderLifeSummary(state) {
     ["Công việc", jobName
       ? `${jobName}${rank ? ` · ${rank}` : ""}${retired ? " · đã nghỉ hưu" : ""}`
       : lastJob ? "Không có công việc chính lúc cuối đời" : "Chưa có công việc chính thức"],
+    ["Nước làm việc", player.workCountryName || ""],
+    ["Du học", player.overseasEducation ? `${player.overseasEducation.program} · ${player.overseasEducation.countryName}` : ""],
     ["Đã từng làm", pastJobs.join(", ")],
     ["Học vấn", [player.careerPath?.school?.name, player.careerPath?.field && `Ngành ${player.careerPath.field}`].filter(Boolean).join(" · ")],
     ["Bằng lái", licenses.join(", ")],
@@ -135,7 +139,7 @@ export function renderLifeSummary(state) {
   const widowed = [...(player.relationshipHistory ?? [])].reverse().find((entry) => entry.type === "widowed");
   const lateSpouse = widowed?.person?.name;
   const pastLoves = (player.relationshipHistory ?? []).filter((entry) => entry.type === "dating"
-    && entry.person?.name && entry.person.name !== player.partner?.name && entry.person.name !== lateSpouse).map((entry) => entry.person.name);
+    && entry.person?.name && !getDatingPartners(player).some(person => person.id === entry.person.id) && entry.person.name !== lateSpouse).map((entry) => entry.person.name);
   const parents = (player.relatives ?? []).map((relative) => relative.alive
     ? `${relative.role} ${relative.name} (${getRelativeAge(relative, player.age)} tuổi)`
     : relative.passedBeforeTracking
@@ -144,7 +148,7 @@ export function renderLifeSummary(state) {
   const family = factList([
     ["Cha mẹ", parents.join(", ")],
     [player.marriedAtAge != null ? "Bạn đời" : "Người yêu", player.partner
-      ? `${player.partner.name}${player.marriedAtAge != null ? ` · kết hôn năm ${player.marriedAtAge} tuổi` : ""}` : ""],
+      ? `${player.marriedAtAge != null ? player.partner.name : getDatingPartners(player).map(person => person.name).join(", ")}${player.marriedAtAge != null ? ` · kết hôn năm ${player.marriedAtAge} tuổi` : ""}` : ""],
     ["Người bạn đời đã khuất", lateSpouse ? `${lateSpouse} · góa từ năm ${widowed.age} tuổi` : ""],
     ["Bạn bè", (player.friends ?? []).map((friend) => friend.name).join(", ")],
     ["Con cái", children.length
@@ -237,8 +241,8 @@ export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchie
     refresh();
     if (teach.hidden || teach.disabled) return;
     const player = state.player;
-    player.intelligence = Math.min(100, player.intelligence + 1);
-    player.happiness = Math.min(100, player.happiness + 1);
+    applyActivityGain(player, "intelligence", 1);
+    applyActivityGain(player, "happiness", 1);
     player.lastRepairLessonAge = player.age;
     const log = { age: player.age, content: "🛠️ Tôi dạy sửa đồ miễn phí cho hàng xóm. Mỗi món đồ được sửa lại cũng nối thêm một câu chuyện giữa mọi người.", summary: "Dạy sửa đồ miễn phí cho hàng xóm." };
     state.logs.push(log);

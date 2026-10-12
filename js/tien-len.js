@@ -6,10 +6,15 @@ import {
 } from "./tien-len-rules.js";
 
 // Tiến lên miền Nam (Hoạt động → Trò chơi): người chơi và 3 máy, cược bằng tiền trong ví.
-// Mỗi người góp một mức cược; ai hết bài trước nhận cả 4 phần. Cả bàn lưu trong player.tienLen:
+// Mỗi người góp một mức cược; ai hết bài trước nhận cả 4 phần sau khi bàn thu phí. Cả bàn lưu trong player.tienLen:
 // trừ cược và chia bài trong cùng một lần lưu, trả thưởng cùng lần lưu với nước đánh cuối,
 // nên tải lại trang chỉ tiếp tục đúng ván đang chơi, không hoàn tiền hay chia lại.
 export const TIEN_LEN_STAKES = [10_000, 50_000, 100_000, 500_000];
+// Bàn thu 10% tổng tiền góp và giới hạn mức góp như các trò khác: không có nhà cái thì người chơi
+// chỉ cần đánh nhỉnh hơn máy một chút (bấm gợi ý đã thắng ~28%) là ván nào cũng có lãi.
+export const TIEN_LEN_FEE_RATE = 0.1;
+export const TIEN_LEN_MAX_STAKE = 1_000_000_000;
+export const getTienLenPot = (stake) => Math.floor(stake * 4 * (1 - TIEN_LEN_FEE_RATE));
 export const TIEN_LEN_SEATS = [
   { name: "Bạn", icon: "🙂", place: "bottom" },
   { name: "Anh Tư", icon: "🧔", place: "right" },
@@ -67,22 +72,22 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     const card = element("section", "dialog-card");
     card.append(element("h3", "", "🃏 Tiến lên miền Nam"),
       element("p", "game-tagline", "“Ai hết bài trước, người đó ăn cả bàn!”"),
-      element("p", "side-job-intro", "Bạn và 3 đối thủ máy, mỗi người 13 lá. Mỗi người góp một mức cược; ai đánh hết bài đầu tiên nhận toàn bộ tiền thưởng (gấp 4 mức cược). Người thua chỉ mất phần đã góp."));
+      element("p", "side-job-intro", `Bạn và 3 đối thủ máy, mỗi người 13 lá. Mỗi người góp một mức cược; ai đánh hết bài đầu tiên nhận cả bàn sau khi trừ 10% phí bàn (gấp 3,6 lần mức góp). Người thua chỉ mất phần đã góp. Mức góp tối đa ${formatMoney(TIEN_LEN_MAX_STAKE)}.`));
     const tables = element("div", "shop-groups tl-tables");
     for (const stake of TIEN_LEN_STAKES) {
       const blocker = startBlocker(stake);
       const choice = button("shop-group tl-table-pick", `🃏 Bàn ${formatMoney(stake)}`, () => sitDown(stake));
       choice.dataset.stake = String(stake);
       choice.disabled = Boolean(blocker);
-      choice.append(element("span", "side-job-note", `Góp ${formatMoney(stake)} · Thắng nhận ${formatMoney(stake * 4)} (lời ${formatMoney(stake * 3)})`));
+      choice.append(element("span", "side-job-note", `Góp ${formatMoney(stake)} · Thắng nhận ${formatMoney(getTienLenPot(stake))} (lời ${formatMoney(getTienLenPot(stake) - stake)})`));
       tables.append(choice);
     }
-    // Bàn All in: góp toàn bộ ví; các ván sau ở bàn này giữ nguyên mức góp đó.
-    const allInStake = Math.floor(state.player.money);
+    // Bàn All in: góp toàn bộ ví (tối đa TIEN_LEN_MAX_STAKE); các ván sau ở bàn này giữ nguyên mức góp đó.
+    const allInStake = Math.min(Math.floor(state.player.money), TIEN_LEN_MAX_STAKE);
     const allIn = button("shop-group tl-table-pick tl-all-in", "💥 Bàn All in", () => sitDown(allInStake));
     allIn.dataset.stake = "all";
     allIn.disabled = allInStake < 1 || Boolean(startBlocker(allInStake));
-    allIn.append(element("span", "side-job-note", `Góp cả ví ${formatMoney(allInStake)} · Thắng nhận ${formatMoney(allInStake * 4)} (lời ${formatMoney(allInStake * 3)})`));
+    allIn.append(element("span", "side-job-note", `Góp ${state.player.money > TIEN_LEN_MAX_STAKE ? "mức tối đa" : "cả ví"} ${formatMoney(allInStake)} · Thắng nhận ${formatMoney(getTienLenPot(allInStake))} (lời ${formatMoney(getTienLenPot(allInStake) - allInStake)})`));
     tables.append(allIn);
     const rules = element("details", "tl-rules");
     rules.append(element("summary", "", "📜 Luật chơi tóm tắt"));
@@ -111,6 +116,8 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
   function startDeal() {
     const current = table();
     if (!current || hasActiveTienLen(state.player)) return;
+    // Bàn All in lưu từ bản cũ có thể vượt mức góp tối đa hiện tại.
+    current.stake = Math.min(current.stake, TIEN_LEN_MAX_STAKE);
     const blocker = startBlocker(current.stake);
     if (blocker) {
       status = blocker;
@@ -122,7 +129,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     const firstDeal = current.lastWinner === null;
     const next = createGame(dealHands(), { starter: firstDeal ? null : current.lastWinner, requireThreeSpades: firstDeal });
     Object.assign(next, {
-      id: `tl-${Date.now()}-${Math.floor(Math.random() * 1e6)}`, stake: current.stake, pot: current.stake * 4,
+      id: `tl-${Date.now()}-${Math.floor(Math.random() * 1e6)}`, stake: current.stake, pot: getTienLenPot(current.stake),
       betTaken: true, paid: false, over: false, forfeited: false, number: current.deals + 1,
     });
     next.order = current.sortMode === "group" ? arrangeByGroups(next.hands[0]) : [...next.hands[0]];

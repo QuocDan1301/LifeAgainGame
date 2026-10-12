@@ -14,7 +14,7 @@
     const { createAdmirer, getDatingUpdates } = await import('../js/relationships.js');
     const { achievements } = await import('../js/achievements-data.js');
     const { getCareerProfile } = await import('../js/career-jobs.js');
-    assert(getAgeEvents(30).length === 3 && getAgeEvents(30).filter(e => !e.specialId).length === 2,
+    assert(getAgeEvents(30).length === 5 && getAgeEvents(30).filter(e => !e.specialId).length === 4,
       'Age 30 retains two everyday stories plus its special story');
     assert(!step(0) && !step(8), 'Reject invalid steps');
     let paths = 0, wins = 0;
@@ -53,7 +53,9 @@
     await import('../js/main.js');
     const birthday = document.getElementById('age-up');
     const confirm = document.getElementById('event-confirm');
-    const choose = index => document.querySelectorAll('#event-choices button')[index].click();
+    const choose=index=>{document.querySelectorAll('#event-choices button')[index].click();
+      // Bước giữa chuỗi có màn "Kết quả lựa chọn" trước tình huống tiếp theo.
+      if(state.pendingEvent?.mediaTransition)document.getElementById('event-confirm').click();};
     const reset = () => {
       Object.assign(state, createInitialState());
       Object.assign(state.player, { age:29, gender:'male', orientation:'heterosexual', health:90,
@@ -67,7 +69,7 @@
     const person = createAdmirer(state.player,25,()=>0.4);
     Object.assign(state.player, getDatingUpdates(state.player,person,25));
     let roll=0;
-    Math.random=()=>roll++===0?0.1:0.99;
+    Math.random=()=>roll++===0?0.1:0.1;
     birthday.click();
     Math.random=()=>0.99;
     assert(state.pendingEvent?.specialId === 'earth-auction' && state.player.nextMarriageProposalAge === 31,
@@ -84,11 +86,11 @@
     assert(state.player.intelligence === 50 && state.player.happiness === 50, 'Rewards wait for confirmation');
     state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     confirm.click();
-    assert(state.player.age === 30 && state.player.money === 120_500_000 && state.player.intelligence === 60 && state.player.happiness === 60,
-      'Confirm advances one year, adds salary once and awards both stats');
+    assert(state.player.age === 30 && state.player.money === 120_500_000 - 36_000_000 && state.player.intelligence === 60 && state.player.happiness === 60,
+      'Confirm advances one year, adds salary once (less 30% living costs) and awards both stats');
     assert(state.player.achievementFlags['story-alien'] && state.logs.at(-1).content.includes('hai quả cam'),
       'Achievement and the supplied diary entry persist');
-    assert(document.getElementById('money-value').textContent === '120,5 triệu' && state.logs.at(-1).content.includes('500.000 VNĐ'),
+    assert(document.getElementById('money-value').textContent === '84,5 triệu' && state.logs.at(-1).content.includes('500.000 VNĐ'),
       'Cash reward appears in the wallet and diary');
     birthday.click();
     assert(state.pendingEvent?.kind === 'marriage-proposal' && state.pendingEvent.age === 31, 'Deferred proposal appears at 31');
@@ -96,7 +98,7 @@
     reset();
     Object.assign(state.player, { partner:person, marriedAtAge:25, nextChildProposalAge:30 });
     roll=0;
-    Math.random=()=>roll++===0?0.1:0.99;
+    Math.random=()=>roll++===0?0.1:0.1;
     birthday.click();
     Math.random=()=>0.99;
     assert(state.pendingEvent.specialId === 'earth-auction' && state.player.nextChildProposalAge === 31,

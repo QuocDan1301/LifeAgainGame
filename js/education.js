@@ -5,6 +5,7 @@ import { getSideJobTitle } from "./side-jobs.js";
 import { getCareerAnnualSalary, getPlayerAnnualSalary, formatSalary } from "./career-salary.js";
 
 const careerIcons = {
+  "study-abroad": "🌐",
   acting: "🎬", military: "🪖", singing: "🎤", painting: "🎨", medicine: "🩺",
   programming: "💻", accounting: "🧾", law: "⚖️", teaching: "📚", football: "⚽",
   psychology: "🧠", esports: "🎮", tiktok: "📱", youtube: "▶️", business: "📈",
@@ -12,7 +13,14 @@ const careerIcons = {
   marketing: "📣", tourism: "🧳", culinary: "🍳",
 };
 
+import { getStudyAbroadCountry } from "./study-abroad.js";
 export function getEducationStatus(player) {
+  const status = getBaseEducationStatus(player);
+  const country = getStudyAbroadCountry(player.careerPath);
+  if (country && player.age >= 22 && !status.text.includes(country.name)) status.text += ` tại ${country.name}`;
+  return status;
+}
+function getBaseEducationStatus(player) {
   if (player.isAlive === false) return { text: "Đã qua đời", icon: "🕊️" };
   if (player.employmentStatus === "retired") return { text: "Nghỉ hưu", icon: "🌅" };
   // Chưa có công việc chính thì hiện cửa hàng làm thêm đầu tiên.
@@ -121,7 +129,7 @@ export function initEducation(state, save) {
           ? `Hiện tại: ${formatSalary(annualSalary)}/năm. Lương được cộng vào ví khi nhận việc và mỗi năm tiếp theo.`
           : "Chưa có việc chính trong ngành.") + `
 ${lock.unlocked ? "⭐" : "🔒"} ${lock.reason}`;
-      getCareerProfile(state.player.careerPath?.id).ranks.forEach((rank, index) => {
+      getCareerProfile(state.player.careerPath?.id, state.player.careerPath).ranks.forEach((rank, index) => {
         const row = document.createElement("tr");
         const name = document.createElement("th");
         name.scope = "row";
@@ -129,7 +137,7 @@ ${lock.unlocked ? "⭐" : "🔒"} ${lock.reason}`;
         if (locked) row.className = "is-locked";
         name.textContent = `${locked ? "🔒 " : ""}${rank}${state.player.careerLevel === index + 1 ? " (hiện tại)" : ""}`;
         const amount = document.createElement("td");
-        amount.textContent = formatSalary(getCareerAnnualSalary(state.player.careerPath?.id, index + 1));
+        amount.textContent = formatSalary(getCareerAnnualSalary(state.player.careerPath?.id, index + 1, state.player.careerPath));
         row.append(name, amount);
         salaryRanks.append(row);
       });

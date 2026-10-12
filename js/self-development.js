@@ -5,6 +5,7 @@ import { MOOD_ACTIVITIES, getHappinessBand } from "./mood-rules.js";
 import { HIGH_INTELLECT_TRAINING_RATE, INTELLECT_ACTIVITIES, PROMOTION, getIntellectBand } from "./intellect-rules.js";
 import { APPEARANCE_ACTIVITIES, getAppearanceBand } from "./appearance-rules.js";
 import { getIllnessStage } from "./hospital.js";
+import { applyActivityGain, describeActivityRoom, previewActivityGain } from "./stat-budget.js";
 
 // Phát triển bản thân: mỗi chỉ số có 2 hoạt động, mỗi hoạt động có 3 gói.
 // Trả càng nhiều tiền, chỉ số chính tăng càng nhiều. Mỗi hoạt động một lần mỗi năm.
@@ -128,9 +129,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
     player.developmentDone = { ...(player.developmentDone ?? {}), [activity.id]: player.age };
     if (discount) consumeTarotBuff(player, "pentacles");
     if (bonus) consumeTarotBuff(player, "wands");
-    const before = player[activity.stat];
-    player[activity.stat] = Math.min(100, before + gain + bonus);
-    const gained = player[activity.stat] - before;
+    const gained = applyActivityGain(player, activity.stat, gain + bonus);
     const content = `${activity.icon} ${activity.name} (${activity.packages[packageTiers.indexOf(tier)]}): ` +
       `Tiền -${formatMoneyAmount(fee)} VNĐ${gained ? ` · ${statName(activity.stat)} +${gained}` : ""}` +
       `${bonus ? " (có lá Gậy hỗ trợ)" : ""}${discount ? ` (lá Tiền giảm ${formatMoneyAmount(discount)} VNĐ)` : ""}.`;
@@ -148,13 +147,11 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
     const player = state.player;
     if (player.isAlive === false || hasTrainedThisYear(player, activity.id)) return;
     const stat = activity.stat ?? "health";
-    const before = player[stat];
-    player[stat] = Math.min(100, before + getRecoveryGain(player, activity));
+    const gained = applyActivityGain(player, stat, getRecoveryGain(player, activity));
     player.developmentDone = { ...(player.developmentDone ?? {}), [activity.id]: player.age };
     const extras = [];
     if (activity.together) {
-      if (player.happiness < 100) extras.push("Hạnh phúc +1");
-      player.happiness = Math.min(100, (player.happiness ?? 0) + 1);
+      if (applyActivityGain(player, "happiness", 1)) extras.push("Hạnh phúc +1");
       if (player.partner) {
         player.partner = { ...player.partner, relationship: Math.min(100, (player.partner.relationship ?? 80) + 1) };
         extras.push(`gắn kết với ${player.partner.name} +1%`);
@@ -165,7 +162,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       player.workMerit = Math.min(PROMOTION.maxMerit, (player.workMerit ?? 0) + 1);
       extras.push("thêm kinh nghiệm cho lần xét nâng bậc");
     }
-    const content = `${activity.icon} ${activity.name} (miễn phí)${player[stat] > before ? `: ${statName(stat)} +${player[stat] - before}` : ""}` +
+    const content = `${activity.icon} ${activity.name} (miễn phí)${gained ? `: ${statName(stat)} +${gained}` : ""}` +
       `${extras.length ? ` · ${extras.join(" · ")}` : ""}.`;
     const log = { age: player.age, content, summary: content };
     state.logs.push(log);
@@ -189,7 +186,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       const row = element("div", "dev-package");
       const info = element("div", "dev-package-info");
       info.append(element("strong", "", `${activity.icon} ${activity.name}`),
-        element("span", "shop-figures", `${activity.description} · ${stat.icon} ${stat.name} +${getRecoveryGain(player, activity)}`));
+        element("span", "shop-figures", `${activity.description} · ${stat.icon} ${stat.name} +${previewActivityGain(player, statId, getRecoveryGain(player, activity))}`));
       const action = button("shop-buy dev-recover", done ? "Đã làm năm nay" : "Thực hiện", () => recover(activity));
       action.dataset.activity = activity.id;
       const needsJob = activity.needsJob && player.employmentStatus !== "employed";
@@ -209,7 +206,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       dialog.close();
       $("activities-dialog").showModal();
     });
-    const intro = element("p", "game-motto", "Chọn chỉ số muốn rèn luyện. Trả càng nhiều, chỉ số tăng càng nhiều. Mỗi hoạt động một lần mỗi năm, chỉ số tối đa 100.");
+    const intro = element("p", "game-motto", `Chọn chỉ số muốn rèn luyện. Trả càng nhiều, chỉ số tăng càng nhiều. Mỗi hoạt động một lần mỗi năm, chỉ số tối đa 100. ${describeActivityRoom(state.player)}`);
     const picker = element("div", "shop-groups");
     for (const stat of developmentStats) {
       const group = button("shop-group", `${stat.icon} ${stat.name} — ${state.player[stat.id]}%`, () => renderStat(stat.id));
@@ -222,11 +219,12 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
 
   function renderStat(statId, justTrained = null) {
     const player = state.player;
-    // Điểm thực nhận (không vượt 100) hiển thị trước khi trả tiền.
-    const realGain = (gain) => Math.max(0, Math.min(gain, 100 - (player[statId] ?? 0)));
+    // Điểm thực nhận (không vượt 100, đã tính giới hạn tăng mỗi năm) hiển thị trước khi trả tiền.
+    const realGain = (gain) => previewActivityGain(player, statId, gain);
     const stat = developmentStats.find((entry) => entry.id === statId);
     const back = button("shop-back", "← Chọn chỉ số khác", renderHome);
-    const nodes = [back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)} · ${stat.icon} ${stat.name}: ${player[statId]}%`)];
+    const nodes = [back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)} · ${stat.icon} ${stat.name}: ${player[statId]}%`),
+      element("p", "side-job-intro", describeActivityRoom(player, [statId]))];
     const note = buffNote();
     if (note) nodes.push(note);
     if (statId === "health") {
@@ -252,7 +250,9 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
         info.append(
           element("strong", "", `${tier.label}: ${activity.packages[index]}`),
           element("span", "shop-figures", `💰 ${formatMoney(fee)}${discount ? ` (giảm ${formatMoney(discount)})` : ""} · ✨ ${stat.name} +${realGain(getTrainingGain(player, activity, tier.gain).gain + bonus)}` +
-            (player[statId] + getTrainingGain(player, activity, tier.gain).gain + bonus > 100 ? " (chạm mức 100)" : "")),
+            (player[statId] + getTrainingGain(player, activity, tier.gain).gain + bonus > 100 ? " (chạm mức 100)"
+              : realGain(getTrainingGain(player, activity, tier.gain).gain + bonus) < getTrainingGain(player, activity, tier.gain).gain + bonus
+                ? " (đã gần đủ mức tăng năm nay)" : "")),
         );
         const action = button("shop-buy dev-buy", done ? "Đã tham gia" : player.money < fee ? "Không đủ tiền" : "Đăng ký", () =>
           train(activity, tier, statId));

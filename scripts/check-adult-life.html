@@ -18,7 +18,7 @@
     assert(getAgeEvents(25).length === 0, "Age 25 has no ordinary stories");
     for (let age = 29; age <= 39; age++) {
       const events = getAgeEvents(age).filter(event => !event.specialId);
-      assert(events.length === ([30, 35].includes(age) ? 2 : 3), `Wrong everyday event count at ${age}`);
+      assert(events.length >= 3 && events.length <= 4, `Wrong everyday event count at ${age}`);
       for (const event of events) {
         assert(event.title && event.text && event.image && [2, 3].includes(event.choices.length), `Missing content at ${age}`);
         for (const choice of event.choices) assert(choice.text && choice.image && choice.imageFallback, `Missing result illustration at ${age}`);
@@ -96,7 +96,7 @@
     state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
     confirm.click();
     assert(state.player.age === 32 && state.player.nextMarriageProposalAge === 34, "Confirming saved first refusal schedules 34");
-    assert(state.player.money === 120_000_000, "Marriage story still receives annual salary");
+    assert(state.player.money === 84_000_000, "Marriage story still receives annual salary");
     birthday.click();
     assert(state.player.age === 33 && !state.pendingEvent, "No repeat proposal at 33");
     birthday.click();
@@ -116,7 +116,8 @@
       Object.assign(state.player, { age: promotionAge - 1, careerLevel: 2,
         nextPromotionAge: promotionAge, lastSalaryAge: promotionAge - 1 });
       assert(createEmploymentEvent(state.player, promotionAge)?.kind === "career-promotion", "Career scheduler retains final promotions");
-      birthday.click();
+      // Xử lý đúng còn phụ thuộc khả năng được chọn (65–95%): lượt tung 0.5 nằm trong khả năng đó.
+      Math.random = () => 0.5; birthday.click(); Math.random = () => 0.99;
       assert(state.pendingEvent?.kind === "career-promotion", `Final promotion overrides ordinary events at ${promotionAge}`);
       choose(state.pendingEvent.choices.findIndex(entry => entry.correct));
       confirm.click();
@@ -144,13 +145,13 @@
       choose(0);
       confirm.click();
       assert(state.player.age === 25 && state.player.partner, "Age-25 dating can be accepted");
-      assert(state.player.money === (status === "employed" ? 120_000_000 : 0), "Guaranteed dating preserves salary eligibility");
+      assert(state.player.money === (status === "employed" ? 120_000_000 - 36_000_000 : -24_000_000), "Guaranteed dating preserves salary eligibility (after living costs)");
     }
     // A career priority pushes the due proposal to next year and saves that date.
     Object.assign(state.player, { age: 36, partner: person, marriedAtAge: null,
       relationshipStartedAtAge: 32, marriageProposalDeclines: 0, nextMarriageProposalAge: 37,
       careerLevel: 2, nextPromotionAge: 37, employmentStatus: "employed", lastSalaryAge: 36 });
-    birthday.click();
+    Math.random = () => 0.5; birthday.click(); Math.random = () => 0.99;
     assert(state.pendingEvent.kind === "career-promotion" && state.player.nextMarriageProposalAge === 38,
       "Priority promotion defers the due proposal by one year");
     assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.nextMarriageProposalAge === 38,

@@ -1,28 +1,5 @@
-// Cân bằng sự kiện thường ngày. Giữ nguyên các lựa chọn do tác giả viết: trước đây lựa chọn
-// thứ hai bị thay bằng câu "rủi ro" chung chung đoán theo từ khóa, vừa lệch truyện vừa lộ
-// đáp án. Ở đây chỉ giới hạn độ lớn điểm thưởng/cái giá và xáo thứ tự cố định theo sự kiện.
-// Phần may rủi được tính lúc người chơi chọn (xem rollEverydayLuck).
-const MAX_GAIN = 4;
-const MAX_LOSS = 5;
-const MAX_CHILD_LOSS = 3;
-
-const hashOf = (text) => Array.from(text).reduce((hash, char) => (hash * 31 + char.codePointAt(0)) >>> 0, 0);
-
-export function balanceEverydayChoices(event, age) {
-  if (event.everydayDifficultyApplied) return event;
-  const maxLoss = age < 6 ? MAX_CHILD_LOSS : MAX_LOSS;
-  const choices = event.choices.map((choice) => ({
-    ...choice,
-    effects: Object.fromEntries(Object.entries(choice.effects ?? {}).map(([stat, value]) => [
-      stat, value < 0 ? Math.max(-maxLoss, value) : Math.min(MAX_GAIN, value),
-    ])),
-  }));
-  // Lựa chọn có lợi nhất không luôn đứng đầu. Thứ tự ổn định khi tải lại, không dùng Math.random.
-  const offset = hashOf(event.id ?? `${age}:${event.title}`) % choices.length;
-  choices.push(...choices.splice(0, offset));
-  return { ...event, choices, everydayDifficultyApplied: true };
-}
-
+// May rủi của sự kiện thường ngày. Thứ tự lựa chọn được xoay vòng trong js/life-stories.js
+// và độ lớn điểm do tác giả viết (xem docs/su-kien-doi-thuong/SO-TAY.md).
 // May rủi khi chọn: chỉ số mà lựa chọn hướng tới (chỉ số được cộng nhiều nhất) càng cao thì
 // càng dễ suôn sẻ. Suôn sẻ: phần được cộng thêm một nửa, cái giá giảm một nửa.
 // Không trọn vẹn: phần được cộng còn một nửa. Lựa chọn chỉ có mất mát thì không đổi.

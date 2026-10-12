@@ -21,7 +21,7 @@
   try {
     const G = await import("../js/games.js");
     const card = (rank, suit = "♠") => ({ rank, suit });
-    assert(G.games.map(g => g.name).join() === "Sấp ngửa,Đoán xúc xắc,Vòng quay tài lộc,Hộp bí ẩn,Leo tháp tài lộc,Đua thú may mắn,Xì dách", "Seven games");
+    assert(G.games.map(g => g.name).join() === "Sấp ngửa,Đoán xúc xắc,Vòng quay tài lộc,Hộp bí ẩn,Leo tháp tài lộc,Đua thú may mắn,Xì dách,Tiến lên miền Nam", "Eight games");
 
     // Tỷ lệ hoàn trả của bảng thưởng (89–95%).
     const rtp = list => list.reduce((sum, item) => sum + item.chance * item.multiplier, 0);

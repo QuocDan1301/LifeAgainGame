@@ -18,7 +18,7 @@ export const stage60To69 = [
     title: 'Mổ mắt',
     text: 'Mắt tôi mờ dần vì đục thủy tinh thể. Bác sĩ nói mổ thì nhìn rõ trở lại, nhưng có rủi ro nhỏ. Tôi sợ dao kéo, sợ nằm viện. Không mổ thì mỗi năm một mờ hơn, đọc sách khó, đi đường dễ ngã.',
     choices: [
-      { label: 'Mổ', effects: { health: 3, happiness: 2 }, flags: ['mo_mat'],
+      { label: 'Mổ', effects: { health: 3, happiness: 2 }, money: -15000000, flags: ['mo_mat'],
         text: 'Ca mổ mười lăm phút. Tháo băng, tôi nhìn thấy những nếp nhăn trên tay mình rõ tới từng đường. Tối đó, tôi đọc sách tới khuya, không cần kính lúp.' },
       { label: 'Chưa mổ', effects: { health: -1 },
         text: 'Tôi mua kính lúp, bật đèn sáng hơn. Đọc được, nhưng chậm. Có lần tôi nhầm lọ muối với lọ đường, nấu nồi chè mặn chát.' },
@@ -119,7 +119,7 @@ export const stage60To69 = [
     title: 'Danh sách thuốc',
     text: 'Tôi đang uống bảy loại thuốc mỗi ngày, mỗi loại do một bác sĩ khác kê. Có hôm uống xong thấy chóng mặt. Một người quen nói nên tìm một bác sĩ xem lại toàn bộ, nhưng phải đi bệnh viện lớn, chờ cả ngày.',
     choices: [
-      { label: 'Đi khám tổng hợp', effects: { health: 3 }, flags: ['xem_lai_thuoc'],
+      { label: 'Đi khám tổng hợp', effects: { health: 3 }, money: -2000000, flags: ['xem_lai_thuoc'],
         text: 'Bác sĩ bỏ hai loại thuốc trùng tác dụng, đổi một loại khác. Tuần sau, tôi hết chóng mặt. Tôi ghi lại danh sách mới, dán lên tủ thuốc.' },
       { label: 'Tiếp tục như cũ', effects: { health: -2 },
         text: 'Tôi uống đủ bảy loại, có lúc quên, có lúc uống trùng. Chóng mặt vài lần một tuần. Tôi nghĩ tại tuổi già.' },
@@ -130,7 +130,7 @@ export const stage60To69 = [
     title: 'Năm cuối cùng',
     text: 'Năm cuối cùng đi làm. Đồng nghiệp hỏi tôi có muốn làm tiệc chia tay không. Tôi nghĩ tới những người đã cùng làm suốt mấy chục năm, có người đã đi xa, có người đã mất.',
     choices: [
-      { label: 'Làm tiệc, mời cả người cũ', effects: { happiness: 3 }, flags: ['tiec_chia_tay'],
+      { label: 'Làm tiệc, mời cả người cũ', effects: { happiness: 3 }, money: -10000000, flags: ['tiec_chia_tay'],
         text: 'Tôi tự tay gọi điện mời những người cũ. Có người đi xe ba trăm cây số tới. Bữa tiệc kéo dài tới khuya, ai cũng kể một chuyện về tôi, có chuyện tôi đã quên.' },
       { label: 'Ra về lặng lẽ', effects: { happiness: 1 },
         text: 'Ngày cuối, tôi dọn bàn, chào từng người, rồi về. Không có tiệc. Tối đó, nhận được hàng chục tin nhắn, đọc tới khuya.' },
@@ -257,7 +257,7 @@ export const stage60To69 = [
     choices: [
       { label: 'Nhận tiền, chuyển đi', effects: { happiness: -1 }, flags: ['nhan_den_bu'],
         text: 'Tôi chuyển tới căn hộ mới, sạch sẽ, xa lạ. Hàng xóm cũ tản mỗi người một nơi. Mỗi tháng, mấy người cũ hẹn nhau ăn một bữa, ngồi kể chuyện con hẻm.' },
-      { label: 'Cùng hàng xóm khiếu nại', effects: { happiness: 1 }, flags: ['khieu_nai_giai_toa'],
+      { label: 'Cùng hàng xóm khiếu nại', effects: { happiness: 1, health: -1 }, money: 20000000, flags: ['khieu_nai_giai_toa'],
         text: 'Hai năm khiếu nại, họp hành. Được thêm một ít. Những buổi họp ấy, hàng xóm ngồi với nhau nhiều hơn ba mươi năm cộng lại.' },
     ],
   },
@@ -323,7 +323,7 @@ export const stage60To69 = [
     title: 'Chia của cải',
     text: 'Tôi muốn chia trước một phần của cải cho người thân khi mình còn minh mẫn, để tránh tranh chấp sau này. Nhưng có người nói chia sớm thì người thân dễ bỏ bê người già. Luật sư đã soạn sẵn giấy tờ.',
     choices: [
-      { label: 'Chia một phần, giữ một phần', effects: { intelligence: 1, happiness: 1 }, flags: ['chia_mot_phan'],
+      { label: 'Chia một phần, giữ một phần', effects: { intelligence: 1, happiness: 1 }, money: -50000000, flags: ['chia_mot_phan'],
         text: 'Mọi người nhận phần mình, cảm ơn. Tôi giữ đủ để tự lo những năm cuối. Không ai thay đổi với tôi, ít ra là tôi không thấy.' },
       { label: 'Để theo di chúc', effects: { happiness: -1 },
         text: 'Tôi cất giấy tờ vào tủ. Mọi chuyện để sau này. Thỉnh thoảng tôi nghĩ, nếu mình không còn minh mẫn để giải thích thì sao.' },
@@ -494,7 +494,7 @@ export const stage60To69 = [
     choices: [
       { label: 'Thế chấp nhà giúp con', effects: { happiness: -1 }, flags: ['the_chap_giup_con'],
         text: '{tenCon} trả nợ được, làm lại từ đầu. Mỗi tháng con gửi tiền trả ngân hàng, đều đặn. Ba năm sau, con mang sổ đỏ về trả, quỳ xuống trước mặt tôi.' },
-      { label: 'Giúp tiền mặt, không thế chấp', effects: { intelligence: 1 },
+      { label: 'Giúp tiền mặt, không thế chấp', effects: { intelligence: 1 }, money: -50000000,
         text: 'Tôi đưa con số tiền dành dụm. Không đủ trả hết nợ, nhưng đủ để con thương lượng với chủ nợ. Con mất ba năm để trả. Tôi giữ được nhà, và con biết tôi đã cân nhắc.' },
     ],
   },
@@ -573,7 +573,7 @@ export const stage60To69 = [
     title: 'Máy trợ thính',
     text: 'Tai tôi nghe kém, người khác phải nói to, nói lại nhiều lần. Có lúc tôi giả vờ nghe được, gật đầu cho qua. Máy trợ thính đắt, đeo vào nhìn thấy rõ.',
     choices: [
-      { label: 'Đeo máy trợ thính', effects: { happiness: 2, health: 1 }, flags: ['deo_tro_thinh'],
+      { label: 'Đeo máy trợ thính', effects: { happiness: 2, health: 1 }, money: -20000000, flags: ['deo_tro_thinh'],
         text: 'Lần đầu đeo, tôi nghe thấy tiếng chim ngoài cửa sổ, tiếng nồi cơm sôi, những thứ đã quên từ lâu. Nói chuyện với người khác không còn phải đoán.' },
       { label: 'Không đeo', effects: { happiness: -1 },
         text: 'Tôi tiếp tục gật đầu cho qua. Người ta ít nói chuyện với tôi hơn, vì mệt. Tôi ngồi trong những bữa cơm đông người, nghe như qua một bức tường.' },

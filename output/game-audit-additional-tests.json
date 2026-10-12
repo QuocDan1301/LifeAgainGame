@@ -1,0 +1,38 @@
+[
+  {
+    "test": "save-life",
+    "result": "INCOMPLETE: timeout"
+  },
+  {
+    "test": "school-rewards",
+    "result": "FAIL: TypeError: Cannot read properties of undefined (reading 'click')"
+  },
+  {
+    "test": "self-development",
+    "result": "PASS: 4 stats × 2 activities × 3 packages; price-based gains; immediate registration; once per year; max 100; Tarot wands/pentacles; diary; save"
+  },
+  {
+    "test": "shop",
+    "result": "PASS: pet shop; petting companions; grouped assets; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price"
+  },
+  {
+    "test": "side-jobs",
+    "result": "PASS: age 16+; part-time/full-time rules; five stores; confirm; status title; achievement; yearly pay and health; current jobs; quitting"
+  },
+  {
+    "test": "study-abroad",
+    "result": "PASS (stay abroad): admission, majors, fees, reload, language, work, dialogue, graduation, job listing, interview, salary and saved country"
+  },
+  {
+    "test": "tarot",
+    "result": "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 4 Tarot achievements"
+  },
+  {
+    "test": "theater-luggage",
+    "result": "INCOMPLETE: timeout"
+  },
+  {
+    "test": "travel",
+    "result": "PASS: nine destinations from the table; cost and happiness; max 100; one trip per year; diary"
+  }
+]

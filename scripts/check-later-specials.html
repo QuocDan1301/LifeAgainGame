@@ -58,7 +58,9 @@
     }
     await import('../js/main.js');
     const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
-    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const choose=i=>{document.querySelectorAll('#event-choices button')[i].click();
+      // Bước giữa chuỗi có màn "Kết quả lựa chọn" trước tình huống tiếp theo.
+      if(state.pendingEvent?.mediaTransition)document.getElementById('event-confirm').click();};
     const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
     if (new URLSearchParams(location.search).has('resume105')) {
       assert(state.pendingEvent.specialStep===3&&state.pendingEvent.specialInventory.closed,'Reload keeps final chain progress');
@@ -66,30 +68,36 @@
       assert(state.player.ending==='fulfilled'&&!state.player.isAlive,'Reopening connections after a saved refusal gives a good ending');
       result.textContent='PASS: resumed age-105 chain keeps its scene and branching state.';return;
     }
+    const START_MONEY=1_000_000_000;
     const start=(age,health=50,extra={})=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
-      Object.assign(state.player,{age:age-1,health,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null}, age===100?structuredClone(married):{},extra);
+      // Có sẵn tiền để sinh hoạt phí cả năm không đẩy ví âm (âm thì Hạnh phúc -3, làm lệch phép so chỉ số).
+      Object.assign(state.player,{age:age-1,healthCheckAge:age-1,money:START_MONEY,health,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null}, age===100?structuredClone(married):{},extra);
       birthday.disabled=false;document.getElementById('game-screen').hidden=false;
       const pool=getAgeEvents(age,state.player.careerPath,state.player);
       const index=pool.findIndex(e=>e.specialId==='later-'+age);
       let rolls=age>=70&&age<105?[0.99,0.1,(index+0.1)/pool.length]:[0.1,(index+0.1)/pool.length];
       Math.random=()=>rolls.shift()??0.1;birthday.click();Math.random=()=>0.99;
-      if(age===105){assert(state.pendingEvent.addedEveryday,'Ordinary scene before finale');choose(0);confirm.click();Object.assign(state.player,{intelligence:50,happiness:50});}
+      // Bản cũ chèn một chuyện đời thường trước hồi kết 105; bộ sự kiện mới vào thẳng hồi kết.
+      if(age===105&&state.pendingEvent.addedEveryday){choose(0);confirm.click();Object.assign(state.player,{intelligence:50,happiness:50});}
       assert(state.pendingEvent?.specialId==='later-'+age,'Random special selected at '+age);
     };
     for (const {age,path,choice,inventory} of routes) {
       start(age);
       for (const index of path) {
         choose(index);resume();
-        assert(state.player.age===age-1&&state.player.money===0,'No early reward or birthday '+age);
+        assert(state.player.age===age-1&&state.player.money===START_MONEY,'No early reward or birthday '+age);
       }
       assert(state.pendingEvent.stage==='result','All paths resolve');
       confirm.click();
       assert(state.player.age===age&&!state.pendingEvent,'Path completes exactly one year');
-      assert(state.player.money===(choice.money??0),'Exact wallet reward or loss '+age);
+      // Năm khép lại còn trừ sinh hoạt phí tối thiểu (không có thu nhập), trừ khi nhân vật qua đời trong sự kiện.
+      assert(state.player.money===START_MONEY+(choice.money??0)-(choice.death?0:24_000_000),'Exact wallet reward or loss '+age);
       for (const stat of ['health','intelligence','happiness','appearance']) {
         const expected=choice.statTargets?.[stat]??Math.max(stat==='health'?(choice.minimumHealth??0):0,Math.min(100,50+(choice.effects?.[stat]??0)));
-        assert(state.player[stat]===expected,'Exact stat '+age+' '+stat);
+        // Từ 75 tuổi, sức khỏe suy giảm 1 điểm mỗi năm (từ 85 là 2) khi năm khép lại.
+        const aging=stat==='health'&&!choice.death&&!choice.statTargets?.health?(age>=85?2:age>=75?1:0):0;
+        assert(state.player[stat]===Math.max(0,expected-aging),'Exact stat '+age+' '+stat);
       }
       assert(state.player.isAlive!==Boolean(choice.death),'Correct survival '+age);
       for (const id of choice.achievementIds??[]) assert(state.player.achievementFlags[id]&&state.player.lifeAchievementIds.includes(id),'Achievement remains specific to this life');
@@ -108,12 +116,13 @@
     }
     for (const age of [65,75,85]) for(const health of [20,10,1]) for(let scene=1;scene<=4;scene++) {
       start(age,health);for(let i=1;i<scene;i++)choose(0);choose(1);resume();confirm.click();
-      assert(state.player.health===Math.max(1,health-(age===85?10:20))&&state.player.isAlive&&!document.getElementById('death-dialog').open,'All low-health injuries end safely');
+      // Sau chấn thương còn suy giảm tuổi già cuối năm (75: −1, 85: −2), nhưng không xuống dưới 1.
+      assert(state.player.health===Math.max(1,Math.max(1,health-(age===85?10:20))-(age>=85?2:age>=75?1:0))&&state.player.isAlive&&!document.getElementById('death-dialog').open,'All low-health injuries end safely');
     }
     start(60);for(let i=0;i<4;i++)choose(0);choose(1);confirm.click();
     document.getElementById('activities').click();const teach=document.getElementById('activity-repair-lessons');
     assert(!teach.hidden&&!teach.disabled,'Free lessons unlock');teach.click();const lessonLogs=state.logs.length;teach.click();
-    assert(state.logs.length===lessonLogs&&state.player.money===100000000&&state.player.lastRepairLessonAge===60,'Lessons are free and limited to once per year');
+    assert(state.logs.length===lessonLogs&&state.player.money===START_MONEY+60_000_000-24_000_000&&state.player.lastRepairLessonAge===60,'Lessons are free and limited to once per year');
     document.getElementById('activities-dialog').close();document.getElementById('assets').click();
     assert(document.getElementById('life-keepsakes').textContent.includes('Bộ dụng cụ nghĩa tình'),'Profile shows keepsakes');document.getElementById('life-profile-dialog').close();
     Math.random=()=>0.99;birthday.click();document.getElementById('activities').click();
@@ -131,7 +140,8 @@
     for(const age of [60,65,70,75,80,85,90,95])for(const draw of ['ordinary','special','none']) {
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
       Object.assign(state.player,{age:age-1,health:50,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null,partner:structuredClone(spouse),relationshipStartedAtAge:age-5,nextMarriageProposalAge:age});
-      const pool=getAgeEvents(age,null,state.player);const specialIndex=pool.findIndex(e=>e.specialId==='later-'+age);let values=draw==='none'?[0.99]:[0.1,draw==='ordinary'?0:(specialIndex+0.1)/pool.length];
+      const pool=getAgeEvents(age,null,state.player);const specialIndex=pool.findIndex(e=>e.specialId==='later-'+age);const ordinaryIndex=pool.findIndex(e=>!e.specialId);// Từ 70 tuổi, lượt tung đầu tiên là nguy cơ tuổi già (0.99: vẫn sống).
+      let values=[...(age>=70?[0.99]:[]),...(draw==='none'?[0.99]:[0.1,((draw==='ordinary'?ordinaryIndex:specialIndex)+0.1)/pool.length])];
       Math.random=()=>values.shift()??0.1;birthday.disabled=false;birthday.click();
       assert(state.player.nextMarriageProposalAge===(draw==='special'?age+1:age),'Only selected special postpones proposal '+age);
       assert(draw==='special'?state.pendingEvent.specialId==='later-'+age:state.pendingEvent.kind==='marriage-proposal','Due proposal gets correct priority');

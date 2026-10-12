@@ -1,3 +1,4 @@
+import { getDatingPartners, removeDatingPartnerUpdates } from './concurrent-dating.js';
 import { maleNames, femaleNames } from "./character-data.js";
 import { openMojiArt } from "./event-art.js";
 import { formatMoney } from "./money-format.js";
@@ -92,6 +93,11 @@ export function getLivingFamily(player) {
       age: getPartnerAge(partner, player.age), bond: partner.relationship ?? 80, condition: partner.condition ?? "healthy",
       trackedFrom: partner.metAtAge ?? 0 });
   }
+  for (const partner of getDatingPartners(player).filter(person => person.id !== player.partner?.id)) {
+    list.push({ key: `dating:${partner.id}`, personId: partner.id, role: "Người yêu", name: partner.name,
+      age: getPartnerAge(partner, player.age), bond: partner.relationship ?? 80,
+      condition: partner.condition ?? "healthy", trackedFrom: partner.metAtAge ?? 0 });
+  }
   return list;
 }
 
@@ -139,6 +145,18 @@ export function collectFamilyYear(player, age, random = Math.random) {
       age: getPartnerAge(partner, age), condition: partner.condition ?? "healthy" };
     progress(member, (condition) => { player.partner = { ...player.partner, condition }; }, partner.caredAt === age - 1);
   }
+  player.otherPartners = (player.otherPartners ?? []).map(partner => {
+    const next = { ...partner };
+    progress({ role: "Người yêu", name: next.name, age: getPartnerAge(next, age),
+      condition: next.condition ?? "healthy" }, condition => { next.condition = condition; }, next.caredAt === age - 1);
+    const promise = next.datingState?.partnerPromise;
+    if (promise && age > promise.dueAge) {
+      next.relationship = Math.max(0, (next.relationship ?? 80) - 5);
+      next.datingState = { ...next.datingState, partnerPromise: null };
+      lines.push(`Tôi đã hẹn trò chuyện với ${next.name} nhưng không giữ lời: Quan hệ -5%.`);
+    }
+    return next;
+  });
   return lines.length ? { content: lines.join("\n") } : null;
 }
 
@@ -163,8 +181,9 @@ export function createRelativeDeathEvent(player, age, random = Math.random) {
   for (const member of getLivingFamily(player)) {
     const atAge = { ...member, age: member.age + 1 };
     const relative = (player.relatives ?? []).find((entry) => entry.id === member.key);
-    const caredWith = member.key === "partner"
-      ? (player.partner?.caredAt === age - 1 ? "self" : null)
+    const datingPerson = getDatingPartners(player).find(person => person.id === (member.personId ?? player.partner?.id));
+    const caredWith = member.key === "partner" || member.personId
+      ? (datingPerson?.caredAt === age - 1 ? "self" : null)
       : relative?.treatedAt === age - 1 ? "treatment" : relative?.caredAt === age - 1 ? (relative.careBy ?? "self") : null;
     const chance = getDeathChance(atAge, age, caredWith);
     if (!chance || random() >= chance) continue;
@@ -174,23 +193,25 @@ export function createRelativeDeathEvent(player, age, random = Math.random) {
 }
 
 function buildDeathEvent(player, member, memberAge, age) {
-  const isPartner = member.key === "partner";
+  const isPartner = member.key === "partner" || Boolean(member.personId);
+  const person = isPartner ? getDatingPartners(player).find(item => item.id === (member.personId ?? player.partner?.id)) : null;
   const grief = getGriefLoss(member.bond);
-  const interactions = isPartner ? player.partner?.interactions : player.relatives.find((entry) => entry.id === member.key)?.interactions;
+  const interactions = isPartner ? person?.interactions : player.relatives.find((entry) => entry.id === member.key)?.interactions;
   const memory = describeMemories(interactions, member.role);
   const cause = member.condition === "severe" ? "sau thời gian bệnh nặng" : member.condition === "weak" ? "sau một thời gian yếu dần" : "trong giấc ngủ, khi tuổi đã rất cao";
   const farewell = `${member.role} ${member.name} đã ra đi thanh thản ở tuổi ${memberAge}, ${cause}.`;
-  const history = { age, type: isPartner ? "widowed" : "farewell", text: `🕯️ ${farewell} ${memory}` };
+  const history = { age, type: isPartner && player.marriedAtAge != null ? "widowed" : "farewell", text: `🕯️ ${farewell} ${memory}` };
   const updates = {
     moodEffects: addMoodEffect(player, "bereavement", age, { name: `${member.role.toLowerCase()} ${member.name}` }),
-    relationshipHistory: [...(player.relationshipHistory ?? []), isPartner ? { ...history, person: player.partner } : history],
+    relationshipHistory: [...(player.relationshipHistory ?? []), isPartner ? { ...history, person } : history],
     familyMemories: [...(player.familyMemories ?? []), { age, role: member.role, name: member.name, memberAge, text: memory }],
   };
   if (isPartner) {
     // Góa: giữ lịch sử hôn nhân, không tự mở hẹn hò mới.
-    Object.assign(updates, { partner: null, widowedAtAge: player.marriedAtAge != null ? age : null, marriedAtAge: null,
+    Object.assign(updates, { ...(person.id === player.partner?.id ? { partner: null, widowedAtAge: player.marriedAtAge != null ? age : player.widowedAtAge ?? null, marriedAtAge: null,
       relationshipStartedAtAge: null, nextMarriageProposalAge: null, nextChildProposalAge: null, partnerPromise: null,
-      datingActivitiesOnly: true });
+      datingActivitiesOnly: true } : {}),
+      ...removeDatingPartnerUpdates(player, person.id) });
   } else {
     updates.relatives = player.relatives.map((entry) => (entry.id === member.key ? { ...entry, alive: false, diedAtAge: age, promise: null } : entry));
   }

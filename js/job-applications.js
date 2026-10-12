@@ -1,3 +1,4 @@
+import { getStudyAbroadCountry, getOverseasJobBlocker } from "./study-abroad.js";
 import { formatMoney } from "./money-format.js";
 import { careerPaths } from "./career-event.js";
 import { createJobInterview, createInterviewResult, getCareerProfile, getEmploymentContext } from "./career-jobs.js";
@@ -22,6 +23,8 @@ export function getJobApplicationBlocker(player) {
   if (player.age < GRADUATION_AGE) {
     return `🎓 Học xong mới xin việc được. Còn ${GRADUATION_AGE - player.age} năm nữa (${GRADUATION_AGE} tuổi).`;
   }
+  const overseasBlocker = getOverseasJobBlocker(player);
+  if (overseasBlocker) return overseasBlocker;
   if (player.age >= RETIREMENT_AGE) return "🌅 Bạn đã đến tuổi nghỉ hưu.";
   if (player.employmentStatus === "employed") {
     return `💼 Bạn đang làm ${player.job}. Muốn xin việc lại, hãy nghỉ công việc chính trong Tài sản.`;
@@ -39,6 +42,8 @@ export function getJobApplicationBlocker(player) {
 export function createGraduationNotice(player, age) {
   if (age !== GRADUATION_AGE || !player.careerPath || player.employmentStatus === "employed" ||
       hasCareerMilestone(player)) return null;
+  const country = getStudyAbroadCountry(player.careerPath);
+  if (country) return { content: `🎓 Bạn đã hoàn thành chặng du học tại ${country.name}. Vào Hoạt động → Xin việc để nộp hồ sơ và phỏng vấn tại nước này.` };
   return {
     content: `🎓 Chặng học tập đã khép lại. Vào Hoạt động → 💼 Xin việc để nộp hồ sơ ngành ${player.careerPath.field} và phỏng vấn.`,
   };
@@ -74,13 +79,18 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     const blocker = getJobApplicationBlocker(player);
     const studied = player.careerPath?.id;
     // Sau khi chọn đổi hướng nghề nghiệp: mở thêm các ngành cùng khối học, bắt đầu ở bậc khởi điểm.
-    const switching = Boolean(player.careerSwitchOpen) && Boolean(player.studyBlock);
+    const country = getStudyAbroadCountry(player.careerPath);
+    const switching = !country && Boolean(player.careerSwitchOpen) && Boolean(player.studyBlock);
     body.replaceChildren(backToActivities(),
-      element("p", "side-job-intro", switching
+      element("p", "side-job-intro", country
+        ? `Bạn đã du học tại ${country.name}. Sau tốt nghiệp, bạn có thể nộp hồ sơ vào doanh nghiệp tại nước này. Trượt phỏng vấn hoặc mất việc thì có thể ứng tuyển lại trong những năm tiếp theo.`
+        : player.abroadDestination === "return" && player.overseasEducation
+        ? `Bạn đã về Việt Nam với bằng ${player.overseasEducation.program} từ ${player.overseasEducation.countryName}. Nộp hồ sơ vào ngành đã học để bắt đầu làm việc trong nước; khoản nợ du học còn lại vẫn được giữ trong ví.`
+        : switching
         ? "Bạn đang đổi hướng nghề nghiệp: nộp được vào ngành đã học hoặc các ngành cùng khối học (bắt đầu ở bậc khởi điểm)."
         : "Chọn ngành để nộp hồ sơ. Chỉ nộp được vào ngành bạn đã học; đậu phỏng vấn là đi làm ngay, nhận lương năm đầu."));
     if (player.careerExperience?.careerId === studied && getRehireLevel(player, studied) > 1) {
-      body.append(element("p", "side-job-intro", `💼 Kinh nghiệm cũ: ứng tuyển lại ngành này ở vị trí ${getCareerProfile(studied).ranks[getRehireLevel(player, studied) - 1]}.`));
+      body.append(element("p", "side-job-intro", `💼 Kinh nghiệm cũ: ứng tuyển lại ngành này ở vị trí ${getCareerProfile(studied, player.careerPath).ranks[getRehireLevel(player, studied) - 1]}.`));
     }
     if (blocker) body.append(element("p", "license-age-note", blocker));
     if (player.age >= GRADUATION_AGE - 1 && player.isAlive !== false) {
@@ -101,15 +111,16 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     // Ngành đã học đứng đầu danh sách.
     const ordered = [...careerPaths].sort(([a], [b]) => (b === studied) - (a === studied));
     for (const [id, icon, field] of ordered) {
+      if (country && id !== studied) continue;
       const own = id === studied;
-      const open = own || (switching && canChooseCareer(id, player.studyBlock));
-      const choice = button("shop-group job-career", `${icon} ${field}`, () => startInterview(id));
+      const open = own || (switching && id !== "study-abroad" && canChooseCareer(id, player.studyBlock));
+      const choice = button("shop-group job-career", country && own ? `${country.icon} Xin việc tại ${country.name}` : `${icon} ${field}`, () => startInterview(id));
       choice.dataset.career = id;
       choice.disabled = !open || Boolean(blocker);
       choice.append(element("span", "side-job-note", !own && open
-        ? `Đổi hướng · cùng khối học · Lương khởi điểm ${formatMoney(getCareerAnnualSalary(id, 1))}/năm`
+        ? `Đổi hướng · cùng khối học · Lương khởi điểm ${formatMoney(getCareerAnnualSalary(id, 1, own ? player.careerPath : null))}/năm`
         : own
-        ? `Ngành bạn đã học · ${getEmploymentContext(id).round} · Lương khởi điểm ${formatMoney(getCareerAnnualSalary(id, 1))}/năm${id === "football" ? ` · Cần Sức khỏe từ ${FOOTBALL_MIN_HEALTH}%` : ""}`
+        ? `Ngành bạn đã học · ${getEmploymentContext(id, own ? player.careerPath : null).round} · Lương khởi điểm ${formatMoney(getCareerAnnualSalary(id, 1, own ? player.careerPath : null))}/năm${id === "football" ? ` · Cần Sức khỏe từ ${FOOTBALL_MIN_HEALTH}%` : ""}`
         : `Cần bằng ngành ${field}`));
       list.append(choice);
     }
@@ -125,7 +136,9 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
   function startInterview(careerId) {
     const player = state.player;
     if (getJobApplicationBlocker(player)) return renderList();
+    if (getStudyAbroadCountry(player.careerPath) && careerId && careerId !== player.careerPath.id) return renderList();
     if (player.jobInterview?.age !== player.age) {
+      if (careerId === "study-abroad" && player.careerPath?.id !== careerId) return renderList();
       const target = targetPath(player, careerId);
       const { id, title, text, choices } = createJobInterview({ ...player, careerPath: target });
       player.jobInterview = { age: player.age, id, title, text, careerId: target.id,
@@ -168,7 +181,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
       const level = getRehireLevel(player, target.id);
       if (level > 1) {
         updates.careerLevel = level;
-        updates.job = getCareerProfile(target.id).ranks[level - 1];
+        updates.job = getCareerProfile(target.id, target).ranks[level - 1];
         rehireNote = `\n💼 Nhờ kinh nghiệm trước đây, bạn vào thẳng vị trí ${updates.job}.`;
       }
       if (target !== player.careerPath) updates.careerPath = target;
@@ -212,7 +225,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
           save();
           dialog.close();
         }),
-        button("shop-group job-next", "🧭 Tìm công việc phù hợp hơn (ngành cùng khối học)", () => {
+        button("shop-group job-next", getStudyAbroadCountry(state.player.careerPath) ? "📄 Xem lại hồ sơ xin việc tại nước du học" : "🧭 Tìm công việc phù hợp hơn (ngành cùng khối học)", () => {
           state.player.careerSwitchOpen = true;
           save();
           renderList();

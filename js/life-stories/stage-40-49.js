@@ -20,7 +20,7 @@ export const stage40To49 = [
     choices: [
       { label: 'Nói: “Mình không biết”', effects: { happiness: -2 }, flags: ['giu_bi_mat_ban'],
         text: 'Người đó cảm ơn, nói chắc mình nghĩ nhiều. Mấy tháng sau mọi chuyện vỡ lở. Người đó hỏi tôi có biết trước không. Tôi không trả lời được.' },
-      { label: 'Khuyên bạn tự nói ra', effects: { intelligence: 1 }, flags: ['khuyen_ban_tu_noi'],
+      { label: 'Khuyên bạn tự nói ra', effects: { intelligence: 1, happiness: -1 }, flags: ['khuyen_ban_tu_noi'],
         text: 'Tôi trả lời người đó rằng nên hỏi thẳng bạn ấy. Rồi tôi gặp bạn, nói tôi sẽ không nói dối thay bạn. Hai tuần sau bạn ấy tự kể. Cả hai người đều giận tôi một thời gian.' },
       { label: 'Kể thật', effects: { happiness: -1 }, flags: ['ke_ngoai_tinh_ban'],
         text: 'Người đó im lặng rất lâu, rồi cảm ơn. Bạn thân tôi không nhìn mặt tôi nữa. Một năm sau, người đó gửi tôi thiệp mừng năm mới, ký một mình một tên.' },
@@ -88,7 +88,7 @@ export const stage40To49 = [
     title: 'Tim đập nhanh',
     text: 'Đang họp, tim tôi đập loạn, tay tê, phải ra ngoài ngồi. Mười phút sau thì đỡ. Đồng nghiệp bảo đi khám ngay. Tôi nghĩ chắc do thiếu ngủ. Tuần này việc dồn, nghỉ một buổi là trễ hạn.',
     choices: [
-      { label: 'Đi khám ngay chiều nay', effects: { health: 3 }, flags: ['kham_tim'],
+      { label: 'Đi khám ngay chiều nay', effects: { health: 3 }, money: -1000000, flags: ['kham_tim'],
         text: 'Bác sĩ nói rối loạn nhịp nhẹ, do căng thẳng kéo dài, phải giảm cà phê, ngủ đủ. Việc trễ hạn một ngày, không ai chết. Tôi ngồi ở hành lang bệnh viện, thở chậm lại.' },
       { label: 'Làm cho xong rồi tính', effects: { health: -3 },
         text: 'Tôi làm tới hạn chót, xong việc. Hai tuần sau tim lại đập loạn, lần này giữa đêm. Tôi đi khám, bác sĩ hỏi sao để lâu vậy.' },
@@ -99,9 +99,9 @@ export const stage40To49 = [
     title: 'Chia tiền cúng giỗ',
     text: 'Họ hàng họp bàn sửa lại nhà thờ họ, mỗi nhà góp theo khả năng. Một người chú đề nghị chia đều, nhà nào cũng như nhà nào. Có mấy nhà khó khăn ngồi cúi mặt. Mọi người quay sang hỏi ý tôi.',
     choices: [
-      { label: 'Đề nghị góp theo khả năng', effects: { happiness: 1 }, flags: ['gop_theo_kha_nang'],
+      { label: 'Đề nghị góp theo khả năng', effects: { happiness: 1 }, money: -10000000, flags: ['gop_theo_kha_nang'],
         text: 'Ông chú không vui, nói như vậy là chia rẽ. Nhưng mấy nhà khó khăn gật đầu. Cuối buổi, tôi góp phần lớn hơn. Có người nhìn tôi cảm ơn, có người nói tôi khoe giàu.' },
-      { label: 'Đồng ý chia đều', effects: { happiness: -1 },
+      { label: 'Đồng ý chia đều', effects: { happiness: -1 }, money: -5000000,
         text: 'Mọi người góp đều. Một nhà phải đi vay để góp phần của mình. Nhà thờ họ sửa xong, đẹp hơn trước. Hôm khánh thành, nhà ấy không tới.' },
     ],
   },
@@ -305,7 +305,7 @@ export const stage40To49 = [
     title: 'Tiếng ngáy',
     text: 'Mấy năm nay tôi ngáy to, {tenBanDoi} mất ngủ. {tenBanDoi} đề nghị ngủ phòng riêng, nói chỉ vì giấc ngủ, không có gì khác. Tôi nghe mà thấy chạnh lòng. Bác sĩ nói có thể chữa ngáy, phải đeo máy thở mỗi đêm.',
     choices: [
-      { label: 'Đi chữa ngáy', effects: { health: 2 }, flags: ['chua_ngay'],
+      { label: 'Đi chữa ngáy', effects: { health: 2 }, money: -15000000, flags: ['chua_ngay'],
         text: 'Tôi đeo máy thở, đêm đầu khó chịu, đêm thứ mười thì quen. {tenBanDoi} ngủ ngon trở lại. Sáng nào {tenBanDoi} cũng nói: “Đêm qua yên quá.”' },
       { label: 'Đồng ý ngủ riêng', effects: { happiness: -1, health: 1 }, flags: ['ngu_rieng'],
         text: 'Cả hai ngủ ngon hơn. Tối nào {tenBanDoi} cũng sang chúc ngủ ngon rồi về phòng mình. Có đêm tôi nằm nghe tiếng đóng cửa phòng bên.' },
@@ -336,6 +336,17 @@ export const stage40To49 = [
 
   // ───────────── 44 tuổi ─────────────
   {
+    id: 'ls44-kinh-doc-sach', age: 44,
+    title: 'Cặp kính đọc sách',
+    text: 'Dạo này đọc chữ nhỏ tôi phải đưa ra xa. Đi khám, bác sĩ nói mắt đã bắt đầu lão, nên đeo kính khi đọc. Cặp kính dày, đeo vào trông mình già đi mấy tuổi. Tôi cầm cặp kính thử, đứng nhìn vào gương.',
+    choices: [
+      { label: 'Đeo kính khi đọc', effects: { intelligence: 1, appearance: -1 },
+        text: 'Lần đầu đeo, chữ trong sách rõ tới mức tôi đọc liền một mạch. Bạn bè trêu là trông nghiêm hẳn ra. Từ đó cặp kính nằm sẵn trong túi áo.' },
+      { label: 'Chưa đeo, cố thêm', effects: { happiness: 1, health: -1 },
+        text: 'Tôi để chữ thật to trên điện thoại, đọc sách dưới đèn sáng. Tối nào mắt cũng mỏi, đầu nhức. Bạn bè vẫn nói tôi trẻ như hồi ba mươi.' },
+    ],
+  },
+  {
     id: 'ls44-hop-lop-hai-muoi-nam', age: 44,
     title: 'Hai mươi năm ra trường',
     text: 'Họp lớp hai mươi năm. Người từng là lớp trưởng giờ thất nghiệp, ngồi một góc. Người từng bị cả lớp cười vì nghèo giờ là doanh nhân, đứng ra bao cả bữa. Cuối buổi, lớp trưởng cũ hỏi nhỏ tôi có quen chỗ nào cần người không.',
@@ -351,9 +362,9 @@ export const stage40To49 = [
     title: 'Căn nhà ba mẹ để lại',
     text: 'Ba mẹ đã mất, để lại căn nhà ở quê. Họ hàng muốn tôi bán, chia một phần cho người cô từng chăm ba mẹ những năm cuối. Di chúc không nhắc tới cô. Căn nhà là nơi tôi lớn lên.',
     choices: [
-      { label: 'Bán, chia cho cô một phần', effects: { happiness: 1 }, flags: ['ban_nha_cu'],
+      { label: 'Bán, chia cho cô một phần', effects: { happiness: 1 }, money: 100000000, flags: ['ban_nha_cu'],
         text: 'Cô cầm tiền, khóc, nói không cần nhiều vậy. Căn nhà về tay người lạ. Lần cuối về, tôi đứng ở cổng rất lâu, rồi đi mà không quay lại nhìn.' },
-      { label: 'Giữ nhà, biếu cô một khoản', effects: { happiness: 2 }, flags: ['giu_nha_cu'],
+      { label: 'Giữ nhà, biếu cô một khoản', effects: { happiness: 2 }, money: -30000000, flags: ['giu_nha_cu'],
         text: 'Tôi biếu cô một khoản từ tiền dành dụm, nhờ cô trông nhà. Mỗi năm tôi về giỗ ba mẹ, ngủ trên chiếc giường cũ, nghe tiếng gà nhà bên gáy sớm.' },
     ],
   },
@@ -395,7 +406,7 @@ export const stage40To49 = [
     title: 'Chuyến đi một mình',
     text: 'Tôi muốn đi một chuyến dài, một mình, đi bộ dọc một cung đường biển mười ngày. Bạn bè nói đi một mình nguy hiểm, nhất là ở tuổi này. Tôi chưa từng đi đâu một mình quá ba ngày.',
     choices: [
-      { label: 'Đi', effects: { happiness: 3, health: 1 }, flags: ['di_bo_mot_minh'],
+      { label: 'Đi', effects: { happiness: 3, health: -1 }, flags: ['di_bo_mot_minh'],
         text: 'Ngày thứ ba chân phồng rộp, ngày thứ sáu gặp một nhóm người đi bộ cùng hướng. Ngày cuối, tôi ngồi trên bãi biển một mình, thấy mình đủ.' },
       { label: 'Rủ một người bạn đi cùng', effects: { happiness: 2 },
         text: 'Bạn đi được nửa chặng thì phải về vì việc nhà. Tôi đi nốt nửa chặng còn lại một mình. Hóa ra không đáng sợ như tôi nghĩ.' },
@@ -414,6 +425,17 @@ export const stage40To49 = [
   },
 
   // ───────────── 45 tuổi ─────────────
+  {
+    id: 'ls45-dam-cuoi-va-dam-gio', age: 45,
+    title: 'Hai lời mời cùng một ngày',
+    text: 'Người bạn thời đi học mời tôi dự đám cưới ở một tỉnh xa. Cùng ngày ấy là giỗ đầu của bác hàng xóm, người từng giúp tôi rất nhiều những năm khó khăn. Con cháu bác cũng mời tôi tới. Tôi chỉ đi được một nơi.',
+    choices: [
+      { label: 'Đi dự đám cưới', effects: { happiness: 2, health: -1 },
+        text: 'Tôi đi xe đêm, tới nơi kịp lễ. Bạn ôm tôi giữa sân, giới thiệu với cả họ là người bạn từ thời đi học. Về tới nhà, tôi sang thắp nhang cho bác muộn một ngày.' },
+      { label: 'Ở lại dự giỗ', effects: { happiness: 1 },
+        text: 'Tôi gửi quà mừng qua người quen, rồi phụ nhà bác nấu mâm cỗ. Bạn gửi ảnh cưới, nhắn: “Tiếc ghê.” Tối đó con cháu bác rót trà mời tôi, gọi tôi là người nhà.' },
+    ],
+  },
   {
     id: 'ls45-di-hoc-lai-dan', age: 45,
     title: 'Những thứ bỏ dở',
@@ -465,9 +487,9 @@ export const stage40To49 = [
     title: 'Người đồng nghiệp hay nhắn tin',
     text: 'Một đồng nghiệp mới hay nhắn tin cho tôi, lúc đầu chuyện công việc, giờ là chuyện riêng. Tôi thấy vui khi đọc những tin nhắn ấy, vui hơn mức nên vui. Tối nay người đó rủ đi uống cà phê sau giờ làm.',
     choices: [
-      { label: 'Từ chối, giữ khoảng cách', effects: { happiness: -1 }, flags: ['giu_khoang_cach'],
+      { label: 'Từ chối, giữ khoảng cách', effects: { happiness: 1 }, flags: ['giu_khoang_cach'],
         text: 'Tôi trả lời ngắn, chỉ chuyện công việc. Người đó hiểu, thôi nhắn. Tối về, tôi nhìn {tenBanDoi} nấu cơm trong bếp, đứng phụ một tay, lần đầu sau nhiều tháng.' },
-      { label: 'Đi một lần, chỉ cà phê', effects: { happiness: 1 }, flags: ['cafe_dong_nghiep'],
+      { label: 'Đi một lần, chỉ cà phê', effects: { happiness: -1, health: -1 }, flags: ['cafe_dong_nghiep'],
         text: 'Một tiếng cà phê vui, không có gì xảy ra. Về nhà, {tenBanDoi} hỏi sao về muộn, tôi nói họp. Lời nói dối nhỏ, nhưng đêm đó tôi không ngủ được.' },
     ],
   },
@@ -654,6 +676,17 @@ export const stage40To49 = [
 
   // ───────────── 48 tuổi ─────────────
   {
+    id: 'ls48-doi-mua-khu-pho', age: 48,
+    title: 'Đội múa của khu phố',
+    text: 'Câu lạc bộ khu phố cần thêm người cho đội múa dịp lễ, toàn người trẻ hơn tôi. Phải tập ba buổi tối mỗi tuần trong một tháng. Người phụ trách nói tôi có dáng, chỉ cần chịu khó. Tôi chưa từng múa trước đông người bao giờ.',
+    choices: [
+      { label: 'Tham gia đội múa', effects: { happiness: 2, appearance: 1, health: -1 },
+        text: 'Tháng đầu tôi đau khắp người, có buổi về chỉ muốn nằm. Hôm biểu diễn tôi nhầm một nhịp, cả đội vẫn vỗ tay. Tấm ảnh đội múa được dán ở bảng tin khu phố.' },
+      { label: 'Nhận phần hậu cần', effects: { happiness: 1 },
+        text: 'Tôi lo nước uống, trang phục, nhạc. Hôm biểu diễn tôi đứng sau cánh gà, đếm nhịp theo. Người phụ trách nói năm sau nhất định phải lên sân khấu.' },
+    ],
+  },
+  {
     id: 'ls48-ban-cu-qua-doi', age: 48,
     title: 'Tin buồn trong nhóm lớp',
     text: 'Nhóm lớp báo tin một người bạn cũ mất vì ung thư. Bạn ấy từng nhắn hỏi thăm tôi mấy tháng trước, tôi hẹn “khi nào rảnh cà phê”, rồi quên. Đám tang ở tỉnh khác, ngày mai.',
@@ -680,7 +713,7 @@ export const stage40To49 = [
     title: 'Học nấu ăn',
     text: 'Bao nhiêu năm tôi chỉ nấu được vài món. Gần đây tôi nhận ra mình chưa từng hỏi người nấu ăn cho mình, những món ấy nấu thế nào. Có những người đã không còn để hỏi.',
     choices: [
-      { label: 'Đi học một lớp nấu ăn', effects: { happiness: 2, health: 1 }, flags: ['hoc_nau_an'],
+      { label: 'Đi học một lớp nấu ăn', effects: { happiness: 2, health: 1 }, money: -3000000, flags: ['hoc_nau_an'],
         text: 'Lớp học có toàn người trẻ. Tôi học món canh chua, món thịt kho. Lần đầu nấu lại được món thịt kho đúng vị nhà mình, tôi ngồi ăn một mình, ăn rất chậm.' },
       { label: 'Gọi điện hỏi người thân còn lại', effects: { happiness: 2 },
         text: 'Tôi gọi cho người cô lớn tuổi, hỏi cách kho thịt. Cô kể một tiếng, lạc sang đủ chuyện thời xưa. Món thịt kho ấy tôi nấu không giống, nhưng cuộc gọi thì rất dài.' },
@@ -759,9 +792,9 @@ export const stage40To49 = [
     title: 'Hàng xóm cần tiền viện phí',
     text: 'Người hàng xóm lâu năm gõ cửa, xin vay tiền đóng viện phí cho chồng. Gia đình họ nghèo, khả năng trả rất thấp. Họ từng giúp tôi chuyển nhà, trông nhà khi tôi đi vắng mười năm nay.',
     choices: [
-      { label: 'Cho vay, không hẹn ngày trả', effects: { happiness: 2 }, flags: ['cho_hang_xom_vay'],
+      { label: 'Cho vay, không hẹn ngày trả', effects: { happiness: 2 }, money: -10000000, flags: ['cho_hang_xom_vay'],
         text: 'Chị hàng xóm cầm tiền, nói không nên lời. Chồng chị qua khỏi. Hai năm sau, chị trả được một nửa, còn lại trả bằng những rổ rau, những con cá mỗi tuần.' },
-      { label: 'Cho một khoản nhỏ, không vay', effects: { happiness: 1 },
+      { label: 'Cho một khoản nhỏ, không vay', effects: { happiness: 1 }, money: -2000000,
         text: 'Tôi đưa một khoản nhỏ, nói là quà thăm bệnh. Chị cảm ơn, nhưng vẫn đi vay thêm ở chỗ khác với lãi cao. Tôi biết, vì chị kể.' },
     ],
   },
@@ -893,7 +926,7 @@ export const stage40To49 = [
     title: 'Cây đàn trong góc',
     text: 'Tôi thấy một cây đàn cũ ở tiệm đồ cũ, giống hệt cây đàn hồi chín tuổi. Ngón tay tôi giờ cứng hơn, mắt cũng kém. Ông chủ tiệm nói đàn còn tốt, bán rẻ cho người biết chơi.',
     choices: [
-      { label: 'Mua về, tập lại', effects: { happiness: 3 }, flags: ['tap_dan_lai'],
+      { label: 'Mua về, tập lại', effects: { happiness: 3 }, money: -1500000, flags: ['tap_dan_lai'],
         text: 'Tôi tập mỗi tối nửa tiếng. Ba tháng sau đàn được bài đầu tiên, vấp ở đúng chỗ năm chín tuổi từng vấp. Tôi quay video, rồi không biết gửi cho ai.' },
       { label: 'Ngồi đàn thử một bài rồi đi', effects: { happiness: 1 },
         text: 'Tôi đàn được nửa bài, quên đoạn sau. Ông chủ tiệm vỗ tay. Tôi cảm ơn, đặt nắp đàn xuống, đi ra.' },
@@ -915,9 +948,9 @@ export const stage40To49 = [
     title: 'Lễ tốt nghiệp',
     text: 'Cậu học trò vùng cao năm nào gửi thư mời dự lễ tốt nghiệp. Cậu viết: “Thầy cô là người đầu tiên con muốn mời.” Lễ ở thành phố khác, đúng ngày tôi có việc quan trọng.',
     choices: [
-      { label: 'Đi dự', effects: { happiness: 4 }, flags: ['du_le_tot_nghiep'],
+      { label: 'Đi dự', effects: { happiness: 4 }, money: -3000000, flags: ['du_le_tot_nghiep'],
         text: 'Cậu mặc áo cử nhân, chạy tới ôm tôi trước mặt bạn bè. Ba mẹ cậu từ bản xuống, mặc đồ truyền thống, nắm tay tôi không buông. Tôi đứng giữa hội trường, không biết để tay vào đâu.' },
-      { label: 'Gửi hoa và lời chúc', effects: { happiness: 1 },
+      { label: 'Gửi hoa và lời chúc', effects: { happiness: 1 }, money: -500000,
         text: 'Cậu gửi ảnh cầm bó hoa của tôi, cười rạng rỡ. Cậu viết: “Con hiểu mà.” Tôi lưu tấm ảnh lại, rồi đặt làm hình nền điện thoại.' },
     ],
   },

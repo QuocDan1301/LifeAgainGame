@@ -16,7 +16,7 @@
     assert(shopCatalog.every(item => item.price > 0 && item.description && shops[item.shop].groups.some(g => g.id === item.group)),
       "Every item has a price, description and a valid group");
     assert(shopCatalog.filter(item => item.group === "vehicles").every(item => !item.profit), "Vehicles only have a price");
-    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group)).every(item => item.profit > 0),
+    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group) && !item.id.startsWith("story-")).every(item => item.profit > 0),
       "Real estate, businesses and animals earn yearly");
     const expected = ["own-house", "own-resort", "own-hotel", "own-restaurant", "own-cafe", "own-noodle-cart", "own-motorbike",
       "own-big-bike", "own-car", "own-lamborghini", "own-porsche", "own-rolls-royce", "own-private-jet"];
@@ -36,23 +36,23 @@
       "Every companion eats; only cats and dogs need vaccines");
     const owner = { money: 0, livestock: [{ uid: "h", id: "hamster", boughtAtAge: 30 }, { uid: "d", id: "dog", boughtAtAge: 31 },
       { uid: "g", id: "goat", boughtAtAge: 30 }] };
-    assert(collectAssetIncome(owner, 31).amount === 500_000 - 600_000 && owner.money === -100_000,
+    assert(collectAssetIncome(owner, 31).amount === 350_000 - 600_000 && owner.money === -250_000,
       "Pet food is paid from the year after buying, netted with animal income");
     const yearTwo = collectAssetIncome(owner, 32);
-    assert(yearTwo.amount === 500_000 - 600_000 - 5_600_000 && yearTwo.content.includes("Chó: thức ăn và tiêm ngừa") &&
+    assert(yearTwo.amount === 350_000 - 600_000 - 5_600_000 && yearTwo.content.includes("Chó: thức ăn và tiêm ngừa") &&
       yearTwo.content.includes("Chuột hamster: thức ăn;") && yearTwo.content.includes("Tiền -6,2 triệu"), "Dogs also pay vaccines");
-    assert(!shopCatalog.find(item => item.id === "house").limit, "Real estate has no limit");
+    assert(shopCatalog.find(item => item.id === "house").limit === 3, "At most three rental houses");
     const sample = { money: 0, livestock: [{ uid: "a", id: "cow", boughtAtAge: 30 }],
       purchases: [{ uid: "b", id: "cafe", boughtAtAge: 30, rentedAtAge: 30 }, { uid: "c", id: "car", boughtAtAge: 30 },
         { uid: "d", id: "house", boughtAtAge: 29 }, { uid: "e", id: "noodle-cart", boughtAtAge: 30 }] };
     const income = collectAssetIncome(sample, 31);
-    assert(income.amount === 2_500_000 + 225_000_000 + 6_000_000 && sample.money === income.amount,
+    assert(income.amount === 1_800_000 + 120_000_000 + 3_000_000 && sample.money === income.amount,
       "Animals and businesses (cafe, noodle cart) earn automatically; real estate only while rented");
     assert(shopCatalog.filter(item => item.group === "business").map(item => item.id).sort().join() === "cafe,noodle-cart",
       "Cafe and noodle cart share the business group");
     const lease = { purchases: [{ uid: "r", id: "house", boughtAtAge: 30, rentedAtAge: 30 }], money: 0 };
     const paid = [31, 32, 33, 34, 35].map(age => collectAssetIncome(lease, age)?.amount ?? 0);
-    assert(paid.join() === [600_000_000, 600_000_000, 600_000_000, 600_000_000, 0].join(), "A lease pays exactly 4 years");
+    assert(paid.join() === [300_000_000, 300_000_000, 300_000_000, 300_000_000, 0].join(), "A lease pays exactly 4 years");
     assert(collectAssetIncome(lease, 34).content.includes("hết hạn"), "Diary announces the end of the lease");
 
     const html = await (await fetch("../index.html")).text();

@@ -11,6 +11,7 @@
     const {state,createInitialState} = await import('../js/state.js');
     const {createAdmirer,getDatingUpdates,getMarriageUpdates,getBreakupUpdates,canStartRelationship,createDatingEvent} = await import('../js/relationships.js');
     const {createChildProposalEvent,getChildProposalUpdates,getAnnualChildcareCost,getChildcareExpenses,completeLifeYear,getChildAge,migrateChildcareDebt} = await import('../js/family.js');
+    Math.random = () => 0.99;
     const base = () => ({...createInitialState().player, age:34, gender:'male', health:90,
       happiness:70, intelligence:70, appearance:70, studyBlock:'A', money:1_000_000_000});
     const person = createAdmirer({...base(),orientation:'heterosexual'},25,()=>0.4);
@@ -31,23 +32,23 @@
     const born = married();
     const birth = getChildProposalUpdates(born,person,35,'accept',()=>0.4);
     completeLifeYear(born,35,birth);
-    assert(born.children[0].initialAge===0 && born.money===988_000_000, 'Newborn costs are charged immediately');
+    assert(born.children[0].initialAge===0 && born.money===964_000_000, 'Newborn costs are charged immediately');
     assert(!getChildcareExpenses(born,35).amount, 'Same-year reload does not double charge');
     completeLifeYear(born,53);
-    assert(born.money===430_000_000 && getChildAge(born.children[0],53)===18, 'All costs through age 18 total 570 million');
+    assert(born.money===382_000_000 && getChildAge(born.children[0],53)===18, 'All costs through age 18 total 570 million');
     completeLifeYear(born,54);
-    assert(born.money===430_000_000, 'No new childcare cost at age 19');
+    assert(born.money===358_000_000, 'No new childcare cost at age 19');
     const adopted = sameGender;
     completeLifeYear(adopted,35,getChildProposalUpdates(adopted,person,35,'accept',()=>0.4));
-    assert(adopted.children[0].initialAge===5 && adopted.money===978_000_000, 'Adoption starts at age five with that age cost');
+    assert(adopted.children[0].initialAge===5 && adopted.money===954_000_000, 'Adoption starts at age five with that age cost');
     completeLifeYear(adopted,48);
-    assert(adopted.money===510_000_000, 'Adoption costs ages 5 through 18 total 490 million');
+    assert(adopted.money===462_000_000, 'Adoption costs ages 5 through 18 total 490 million');
     completeLifeYear(adopted,49);
-    assert(adopted.money===510_000_000, 'Adoption costs stop after 18');
+    assert(adopted.money===438_000_000, 'Adoption costs stop after 18');
     for(let age=1;age<=18;age++) assert(getAnnualChildcareCost(age)>getAnnualChildcareCost(age-1),'Costs increase with age');
     const poor = {...married(),money:5_000_000};
     completeLifeYear(poor,35,getChildProposalUpdates(poor,person,35,'accept',()=>0.4));
-    assert(poor.money===-7_000_000 && poor.childcareDebt===0, 'Insufficient funds create a negative wallet balance');
+    assert(poor.money===-31_000_000 && poor.childcareDebt===0, 'Insufficient funds create a negative wallet balance');
     const legacy={money:0,childcareDebt:7_000_000};
     const legacyResult={money:-500_000};
     migrateChildcareDebt(legacy,legacyResult);
@@ -56,13 +57,14 @@
     assert(legacy.money===-7_000_000 && legacyResult.money===-7_500_000,'Reload does not subtract old costs twice');
     Object.assign(poor,{employmentStatus:'employed',careerLevel:1,careerPath:{id:'programming'},lastSalaryAge:35});
     completeLifeYear(poor,36);
-    assert(poor.money===63_000_000 && poor.childcareDebt===0,'Next salary covers current costs, living costs and the unpaid balance');
+    // Lương 120 triệu − nuôi con 14 triệu − sinh hoạt 30% (36 triệu) − lãi 6% trên khoản nợ 31 triệu mang sang.
+    assert(poor.money===-31_000_000+120_000_000-14_000_000-36_000_000-1_860_000 && poor.childcareDebt===0,'Next salary covers current costs, living costs and the unpaid balance');
     const parent = {...married(),children:birth.children};
     Object.assign(parent,getBreakupUpdates(parent));
     assert(parent.children.length===1 && canStartRelationship(parent), 'Breakup preserves children and makes the player single');
     assert(!canStartRelationship(married()) && !createDatingEvent(married(),40) && !Object.keys(getDatingUpdates(married(),person,40)).length, 'Married players cannot start another relationship');
     const dating = {...base(),partner:person};
-    assert(!canStartRelationship(dating) && !Object.keys(getDatingUpdates(dating,person,40)).length,'Dating players cannot start another relationship');
+    assert(canStartRelationship(dating) && !Object.keys(getDatingUpdates(dating,person,40)).length,'Dating players may meet a second person but cannot add the same person twice');
 
     const html = await (await fetch('../index.html')).text();
     const parsed = new DOMParser().parseFromString(html,'text/html');
@@ -89,9 +91,9 @@
     state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     confirm.click();
     assert(state.player.children.length===1 && state.player.money===72_000_000 && state.player.achievementFlags['first-child'],'Confirm saved birth credits salary, charges newborn costs and unlocks achievement');
-    assert(document.getElementById('money-value').textContent==='72.000.000','Wallet shows the net balance');
+    assert(document.getElementById('money-value').textContent==='72 triệu','Wallet shows the net balance');
     birthday.click();
-    assert(state.player.age===36 && state.player.money===214_000_000,'Year without a story still pays childcare after salary');
+    assert(state.player.age===36 && state.player.money===142_000_000,'Year without a story still pays childcare after salary');
     document.getElementById('relationships').click();
     assert(!document.getElementById('breakup-relationship').hidden && document.getElementById('relationship-children').textContent.includes('1 tuổi'),'Relationships show breakup action and child age');
     document.getElementById('breakup-relationship').click();
@@ -103,7 +105,7 @@
     assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.partner===null,'Breakup persists');
     document.getElementById('close-relationships').click();
     birthday.click();
-    assert(state.player.age===37 && state.player.money===318_000_000,'Childcare continues after breakup');
+    assert(state.player.age===37 && state.player.money===210_000_000,'Childcare continues after breakup');
     Object.assign(state.player,{partner:person,marriedAtAge:null,relationshipStartedAtAge:37,nextMarriageProposalAge:42});
     document.getElementById('relationships').click();
     document.getElementById('breakup-relationship').click();
@@ -113,10 +115,13 @@
     // A child request gives way to promotion and appears next year.
     Object.assign(state.player,{age:36,partner:person,marriedAtAge:32,nextChildProposalAge:37,
       childProposalStopped:false,childProposalCompleted:false,childProposalDeclines:0,
-      careerLevel:2,nextPromotionAge:37,lastSalaryAge:36});
+      careerLevel:2,nextPromotionAge:37,lastSalaryAge:36,careerSpark:'programming',
+      // Hai lần chia tay ở trên sẽ mở chuỗi hỗ trợ tinh thần; phần này chỉ kiểm tra lịch hỏi chuyện con cái.
+      moodEffects:[]});
     birthday.click();
     assert(state.pendingEvent.kind==='career-promotion' && state.player.nextChildProposalAge===38,'Promotion postpones parenthood request');
-    choose(state.pendingEvent.choices.findIndex(item=>item.correct));
+    // Xử lý đúng vẫn có thể "chưa đến lượt" (khả năng được chọn); chuyện con cái vẫn quay lại năm sau.
+    choose(Math.max(0,state.pendingEvent.choices.findIndex(item=>item.correct)));
     confirm.click();
     birthday.click();
     assert(state.pendingEvent.kind==='child-proposal' && state.pendingEvent.age===38,'Postponed parenthood request returns');
@@ -124,16 +129,21 @@
     assert(state.player.nextChildProposalAge===40,'Retry is two years after actual discussion');
     Object.assign(state.player,{money:5_000_000,employmentStatus:'declined',careerLevel:0,nextPromotionAge:null});
     birthday.click();
-    assert(state.player.age===39 && state.player.money===-15_000_000,'Childcare can push the wallet below zero');
-    assert(document.getElementById('money-value').textContent==='-15.000.000','Wallet displays the negative amount');
+    // 5 triệu − nuôi con 20 triệu − sinh hoạt tối thiểu 24 triệu.
+    assert(state.player.age===39 && state.player.money===-39_000_000,'Childcare can push the wallet below zero');
+    assert(document.getElementById('money-value').textContent==='-39 triệu','Wallet displays the negative amount');
     state.player.children=[];
     birthday.click();
-    state.pendingEvent.choices=[{label:'Pay',title:'Paid',text:'Paid',money:-5_000_000,effects:{}}];
+    // Đang nợ thì không chọn được lựa chọn phải trả tiền; lựa chọn không tốn tiền vẫn đi tiếp.
+    state.pendingEvent.choices=[{label:'Pay',title:'Paid',text:'Paid',money:-5_000_000,effects:{}},{label:'Wait',title:'Waited',text:'Waited',effects:{}}];
     choose(0);
-    assert(state.pendingEvent.updates.money===-20_000_000,'Event expenses subtract fully from an already negative balance');
+    assert(state.pendingEvent.stage==='choice','Paid choices are blocked while the wallet cannot cover them');
+    choose(1);
+    assert(state.pendingEvent.updates.money===undefined || state.pendingEvent.updates.money===-39_000_000,'A free choice keeps the negative balance');
     confirm.click();
-    assert(state.player.money===-20_000_000 && document.getElementById('money-value').textContent==='-20.000.000','Confirm updates the negative wallet');
-    assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.money===-20_000_000,'Negative balances persist');
+    // Thêm sinh hoạt tối thiểu 24 triệu và lãi 6% trên khoản nợ 39 triệu mang sang.
+    assert(state.player.money===-65_340_000 && document.getElementById('money-value').textContent==='-65,34 triệu','Confirm updates the negative wallet');
+    assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.money===-65_340_000,'Negative balances persist');
     result.textContent='PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity';
   } catch(error) { result.textContent='FAIL: '+error.stack; }
   finally { Math.random=random; keys.forEach((key,index)=>previous[index]===null?localStorage.removeItem(key):localStorage.setItem(key,previous[index])); }

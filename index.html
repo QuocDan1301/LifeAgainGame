@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="./css/lobby.css" />
     <link rel="stylesheet" href="./css/buttons.css" />
     <link rel="stylesheet" href="./css/polish.css" />
+    <link rel="stylesheet" href="./css/dating-dialogue.css" />
     <link
       rel="apple-touch-icon"
       sizes="57x57"
@@ -694,7 +695,9 @@
         <button type="button" id="activity-lottery"><span class="activity-icon" aria-hidden="true">🎟️</span><span class="activity-text"><span class="activity-title">Mua vé số</span><span class="activity-note">Mười nghìn một tấm vé, gửi trọn một giấc mơ!</span></span></button>
         <button type="button" id="activity-shopping"><span class="activity-icon" aria-hidden="true">🛍️</span><span class="activity-text"><span class="activity-title">Mua sắm</span><span class="activity-note">Thêm món đồ ưng ý, bớt chút tiền trong ví!</span></span></button>
         <button type="button" id="activity-pets"><span class="activity-icon" aria-hidden="true">🐾</span><span class="activity-text"><span class="activity-title">Mua vật nuôi</span><span class="activity-note">Đón một người bạn nhỏ, thêm niềm vui mỗi ngày!</span></span></button>
+        <button type="button" id="activity-repair-lessons" hidden><span class="activity-icon" aria-hidden="true">🛠️</span><span class="activity-text"><span class="activity-title">Dạy sửa đồ miễn phí</span><span class="activity-note">Mỗi năm một buổi cho hàng xóm: Trí tuệ +1, Hạnh phúc +1.</span></span></button>
       </div>
+      <p id="activity-repair-feedback" class="side-job-intro" role="status"></p>
     </dialog>
     <dialog id="shop-dialog" aria-labelledby="shop-title">
       <div class="dialog-heading">
@@ -779,6 +782,12 @@
         <button type="button" class="dialog-close" id="close-lottery" aria-label="Đóng">✕</button>
       </div>
       <div id="lottery-body"></div>
+    </dialog>
+    <dialog id="lottery-result-dialog" aria-labelledby="lottery-result-title">
+      <div class="dialog-heading">
+        <h2 id="lottery-result-title">🎉 Kết quả xổ số</h2>
+      </div>
+      <div id="lottery-result-body"></div>
     </dialog>
     <dialog id="travel-dialog" aria-labelledby="travel-title">
       <div class="dialog-heading">

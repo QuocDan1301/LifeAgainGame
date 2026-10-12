@@ -1,3 +1,4 @@
+import { hasInternationalDegreeForCareer } from "./study-abroad.js";
 import { openMojiArt } from "./event-art.js";
 import { formatMoney } from "./money-format.js";
 import { canChooseCareer } from "./study-blocks.js";
@@ -18,6 +19,14 @@ function shuffle(items, random) {
 // Thiếu điều kiện thì tối đa bậc 2.
 export const MAX_RANK_WITHOUT_MILESTONE = 2;
 export function getRankLock(player, careerId = player?.careerPath?.id) {
+  if (hasInternationalDegreeForCareer(player, careerId)) return {
+    unlocked: true, maxRank: 3,
+    reason: "Bằng du học đúng chuyên ngành: mở bậc 3 bằng kinh nghiệm và đánh giá công việc.",
+  };
+  if (careerId === "study-abroad") return {
+    unlocked: true, maxRank: 3,
+    reason: "Lộ trình du học: thăng tiến đến bậc 3 bằng kinh nghiệm và đánh giá công việc tại nước đã chọn.",
+  };
   const unlocked = Boolean(careerId && player?.careerSpark === careerId && careerMilestones[careerId]);
   const sparkField = careerMilestones[player?.careerSpark]?.field;
   return {
@@ -32,7 +41,7 @@ export function getRankLock(player, careerId = player?.careerPath?.id) {
 }
 // Dấu mốc tuổi 16 chỉ có hiệu lực khi tuổi 18 chọn đúng ngành đã hoàn thành chuỗi.
 export function hasCareerMilestone(player) {
-  return getRankLock(player).unlocked;
+  return Boolean(player?.careerPath?.id && player.careerSpark === player.careerPath.id && careerMilestones[player.careerPath.id]);
 }
 
 // Vòng quyết định tuổi 16 vẫn có bước ngẫu nhiên thành công/thất bại, nhưng tỉ lệ dựa trên chỉ số

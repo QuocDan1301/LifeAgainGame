@@ -1,7 +1,8 @@
 import { getCareerAnnualSalary, formatSalary, RETIREMENT_AGE } from "./career-salary.js";
-import { careerMilestones, hasCareerMilestone } from "./career-milestones.js";
+import { careerMilestones, hasCareerMilestone, getRankLock } from "./career-milestones.js";
 import { FOOTBALL_MIN_HEALTH, failsFootballFitness } from "./health-rules.js";
 import { INTERVIEW, getPromotionChance } from "./intellect-rules.js";
+import { hasInternationalDegreeForCareer, getStudyAbroadMajor, getOverseasProfile, getOverseasEmploymentContext, getOverseasJobBlocker, getStudyAbroadCountry, studyAbroadProfile } from "./study-abroad.js";
 
 const sticker = (code) =>
   new URL(`./img/events/openmoji/color/svg/${code}.svg`, import.meta.url).href;
@@ -14,6 +15,7 @@ const art = (code, alt) => ({
 });
 
 const profiles = {
+  "study-abroad": studyAbroadProfile,
   acting: {
     ranks: ["🎭 Diễn viên quần chúng", "🎬 Diễn viên triển vọng", "🌟 Minh tinh màn bạc"],
     achievement: "career-actor",
@@ -132,11 +134,13 @@ const fallbackProfile = {
   strength: "tinh thần học hỏi, làm rõ yêu cầu và chịu trách nhiệm với công việc",
 };
 
-export function getCareerProfile(careerId) {
+export function getCareerProfile(careerId, careerPath = null) {
+  if (careerId === "study-abroad" && careerPath) return getOverseasProfile(careerPath) ?? studyAbroadProfile;
   return profiles[careerId] ?? fallbackProfile;
 }
 
 const careerInterviewTopics = {
+  "study-abroad": { task: "điều phối một dự án có thành viên từ nhiều quốc gia", prep: "đọc yêu cầu, chuẩn bị ngoại ngữ và thống nhất lịch làm việc", standard: "giao tiếp rõ ràng, tiến độ và ngân sách", issue: "hai nhóm hiểu khác nhau về yêu cầu bàn giao", fix: "xác nhận bằng văn bản và thống nhất lại trách nhiệm", joke: "gửi một biểu tượng cảm xúc rồi chờ mọi người tự hiểu" },
   acting: {
     task: "diễn một cảnh khóc ngay sau giờ ăn trưa",
     issue: "bạn diễn quên thoại giữa lúc máy quay đang chạy",
@@ -308,6 +312,7 @@ const careerInterviewTopics = {
 };
 
 const employmentContexts = {
+  "study-abroad": { place: "doanh nghiệp quốc tế", interviewer: "quản lý tuyển dụng quốc tế", leader: "giám đốc dự án", round: "phỏng vấn dự án quốc tế", apply: "gửi hồ sơ sau du học vào doanh nghiệp quốc tế" },
   esports: { place: "đội tuyển Liên Quân Mobile", interviewer: "ban huấn luyện", leader: "huấn luyện viên", round: "đánh giá năng lực", apply: "đăng ký đánh giá tại đội tuyển Liên Quân Mobile" },
   acting: { place: "đoàn phim", interviewer: "đạo diễn", leader: "đạo diễn", round: "thử vai", apply: "mang hồ sơ đến thử vai tại một đoàn phim" },
   military: { place: "đơn vị", interviewer: "hội đồng đơn vị", leader: "chỉ huy", round: "đánh giá nhận nhiệm vụ", apply: "tham gia đợt đánh giá để nhận nhiệm vụ chuyên môn tại đơn vị" },
@@ -343,14 +348,14 @@ const fallbackEmploymentContext = {
 // Tình huống nghề nghiệp riêng của từng ngành (dùng cho phỏng vấn và sự cố công việc).
 export const getCareerTopic = (careerId) => careerInterviewTopics[careerId] ?? null;
 
-export function getEmploymentContext(careerId) {
-  return employmentContexts[careerId] ?? fallbackEmploymentContext;
+export function getEmploymentContext(careerId, careerPath = null) {
+  return getOverseasEmploymentContext(careerPath) ?? employmentContexts[careerId] ?? fallbackEmploymentContext;
 }
 
 function createCareerSpecificQuestions(career, profile) {
-  const topic = careerInterviewTopics[career.id];
+  const topic = careerInterviewTopics[career.id === "study-abroad" ? getStudyAbroadMajor(career).domesticCareer : career.id];
   if (!topic) return null;
-  const context = getEmploymentContext(career.id);
+  const context = getEmploymentContext(career.id, career);
   return [
     {
       text: `Nếu được giao việc ${topic.task}, em sẽ bắt đầu thế nào?`,
@@ -512,8 +517,8 @@ function getMilestoneMentor(player) {
 
 export function createJobInterview(player, random = Math.random) {
   const career = player.careerPath ?? { id: "general", field: "ngành đã chọn" };
-  const profile = getCareerProfile(career.id);
-  const context = getEmploymentContext(career.id);
+  const profile = getCareerProfile(career.id, career);
+  const context = getEmploymentContext(career.id, career);
   const question = createInterviewQuestion(career, profile, random);
   const isEsports = career.id === "esports";
   const academy = career.school?.name ?? "academy";
@@ -547,9 +552,22 @@ export function createJobInterview(player, random = Math.random) {
 // kể cả khi lần này chưa được nhận. Bóng đá còn cần thể lực: thiếu thể lực thì không đậu.
 export function createInterviewResult(player, passed, age, assessment = null) {
   const unfit = failsFootballFitness(player.careerPath?.id, player.health);
-  const hired = passed && !unfit;
+  const overseasBlocker = getOverseasJobBlocker(player, age);
+  const hired = passed && !unfit && !overseasBlocker;
   const result = createAnsweredInterviewResult(player, hired, age);
+  const country = getStudyAbroadCountry(player.careerPath);
+  if (country && hired) Object.assign(result.updates, {
+    workCountryId: country.id, workCountryName: country.name, overseasEmployedAtAge: age,
+  });
+  if (!country && hired && player.abroadDestination === "return" && player.overseasEducation) {
+    Object.assign(result.updates, { workCountryId: "vietnam", workCountryName: "Việt Nam" });
+    const homeNote = `Bạn bắt đầu làm việc tại Việt Nam, với bằng ${player.overseasEducation.program} đã học tại ${player.overseasEducation.countryName}.`;
+    result.content += `\n${homeNote}`;
+    result.logContent += `\n${homeNote}`;
+    result.logSummary += "\nNhận việc tại Việt Nam.";
+  }
   const notes = [];
+  if (overseasBlocker) notes.push(overseasBlocker);
   if (unfit) notes.push(`⚽ Bạn không qua bài kiểm tra thể lực: Sức khỏe ${player.health}%, ngành Bóng đá cần từ ${FOOTBALL_MIN_HEALTH}%.`);
   if (assessment && !hired && !unfit && assessment.quality !== "weak") {
     notes.push(`Câu trả lời của bạn được đánh giá ${INTERVIEW.qualityLabel[assessment.quality].toLowerCase()}, nhưng lần này hội đồng chọn ứng viên khác.`);
@@ -573,13 +591,13 @@ export function createInterviewResult(player, passed, age, assessment = null) {
 
 function createAnsweredInterviewResult(player, passed, age) {
   const career = player.careerPath ?? { id: "general", field: "ngành đã chọn" };
-  const profile = getCareerProfile(career.id);
-  const context = getEmploymentContext(career.id);
+  const profile = getCareerProfile(career.id, career);
+  const context = getEmploymentContext(career.id, career);
   const isEsports = career.id === "esports";
   const academy = career.school?.name ?? "academy";
   const mentor = getMilestoneMentor(player);
   if (mentor) {
-    const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1))}/năm.`;
+    const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1, career))}/năm.`;
     return passed ? {
       stage: "result",
       age,
@@ -606,7 +624,7 @@ function createAnsweredInterviewResult(player, passed, age) {
     };
   }
   if (passed) {
-    const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1))}/năm.`;
+    const salaryText = `Lương cố định: ${formatSalary(getCareerAnnualSalary(career.id, 1, career))}/năm.`;
     return {
       stage: "result",
       age,
@@ -658,7 +676,7 @@ function createAnsweredInterviewResult(player, passed, age) {
 export function createInterviewRetryPrompt(player) {
   const field = player.careerPath?.field ?? "ngành đã chọn";
   const isEsports = player.careerPath?.id === "esports";
-  const context = getEmploymentContext(player.careerPath?.id);
+  const context = getEmploymentContext(player.careerPath?.id, player.careerPath);
   const academy = player.careerPath?.school?.name ?? "academy";
   const mentor = getMilestoneMentor(player);
   if (mentor) {
@@ -702,10 +720,12 @@ export function getPromotionUpdates(player, age, correct) {
   const level = Number(player.careerLevel) || 1;
   if (!correct) {
     const retryAge = age + 2;
-    return { nextPromotionAge: level === 2 && retryAge > 39 ? null : retryAge };
+    const lastAge = (getStudyAbroadCountry(player.careerPath) || hasInternationalDegreeForCareer(player)) ? RETIREMENT_AGE - 1 : 39;
+    return { nextPromotionAge: (level === 2 && retryAge > lastAge) || (getStudyAbroadCountry(player.careerPath) && retryAge >= RETIREMENT_AGE) ? null : retryAge };
   }
   const finalAge = age + 10;
-  return { nextPromotionAge: level === 1 && finalAge <= 39 ? finalAge : null };
+  const lastAge = (getStudyAbroadCountry(player.careerPath) || hasInternationalDegreeForCareer(player)) ? RETIREMENT_AGE - 1 : 39;
+  return { nextPromotionAge: level === 1 && finalAge <= lastAge ? finalAge : null };
 }
 
 const promotionScenarios = {
@@ -738,7 +758,9 @@ const promotionScenarios = {
 function promotionRetryText(player, age) {
   const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
   return retryAge === null
-    ? "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Cơ hội nâng bậc cuối đã kết thúc vì lần thử lại sẽ vượt quá 39 tuổi."
+    ? (getStudyAbroadCountry(player.careerPath)
+      ? "Bạn giữ nguyên bậc nghề. Lần đánh giá tiếp theo sẽ đến sau tuổi nghỉ hưu nên không còn lịch nâng bậc."
+      : "Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Cơ hội nâng bậc cuối đã kết thúc vì lần thử lại sẽ vượt quá 39 tuổi.")
     : `Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi ${retryAge}.`;
 }
 
@@ -748,7 +770,7 @@ export function createMilestonePromotionEvent(player, step = 1, age = player.age
   const career = player.careerPath;
   const data = careerMilestones[career?.id];
   if (!data || step < 1 || step > 4) return null;
-  const profile = getCareerProfile(career.id);
+  const profile = getCareerProfile(career.id, career);
   const [stepTitle, text, correctLabel, wrongLabel] = data.promotion.steps[step - 1];
   const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
   const correct = step < 4
@@ -757,7 +779,7 @@ export function createMilestonePromotionEvent(player, step = 1, age = player.age
         label: correctLabel,
         correct: true,
         title: `📈 Tiến lên bậc ${profile.ranks[1]}`,
-        text: `${data.promotion.result} Qua cả bốn tình huống, năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, 2))}/năm, áp dụng từ năm tiếp theo.`,
+        text: `${data.promotion.result} Qua cả bốn tình huống, năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, 2, career))}/năm, áp dụng từ năm tiếp theo.`,
         effects: { intelligence: 4, happiness: 3 },
         job: profile.ranks[1],
         careerLevel: 2,
@@ -793,9 +815,9 @@ export function createMilestonePromotionEvent(player, step = 1, age = player.age
 
 export function createPromotionEvent(player, random = Math.random, age = player.age + 1) {
   const career = player.careerPath ?? { id: "general", field: "ngành đã chọn" };
-  const profile = getCareerProfile(career.id);
+  const profile = getCareerProfile(career.id, career);
   const level = Math.max(1, Math.min(2, Number(player.careerLevel) || 1));
-  const milestone = hasCareerMilestone(player) ? careerMilestones[career.id] : null;
+  const milestone = (hasCareerMilestone(player) || getStudyAbroadCountry(career)) ? careerMilestones[career.id] : null;
   if (level === 1 && milestone) return createMilestonePromotionEvent(player, 1, age, random);
   const targetLevel = level + 1;
   const finalPromotion = targetLevel === 3;
@@ -809,7 +831,7 @@ export function createPromotionEvent(player, random = Math.random, age = player.
       label: scenario.answers[0],
       correct: true,
       title: finalPromotion ? `🏆 Chạm tới bậc ${profile.ranks[2]}` : `📈 Tiến lên bậc ${profile.ranks[1]}`,
-      text: `Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel))}/năm, áp dụng từ năm tiếp theo.`,
+      text: `Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel, career))}/năm, áp dụng từ năm tiếp theo.`,
       effects: { intelligence: 4, happiness: 3 },
       job: profile.ranks[targetLevel - 1],
       careerLevel: targetLevel,
@@ -867,7 +889,7 @@ export function createPromotionEvent(player, random = Math.random, age = player.
     title: scenario.title,
     // Công khai khả năng được chọn nếu xử lý đúng (kinh nghiệm, trí tuệ theo nghề, thành tích).
     text: (finalPromotion && milestone
-      ? `${capitalize(milestone.mentor)} — người đồng hành từ năm 16 tuổi — giới thiệu bạn vào vòng xét bậc ${profile.ranks[2]}: ${milestone.finalHook}\nDấu mốc năm xưa chỉ mở cánh cửa; bước qua được hay không là ở cách bạn xử lý.\n\n${scenario.text.replace("{field}", career.field)}`
+      ? `${capitalize(milestone.mentor)}${hasCareerMilestone(player) ? " — người đồng hành từ năm 16 tuổi —" : ", cố vấn hành trình du học,"} giới thiệu bạn vào vòng xét bậc ${profile.ranks[2]}: ${milestone.finalHook}\n${hasCareerMilestone(player) ? "Dấu mốc năm xưa chỉ mở cánh cửa;" : "Kinh nghiệm làm việc mở cơ hội này;"} bước qua được hay không là ở cách bạn xử lý.\n\n${scenario.text.replace("{field}", career.field)}`
       : scenario.text.replace("{field}", career.field)) +
       `
 
@@ -883,10 +905,13 @@ export function createEmploymentEvent(player, age) {
   // Chỉ người hoàn thành chuỗi tuổi 16 và học đúng ngành đó mới được tự động phỏng vấn ở tuổi 22
   // (và được hỏi thử lại mỗi năm). Những người khác tự nộp hồ sơ ở Hoạt động → Xin việc.
   const milestone = hasCareerMilestone(player);
-  if (milestone && age === 22 && player.employmentStatus !== "employed") {
+  const overseas = Boolean(getStudyAbroadCountry(player.careerPath));
+  const internationalGraduate = hasInternationalDegreeForCareer(player);
+  if (player.careerPath.id === "study-abroad" && getOverseasJobBlocker(player, age)) return null;
+  if ((milestone || overseas) && age === 22 && player.employmentStatus !== "employed") {
     return createJobInterview(player);
   }
-  if (milestone && age > 22 && player.employmentStatus === "unemployed") {
+  if ((milestone || overseas) && age > 22 && player.employmentStatus === "unemployed") {
     return createInterviewRetryPrompt(player);
   }
   const level = Number(player.careerLevel) || 0;
@@ -897,7 +922,7 @@ export function createEmploymentEvent(player, age) {
   // Đang trong diện cảnh báo thì chưa xét nâng bậc.
   if (player.employmentStatus === "employed" && !player.jobWarning && level >= 1 && level < 3 &&
       Number.isInteger(dueAge) && age >= 27 && age >= dueAge &&
-      (level === 1 || (age <= 39 && hasCareerMilestone(player)))) {
+      (level === 1 || ((overseas || internationalGraduate || age <= 39) && getRankLock(player).unlocked))) {
     return createPromotionEvent(player, Math.random, age);
   }
   return null;

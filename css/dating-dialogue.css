@@ -1,0 +1,7 @@
+.dating-dialogue { display: grid; gap: 12px; margin: 18px 0 8px; white-space: normal; }
+.dating-dialogue-turn { padding: 12px 16px; border-left: 3px solid #b96a60; border-radius: 0 12px 12px 0; background: #fff3ec; }
+.dating-dialogue-turn strong { display: block; color: #763e38; font-size: 0.95em; }
+.dating-dialogue-turn p { margin: 5px 0 0; line-height: 1.55; }
+.dating-dialogue-turn[data-role="player"] { margin-left: 24px; border-left-color: #6b8d72; background: #eff5ec; }
+.dating-dialogue-turn[data-role="player"] strong { color: #3e6646; }
+@media (max-width: 480px) { .dating-dialogue-turn { padding: 10px 12px; } }

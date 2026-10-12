@@ -5,12 +5,12 @@ const art = (code, alt) => {
   return { image, imageAlt: alt, imageFallback: image, imageFallbackAlt: alt };
 };
 const rewards = {
-  60: { money: 100_000_000, effects: { happiness: 15, intelligence: 5 }, achievement: "story-reward", item: ["kindness-toolkit", "Bộ dụng cụ nghĩa tình"] },
-  65: { money: 500_000_000, effects: { intelligence: 5, happiness: 10 } },
+  60: { money: 60_000_000, effects: { happiness: 15, intelligence: 5 }, achievement: "story-reward", item: ["kindness-toolkit", "Bộ dụng cụ nghĩa tình"] },
+  65: { money: 180_000_000, effects: { intelligence: 5, happiness: 10 } },
   70: { money: 30_000_000, effects: { intelligence: 10, happiness: 15 }, achievement: "story-fraud", item: ["community-certificate", "Bằng khen vì cộng đồng"] },
-  75: { money: 200_000_000, effects: { happiness: 10, intelligence: 5 }, item: ["friendship-photo", "Tấm ảnh tình bạn"] },
-  80: { money: 500_000_000, effects: { happiness: 20 }, achievement: "story-lucky", item: ["lucky-ticket-80", "Tấm phiếu may mắn tuổi 80"] },
-  85: { money: 200_000_000, effects: { intelligence: 5, happiness: 10 }, item: ["library-key", "Chiếc chìa khóa thư viện"] },
+  75: { money: 100_000_000, effects: { happiness: 10, intelligence: 5 }, item: ["friendship-photo", "Tấm ảnh tình bạn"] },
+  80: { money: 200_000_000, effects: { happiness: 20 }, achievement: "story-lucky", item: ["lucky-ticket-80", "Tấm phiếu may mắn tuổi 80"] },
+  85: { money: 100_000_000, effects: { intelligence: 5, happiness: 10 }, item: ["library-key", "Chiếc chìa khóa thư viện"] },
   90: { effects: {}, happiness: 100, achievement: "story-final-happiness", item: ["love-notebook", "Cuốn sổ yêu thương"], memory: ["birthday-90", "Sinh nhật tuổi 90"] },
   95: { money: 50_000_000, effects: { happiness: 10 }, item: ["homecoming-photo", "Bức ảnh ngày trở về"] },
   100: { effects: {}, happiness: 100, achievement: "story-old-together", item: ["lifelong-photo-pair", "Hai tấm ảnh, một lời hẹn"], memory: ["couple-100", "Một lời hẹn, hai tấm ảnh"] },
@@ -141,9 +141,12 @@ export function createLaterSpecialStep(age, stepNumber = 1, inventory = {}) {
 }
 
 export function createCentennialMemorial(player) {
-  if (!player.partner || player.marriedAtAge == null || hasLivingSpouse(player)) return null;
-  const name = player.partner.name;
-  return { id: "centennial-memorial", title: "🕯️ Một lời hẹn còn được nhớ",
+  if (player.isAlive === false || (player.marriedAtAge != null && hasLivingSpouse(player))) return null;
+  const deadCurrentSpouse = player.partner && player.marriedAtAge != null && !hasLivingSpouse(player) ? player.partner : null;
+  const widow = [...(player.relationshipHistory ?? [])].reverse().find(entry => entry.type === "widowed" && entry.person?.name);
+  const name = deadCurrentSpouse?.name ?? widow?.person.name;
+  if (!name) return null;
+  return { id: "centennial-memorial", category: "special", priority: true, title: "🕯️ Một lời hẹn còn được nhớ",
     text: `Sinh nhật tuổi 100, tôi nhìn bức ảnh của ${name}, người bạn đời đã mất. Tôi nhớ lời hẹn chụp lại một tấm ảnh cùng nhau. Hôm nay, tôi muốn giữ lời hẹn bằng một cách khác, để những ngày đã có nhau vẫn được nhớ đến.`,
     ...art("1F56F", "Kỷ niệm về người bạn đời đã mất"),
     choices: [

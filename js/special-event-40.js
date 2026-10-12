@@ -74,11 +74,11 @@ const steps = {
   },
   7: {
     title: "🕯️ Lời hẹn cuối cùng",
-    text: "Tôi đưa bà An trở lại vào buổi chiều. Căn nhà giờ chỉ còn mái ngói sụp một góc và chiếc bàn gỗ phủ bụi.\n\nBà đặt những lá thư xuống, nghẹn ngào:\n\n‘Mẹ ơi, con về rồi.’\n\nMột làn gió nhẹ thổi qua. Trong khoảnh khắc, tôi thấy bà cụ đứng bên cửa, mỉm cười như lần đầu gặp. Bà đưa tay vuốt tóc con gái, rồi bóng dáng dần tan trong nắng.\n\nBà An khẽ nhắm mắt: ‘Mùi dầu gió của mẹ… Tôi vẫn nhớ.’\n\nVài tuần sau, bà cho sửa lại căn nhà thành nơi hương khói và trao tôi 200.000.000 VNĐ từ tiền cá nhân để cảm ơn. Bà cũng quyết định hỗ trợ mái ấm từng cưu mang mình.",
+    text: "Tôi đưa bà An trở lại vào buổi chiều. Căn nhà giờ chỉ còn mái ngói sụp một góc và chiếc bàn gỗ phủ bụi.\n\nBà đặt những lá thư xuống, nghẹn ngào:\n\n‘Mẹ ơi, con về rồi.’\n\nMột làn gió nhẹ thổi qua. Trong khoảnh khắc, tôi thấy bà cụ đứng bên cửa, mỉm cười như lần đầu gặp. Bà đưa tay vuốt tóc con gái, rồi bóng dáng dần tan trong nắng.\n\nBà An khẽ nhắm mắt: ‘Mùi dầu gió của mẹ… Tôi vẫn nhớ.’\n\nVài tuần sau, bà cho sửa lại căn nhà thành nơi hương khói và trao tôi 100.000.000 VNĐ từ tiền cá nhân để cảm ơn. Bà cũng quyết định hỗ trợ mái ấm từng cưu mang mình.",
     ...art("1F56F", "Lời hẹn được hoàn thành trong nắng chiều"),
     choices: [
-      success("Con xin nhận, để lo cho gia đình.", 200_000_000, 15, "Tôi nhận 200.000.000 VNĐ để lo cho gia đình. Bà An tiếp tục hỗ trợ mái ấm từng cưu mang mình. Điều tôi nhớ nhất vẫn là nụ cười của người mẹ bên khung cửa chiều hôm ấy."),
-      success("Con nhận một nửa, còn lại giúp mái ấm.", 100_000_000, 20, "Tôi nhận 100.000.000 VNĐ. Phần còn lại góp thêm cho mái ấm, bên cạnh khoản hỗ trợ bà An đã quyết định. Một lời hẹn được trọn vẹn và sự giúp đỡ tiếp tục đến với những người khác."),
+      success("Con xin nhận, để lo cho gia đình.", 100_000_000, 15, "Tôi nhận 100.000.000 VNĐ để lo cho gia đình. Bà An tiếp tục hỗ trợ mái ấm từng cưu mang mình. Điều tôi nhớ nhất vẫn là nụ cười của người mẹ bên khung cửa chiều hôm ấy."),
+      success("Con nhận một nửa, còn lại giúp mái ấm.", 50_000_000, 20, "Tôi nhận 50.000.000 VNĐ. Phần còn lại góp thêm cho mái ấm, bên cạnh khoản hỗ trợ bà An đã quyết định. Một lời hẹn được trọn vẹn và sự giúp đỡ tiếp tục đến với những người khác."),
     ],
   },
 };

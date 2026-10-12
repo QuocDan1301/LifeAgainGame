@@ -1,15 +1,49 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 
-// Mua vé số (từ 18 tuổi): vé 10.000 VNĐ, tối đa 10 vé mỗi năm cho cả hai loại.
+// Mua vé số (từ 18 tuổi): vé 10.000 VNĐ, tối đa 30 vé mỗi năm cho cả hai loại.
 // Mỗi loại chỉ quay một kết quả cho cả năm; kết quả được tạo khi mua vé đầu tiên và
 // lưu cùng vé để tải lại trang không đổi. Nhấn + Tuổi mới dò vé, cộng thưởng vào ví.
 export const LOTTERY_MIN_AGE = 18;
 export const TICKET_PRICE = 10_000;
-export const MAX_TICKETS_PER_YEAR = 10;
+export const MAX_TICKETS_PER_YEAR = 30;
 export const VIETLOTT_MAX = 45;
 export const VIETLOTT_PICKS = 6;
 export const VIETLOTT_JACKPOT = 12_000_000_000;
+// Jackpot tích lũy: mỗi năm không ai trúng cộng thêm một khoản (tối đa VIETLOTT_JACKPOT_MAX);
+// có người khác trúng (VIETLOTT_OTHER_WINNER mỗi năm) hoặc chính mình trúng thì quay về mức khởi điểm.
+export const VIETLOTT_JACKPOT_GROWTH = 3_000_000_000;
+export const VIETLOTT_JACKPOT_MAX = 300_000_000_000;
+export const VIETLOTT_OTHER_WINNER = 0.2;
 const KIEN_THIET_CHOICES = 6;
+
+// Jackpot đang áp dụng cho kỳ quay tới (vé mua năm nay dò ở sinh nhật sau).
+export function getVietlottJackpot(player) {
+  return player.vietlottPot?.amount ?? VIETLOTT_JACKPOT;
+}
+// Số năm Jackpot đã tích lũy liên tục kể từ lần gần nhất có người trúng.
+export function getVietlottJackpotYears(player) {
+  const pot = player.vietlottPot;
+  return pot ? Math.max(0, Math.round((pot.amount - VIETLOTT_JACKPOT) / VIETLOTT_JACKPOT_GROWTH)) : 0;
+}
+// Cập nhật Jackpot đúng một lần ở mỗi sinh nhật, sau khi đã dò vé của kỳ vừa quay.
+function advanceVietlottPot(player, age, playerWon, random) {
+  const before = getVietlottJackpot(player);
+  if (player.vietlottPot?.updatedAge >= age) return null;
+  let outcome;
+  let amount;
+  if (playerWon) {
+    outcome = "player";
+    amount = VIETLOTT_JACKPOT;
+  } else if (random() < VIETLOTT_OTHER_WINNER) {
+    outcome = "other";
+    amount = VIETLOTT_JACKPOT;
+  } else {
+    outcome = "grow";
+    amount = Math.min(VIETLOTT_JACKPOT_MAX, before + VIETLOTT_JACKPOT_GROWTH);
+  }
+  player.vietlottPot = { amount, updatedAge: age };
+  return { drawn: before, next: amount, outcome };
+}
 
 // Vé kiến thiết: so các chữ số cuối, đúng thứ tự; mỗi vé chỉ nhận giải cao nhất.
 export const kienThietPrizes = [
@@ -41,9 +75,9 @@ export function kienThietResult(ticket, draw) {
   while (tail < 6 && ticket[5 - tail] === draw[5 - tail]) tail++;
   return { tail, prize: kienThietPrizes.find((tier) => tail >= tier.digits)?.prize ?? 0 };
 }
-export function vietlottResult(numbers, draw) {
+export function vietlottResult(numbers, draw, jackpot = VIETLOTT_JACKPOT) {
   const hits = numbers.filter((number) => draw.includes(number)).length;
-  return { hits, prize: vietlottPrizes.find((tier) => hits === tier.hits)?.prize ?? 0 };
+  return { hits, prize: hits === 6 ? jackpot : vietlottPrizes.find((tier) => hits === tier.hits)?.prize ?? 0 };
 }
 
 export const ticketsThisYear = (player) => (player.lotteryTickets ?? []).filter((ticket) => ticket.age === player.age);
@@ -80,20 +114,32 @@ function luckyLine(total) {
 }
 
 // Gọi mỗi lần sang tuổi mới: dò các vé mua ở năm trước, cộng thưởng và xóa vé đã dò.
-export function collectLotteryYear(player, age) {
+export function collectLotteryYear(player, age, random = Math.random) {
   const due = (player.lotteryTickets ?? []).filter((ticket) => ticket.age < age);
-  if (!due.length) return null;
+  // Không có vé: Jackpot vẫn tích lũy hoặc có người khác trúng như mọi năm.
+  if (!due.length) {
+    advanceVietlottPot(player, age, false, random);
+    return null;
+  }
+  const jackpot = getVietlottJackpot(player);
+  let jackpotWon = false;
   const lines = [];
   let total = 0;
+  // Kết quả chi tiết cho popup mở thưởng (lưu cùng nhân vật để tải lại trang vẫn xem được).
+  const draws = [];
   for (const boughtAge of [...new Set(due.map((ticket) => ticket.age))]) {
     const draw = player.lotteryDraws?.[boughtAge] ?? { kienThiet: randomKienThiet(), vietlott: randomVietlott() };
     const tickets = due.filter((ticket) => ticket.age === boughtAge);
+    const reveal = { boughtAge, kienThiet: null, vietlott: null };
+    draws.push(reveal);
     const kienThiet = tickets.filter((ticket) => ticket.type === "kien-thiet");
     if (kienThiet.length) {
       lines.push(`🎟️ Xổ số kiến thiết mở thưởng số ${draw.kienThiet}.`);
+      reveal.kienThiet = { draw: draw.kienThiet, tickets: [] };
       let misses = 0;
       for (const ticket of kienThiet) {
         const { tail, prize } = kienThietResult(ticket.number, draw.kienThiet);
+        reveal.kienThiet.tickets.push({ number: ticket.number, tail, prize });
         if (!prize) { misses++; continue; }
         total += prize;
         lines.push(`• Vé ${ticket.number} trùng ${tail === 6 ? "cả 6 số" : `${tail} số cuối`}: +${formatMoneyAmount(prize)} VNĐ.`);
@@ -103,9 +149,12 @@ export function collectLotteryYear(player, age) {
     const vietlott = tickets.filter((ticket) => ticket.type === "vietlott");
     if (vietlott.length) {
       lines.push(`🎰 Vietlott Mega 6/45 mở thưởng: ${formatVietlott(draw.vietlott)}.`);
+      reveal.vietlott = { draw: [...draw.vietlott], tickets: [] };
       let misses = 0;
       for (const ticket of vietlott) {
-        const { hits, prize } = vietlottResult(ticket.numbers, draw.vietlott);
+        const { hits, prize } = vietlottResult(ticket.numbers, draw.vietlott, jackpot);
+        if (hits === 6) jackpotWon = true;
+        reveal.vietlott.tickets.push({ numbers: [...ticket.numbers], hits, prize });
         if (!prize) { misses++; continue; }
         total += prize;
         lines.push(`• Vé ${formatVietlott(ticket.numbers)} trùng ${hits} số${hits === 6 ? " (JACKPOT)" : ""}: +${formatMoneyAmount(prize)} VNĐ.`);
@@ -116,7 +165,17 @@ export function collectLotteryYear(player, age) {
   player.money += total;
   player.lotteryTickets = (player.lotteryTickets ?? []).filter((ticket) => ticket.age >= age);
   player.lotteryDraws = Object.fromEntries(Object.entries(player.lotteryDraws ?? {}).filter(([key]) => Number(key) >= age));
+  const pot = advanceVietlottPot(player, age, jackpotWon, random);
+  const hadVietlott = draws.some((draw) => draw.vietlott);
+  if (pot && hadVietlott) {
+    lines.push(pot.outcome === "player"
+      ? `💎 Bạn ẵm trọn Jackpot ${formatMoneyAmount(pot.drawn)} VNĐ. Jackpot kỳ sau quay về ${formatMoneyAmount(pot.next)} VNĐ.`
+      : pot.outcome === "other"
+        ? `💎 Một người chơi khác đã trúng Jackpot ${formatMoneyAmount(pot.drawn)} VNĐ. Jackpot kỳ sau quay về ${formatMoneyAmount(pot.next)} VNĐ.`
+        : `💎 Không ai trúng Jackpot, giải tích lũy lên ${formatMoneyAmount(pot.next)} VNĐ cho kỳ sau.`);
+  }
   lines.push(luckyLine(total));
+  player.lotteryReveal = { age, total, message: luckyLine(total), draws, jackpot: hadVietlott ? pot : null };
   return { amount: total, content: lines.join("\n") };
 }
 
@@ -285,13 +344,18 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     });
     quick.disabled = clear.disabled = tooYoung;
     tools.append(quick, clear);
-    vietlott.append(element("h3", "", "🎰 Vietlott Mega 6/45"),
+    const years = getVietlottJackpotYears(player);
+    const pot = element("div", "lottery-jackpot");
+    pot.append(element("span", "", "💎 Jackpot kỳ tới"),
+      element("strong", "", formatMoney(getVietlottJackpot(player))),
+      element("small", "", years ? `Đã tích lũy ${years} năm chưa ai trúng` : "Mức khởi điểm, tăng dần mỗi năm chưa ai trúng"));
+    vietlott.append(element("h3", "", "🎰 Vietlott Mega 6/45"), pot,
       element("p", "side-job-intro", "Chọn 6 số khác nhau từ 01 đến 45, không cần đúng thứ tự."),
       grid, tools, status, buyVietlott, prizeTable([
         ["Trùng 3 số", formatMoney(30_000)],
         ["Trùng 4 số", formatMoney(300_000)],
         ["Trùng 5 số", formatMoney(10_000_000)],
-        ["Trùng 6 số (Jackpot)", formatMoney(VIETLOTT_JACKPOT)],
+        ["Trùng 6 số (Jackpot)", formatMoney(getVietlottJackpot(player))],
       ]));
     update();
 
@@ -323,4 +387,135 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     (body.querySelector(".lottery-kien-thiet:not(:disabled)") ?? body.querySelector("button"))?.focus({ preventScroll: true });
   });
   $("close-lottery").addEventListener("click", () => dialog.close());
+
+  // ---------- Popup mở thưởng ở sinh nhật sau năm mua vé ----------
+  const resultDialog = $("lottery-result-dialog");
+  const resultBody = $("lottery-result-body");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let waiting = null;
+
+  // Bóng số lật lần lượt; số trùng với vé của người chơi được tô sáng.
+  function drawRow(values, className, delayStart = 0) {
+    const row = element("div", `lottery-draw ${className}`);
+    values.forEach((value, index) => {
+      const ball = element("span", "lottery-ball", value);
+      ball.style.setProperty("--reveal-delay", `${delayStart + index * 260}ms`);
+      row.append(ball);
+    });
+    return row;
+  }
+  const prizeBadge = (prize) => element("strong", `lottery-ticket-prize${prize ? " is-win" : ""}`,
+    prize ? `+${formatMoney(prize)}` : "Không trúng");
+
+  function kienThietCard(result, delayStart) {
+    const card = element("section", "dialog-card lottery-result-card");
+    card.append(element("h3", "", "🎟️ Xổ số kiến thiết"),
+      element("p", "lottery-result-label", "Giải đặc biệt"),
+      drawRow([...result.draw], "is-kien-thiet", delayStart));
+    const list = element("ul", "lottery-tickets");
+    for (const ticket of result.tickets) {
+      const item = element("li", `lottery-ticket${ticket.prize ? " is-win" : ""}`);
+      const digits = element("span", "lottery-ticket-numbers");
+      [...ticket.number].forEach((digit, index) => {
+        digits.append(element("span", `lottery-digit${index >= 6 - ticket.tail ? " is-hit" : ""}`, digit));
+      });
+      const note = ticket.prize ? (ticket.tail === 6 ? "Trùng cả 6 số" : `Trùng ${ticket.tail} số cuối`) : "";
+      item.append(digits, element("span", "lottery-ticket-note", note), prizeBadge(ticket.prize));
+      list.append(item);
+    }
+    card.append(list);
+    return card;
+  }
+
+  function vietlottCard(result, delayStart, pot) {
+    const card = element("section", "dialog-card lottery-result-card");
+    card.append(element("h3", "", "🎰 Vietlott Mega 6/45"));
+    if (pot) {
+      const box = element("div", "lottery-jackpot");
+      box.append(element("span", "", "💎 Jackpot kỳ này"), element("strong", "", formatMoney(pot.drawn)));
+      card.append(box);
+    }
+    card.append(
+      element("p", "lottery-result-label", "Bộ số mở thưởng"),
+      drawRow(result.draw.map((number) => String(number).padStart(2, "0")), "is-vietlott", delayStart));
+    const list = element("ul", "lottery-tickets");
+    for (const ticket of result.tickets) {
+      const item = element("li", `lottery-ticket${ticket.prize ? " is-win" : ""}`);
+      const numbers = element("span", "lottery-ticket-numbers");
+      for (const number of ticket.numbers) {
+        numbers.append(element("span", `lottery-chip${result.draw.includes(number) ? " is-hit" : ""}`,
+          String(number).padStart(2, "0")));
+      }
+      const note = ticket.hits ? `Trùng ${ticket.hits} số${ticket.hits === 6 ? " · Jackpot" : ""}` : "";
+      item.append(numbers, element("span", "lottery-ticket-note", note), prizeBadge(ticket.prize));
+      list.append(item);
+    }
+    card.append(list);
+    if (pot) {
+      const text = pot.outcome === "player"
+        ? `Bạn ẵm trọn Jackpot. Kỳ sau quay về ${formatMoney(pot.next)}.`
+        : pot.outcome === "other"
+          ? `Một người chơi khác đã trúng Jackpot. Kỳ sau quay về ${formatMoney(pot.next)}.`
+          : `Không ai trúng Jackpot. Kỳ sau tích lũy lên ${formatMoney(pot.next)}.`;
+      card.append(element("p", `lottery-jackpot-next is-${pot.outcome}`, text));
+    }
+    return card;
+  }
+
+  function closeResults() {
+    delete state.player.lotteryReveal;
+    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    if (resultDialog.open) resultDialog.close();
+  }
+
+  function renderResults(reveal) {
+    const nodes = [element("p", "lottery-result-intro",
+      `Sinh nhật ${reveal.age} tuổi, các vé mua năm ${reveal.age - 1} tuổi đã có kết quả.`)];
+    let delay = 300;
+    for (const draw of reveal.draws) {
+      if (draw.kienThiet) {
+        nodes.push(kienThietCard(draw.kienThiet, delay));
+        delay += 6 * 260 + 200;
+      }
+      if (draw.vietlott) {
+        nodes.push(vietlottCard(draw.vietlott, delay, reveal.jackpot));
+        delay += 6 * 260 + 200;
+      }
+    }
+    const summary = element("section", `lottery-result-total${reveal.total ? " is-win" : ""}`);
+    summary.style.setProperty("--reveal-delay", `${delay}ms`);
+    summary.append(element("span", "", reveal.total ? "Tổng tiền thưởng" : "Kết quả"),
+      element("strong", "", reveal.total ? `+${formatMoney(reveal.total)}` : "Chưa trúng lần này"),
+      element("p", "", reveal.message));
+    const done = button("shop-buy lottery-result-confirm", reveal.total ? "💰 Nhận thưởng" : "Hẹn may mắn năm sau", closeResults);
+    nodes.push(summary, done);
+    resultBody.replaceChildren(...nodes);
+    resultDialog.classList.toggle("is-instant", reducedMotion.matches);
+    resultDialog.showModal();
+    resultDialog.scrollTop = 0;
+    done.focus({ preventScroll: true });
+  }
+
+  // Chờ các popup khác (sự kiện, thành tựu) đóng hẳn rồi mới mở, để không chồng lên nhau.
+  function showResults() {
+    clearTimeout(waiting);
+    const reveal = state.player.lotteryReveal;
+    if (!reveal) return;
+    if (state.player.isAlive === false || !reveal.draws?.length) {
+      closeResults();
+      return;
+    }
+    if (resultDialog.open) return;
+    if (state.pendingEvent || document.querySelector("dialog[open]")) {
+      waiting = setTimeout(showResults, 400);
+      return;
+    }
+    renderResults(reveal);
+  }
+  resultDialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeResults();
+  });
+
+  return { showResults };
 }

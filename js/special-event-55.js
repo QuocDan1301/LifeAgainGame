@@ -51,11 +51,11 @@ const steps = {
   },
   4: {
     title: "🎼 Thứ quý nhất trong vali",
-    text: "Chủ thật mở chiếc hộp nhạc. Giai điệu vang lên chập chờn, còn ông thì bật khóc.\n\nĐó là món quà cuối cùng mẹ tặng ông. Ông đã mang nó đi sửa nhiều nơi, lần này mới tìm được người nhận sửa. Chiếc vali còn chứa giấy tờ quan trọng phục vụ một dự án của doanh nghiệp ông.\n\nNhận lại đồ, ông ngỏ ý tặng tôi 150.000.000 VNĐ để cảm ơn vì đã giữ và bàn giao cẩn thận.\n\nTôi nhìn chiếc hộp nhạc rồi nhìn vali mình vừa được trả lại. Trong đó chỉ có quần áo và hai bịch bánh tráng — thế mà làm cả buổi muốn lên huyết áp.",
+    text: "Chủ thật mở chiếc hộp nhạc. Giai điệu vang lên chập chờn, còn ông thì bật khóc.\n\nĐó là món quà cuối cùng mẹ tặng ông. Ông đã mang nó đi sửa nhiều nơi, lần này mới tìm được người nhận sửa. Chiếc vali còn chứa giấy tờ quan trọng phục vụ một dự án của doanh nghiệp ông.\n\nNhận lại đồ, ông ngỏ ý tặng tôi 90.000.000 VNĐ để cảm ơn vì đã giữ và bàn giao cẩn thận.\n\nTôi nhìn chiếc hộp nhạc rồi nhìn vali mình vừa được trả lại. Trong đó chỉ có quần áo và hai bịch bánh tráng — thế mà làm cả buổi muốn lên huyết áp.",
     ...art("1F3B5", "Giai điệu của món quà người mẹ để lại"),
     choices: [
-      success("Tôi xin nhận, chúc ông sửa được hộp nhạc.", 150_000_000, 10, "Tôi nhận 150.000.000 VNĐ và chúc ông sửa được hộp nhạc. Vali của tôi được trả lại nguyên vẹn, kể cả hai bịch bánh tráng. Từ nay tôi sẽ kiểm tra kỹ hơn trước khi nhận đồ."),
-      success("Tôi nhận một phần, còn lại xin giúp người khó khăn.", 100_000_000, 15, "Tôi nhận 100.000.000 VNĐ; 50.000.000 VNĐ còn lại được ông góp thiện nguyện. Chiếc hộp nhạc trở về đúng người, còn vali của tôi có thêm dòng chữ: ‘BÊN TRONG CHỈ CÓ BÁNH TRÁNG.’"),
+      success("Tôi xin nhận, chúc ông sửa được hộp nhạc.", 90_000_000, 10, "Tôi nhận 90.000.000 VNĐ và chúc ông sửa được hộp nhạc. Vali của tôi được trả lại nguyên vẹn, kể cả hai bịch bánh tráng. Từ nay tôi sẽ kiểm tra kỹ hơn trước khi nhận đồ."),
+      success("Tôi nhận một phần, còn lại xin giúp người khó khăn.", 60_000_000, 15, "Tôi nhận 60.000.000 VNĐ; 30.000.000 VNĐ còn lại được ông góp thiện nguyện. Chiếc hộp nhạc trở về đúng người, còn vali của tôi có thêm dòng chữ: ‘BÊN TRONG CHỈ CÓ BÁNH TRÁNG.’"),
     ],
   },
 };

@@ -51,7 +51,7 @@ export const stage50To59 = [
     title: 'Hai người trong căn nhà',
     text: 'Con cái đi xa hết, nhà còn hai người. Bữa cơm im lặng, mỗi người một góc. {tenBanDoi} đề nghị hai đứa học chung một thứ gì đó, như hồi mới quen, để có chuyện mà nói.',
     choices: [
-      { label: 'Học khiêu vũ', effects: { happiness: 3, health: 1 }, flags: ['hoc_khieu_vu'],
+      { label: 'Học khiêu vũ', effects: { happiness: 3, health: 1 }, money: -3000000, flags: ['hoc_khieu_vu'],
         text: 'Hai đứa đạp chân nhau suốt tuần đầu. Tháng thứ ba, nhảy được một bài trọn vẹn. Về nhà, {tenBanDoi} mở nhạc trong bếp, kéo tôi nhảy giữa lúc đang rửa chén.' },
       { label: 'Trồng rau trên sân thượng', effects: { happiness: 2 },
         text: 'Hai đứa cãi nhau chuyện tưới nhiều hay ít. Rau lên được. Chiều nào cũng có chuyện để nói: luống này sâu, luống kia mới nhú.' },
@@ -242,7 +242,7 @@ export const stage50To59 = [
     title: 'Viện dưỡng lão thăm thử',
     text: 'Tôi đi thăm một viện dưỡng lão có tiếng, để biết trước. Ở đó sạch, yên, có người chăm, có bạn cùng tuổi. Người quản lý nói nên đăng ký giữ chỗ sớm, danh sách chờ mười năm.',
     choices: [
-      { label: 'Đăng ký giữ chỗ', effects: { intelligence: 1 }, flags: ['giu_cho_vien_duong_lao'],
+      { label: 'Đăng ký giữ chỗ', effects: { intelligence: 1 }, money: -10000000, flags: ['giu_cho_vien_duong_lao'],
         text: 'Tôi điền đơn, đóng tiền giữ chỗ. Ra về, tôi đi bộ quanh khu vườn của viện, thấy một bà cụ đang trồng hoa. Bà ngẩng lên chào tôi như chào một người hàng xóm sắp tới.' },
       { label: 'Về nghĩ thêm', effects: { happiness: -1 },
         text: 'Tôi về, ngồi nhìn căn nhà của mình. Mọi thứ quen thuộc. Tôi chưa nghĩ ra được câu trả lời, chỉ biết mình chưa muốn rời nơi này.' },
@@ -367,7 +367,7 @@ export const stage50To59 = [
     title: 'Lời mời đi giảng',
     text: 'Một trường đại học mời tôi thỉnh giảng, mỗi tuần một buổi tối, chia sẻ kinh nghiệm thực tế cho sinh viên. Thù lao ít, phải chuẩn bị nhiều. Tôi chưa từng đứng lớp.',
     choices: [
-      { label: 'Nhận lời', effects: { intelligence: 2, happiness: 2 }, flags: ['thinh_giang'],
+      { label: 'Nhận lời', effects: { intelligence: 2, happiness: 2, health: -1 }, money: 3000000, flags: ['thinh_giang'],
         text: 'Buổi đầu tôi nói vấp, sinh viên ngủ gật. Tới buổi thứ năm, sinh viên ở lại hỏi tới khuya. Có một bạn viết email cảm ơn, tôi in ra, dán lên bàn làm việc.' },
       { label: 'Từ chối', effects: { happiness: -1 },
         text: 'Tôi nói không có thời gian. Trường mời người khác. Đôi khi đi ngang trường đại học, tôi nhìn vào sân, thấy sinh viên đi lại.' },
@@ -560,7 +560,7 @@ export const stage50To59 = [
     title: 'Lớp học tiếng nước ngoài',
     text: 'Tôi muốn học một ngoại ngữ để đi du lịch tự túc khi về già. Lớp học toàn sinh viên. Giáo viên nói người lớn tuổi học chậm, nhưng nhớ lâu. Học phí bằng một tháng chi tiêu.',
     choices: [
-      { label: 'Đăng ký', effects: { intelligence: 3 }, flags: ['hoc_ngoai_ngu_57'],
+      { label: 'Đăng ký', effects: { intelligence: 3 }, money: -5000000, flags: ['hoc_ngoai_ngu_57'],
         text: 'Tôi học chậm thật, phải ghi chép nhiều. Tụi sinh viên giúp tôi luyện nói giờ giải lao. Một năm sau, tôi gọi được món ăn bằng thứ tiếng ấy, người phục vụ hiểu.' },
       { label: 'Học qua ứng dụng', effects: { intelligence: 1 },
         text: 'Mỗi ngày tôi học mười lăm phút trên điện thoại. Học được mấy trăm từ. Nói thì chưa dám nói với ai.' },
@@ -615,7 +615,7 @@ export const stage50To59 = [
     title: 'Bạn đồng hành',
     text: 'Ở câu lạc bộ đi bộ buổi sáng, có một người cũng sống một mình, hay đi cạnh tôi. Người ấy rủ tôi đi một chuyến du lịch theo nhóm, hai người sẽ ở chung phòng cho rẻ. Hàng xóm đã bắt đầu bàn tán.',
     choices: [
-      { label: 'Đi cùng', effects: { happiness: 3 }, flags: ['ban_dong_hanh'],
+      { label: 'Đi cùng', effects: { happiness: 3 }, money: -5000000, flags: ['ban_dong_hanh'],
         text: 'Chuyến đi vui. Hai người ngủ hai giường, nói chuyện tới khuya. Về, hàng xóm hỏi, tôi cười không trả lời. Sáng hôm sau, hai người lại đi bộ cùng nhau.' },
       { label: 'Từ chối vì lời ra tiếng vào', effects: { happiness: -1 },
         text: 'Người ấy đi với người khác. Sáng hôm sau đi bộ, người ấy vẫn chào, nhưng không đi cạnh tôi nữa. Tôi đi một mình, nhanh hơn.' },
@@ -639,7 +639,7 @@ export const stage50To59 = [
     title: 'Giải cầu lông người cao tuổi',
     text: 'Câu lạc bộ cầu lông rủ tôi tham gia giải đấu cho người trên năm mươi lăm tuổi. Tôi chơi được, nhưng đầu gối hay đau. Đồng đội nói thiếu một người là không đủ đội.',
     choices: [
-      { label: 'Tham gia', effects: { health: 1, happiness: 3 }, flags: ['giai_cau_long'],
+      { label: 'Tham gia', effects: { health: -1, happiness: 3 }, flags: ['giai_cau_long'],
         text: 'Đội tôi thua ở vòng hai. Tôi đánh được một trận thắng, đầu gối đau cả tuần. Cả đội đi ăn sau giải, cười như vừa vô địch.' },
       { label: 'Đi cổ vũ thôi', effects: { happiness: 1 },
         text: 'Đội tìm được người khác. Tôi ngồi khán đài, hò hét. Hết giải, cả đội kéo tôi xuống chụp ảnh, nói tôi là thành viên danh dự.' },
@@ -650,7 +650,7 @@ export const stage50To59 = [
     title: 'Người bạn vào viện dưỡng lão',
     text: 'Người bạn thân vào viện dưỡng lão, con cái ở xa không chăm được. Bạn gọi điện, giọng buồn, nói ở đó không quen ai. Viện cách nhà tôi một tiếng đi xe.',
     choices: [
-      { label: 'Hẹn thăm mỗi tuần', effects: { happiness: 2 }, flags: ['tham_ban_vien_duong_lao'],
+      { label: 'Hẹn thăm mỗi tuần', effects: { happiness: 2 }, money: -2000000, flags: ['tham_ban_vien_duong_lao'],
         text: 'Chủ nhật nào tôi cũng tới, mang theo bánh, báo. Bạn giới thiệu tôi với mấy người trong viện. Dần dần bạn có bạn mới. Có tuần bạn bận chơi cờ, nói tôi về sớm.' },
       { label: 'Gọi điện thường xuyên', effects: { happiness: 1 },
         text: 'Tôi gọi điện mỗi tối, nghe bạn kể chuyện trong viện. Bạn nói gọi vậy là vui rồi. Tôi định thăm, rồi dời mãi.' },
@@ -694,7 +694,7 @@ export const stage50To59 = [
     title: 'Buổi hẹn như ngày xưa',
     text: '{tenBanDoi} đề nghị một buổi tối hẹn hò đúng như ngày mới quen: ăn ở quán cũ, đi bộ ở con đường cũ, mặc đẹp. Quán cũ đã đổi chủ, con đường cũ giờ đông xe. Tôi thấy hơi ngượng.',
     choices: [
-      { label: 'Đi', effects: { happiness: 3 }, flags: ['hen_ho_nhu_xua'],
+      { label: 'Đi', effects: { happiness: 3 }, money: -1000000, flags: ['hen_ho_nhu_xua'],
         text: 'Quán đổi chủ, món ăn khác, nhưng cái bàn trong góc vẫn còn. Hai đứa ngồi đúng chỗ ấy, kể chuyện hôm đầu gặp nhau. Mỗi người nhớ một kiểu, cãi nhau rất vui.' },
       { label: 'Đề nghị làm ở nhà', effects: { happiness: 1 },
         text: 'Hai đứa nấu món ngày xưa, ăn dưới ánh nến. Đồ ăn hơi khét. {tenBanDoi} vẫn khen ngon, như ngày xưa từng khen.' },
@@ -841,9 +841,9 @@ export const stage50To59 = [
     title: 'Mái nhà dột',
     text: 'Căn nhà ba mẹ để lại, tôi giữ suốt mấy năm nay, giờ mái dột, cột mối mọt. Người cô trông nhà đã già, không trông được nữa. Sửa lại thì tốn kém, mà tôi chỉ về mỗi năm vài lần.',
     choices: [
-      { label: 'Sửa lại, cho người trong họ ở', effects: { happiness: 2 }, flags: ['nha_cu_co_nguoi_o'],
+      { label: 'Sửa lại, cho người trong họ ở', effects: { happiness: 2 }, money: -60000000, flags: ['nha_cu_co_nguoi_o'],
         text: 'Một đứa cháu trong họ mới cưới, chưa có nhà, dọn về ở. Nhà có tiếng trẻ con. Mỗi lần tôi về giỗ, tụi nó dọn sẵn phòng cũ của tôi, chiếc giường vẫn kê ở chỗ cũ.' },
-      { label: 'Bán đi', effects: { happiness: -1 },
+      { label: 'Bán đi', effects: { happiness: -1 }, money: 120000000,
         text: 'Tôi bán nhà, chia tiền cho người cô một phần. Ngày giao nhà, tôi ngồi lại ở bậc thềm một lúc, nhặt một viên gạch vỡ mang về.' },
     ],
   },

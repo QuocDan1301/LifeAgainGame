@@ -130,9 +130,9 @@ export const stage70To79 = [
     title: 'Đứa cháu cần tiền',
     text: 'Đứa cháu nhắn riêng cho tôi, xin tiền trả nợ, dặn đừng nói với ba mẹ nó. Nó nói lỡ vay qua ứng dụng, lãi chồng lãi. Tôi có một ít tiền để dành cho những ngày ốm đau.',
     choices: [
-      { label: 'Cho tiền, giữ bí mật', effects: { happiness: -1 }, flags: ['giu_bi_mat_chau'],
+      { label: 'Cho tiền, giữ bí mật', effects: { happiness: -1 }, money: -20000000, flags: ['giu_bi_mat_chau'],
         text: 'Đứa cháu trả được nợ, cảm ơn rối rít. Mấy tháng sau nó lại nhắn, lần này ít hơn. Tôi bắt đầu thấy mình đang giúp nó trốn một chuyện lẽ ra phải đối mặt.' },
-      { label: 'Cho tiền, nhưng bảo cháu tự nói với ba mẹ', effects: { intelligence: 1 }, flags: ['day_chau_noi_that'],
+      { label: 'Cho tiền, nhưng bảo cháu tự nói với ba mẹ', effects: { intelligence: 1 }, money: -20000000, flags: ['day_chau_noi_that'],
         text: 'Đứa cháu im lặng mấy ngày, rồi tự kể với ba mẹ nó. Ba mẹ nó la một trận, rồi cùng nó tính cách trả nợ. Nó nhắn cho tôi: “Nói ra nhẹ hơn con tưởng.”' },
     ],
   },
@@ -312,9 +312,9 @@ export const stage70To79 = [
     title: 'Quỹ khuyến học',
     text: 'Hội khuyến học địa phương xin tôi đứng tên một suất học bổng hằng năm, vì tôi từng dạy kèm nhiều đứa trẻ trong khu. Tôi có thể dùng tiền dành dụm. Nhưng tiền ấy là để lo khi ốm đau.',
     choices: [
-      { label: 'Lập suất học bổng', effects: { happiness: 3 }, flags: ['hoc_bong_ten_minh'],
+      { label: 'Lập suất học bổng', effects: { happiness: 3 }, money: -30000000, flags: ['hoc_bong_ten_minh'],
         text: 'Suất học bổng đầu tiên trao cho một đứa trẻ mồ côi. Trong lễ trao, nó cúi chào tôi rất thấp. Tôi nhớ có một cậu bé vùng cao năm nào cũng từng chào như vậy.' },
-      { label: 'Góp một lần, không đứng tên', effects: { happiness: 1 },
+      { label: 'Góp một lần, không đứng tên', effects: { happiness: 1 }, money: -10000000,
         text: 'Tôi gửi một khoản, nhờ hội trao cho ai cần. Không đứng tên. Hội gửi thư cảm ơn, tôi kẹp vào cuốn sổ cùng những lá thư khác.' },
     ],
   },
@@ -334,7 +334,7 @@ export const stage70To79 = [
     title: 'Những ngày dài',
     text: 'Dạo này tôi buồn không rõ lý do, ăn không ngon, ngủ không yên. Một người bạn nói có thể là trầm cảm tuổi già, nên đi khám. Tôi thấy ngại, nghĩ đó là bệnh của người trẻ.',
     choices: [
-      { label: 'Đi khám', effects: { health: 2, happiness: 2 }, flags: ['kham_tram_cam'],
+      { label: 'Đi khám', effects: { health: 2, happiness: 2 }, money: -2000000, flags: ['kham_tram_cam'],
         text: 'Bác sĩ nói chuyện với tôi một tiếng, kê thuốc, hẹn tái khám. Ba tháng sau, buổi sáng tôi dậy và muốn ra ngoài. Tôi gọi cho người bạn, cảm ơn.' },
       { label: 'Tự cố gắng ra ngoài nhiều hơn', effects: { happiness: 1 },
         text: 'Mỗi ngày tôi ép mình ra khỏi nhà một lần. Có ngày đỡ, có ngày không. Người bạn vẫn gọi mỗi tối, hỏi hôm nay thế nào.' },
@@ -353,6 +353,17 @@ export const stage70To79 = [
   },
 
   // ───────────── 75 tuổi ─────────────
+  {
+    id: 'ls75-cay-gay', age: 75,
+    title: 'Cây gậy trong góc nhà',
+    text: 'Đi chợ, tôi vấp ở bậc thềm, may có người đỡ kịp. Người bán hàng quen khuyên tôi nên chống gậy. Tôi có sẵn một cây gậy người ta tặng từ năm ngoái, cất trong góc nhà, chưa dùng lần nào vì thấy mình chưa già tới mức ấy.',
+    choices: [
+      { label: 'Bắt đầu chống gậy', effects: { health: 1, happiness: -1 },
+        text: 'Mấy hôm đầu tôi cầm gậy như cầm vật lạ, đi đâu cũng thấy người ta nhìn. Tháng sau thì quen. Tôi đi chợ xa hơn, không còn phải dò từng bậc thềm.' },
+      { label: 'Để gậy trong góc', effects: { happiness: 1, health: -1 },
+        text: 'Tôi đi chậm lại, bám vào tường mỗi khi xuống bậc. Người quen khen tôi còn nhanh nhẹn. Có hôm trời mưa, tôi đứng ở đầu đường rất lâu mới dám bước.' },
+    ],
+  },
   {
     id: 'ls75-bua-com-cuoi-tuan', age: 75,
     title: 'Bếp ăn trong khu',
@@ -391,7 +402,7 @@ export const stage70To79 = [
     title: 'Lễ kỷ niệm {soNamKetHon} năm',
     text: '{soNamKetHon} năm kể từ ngày cưới. {tenBanDoi} muốn chụp một bộ ảnh cưới mới, mặc áo dài, áo vest, như lần chụp ảnh cưới ngày xưa. Tôi thấy già rồi, chụp ảnh cưới thì ngượng.',
     choices: [
-      { label: 'Chụp', effects: { happiness: 4 }, flags: ['anh_cuoi_nam_muoi_nam'],
+      { label: 'Chụp', effects: { happiness: 4 }, money: -5000000, flags: ['anh_cuoi_nam_muoi_nam'],
         text: 'Thợ ảnh kiên nhẫn, chờ hai đứa đứng dậy, ngồi xuống. {tenBanDoi} cười suốt buổi. Tấm ảnh đẹp nhất là tấm hai đứa đang cười vì bị vấp vào nhau.' },
       { label: 'Chụp một tấm ở nhà', effects: { happiness: 2 },
         text: 'Đứa cháu chụp cho hai đứa một tấm ở hiên nhà, ánh chiều. Không áo dài, không vest. Tấm ảnh được phóng to, treo cạnh tấm ảnh cưới {soNamKetHon} năm trước.' },
@@ -505,7 +516,7 @@ export const stage70To79 = [
     title: 'Ca mổ ở tuổi bảy mươi bảy',
     text: 'Tôi ngã, gãy cổ xương đùi. Bác sĩ nói mổ thì có cơ hội đi lại, nhưng ở tuổi này mổ có rủi ro. Không mổ thì có thể nằm một chỗ. Người thân để tôi tự quyết.',
     choices: [
-      { label: 'Mổ', effects: { health: 2 }, flags: ['mo_xuong_dui'],
+      { label: 'Mổ', effects: { health: 2 }, money: -30000000, flags: ['mo_xuong_dui'],
         text: 'Ca mổ ổn. Ba tháng tập đi, đau tới chảy nước mắt. Ngày đầu tiên tự đi được mười bước với khung tập, tôi đứng ở cuối hành lang, cười như đứa trẻ tập đi.' },
       { label: 'Không mổ', effects: { health: -2, happiness: -1 },
         text: 'Tôi nằm, ngồi xe lăn. Người thân thay phiên chăm. Tôi đọc sách nhiều hơn bao giờ hết, nhìn ra cửa sổ, học thuộc từng chiếc lá trên cây bàng.' },
@@ -636,6 +647,17 @@ export const stage70To79 = [
   },
 
   // ───────────── 79 tuổi ─────────────
+  {
+    id: 'ls79-bep-ga-cu', age: 79,
+    title: 'Cái bếp ga ba mươi năm',
+    text: 'Tuần này tôi hai lần quên tắt bếp, nồi cháo khét đen. Người hàng xóm ngửi thấy mùi, sang gõ cửa, rồi khuyên tôi đổi sang bếp điện tự ngắt, nói nhà họ có sẵn một cái dư. Tôi đã nấu bằng cái bếp ga này hơn ba mươi năm.',
+    choices: [
+      { label: 'Đổi sang bếp điện', effects: { health: 1, happiness: -1 },
+        text: 'Bếp mới tự tắt khi nồi cạn. Món kho không còn dậy mùi như trước, tôi nêm mãi vẫn thấy thiếu. Nhưng từ đó, tôi ngủ trưa không còn phải bật dậy xem có mùi khét.' },
+      { label: 'Giữ bếp cũ, dán giấy nhắc', effects: { happiness: 1, health: -1 },
+        text: 'Tôi dán một tờ giấy ghi chữ thật to ngay trên bếp. Món kho vẫn đúng vị. Có hôm nồi vẫn khét, tôi mở cửa sổ cho bay mùi, không kể với ai.' },
+    ],
+  },
   {
     id: 'ls79-ky-uc-tre-tho', age: 79,
     title: 'Ký ức rõ nhất',

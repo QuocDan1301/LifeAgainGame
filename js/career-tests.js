@@ -4,6 +4,11 @@ import { EXAM_HINT_INTELLECT, EXAM_PREP, EXAM_RETAKES, formatPercent, getExamOve
 // Mỗi ngành có ba câu nhập môn, mỗi câu có ba đáp án và một đáp án đúng.
 const question = (text, answers, correct) => ({ text, answers, correct });
 export const careerTests = {
+  "study-abroad": [
+    question("Ngân sách du học cần tính những gì?", ["Học phí và sinh hoạt cùng khoản dự phòng", "Chỉ tiền vé máy bay", "Chỉ học phí"], 0),
+    question("Khi chưa hiểu bài bằng ngoại ngữ, bạn nên làm gì?", ["Giả vờ hiểu", "Hỏi lại và ôn từ vựng", "Bỏ hết các buổi học"], 1),
+    question("Khi làm việc với nhóm đa văn hóa, cách nào phù hợp?", ["Ép mọi người theo ý mình", "Không trao đổi", "Lắng nghe và xác nhận nhiệm vụ"], 2),
+  ],
   acting: [
     question("Trong diễn xuất, 'động cơ nhân vật' là gì?", ["Điều nhân vật muốn đạt được và lý do hành động", "Tốc độ nói lời thoại", "Vị trí đứng trên sân khấu"], 0),
     question("Khi diễn cận cảnh trước máy quay, cách thể hiện nào thường phù hợp hơn?", ["Luôn nói thật to", "Biểu cảm tinh tế, tự nhiên", "Luôn dùng động tác phóng đại"], 1),

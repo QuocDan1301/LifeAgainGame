@@ -3,6 +3,17 @@
 export const stage26To32 = [
   // ───────────── 26 tuổi ─────────────
   {
+    id: 'ls26-cuoc-goi-mot-gio-sang', age: 26,
+    title: 'Cuộc gọi lúc một giờ sáng',
+    text: 'Gần một giờ sáng, đứa bạn thân gọi tới, giọng say. Nó nói đang ngồi một mình ở quán bên kia thành phố, điện thoại sắp hết pin, không gọi được xe. Sáng mai tôi phải dậy từ năm giờ. Bạn hỏi tôi có tới được không.',
+    choices: [
+      { label: 'Dậy đi đón', effects: { happiness: 1, health: -2 },
+        text: 'Tôi chở bạn về, bạn ngủ gục sau lưng. Ba giờ sáng tôi mới nằm xuống, hôm sau ngáp suốt buổi. Bạn nhắn xin lỗi, kèm một tấm ảnh hai đứa hồi cấp ba.' },
+      { label: 'Đặt xe, dặn tài xế kỹ', effects: { happiness: -1 },
+        text: 'Tôi đặt xe giúp, gọi tài xế dặn chỗ đón và địa chỉ nhà bạn. Hai giờ sáng bạn nhắn đúng một chữ: “Tới.” Tôi nằm thức thêm một lúc, nghĩ giá mà mình đi.' },
+    ],
+  },
+  {
     id: 'ls26-tien-thue', age: 26,
     title: 'Chủ nhà tăng giá',
     text: 'Chủ nhà báo từ tháng sau tăng tiền thuê thêm một triệu rưỡi. Ở lại thì phải bớt khoản mỗi tháng tôi vẫn gửi về nhà. Có một phòng rẻ hơn ở ngoại ô, nhưng mỗi ngày đi làm sẽ mất thêm một tiếng. Tôi phải trả lời chủ nhà trong tuần này.',
@@ -78,6 +89,17 @@ export const stage26To32 = [
   },
 
   // ───────────── 27 tuổi ─────────────
+  {
+    id: 'ls27-kem-em-ho', age: 27,
+    title: 'Ba buổi tối mỗi tuần',
+    text: 'Đứa em họ sắp thi vào lớp mười, nhà không có tiền cho đi học thêm. Cô tôi gọi điện, nhờ tôi kèm Toán cho em ba buổi tối mỗi tuần trong hai tháng. Đúng lúc tôi định dành các buổi tối cho một việc riêng đã hoãn từ lâu.',
+    choices: [
+      { label: 'Nhận kèm em', effects: { happiness: 1, intelligence: 1, health: -1 },
+        text: 'Tối nào tôi cũng ngồi với em tới mười giờ, có bài phải tự giải trước. Em đậu, cô gửi lên một túi đồ quê. Việc riêng của tôi lại dời sang năm sau.' },
+      { label: 'Tìm cho em nhóm học miễn phí', effects: { intelligence: 1, happiness: -1 },
+        text: 'Tôi tìm được một nhóm sinh viên dạy miễn phí, em đi được vài buổi thì bỏ vì xa. Việc riêng của tôi xong được một nửa. Cô không trách, chỉ là lần sau gọi chỉ hỏi thăm sức khỏe.' },
+    ],
+  },
   {
     id: 'ls27-loi-chuc', age: 27,
     title: 'Lời chúc trên sân khấu',
@@ -159,9 +181,9 @@ export const stage26To32 = [
     choices: [
       { label: 'Trình báo công an', effects: { happiness: -1 }, flags: ['bao_trom'],
         text: 'Thằng con bị bắt sau hai ngày, xe đã bán mất. Bà cụ tới nhà tôi, đặt lên bàn túi xôi, không nói gì rồi đi. Từ đó tôi đi đường khác để khỏi qua sạp xôi.' },
-      { label: 'Tới gặp bà cụ', effects: { happiness: 1 }, flags: ['gap_ba_ban_xoi'],
+      { label: 'Tới gặp bà cụ', effects: { happiness: -1 }, flags: ['gap_ba_ban_xoi'],
         text: 'Bà cụ khóc, xin trả dần tiền xe, mỗi tháng năm trăm nghìn. Tháng nào bà cũng mang tiền tới đúng hẹn, kèm gói xôi. Tôi nhận tiền mà nuốt xôi không trôi.' },
-      { label: 'Bỏ qua, mua xe cũ', effects: { happiness: -2 },
+      { label: 'Bỏ qua, mua xe cũ', effects: { happiness: -2 }, money: -10000000,
         text: 'Tôi mua chiếc xe cũ, sắm thêm hai ổ khóa. Mỗi sáng đi ngang sạp xôi, bà cụ cúi đầu. Có lần bà gọi với theo, tôi giả như không nghe.' },
     ],
   },
@@ -236,6 +258,17 @@ export const stage26To32 = [
 
   // ───────────── 29 tuổi ─────────────
   {
+    id: 'ls29-buc-anh-nham-mat', age: 29,
+    title: 'Tấm ảnh nhắm mắt',
+    text: 'Một người bạn đăng ảnh cả nhóm đi chơi, trong đó tôi đang nhai dở, mắt nhắm nghiền. Ảnh đã có mấy trăm lượt thích, bạn bè chung vào bình luận trêu. Người đăng không có ý xấu, chỉ thấy vui. Tôi mở tấm ảnh, xem đi xem lại.',
+    choices: [
+      { label: 'Nhắn riêng nhờ gỡ', effects: { appearance: 1, happiness: -1 },
+        text: 'Bạn gỡ ngay, xin lỗi, nói tưởng tôi không để ý mấy chuyện này. Từ đó đăng ảnh có tôi, bạn đều hỏi trước. Nhóm chat bắt đầu gọi tôi là người kỹ tính.' },
+      { label: 'Vào bình luận tự trêu mình', effects: { happiness: 1, appearance: -1 },
+        text: 'Tôi viết một câu tự trêu, nhận thêm cả trăm lượt cười. Mấy năm sau, tấm ảnh ấy vẫn được đem ra mỗi dịp họp mặt. Tôi quen dần, có hôm còn tự kể trước.' },
+    ],
+  },
+  {
     id: 'ls29-sep-ky-thay', age: 29, needs: ['employed'],
     title: 'Chữ ký thay sếp',
     text: 'Sếp đi công tác, nhắn tôi ký thay mấy giấy tờ thanh toán cho kịp hạn. Một tờ trong đó có số tiền cao gấp đôi giá tôi biết. Sếp gọi giục, nói làm ngay rồi về sếp giải thích.',
@@ -304,11 +337,22 @@ export const stage26To32 = [
 
   // ───────────── 30 tuổi ─────────────
   {
+    id: 'ls30-xe-chan-loi', age: 30,
+    title: 'Chiếc xe chắn lối',
+    text: 'Sáng nào cũng có một chiếc xe máy dựng chắn ngay lối ra vào nhà tôi, của người thuê trọ mới bên cạnh. Tôi đã dán giấy nhắc hai lần mà không ăn thua. Sáng nay tôi lại phải dắt nó sang một bên, và trễ mất mười phút.',
+    choices: [
+      { label: 'Gõ cửa nói chuyện', effects: { intelligence: 1, happiness: -1 },
+        text: 'Người thuê trọ là một cậu sinh viên, mặt đỏ bừng, xin lỗi rối rít, nói chưa đọc giấy. Từ đó xe dựng đúng chỗ. Chỉ là mỗi lần gặp, cậu cúi đầu đi thật nhanh.' },
+      { label: 'Báo chủ nhà trọ', effects: { happiness: 1 },
+        text: 'Chủ trọ sang nhắc, giọng to tới mức cả dãy nghe thấy. Hôm sau xe dựng đúng chỗ. Cậu thuê trọ gặp tôi ở đầu đường, chào rất nhỏ, rồi thôi không chào nữa.' },
+    ],
+  },
+  {
     id: 'ls30-ban-cu-cuoi', age: 30,
     title: 'Ba mươi tuổi',
     text: 'Ba mươi tuổi, nhìn lại thấy mình đi được một quãng. Có một việc tôi muốn làm từ lâu: nghỉ một tháng để đi một chuyến dài. Muốn đi thì phải xin nghỉ không lương và tiêu gần hết tiền tiết kiệm. Mấy năm tới có lẽ sẽ không còn dịp.',
     choices: [
-      { label: 'Đi một tháng', effects: { happiness: 4, intelligence: 1 }, flags: ['chuyen_di_30'],
+      { label: 'Đi một tháng', effects: { happiness: 4, intelligence: 1 }, money: -30000000, flags: ['chuyen_di_30'],
         text: 'Tôi đi qua mười hai tỉnh, ngủ nhà nghỉ, ngồi xe khách đêm. Về đến nhà, tài khoản gần trống, công việc dồn ứ. Tôi không hối hận, chỉ lo tháng sau.' },
       { label: 'Để dành, đi sau', effects: { intelligence: 1, happiness: -1 }, flags: ['hoan_chuyen_di'],
         text: 'Tôi dán tấm bản đồ lên tường, đánh dấu những nơi muốn đến. Năm sau, năm sau nữa, những dấu đỏ vẫn chưa được gạch.' },
@@ -319,7 +363,7 @@ export const stage26To32 = [
     title: 'Vết xước trong bãi xe',
     text: 'Tôi lùi xe trong bãi, quẹt vào chiếc xe bên cạnh, để lại một vết xước dài trên cửa. Bãi vắng, không có ai, camera ở góc này đã hỏng. Sửa vết xước như vậy chắc mất vài triệu. Tôi đang trễ giờ hẹn.',
     choices: [
-      { label: 'Để lại số điện thoại', effects: { happiness: 1 }, flags: ['de_lai_so'],
+      { label: 'Để lại số điện thoại', effects: { happiness: 1 }, money: -1500000, flags: ['de_lai_so'],
         text: 'Tôi viết số điện thoại lên tờ giấy, kẹp vào cần gạt nước. Tối đó chủ xe gọi, ngạc nhiên vì có người để lại số. Anh ta chỉ lấy nửa tiền sửa.' },
       { label: 'Lái đi', effects: { happiness: -2 }, flags: ['bo_di_vet_xuoc'],
         text: 'Tôi tới cuộc hẹn đúng giờ. Suốt buổi, tôi nghĩ tới vết xước. Tuần sau, tôi lại đỗ xe ở bãi ấy, nhìn quanh xem chiếc xe kia có ở đó không.' },
@@ -446,7 +490,7 @@ export const stage26To32 = [
     choices: [
       { label: 'Ngồi xuống hỏi cho ra', effects: { happiness: 1 }, flags: ['hoi_ban_doi_met'],
         text: '{tenBanDoi} kể đang bị sếp chèn ép mấy tháng, không dám nói vì sợ tôi lo. Hai đứa ngồi tới khuya. Tuần sau {tenBanDoi} xin chuyển phòng.' },
-      { label: 'Đặt một chuyến đi cuối tuần', effects: { happiness: 1, health: 1 },
+      { label: 'Đặt một chuyến đi cuối tuần', effects: { health: 1 }, money: -4000000,
         text: 'Hai đứa đi biển hai ngày. {tenBanDoi} ngủ nhiều, cười được vài lần. Về tới nhà, mọi thứ lại như cũ. Tôi vẫn chưa biết chuyện gì đã xảy ra.' },
       { label: 'Để yên, chờ tự qua', effects: { happiness: -2 },
         text: 'Tôi làm việc nhà nhiều hơn, không hỏi. Ba tháng sau, {tenBanDoi} kể đã đi khám tâm lý được mấy buổi. Tôi là người biết sau cùng.' },
@@ -465,6 +509,17 @@ export const stage26To32 = [
   },
 
   // ───────────── 32 tuổi ─────────────
+  {
+    id: 'ls32-dung-ten-tai-khoan', age: 32,
+    title: 'Đứng tên giúp bạn',
+    text: 'Một người bạn cũ mở cửa hàng trên mạng, nhờ tôi đứng tên tài khoản nhận tiền vì tài khoản của bạn đang bị khóa. Bạn hứa chỉ ba tháng, mọi khoản đều rõ ràng. Tôi không rành chuyện buôn bán của bạn, nhưng bạn đang rất cần.',
+    choices: [
+      { label: 'Đồng ý, ghi thỏa thuận', effects: { happiness: 1, health: -1 },
+        text: 'Hai đứa ký một tờ thỏa thuận viết tay. Ba tháng tiền vào ra đều đặn, bạn chuyển tài khoản đúng hẹn. Nhưng suốt ba tháng ấy, cứ có tin báo tiền là tôi giật mình.' },
+      { label: 'Từ chối, giúp mở lại tài khoản', effects: { intelligence: 1, happiness: -1 },
+        text: 'Tôi ngồi cùng bạn gọi cho ngân hàng, hỏi cách mở lại tài khoản. Mất hai tuần mới xong, cửa hàng của bạn đứng im suốt thời gian ấy. Bạn cảm ơn, nhưng tôi biết bạn đã mong một câu khác.' },
+    ],
+  },
   {
     id: 'ls32-thang-chuc-doi-noi', age: 32, needs: ['employed'],
     title: 'Chuyển công tác',

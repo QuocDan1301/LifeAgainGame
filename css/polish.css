@@ -26,92 +26,126 @@ body {
   box-shadow: 0 3px 0 #e6b92e, 0 6px 14px rgb(150 110 0 / 14%);
 }
 
-/* ----- Nhật ký: dòng thời gian, năm mới nhất nổi bật ----- */
+/* ----- Nhật ký: sổ tay giấy kem, mỗi năm một khối, năm mới nhất nổi bật ----- */
+:root {
+  --diary-paper: #fffaea;
+  --diary-ink: #263a4d;
+  --diary-age: #8a5d00;
+  --diary-line: #f1dfa4;
+}
 .journal {
-  border-color: #ffd34d;
+  background: var(--diary-paper);
+  border: 3px solid #ffd34d;
   box-shadow:
-    inset 0 2px 0 rgb(255 255 255 / 75%),
     0 4px 0 #e6b92e,
-    0 8px 18px rgb(150 110 0 / 14%);
+    0 8px 18px rgb(150 110 0 / 12%);
 }
 #life-log {
-  position: relative;
-  padding-left: 2rem;
-}
-#life-log::before {
-  content: "";
-  position: absolute;
-  top: 1rem;
-  bottom: 1rem;
-  left: 0.6rem;
-  width: 2px;
-  border-radius: 2px;
-  background: repeating-linear-gradient(to bottom, rgb(180 130 0 / 45%) 0 6px, transparent 6px 11px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 .log-entry {
-  position: relative;
-  padding: 0.5rem 0.9rem 0.6rem;
+  padding: 0.8rem 1.2rem 0.9rem;
+  border: 1px solid var(--diary-line);
   border-radius: 1.2rem;
-  background: rgb(255 255 255 / 58%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 85%), 0 2px 6px rgb(150 110 0 / 10%);
+  background: rgb(255 255 255 / 72%);
 }
-/* Nhãn tuổi nằm cùng dòng đầu tiên để tiết kiệm một dòng mỗi năm */
-.log-entry::after {
-  content: "";
-  display: table;
-  clear: both;
+.log-entry + .log-entry { margin-top: 0; }
+/* Nhãn tuổi đứng riêng một dòng, không chen vào câu chữ */
+.log-entry h3 {
+  display: inline-block;
+  margin: 0 0 0.3rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  background: #fff0bf;
+  color: var(--diary-age);
+  font-size: 1.5rem;
+  line-height: 1.6;
 }
 .log-entry p {
-  font-size: 1.7rem;
-  line-height: 1.45;
+  margin: 0;
+  color: var(--diary-ink);
+  font-size: 1.8rem;
+  line-height: 2.6rem;
+  white-space: normal;
 }
-.log-entry p + p { margin-top: 0.15rem; }
-.log-entry::before {
+.log-entry p + p {
+  margin-top: 0.4rem;
+  padding-top: 0.4rem;
+  border-top: 1px dashed var(--diary-line);
+}
+/* Cột biểu tượng cố định: chữ xuống dòng thẳng hàng với dòng đầu */
+.log-line {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  column-gap: 0.5rem;
+}
+.log-line + .log-line { margin-top: 0.2rem; }
+.log-icon {
+  font-size: 1.6rem;
+  line-height: 2.6rem;
+  text-align: center;
+}
+.log-line.is-plain .log-icon::before {
   content: "";
-  position: absolute;
-  top: 1rem;
-  left: -1.9rem;
-  width: 1.2rem;
-  height: 1.2rem;
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 50%;
-  background: var(--polish-gold);
-  box-shadow: 0 0 0 3px #fff8dc, 0 0 0 4px rgb(180 130 0 / 35%);
-}
-.log-entry + .log-entry { margin-top: 0.6rem; }
-.log-entry h3 {
-  float: left;
-  margin: 0.15rem 0.6rem 0 0;
-  padding: 0 0.8rem;
-  border-radius: 999px;
-  background: linear-gradient(#ffe27a, var(--polish-gold));
-  box-shadow: 0 2px 0 var(--polish-gold-edge);
-  font-size: 1.45rem;
-  line-height: 1.55;
-}
-.log-entry:last-child {
-  background: #fff;
-  box-shadow: 0 0 0 2px #ffd34d, 0 6px 16px rgb(150 110 0 / 18%);
-  animation: polish-log-in 460ms var(--polish-spring) both;
-}
-.log-entry:last-child::before {
-  background: #ff8a3d;
-  box-shadow: 0 0 0 3px #fff8dc, 0 0 0 6px rgb(255 138 61 / 35%);
+  background: #e8c35a;
+  vertical-align: middle;
 }
 .log-entry .stat-increase,
 .log-entry .stat-decrease {
-  padding: 0 0.5rem;
-  border-radius: 0.6rem;
+  padding: 0;
+  background: none;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.log-entry .stat-increase { color: #1d7a35; }
+.log-entry .stat-decrease { color: #b42323; }
+.log-entry .log-repeat {
+  color: var(--diary-age);
+  font-size: 0.9em;
   font-weight: 700;
 }
-.log-entry .stat-increase { background: rgb(33 135 57 / 12%); }
-.log-entry .stat-decrease { background: rgb(198 40 40 / 10%); }
+.log-entry:last-child {
+  border-color: #ffc93c;
+  background: #fff;
+  box-shadow: 0 0 0 1px #ffc93c, 0 6px 14px rgb(150 110 0 / 14%);
+  animation: polish-log-in 420ms var(--polish-spring) both;
+}
+.log-entry:last-child h3 {
+  background: linear-gradient(#ffe27a, var(--polish-gold));
+  color: #5b3d00;
+  box-shadow: 0 2px 0 var(--polish-gold-edge);
+}
 @keyframes polish-log-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  from { opacity: 0; transform: translateY(10px); }
+}
+/* Năm bình lặng: một dòng nhạt, nhãn tuổi cùng hàng với chữ */
+.log-entry.is-quiet {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 1.2rem;
+  border-style: dashed;
+  background: transparent;
+}
+.log-entry.is-quiet h3 { margin: 0; }
+.log-entry.is-quiet p { color: #7d6c45; }
+.log-entry.is-quiet .log-line { display: block; }
+.log-entry.is-quiet .log-icon { display: none; }
+@media (max-width: 480px) {
+  .log-entry { padding: 0.8rem 1rem 0.9rem; }
+  .log-entry p { font-size: 1.7rem; line-height: 2.45rem; }
+  .log-icon { line-height: 2.45rem; }
 }
 
 /* Dải cảnh báo sức khỏe dính ở đầu nhật ký: che phần chữ cuộn phía sau nó */
 .health-alert {
-  box-shadow: 0 -1.6rem 0 0.6rem #f0dd7d, 0 4px 10px rgb(160 40 40 / 14%);
+  box-shadow: 0 -1.6rem 0 0.6rem var(--diary-paper), 0 4px 10px rgb(160 40 40 / 14%);
 }
 
 /* ----- Bốn nút chức năng: nổi khối, ấn xuống khi chạm ----- */

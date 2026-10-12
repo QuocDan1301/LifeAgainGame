@@ -33,9 +33,9 @@ export const stage33To39 = [
     title: 'Lỗi của người khác',
     text: 'Đồng nghiệp thân nhất của tôi gửi nhầm báo giá cho khách, công ty mất một hợp đồng lớn. Sếp họp cả nhóm, hỏi ai phụ trách bản báo giá đó. Chỉ tôi biết. Đồng nghiệp đang nuôi con nhỏ, vừa vay tiền mua nhà.',
     choices: [
-      { label: 'Im lặng', effects: { happiness: -1 }, flags: ['che_dong_nghiep'],
+      { label: 'Im lặng', effects: { happiness: -1 }, money: -3000000, flags: ['che_dong_nghiep'],
         text: 'Sếp phạt cả nhóm, ai cũng bị trừ thưởng. Đồng nghiệp mời tôi ăn trưa cả tuần, không nói lý do. Tôi ăn, cũng không hỏi.' },
-      { label: 'Khuyên đồng nghiệp tự nhận', effects: { intelligence: 1 }, flags: ['khuyen_tu_nhan'],
+      { label: 'Khuyên đồng nghiệp tự nhận', effects: { intelligence: 1, happiness: -1 }, flags: ['khuyen_tu_nhan'],
         text: 'Cuối giờ, đồng nghiệp gõ cửa phòng sếp. Bị kỷ luật, mất thưởng nửa năm, nhưng không mất việc. Đồng nghiệp nói với tôi: “Cảm ơn, dù tao vẫn hơi ghét mày.”' },
     ],
   },
@@ -103,9 +103,9 @@ export const stage33To39 = [
     title: 'Dây hụi của chị hàng xóm',
     text: 'Chị hàng xóm rủ chơi hụi, mỗi tháng góp hai triệu, ai cần thì hốt trước. Cả xóm chơi mấy năm nay chưa có chuyện gì. Gửi ngân hàng thì lãi ít hơn nhiều. Chị nói tháng này còn đúng một chân.',
     choices: [
-      { label: 'Tham gia', effects: { happiness: -2 }, money: -2000000, flags: ['vo_hui'],
+      { label: 'Tham gia', effects: { happiness: -2 }, money: -16000000, flags: ['vo_hui'],
         text: 'Tám tháng đầu đều đặn. Tháng thứ chín, chị hàng xóm đóng cửa, cả nhà đi đâu không ai biết. Cả xóm mất tiền. Tôi mất mười sáu triệu, và mất niềm tin vào cái cười của hàng xóm.' },
-      { label: 'Từ chối', effects: { intelligence: 1 },
+      { label: 'Từ chối', effects: { intelligence: 1, happiness: -1 },
         text: 'Chị hàng xóm hơi phật ý, mấy tuần không chào. Một năm sau, dây hụi vẫn chạy đều, người hốt được tiền khoe xây được cái bếp. Tôi không biết mình đúng hay sai.' },
     ],
   },
@@ -169,6 +169,17 @@ export const stage33To39 = [
 
   // ───────────── 35 tuổi ─────────────
   {
+    id: 'ls35-hai-cay-bang', age: 35,
+    title: 'Hai cây bàng đầu đường',
+    text: 'Tổ dân phố bàn chuyện chặt hai cây bàng già để mở rộng lối đi. Người lớn tuổi không muốn chặt, người trẻ muốn đường rộng cho xe. Tổ trưởng nhờ tôi, người ít làm bên nào phật lòng, đứng ra hỏi ý từng nhà rồi đề xuất cách làm.',
+    choices: [
+      { label: 'Nhận, đi hỏi từng nhà', effects: { intelligence: 1, health: -1 },
+        text: 'Tôi đi hỏi từng nhà suốt ba buổi tối. Cuối cùng giữ một cây, chặt một cây, lối đi rộng thêm nửa mét. Không ai hài lòng hẳn, nhưng buổi họp sau không ai lớn tiếng.' },
+      { label: 'Chỉ góp ý của mình', effects: { happiness: -1 },
+        text: 'Tôi nói ý mình rồi về sớm. Tổ trưởng tự quyết, chặt cả hai cây. Chiều hôm ấy, một bác lớn tuổi ngồi rất lâu bên gốc cây vừa đốn.' },
+    ],
+  },
+  {
     id: 'ls35-gop-von', age: 35,
     title: 'Góp vốn mở quán',
     text: 'Bạn thân rủ góp vốn mở quán cà phê, mỗi người một nửa. Bạn ấy giỏi pha chế nhưng từng thất bại một lần. Phần của tôi là gần hết tiền để dành. Bạn ấy nói lần này đã có kinh nghiệm.',
@@ -221,7 +232,7 @@ export const stage33To39 = [
     choices: [
       { label: 'Thuyết phục đón lên', effects: { happiness: -1 }, flags: ['don_ba_me_len'],
         text: 'Ba mẹ lên ở được tám tháng. Ngày nào cũng hỏi chuyện ở quê, gọi điện cho hàng xóm cũ. Tới mùa nước, ba mẹ xin về. Tôi đưa về, lắp thêm tay vịn trong nhà tắm.' },
-      { label: 'Thuê người chăm ở quê', effects: { happiness: 1 }, flags: ['thue_nguoi_cham'],
+      { label: 'Thuê người chăm ở quê', effects: { happiness: 1 }, money: -12000000, flags: ['thue_nguoi_cham'],
         text: 'Tôi thuê một chị hàng xóm qua nấu cơm, xem chừng mỗi ngày. Tối nào cũng gọi video. Ba mẹ khỏe ra, nhưng có hôm gọi, mẹ nói: “Nhà vắng quá.”' },
     ],
   },
@@ -394,7 +405,7 @@ export const stage33To39 = [
     title: 'Bức tường lấn sang',
     text: 'Nhà hàng xóm xây lại, bức tường lấn sang đất nhà tôi chừng hai tấc. Đo lại thì đúng. Hàng xóm là người tốt, hay cho đồ ăn, nhưng chuyện đất cát thì để lâu sẽ thành chuyện lớn.',
     choices: [
-      { label: 'Sang nói chuyện thẳng', effects: { intelligence: 1 }, flags: ['noi_chuyen_ranh_dat'],
+      { label: 'Sang nói chuyện thẳng', effects: { intelligence: 1 }, money: -3000000, flags: ['noi_chuyen_ranh_dat'],
         text: 'Hàng xóm ngạc nhiên, mời thợ đo lại, rồi đồng ý dời tường. Mất nửa tháng, hai bên đều tốn tiền. Từ đó hàng xóm vẫn cho đồ ăn, nhưng ít hơn.' },
       { label: 'Bỏ qua, coi như cho', effects: { happiness: -1 }, flags: ['bo_qua_ranh_dat'],
         text: 'Hai tấc đất nằm sau bức tường mới. Hàng xóm không biết, hoặc biết mà không nói. Mỗi lần đi qua, tôi lại nhìn bức tường.' },
@@ -407,7 +418,7 @@ export const stage33To39 = [
     title: 'Giải chạy đầu tiên',
     text: 'Tôi bắt đầu chạy bộ vì lời bác sĩ. Ba tháng sau, nhóm chạy rủ tôi đăng ký giải hai mươi mốt cây số. Tôi mới chạy được mười cây. Còn sáu tuần nữa là tới ngày chạy.',
     choices: [
-      { label: 'Đăng ký, tập thêm', effects: { health: 2, happiness: 2 }, flags: ['chay_ban_ma'],
+      { label: 'Đăng ký, tập thêm', effects: { health: 1, happiness: 2 }, flags: ['chay_ban_ma'],
         text: 'Tôi về đích sau gần ba tiếng, gần cuối bảng. Đầu gối đau một tuần. Cái huy chương bằng kim loại rẻ tiền được treo ở chỗ dễ thấy nhất trong nhà.' },
       { label: 'Chạy cự ly ngắn hơn', effects: { health: 2 },
         text: 'Tôi chạy năm cây số, về đích thoải mái. Nhóm chạy chụp ảnh, tôi đứng ở hàng sau. Năm sau, tôi hứa với mình sẽ chạy cự ly dài.' },
@@ -464,9 +475,9 @@ export const stage33To39 = [
     title: 'Con chó ở trạm cứu hộ',
     text: 'Tôi tới trạm cứu hộ động vật để quyên góp. Có một con chó già, mù một mắt, nằm ở góc chuồng. Người ở trạm nói nó ở đây ba năm rồi, chẳng ai nhận. Nó ngẩng đầu nhìn về phía tôi.',
     choices: [
-      { label: 'Nhận nuôi', effects: { happiness: 3 }, flags: ['nuoi_cho_mu'],
+      { label: 'Nhận nuôi', effects: { happiness: 3 }, money: -3000000, flags: ['nuoi_cho_mu'],
         text: 'Con chó đi lần theo tường nhà mấy hôm mới quen. Sáng nào nó cũng chờ tôi ở cửa phòng ngủ. Hàng xóm hỏi sao nuôi chó già, tôi nói nó cũng hỏi tôi câu đó.' },
-      { label: 'Quyên góp, hẹn quay lại', effects: { happiness: -1 },
+      { label: 'Quyên góp, hẹn quay lại', effects: { happiness: -1 }, money: -1000000,
         text: 'Tôi để lại tiền, hứa sẽ quay lại. Hai tháng sau tôi quay lại thật. Góc chuồng ấy đã có một con chó khác.' },
     ],
   },
@@ -510,7 +521,7 @@ export const stage33To39 = [
     title: 'Mười năm một chỗ',
     text: 'Tôi làm ở công ty này gần mười năm, công việc lặp lại, không còn gì mới. Một người quen rủ sang công ty khởi nghiệp, lương thấp hơn, rủi ro cao, nhưng được làm thứ mình thích. Bốn mươi tuổi tới nơi.',
     choices: [
-      { label: 'Chuyển sang chỗ mới', effects: { happiness: 2, intelligence: 1 }, flags: ['nhay_viec_39'],
+      { label: 'Chuyển sang chỗ mới', effects: { happiness: 2, intelligence: 1, health: -1 }, flags: ['nhay_viec_39'],
         text: 'Năm đầu ở chỗ mới, tôi học lại từ đầu nhiều thứ, có tuần làm tới khuya. Lương ít đi. Nhưng sáng nào tôi cũng muốn tới chỗ làm.' },
       { label: 'Ở lại', effects: { happiness: -1 }, flags: ['o_lai_cong_ty_cu'],
         text: 'Tôi ở lại, công việc ổn định. Một năm sau công ty kia phá sản. Tôi vừa thở phào vừa thấy tiếc cái cảm giác mà mình đã không thử.' },
@@ -578,7 +589,7 @@ export const stage33To39 = [
     title: 'Con xin nuôi chó',
     text: '{tenCon} năn nỉ nuôi một con chó, hứa tự cho ăn, tự dọn. Nhà ở khá chật, ai cũng đi cả ngày. Tôi nhớ những ngày tuổi thơ có một con chó ở nhà, và nhớ cả lúc phải chia tay nó.',
     choices: [
-      { label: 'Đồng ý', effects: { happiness: 3 }, flags: ['con_nuoi_cho'],
+      { label: 'Đồng ý', effects: { happiness: 3 }, money: -3000000, flags: ['con_nuoi_cho'],
         text: '{tenCon} đặt tên con chó là Vàng, dù nó lông đen. Tháng đầu con làm đủ mọi việc. Sau đó tôi làm phần nhiều hơn. Tôi nhớ có người cũng từng làm vậy cho mình.' },
       { label: 'Hẹn khi nào nhà rộng hơn', effects: { happiness: -1 },
         text: '{tenCon} buồn mấy ngày, rồi xin đi chơi với con chó nhà hàng xóm mỗi chiều. Có hôm tôi thấy con ngồi ôm nó ở bậc cửa nhà người ta.' },
@@ -613,7 +624,7 @@ export const stage33To39 = [
     title: 'Người bác sĩ quen mặt',
     text: 'Tôi vào viện cấp cứu vì đau bụng dữ dội. Bác sĩ trực là Khoa, đứa bạn cùng lớp trong chuyến đi biển năm nào. Khoa nói phải mổ ruột thừa ngay, nhưng phòng mổ đang có ca khác, phải chờ hai tiếng, hoặc chuyển sang viện khác.',
     choices: [
-      { label: 'Ở lại chờ Khoa mổ', effects: { health: 2, happiness: 2 }, flags: ['khoa_mo'],
+      { label: 'Ở lại chờ Khoa mổ', effects: { health: 1, happiness: 2 }, flags: ['khoa_mo'],
         text: 'Hai tiếng đau tưởng không qua. Khoa mổ cho tôi lúc nửa đêm. Sáng ra Khoa ghé, ngồi ở mép giường, nói: “Lần này tới lượt tao.” Hai đứa cười, đau cả vết mổ.' },
       { label: 'Chuyển viện cho nhanh', effects: { health: 1 },
         text: 'Tôi được mổ sớm hơn một tiếng ở viện khác. Khoa nhắn hỏi thăm mỗi ngày tới khi tôi xuất viện. Hai đứa hẹn đi cà phê, rồi mỗi người một việc, chưa đi được.' },

@@ -40,7 +40,9 @@
     Math.random=()=>0.99;
     await import('../js/main.js');
     const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
-    const choose=i=>document.querySelectorAll('#event-choices button')[i].click();
+    const choose=i=>{ console.log('CHECK_TRACE choose',state.pendingEvent?.id,state.pendingEvent?.stage,i); document.querySelectorAll('#event-choices button')[i].click();
+      // Bước giữa chuỗi có màn "Kết quả lựa chọn" trước tình huống tiếp theo.
+      if(state.pendingEvent?.mediaTransition)document.getElementById('event-confirm').click(); };
     const reset=()=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());
       Object.assign(state,createInitialState());
@@ -52,16 +54,20 @@
     const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
     const startRescue=()=>{
       let roll=0;
-      Math.random=()=>roll++===0?0.1:2.1/getAgeEvents(35).length;
+      Math.random=()=>roll++===0?0.1:0.1;
       birthday.click();
       Math.random=()=>0.99;
     };
     for(const age of [30,35,40,45,50,55]) for(const index of [0,1,2]) {
       reset();state.player.age=age-1;let roll=0;
-      Math.random=()=>roll++===0?0.1:(index+0.1)/getAgeEvents(age).length;
+      // Tính trước: getAgeEvents cũng gọi Math.random, gọi bên trong hàm giả sẽ đệ quy vô hạn.
+      // index 0, 1: hai chuyện đời thường; index 2: chuyện đặc biệt của tuổi đó.
+      const pool=getAgeEvents(age,null,state.player);
+      const target=index===2?pool.findIndex(e=>e.specialId):pool.map((e,i)=>e.specialId?-1:i).filter(i=>i>=0)[index];
+      Math.random=()=>roll++===0?0.1:(target+0.1)/pool.length;
       birthday.click();
-      assert(state.pendingEvent.title===getAgeEvents(age)[index].title,'Both milestone years randomly select from all three stories');
-      choose(index===2?([35,45].includes(age)?2:1):0);confirm.click();
+      assert(state.pendingEvent.title===pool[target].title,'Milestone years randomly select from the special and ordinary stories');
+      choose(state.pendingEvent.specialId?([35,45].includes(age)?2:1):0);confirm.click();
     }
     for(const age of [30,35,40,45,50,55]) for(const kind of ['marriage','child']) for(const index of [0,1,2,3]) {
       reset();state.player.age=age-1;
@@ -71,8 +77,9 @@
         relationshipStartedAtAge:age-5,
         nextMarriageProposalAge:kind==='marriage'?age:null,
         nextChildProposalAge:kind==='child'?age:null});
-      let roll=0;
-      Math.random=()=>index===3?0.99:(roll++===0?0.1:(index+0.1)/getAgeEvents(age).length);
+      let roll=0;const pool=getAgeEvents(age,null,state.player);
+      const target=index===2?pool.findIndex(e=>e.specialId):pool.map((e,i)=>e.specialId?-1:i).filter(i=>i>=0)[index];
+      Math.random=()=>index===3?0.99:(roll++===0?0.1:(target+0.1)/pool.length);
       birthday.click();Math.random=()=>0.99;
       const dateField=kind==='marriage'?'nextMarriageProposalAge':'nextChildProposalAge';
       if(index===2) {
@@ -102,7 +109,7 @@
       choose(finalChoice);resume();
       assert(state.player.money===0 && !state.player.achievementFlags['story-save-life'],'Preview awards nothing before confirmation');
       confirm.click();
-      assert(state.player.age===35 && state.player.isAlive && state.player.money===(finalChoice===0?50000000:25000000) && state.player.happiness===(finalChoice===0?60:65),'Exact cash and happiness reward');
+      assert(state.player.age===35 && state.player.isAlive && state.player.money===(finalChoice===0?50000000:25000000)-24000000 && state.player.happiness===(finalChoice===0?60:65),'Exact cash and happiness reward');
       assert(state.player.achievementFlags['story-save-life'] && state.logs.at(-1).content.includes('bữa cơm bình thường'),'Achievement and supplied diary saved');
       birthday.click();assert(state.pendingEvent.kind==='marriage-proposal' && state.pendingEvent.age===36,'Marriage resumes the following year');
       choose(0);confirm.click();
@@ -117,7 +124,7 @@
       birthday.click();assert(state.player.age===35,'Dead character cannot age further');
     }
     reset();startRescue();choose(2);confirm.click();
-    assert(state.player.age===35 && state.player.isAlive && state.player.money===0 && state.player.happiness===50 && !state.player.achievementFlags['story-save-life'],'Waiting safely ends without special reward');
+    assert(state.player.age===35 && state.player.isAlive && state.player.money===-24000000 && state.player.happiness===47 && !state.player.achievementFlags['story-save-life'],'Waiting safely ends without special reward (living floor puts the wallet below zero: Happiness -3)');
     reset();
     const person=createAdmirer(state.player,25,()=>0.4);
     Object.assign(state.player,{partner:person,marriedAtAge:30,nextChildProposalAge:35});

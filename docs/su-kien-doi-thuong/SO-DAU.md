@@ -111,7 +111,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `chia_xoai_cuoi` | ls-cay-xoai-tham-lai (80) | **chưa nối** |
 | `chieu_ra_hien` | ls100-buoi-chieu (100) | **chưa nối** |
 | `cho_anh_ho_tien` | ls36-vay-nong (36) | **chưa nối** |
-| `cho_anh_ho_vay` | ls36-vay-nong (36) | **chưa nối** |
+| `cho_anh_ho_vay` | ls36-vay-nong (36) | ls-cousin-repayment (từ 38) |
 | `cho_ba` | ls06-ba-dua-don (6) | **chưa nối** |
 | `cho_ba_cu` | ls07-cong-cho (7) | **chưa nối** |
 | `cho_ban_doi_ve_que` | ls44-ban-doi-bo-viec (44) | **chưa nối** |

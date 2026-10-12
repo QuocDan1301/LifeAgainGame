@@ -1,5 +1,6 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { askConfirm } from "./confirm-dialog.js";
+import { applyActivityGain, previewActivityGain } from "./stat-budget.js";
 
 // Làm đẹp: làm nail (an toàn, mỗi năm một lần) và phẫu thuật thẩm mỹ (từ 18 tuổi,
 // mỗi năm một lần). Gói càng đắt thì tỉ lệ thành công càng cao và chỉ số tăng càng
@@ -20,9 +21,9 @@ export const surgeryPackages = [
 ];
 
 export const statLabels = { health: "Sức khỏe", intelligence: "Trí tuệ", happiness: "Hạnh phúc", appearance: "Ngoại hình" };
-// Mức tăng thực nhận khi chỉ số đã gần 100.
+// Mức tăng thực nhận khi chỉ số đã gần 100 hoặc đã gần đủ mức tăng trong năm.
 const realGains = (player, stats) => Object.fromEntries(Object.entries(stats)
-  .map(([stat, value]) => [stat, Math.max(0, Math.min(value, 100 - (player[stat] ?? 0)))]));
+  .map(([stat, value]) => [stat, previewActivityGain(player, stat, value)]));
 const listText = (stats, sign) => Object.entries(stats).map(([stat, value]) => `${statLabels[stat]} ${sign}${value}`).join(" · ");
 export const hasNailThisYear = (player) => (player.nailAge ?? -1) === player.age;
 export const hasSurgeryThisYear = (player) => (player.surgeryAge ?? -1) === player.age;
@@ -33,7 +34,8 @@ function applyStats(player, stats, sign) {
   for (const [stat, value] of Object.entries(stats)) {
     const before = player[stat] ?? 0;
     const floor = stat === "health" ? Math.min(1, before) : 0;
-    player[stat] = Math.max(floor, Math.min(100, before + sign * value));
+    if (sign > 0) applyActivityGain(player, stat, value);
+    else player[stat] = Math.max(floor, Math.min(100, before - value));
     const diff = player[stat] - before;
     if (diff) changes.push(`${statLabels[stat]} ${diff > 0 ? "+" : ""}${diff}`);
   }

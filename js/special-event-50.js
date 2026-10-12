@@ -11,13 +11,13 @@ const ending = (label, text) => ({
 const diary = "🏅 Năm 50 tuổi, tôi được vinh danh sau một vụ cháy tại nhà hát. Tiền thưởng giúp gia đình bớt lo, còn bức tranh của bé Mai được tôi treo ngay phòng khách. Khách đến hỏi, tôi kể hơi lâu — chuyện này chắc đủ kể đến tám mươi tuổi.";
 const success = (label, opening) => ({
   label, title: "🏅 Vinh danh người hùng",
-  text: `${opening}\n\nTôi nhận bằng vinh danh và 100.000.000 VNĐ tiền thưởng từ quỹ của đơn vị tổ chức. Bé Mai chạy lên tặng tôi một bức tranh. Trong tranh, tôi đứng cạnh rất nhiều người, phía trên là dòng chữ nắn nót: ‘Cảm ơn mọi người đã đưa con về với mẹ.’`,
-  money: 100_000_000, effects: { happiness: 15, intelligence: 5 },
+  text: `${opening}\n\nTôi nhận bằng vinh danh và 60.000.000 VNĐ tiền thưởng từ quỹ của đơn vị tổ chức. Bé Mai chạy lên tặng tôi một bức tranh. Trong tranh, tôi đứng cạnh rất nhiều người, phía trên là dòng chữ nắn nót: ‘Cảm ơn mọi người đã đưa con về với mẹ.’`,
+  money: 60_000_000, effects: { happiness: 15, intelligence: 5 },
   achievementIds: ["story-hero"], confirmText: "Nhận thành tựu!",
   keepsake: { id: "hero-certificate", name: "Bằng vinh danh người hùng",
     description: "Kỷ niệm về việc bình tĩnh phối hợp giúp mọi người thoát khỏi vụ cháy nhà hát." },
   logContent: diary,
-  logSummary: "🏅 Vinh danh người hùng\nHạnh phúc +15 · Trí tuệ +5 · Tiền +100.000.000 VNĐ\nNhận vật phẩm: Bằng vinh danh người hùng.",
+  logSummary: "🏅 Vinh danh người hùng\nHạnh phúc +15 · Trí tuệ +5 · Tiền +60.000.000 VNĐ\nNhận vật phẩm: Bằng vinh danh người hùng.",
   ...art("1F3C5", "Bằng vinh danh và bức tranh của bé Mai"),
 });
 const steps = {
@@ -83,7 +83,7 @@ const steps = {
   },
   7: {
     title: "🏅 Người hùng không đứng một mình",
-    text: "Vài tuần sau, trung tâm tổ chức buổi cảm ơn những người đã giúp đỡ trong vụ cháy. Bé Mai đã hồi phục, hai bà cháu hôm ấy cũng có mặt.\n\nTôi được mời lên nhận bằng vinh danh và 100.000.000 VNĐ tiền thưởng từ quỹ của đơn vị tổ chức.\n\nNgười dẫn chương trình hỏi: ‘Điều gì khiến anh quyết định giúp mọi người?’\n\nNhìn xuống hàng ghế có những người lính cứu hỏa, nhân viên nhà hát và các cô giáo, tôi cầm micro. Lần này tay còn run hơn hôm nghe báo động.",
+    text: "Vài tuần sau, trung tâm tổ chức buổi cảm ơn những người đã giúp đỡ trong vụ cháy. Bé Mai đã hồi phục, hai bà cháu hôm ấy cũng có mặt.\n\nTôi được mời lên nhận bằng vinh danh và 60.000.000 VNĐ tiền thưởng từ quỹ của đơn vị tổ chức.\n\nNgười dẫn chương trình hỏi: ‘Điều gì khiến anh quyết định giúp mọi người?’\n\nNhìn xuống hàng ghế có những người lính cứu hỏa, nhân viên nhà hát và các cô giáo, tôi cầm micro. Lần này tay còn run hơn hôm nghe báo động.",
     ...art("1F3C5", "Vinh danh những người cùng giúp khán giả thoát nạn"),
     choices: [
       success("Mỗi người giúp một tay thôi.", "Tôi cảm ơn những người đã cùng phối hợp. Tôi đã làm phần việc của mình, để mọi người được trở về."),

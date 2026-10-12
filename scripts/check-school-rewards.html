@@ -56,17 +56,29 @@
     document.getElementById('lobby-screen').hidden = true;
     const birthday = document.getElementById('age-up');
     const confirm = document.getElementById('event-confirm');
-    const choose = i => document.querySelectorAll('#event-choices button')[i].click();
+    const choose = i => { document.querySelectorAll('#event-choices button')[i].click();
+      // Bước giữa (chọn ngành, bài test) có màn "Kết quả lựa chọn" trước bước tiếp theo.
+      if (state.pendingEvent?.mediaTransition) confirm.click(); };
+    // Chuẩn bị trước bài test (nếu có) rồi trả lời bài test.
+    const takeTest = passed => {
+      if (state.pendingEvent.kind === 'exam-prep') choose(state.pendingEvent.choices.findIndex(c => c.examPrep === 'steady'));
+      choose(state.pendingEvent.choices.findIndex(c => passed ? c.correct : !c.correct));
+    };
     // May rủi của sự kiện thường ngày ở mức trung tính để kết quả đúng bằng điểm tác giả viết.
-    birthday.click(); const rolls = [0.5]; Math.random = () => rolls.shift() ?? 0;
-    choose(state.pendingEvent.choices.findIndex(c => c.label.includes('Chào cô'))); Math.random = () => 0;
+    birthday.click(); Math.random = () => 0.5;
+    // Năm 6 tuổi là một chuyện đời thường bất kỳ; lấy lựa chọn đầu tiên và cộng điểm của chính nó.
+    const firstChoice = state.pendingEvent.choices[0];
+    choose(0); Math.random = () => 0;
     const savedReward = JSON.stringify(state.pendingEvent.schoolReward);
+    // Phần thưởng nhập học được tính chồng lên chỉ số sau lựa chọn (điểm thưởng 1–2 mỗi chỉ số).
+    const expectedStat = stat => JSON.parse(savedReward).updates[stat];
+    assert(stats.every(stat => expectedStat(stat) >= 50 + (firstChoice.effects?.[stat] ?? 0) + 1), 'Reward is stacked on top of the choice effects');
     assert(state.player.age === 5 && state.player.health === 50, 'Result preview does not mutate stats');
     Math.random = () => 0.999;
     state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     assert(JSON.stringify(state.pendingEvent.schoolReward) === savedReward, 'Save preserves exact random reward');
     confirm.click();
-    assert(state.player.health === 51 && state.player.intelligence === 53 && state.player.happiness === 55,
+    assert(stats.every(stat => state.player[stat] === expectedStat(stat)),
       'School reward adds to choice effects without overwriting them');
     Object.assign(state.player,base(10)); birthday.click();
     assert(state.player.age === 11 && state.player.money === 500000 && state.player.health === 53,
@@ -78,14 +90,14 @@
       'Diary and wallet display reflect rewards');
     Object.assign(state.player,base(17),{studyBlock:'A00'}); birthday.click();
     choose(state.pendingEvent.choices.findIndex(c=>c.careerPath?.id==='programming'));
-    choose(state.pendingEvent.choices.findIndex(c=>c.correct));
+    takeTest(true);
     choose(0);
     assert(state.pendingEvent.schoolReward?.updates.money === 2000000, 'Passing admission and selecting a university prepares cash reward');
     confirm.click();
-    assert(state.player.money === 2000000 && state.player.schoolRewardsReceived.university, 'University reward reaches wallet on confirmation');
+    assert(state.player.money === 2000000 - getAnnualTuition(state.player.careerPath) && state.player.schoolRewardsReceived.university, 'University reward reaches wallet on confirmation (first-year tuition charged too)');
     Object.assign(state.player,base(17),{studyBlock:'A00'}); birthday.click();
     choose(state.pendingEvent.choices.findIndex(c=>c.careerPath?.id==='programming'));
-    choose(state.pendingEvent.choices.findIndex(c=>!c.correct)); choose(0); confirm.click();
+    takeTest(false); choose(state.pendingEvent.choices.findIndex(c=>c.careerPath?.id==='military')); confirm.click();
     assert(state.player.careerPath.id==='military' && state.player.money===0, 'Failed admission and enlistment receive no university cash');
     result.textContent = 'PASS: random ranges, all four stats, cash, caps, once per life, saved results, diaries, UI, university and failed admission.';
   } catch(error) { result.textContent = 'FAIL: '+error.stack; }

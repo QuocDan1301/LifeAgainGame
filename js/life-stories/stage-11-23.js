@@ -131,7 +131,7 @@ export const stage11To23 = [
         text: 'Ba nói tới một giờ sáng rồi ngủ gục trên ghế. Mẹ đắp chăn cho ba. Sáng ra tôi làm bài thi trong cơn buồn ngủ. Ba không nhớ gì về đêm qua.' },
       { label: 'Nói: “Ba say rồi, con đi ngủ”', effects: { happiness: -1 }, flags: ['cai_ba_say'],
         text: 'Ba đập tay xuống bàn. Mẹ kéo tôi vào phòng. Sáng hôm sau ba đi làm sớm, không nhìn tôi. Ba tuần sau ba mới nói chuyện bình thường lại với tôi.' },
-      { label: 'Rót nước, lặng lẽ vào phòng', effects: { intelligence: 1 },
+      { label: 'Rót nước, lặng lẽ vào phòng', effects: { intelligence: 1, happiness: -1 },
         text: 'Ba gọi theo hai tiếng, rồi thôi. Mẹ ngồi lại nghe ba nói. Tôi nằm trong phòng nghe giọng ba nhỏ dần, rồi im.' },
     ],
   },
@@ -229,7 +229,7 @@ export const stage11To23 = [
     choices: [
       { label: 'Mở ra xem', effects: { intelligence: 1, happiness: -1 }, flags: ['xem_de_lo'],
         text: 'Đề y hệt. Tôi được chín điểm, vào danh sách học bổng. Lúc lên nhận giấy khen, tôi không dám nhìn xuống chỗ mấy đứa không vào nhóm chat.' },
-      { label: 'Xóa tệp, không xem', effects: { intelligence: 2 }, flags: ['khong_xem_de'],
+      { label: 'Xóa tệp, không xem', effects: { intelligence: 2, happiness: -1 }, flags: ['khong_xem_de'],
         text: 'Tôi làm bài bằng sức mình, được bảy điểm. Nửa lớp được chín, mười. Học bổng về tay mấy đứa đó. Cô nhìn bảng điểm, không nói gì.' },
       { label: 'Báo cho cô', effects: { happiness: -2 }, flags: ['bao_de_lo'],
         text: 'Trường hủy kết quả, cho thi lại bằng đề khác. Cả lớp biết ai báo. Mấy tháng cuối cấp, nhóm chat lớp vẫn chạy, nhưng tôi không còn ở trong đó.' },
@@ -248,6 +248,17 @@ export const stage11To23 = [
   },
 
   // ───────────── 19 tuổi ─────────────
+  {
+    id: 'ls19-phong-tro-chung', age: 19,
+    title: 'Tấm rèm trong phòng trọ',
+    text: 'Tôi ở ghép với hai người bạn cho đỡ tiền phòng, chỗ ngủ ngăn nhau bằng một tấm rèm. Một người hay dẫn bạn về chơi tới khuya. Người còn lại bảo cứ chịu thêm vài tháng, nói ra mất lòng. Tối nay tiếng cười bên kia rèm lại kéo dài, mà sáng mai tôi phải dậy sớm.',
+    choices: [
+      { label: 'Kéo rèm, nói thẳng', effects: { intelligence: 1, happiness: -1 },
+        text: 'Tôi nói nhỏ nhưng rõ. Bạn ấy xin lỗi, từ đó về sớm hơn. Có điều mấy tuần liền, bữa cơm chung của ba đứa ít tiếng nói hẳn.' },
+      { label: 'Đeo tai nghe, chịu thêm', effects: { happiness: 1, health: -2 },
+        text: 'Tôi đeo tai nghe, nằm quay mặt vào tường. Sáng ra mắt thâm quầng. Căn phòng vẫn vui vẻ như cũ, chỉ mình tôi biết mình đã thức tới hai giờ.' },
+    ],
+  },
   {
     id: 'ls19-cuoi-thang', age: 19,
     title: 'Mười ngày cuối tháng',
@@ -311,6 +322,17 @@ export const stage11To23 = [
 
   // ───────────── 20 tuổi ─────────────
   {
+    id: 'ls20-tin-nhan-gui-nham', age: 20,
+    title: 'Tin nhắn gửi nhầm',
+    text: 'Một đứa trong nhóm bạn thân gửi nhầm vào nhóm chung một tin nhắn rồi thu hồi ngay. Tôi vẫn kịp đọc: nó chê tôi keo kiệt, lần nào đi chơi cũng tính từng đồng. Cả nhóm im lặng, không ai biết tôi đã đọc được. Tôi cầm điện thoại, chưa biết có nên nhắn gì.',
+    choices: [
+      { label: 'Nhắn riêng hỏi thẳng', effects: { intelligence: 1, happiness: -2 },
+        text: 'Nó xin lỗi, nói lúc đó đang bực chuyện khác. Hai đứa nói chuyện tới khuya. Từ đó đi chơi tôi trả phần mình trước khi ai kịp tính, nhưng câu ấy vẫn nằm đâu đó.' },
+      { label: 'Coi như chưa đọc', effects: { happiness: -1 },
+        text: 'Lần đi chơi sau, cả nhóm vẫn cười nói như thường. Tôi gọi thêm một món cho cả bàn, rồi nhìn đứa bạn ấy gắp. Nó không biết là tôi biết.' },
+    ],
+  },
+  {
     id: 'ls20-mat-khau', age: 20, needs: ['partner'],
     title: 'Mật khẩu điện thoại',
     text: '{tenBanDoi} hỏi mật khẩu điện thoại của tôi, nói yêu nhau thì có gì phải giấu. Trong máy có mấy tin nhắn tôi kể với bạn thân chuyện hai đứa cãi nhau tuần trước, có câu nói hơi quá về {tenBanDoi}.',
@@ -341,7 +363,7 @@ export const stage11To23 = [
         text: 'Tuần đầu, tài khoản báo lời. Tuần thứ ba, nhóm khóa bình luận, trang web không vào được. Thằng bạn mất gấp ba tôi. Hai đứa không nhắc lại chuyện này nữa.' },
       { label: 'Bỏ thử một triệu', effects: { happiness: -1, intelligence: 1 }, money: -1000000,
         text: 'Một triệu mất sau ba tuần. Tôi coi như học phí. Thằng bạn thì bỏ thêm để gỡ, tới lúc nhận ra thì đã vay mượn khắp nơi.' },
-      { label: 'Không bỏ, khuyên bạn rút', effects: { intelligence: 2 }, flags: ['khuyen_ban_rut'],
+      { label: 'Không bỏ, khuyên bạn rút', effects: { intelligence: 2, happiness: -1 }, money: -1000000, flags: ['khuyen_ban_rut'],
         text: 'Nó nói tôi nhát, chặn tôi trên mạng. Hai tháng sau nó nhắn lại, hỏi mượn tiền trả nợ. Tôi cho mượn một ít, không hỏi ngày trả.' },
     ],
   },
@@ -352,7 +374,7 @@ export const stage11To23 = [
     choices: [
       { label: 'Hỏi thẳng ba', effects: { happiness: -1 }, flags: ['hoi_ba_huyet_ap'],
         text: 'Ba gắt: “Ai nói với con?” rồi đi ra hiên. Mẹ nhìn tôi trách. Hôm sau, tôi thấy hộp thuốc huyết áp được dời ra để cạnh bình nước.' },
-      { label: 'Mua máy đo huyết áp để sẵn', effects: { happiness: 1 }, flags: ['may_do_huyet_ap'],
+      { label: 'Mua máy đo huyết áp để sẵn', effects: { happiness: 1 }, money: -1000000, flags: ['may_do_huyet_ap'],
         text: 'Tôi đặt máy đo trên bàn nước, không nói gì. Ba nhìn, không hỏi. Mấy hôm sau, mẹ nhắn: “Sáng nay ba tự đo, rồi ghi số vào cuốn lịch.”' },
       { label: 'Giả như không biết', effects: { happiness: -2 },
         text: 'Tôi về lại chỗ học, chỗ làm. Mỗi lần gọi về, tôi hỏi ba ăn uống ra sao. Ba nói khỏe. Mẹ ở bên cạnh không nói gì.' },
@@ -372,13 +394,24 @@ export const stage11To23 = [
 
   // ───────────── 21 tuổi ─────────────
   {
+    id: 'ls21-ghe-xe-buyt', age: 21,
+    title: 'Chỗ ngồi trên xe buýt',
+    text: 'Xe buýt chật kín. Một người phụ nữ mang thai đứng bám tay vịn, quanh đó không ai đứng dậy. Tôi ngồi ngay cạnh, hai chân đau nhức sau một ngày đi bộ dài, còn bảy trạm nữa mới tới chỗ xuống. Tôi nhìn chân mình, rồi nhìn người phụ nữ.',
+    choices: [
+      { label: 'Nhường ghế', effects: { happiness: 1, health: -1 },
+        text: 'Người phụ nữ cảm ơn, ngồi xuống thở ra một hơi dài. Tôi đứng tới trạm của mình, chân tê dại. Lúc xuống xe, chị gật đầu chào tôi qua cửa kính.' },
+      { label: 'Ngồi yên, nhắm mắt', effects: { health: 1, happiness: -1 },
+        text: 'Tôi nhắm mắt suốt quãng đường. Hai trạm sau, một người khác đứng dậy nhường. Tôi mở mắt đúng lúc người phụ nữ ngồi xuống, rồi quay ra nhìn cửa sổ.' },
+    ],
+  },
+  {
     id: 'ls21-thuc-tap', age: 21, needs: ['student'],
     title: 'Ở lại tới mười giờ',
     text: 'Tôi thực tập ở một công ty. Trưởng nhóm nhờ tôi ở lại làm tới mười giờ mỗi tối, không có lương, nói sẽ viết nhận xét tốt và có thể giữ tôi lại làm chính thức. Tuần sau tôi có hai bài thi ở trường.',
     choices: [
       { label: 'Ở lại làm', effects: { intelligence: 1, health: -2 }, flags: ['o_lai_thuc_tap'],
         text: 'Trưởng nhóm khen trước cả phòng. Bài thi ở trường tôi làm qua loa, điểm vừa đủ. Hết đợt, công ty chưa tuyển ai, chỉ hẹn “có vị trí sẽ gọi”.' },
-      { label: 'Làm đúng giờ, nói rõ lý do', effects: { intelligence: 2 },
+      { label: 'Làm đúng giờ, nói rõ lý do', effects: { intelligence: 2, happiness: -1 },
         text: 'Trưởng nhóm gật đầu, không vui lắm. Nhận xét cuối đợt chỉ có hai dòng. Hai bài thi tôi được điểm cao nhất lớp.' },
     ],
   },
@@ -419,6 +452,17 @@ export const stage11To23 = [
   },
 
   // ───────────── 23 tuổi ─────────────
+  {
+    id: 'ls23-loi-gioi-thieu', age: 23,
+    title: 'Lời giới thiệu',
+    text: 'Một người bạn đang thất nghiệp nhờ tôi giới thiệu với người quen làm ở một công ty đang tuyển. Bạn tốt bụng nhưng hay trễ hẹn, từng bỏ ngang hai chỗ làm. Người quen ấy tin lời tôi. Sáng nay bạn nhắn hỏi tôi đã nói giúp chưa.',
+    choices: [
+      { label: 'Giới thiệu, nói cả điểm yếu', effects: { intelligence: 1, happiness: -1 },
+        text: 'Tôi kể cả chuyện bạn hay trễ hẹn. Người quen vẫn gọi bạn đi phỏng vấn. Bạn biết tôi đã nói những gì, nhắn cảm ơn, nhưng mấy câu sau đó ngắn hẳn.' },
+      { label: 'Giới thiệu, chỉ nói điều tốt', effects: { happiness: 1 },
+        text: 'Bạn được nhận, mời tôi một bữa thật ngon. Ba tháng sau bạn nghỉ ngang. Người quen không trách, chỉ dặn lần sau giới thiệu ai thì nói kỹ giúp.' },
+    ],
+  },
   {
     id: 'ls23-luong-dau', age: 23, needs: ['employed', 'mother'],
     title: 'Tháng lương đầu',

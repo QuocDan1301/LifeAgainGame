@@ -67,15 +67,15 @@ export function createLastTrainSpecialStep(stepNumber, inventory = {}) {
           label: "Đúng ga Bình An, tôi xuống.", title: "🚉 Chuyến tàu âm giới",
           text: "Tôi bước qua cửa bên phải, xuống đúng ga Bình An. Tôi ngoảnh lại. Đường ray trống không, như chưa từng có đoàn tàu nào dừng ở đó.\n\n" +
             (reunited
-              ? "Điện thoại đổ chuông. Bà An gọi, giọng lo lắng: ‘Đêm qua tôi mơ thấy mẹ dặn gọi hỏi xem cậu về đến nhà chưa.’\n\nVài ngày sau, bà mời tôi đến gặp. Đúng dịp hoàn tất việc phân chia tài sản gia đình, bà quyết định tặng thêm tôi 100.000.000 VNĐ — khoản tiền bà đã dự định từ lâu để cảm ơn người giúp mình tìm lại mẹ.\n\nTrong phong bì kèm theo có tấm ảnh căn nhà cũ. Bên khung cửa, một vệt nắng trông giống bóng người đang mỉm cười."
+              ? "Điện thoại đổ chuông. Bà An gọi, giọng lo lắng: ‘Đêm qua tôi mơ thấy mẹ dặn gọi hỏi xem cậu về đến nhà chưa.’\n\nVài ngày sau, bà mời tôi đến gặp. Đúng dịp hoàn tất việc phân chia tài sản gia đình, bà quyết định tặng thêm tôi 60.000.000 VNĐ — khoản tiền bà đã dự định từ lâu để cảm ơn người giúp mình tìm lại mẹ.\n\nTrong phong bì kèm theo có tấm ảnh căn nhà cũ. Bên khung cửa, một vệt nắng trông giống bóng người đang mỉm cười."
               : "Tôi mở lại tấm vé. Bức ảnh cũ và dòng chữ phía sau đã biến mất, chỉ còn nơi đến Bình An. Tôi giữ vé, rời sân ga và trở về nhà khi trời sáng. Tôi không biết ai đã gửi lời nhắc, nhưng hiểu rằng không phải ai gọi tên mình cũng là người đang chờ mình về."),
           effects: { intelligence: 10, happiness: 10 },
-          ...(reunited ? { money: 100_000_000 } : {}),
+          ...(reunited ? { money: 60_000_000 } : {}),
           achievementIds: ["story-last-train"], confirmText: "Nhận thành tựu!",
           logContent: reunited
-            ? "🚉 Năm 45 tuổi, tôi sống sót qua chuyến tàu âm giới nhờ những manh mối trên vé và ký ức về chiếc vòng trăng khuyết của bà An. Bà gọi hỏi thăm rồi tặng tôi 100.000.000 VNĐ để cảm ơn việc giúp bà tìm lại mẹ năm xưa. Trong tấm ảnh căn nhà cũ, vệt nắng bên cửa như một nụ cười tiễn tôi về."
+            ? "🚉 Năm 45 tuổi, tôi sống sót qua chuyến tàu âm giới nhờ những manh mối trên vé và ký ức về chiếc vòng trăng khuyết của bà An. Bà gọi hỏi thăm rồi tặng tôi 60.000.000 VNĐ để cảm ơn việc giúp bà tìm lại mẹ năm xưa. Trong tấm ảnh căn nhà cũ, vệt nắng bên cửa như một nụ cười tiễn tôi về."
             : "🚉 Năm 45 tuổi, tôi lên chuyến tàu cuối lúc nửa đêm. Tấm ảnh chiếc vòng trăng khuyết trên vé giúp tôi nhận ra kẻ giả mạo. Tôi xuống đúng ga Bình An và trở về an toàn, hiểu rằng không phải ai gọi tên mình cũng là người đang chờ mình về.",
-          logSummary: `🚉 Chuyến tàu âm giới\nTrí tuệ +10 · Hạnh phúc +10${reunited ? " · Tiền +100.000.000 VNĐ" : ""}`,
+          logSummary: `🚉 Chuyến tàu âm giới\nTrí tuệ +10 · Hạnh phúc +10${reunited ? " · Tiền +60.000.000 VNĐ" : ""}`,
           ...art("1F305", "Trở về bình an sau chuyến tàu kỳ lạ"),
         },
         fatal("Có người nhà đón mới chắc.", "Tôi bỏ qua chiếc đồng hồ lặp mãi một giây và bước sang cửa bên trái. Những bàn tay lạnh ngắt kéo tôi vào bóng tối. Tôi tử vong; cuộc đời kết thúc ở tuổi 45."),

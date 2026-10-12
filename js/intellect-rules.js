@@ -1,5 +1,6 @@
 import { openMojiArt } from "./event-art.js";
 import { formatMoney } from "./money-format.js";
+import { hasInternationalDegreeForCareer } from "./study-abroad.js";
 import { getAppearanceImpression } from "./appearance-rules.js";
 
 // Cấu hình tập trung cho cơ chế phụ thuộc Trí tuệ. Các con số là thông số gameplay.
@@ -39,12 +40,14 @@ export function getInterviewChance(player, quality, careerId = player.careerPath
   const prep = hasInterviewPrep(player) ? INTERVIEW.prepBonus : 0;
   // Nghề hình ảnh (diễn xuất, thời trang, sáng tạo nội dung…): ấn tượng ngoại hình (Ngoại hình − 50) × 0,1 điểm %.
   const looks = getAppearanceImpression(player, careerId);
-  return { base, intellect, prep, looks, chance: clamp(base + intellect + prep + looks, INTERVIEW.min, INTERVIEW.max) };
+  const abroad = (careerId === "study-abroad" || hasInternationalDegreeForCareer(player, careerId)) && player.abroadProgress
+    ? clamp(((player.abroadProgress.language ?? 50) - 50) * 0.002 + ((player.abroadProgress.academic ?? 50) - 50) * 0.001 + ((player.abroadProgress.integration ?? 50) - 50) * 0.001, -0.2, 0.2) : 0;
+  return { base, intellect, prep, looks, abroad, chance: clamp(base + intellect + prep + looks + abroad, INTERVIEW.min, INTERVIEW.max) };
 }
 export function describeInterviewChance(info, quality) {
   const sign = (value) => `${value >= 0 ? "+" : "−"}${Math.abs(Math.round(value * 100))}`;
   return `Câu trả lời: ${INTERVIEW.qualityLabel[quality]} (${formatPercent(info.base)}) · Trí tuệ ${sign(info.intellect)} · Chuẩn bị ${sign(info.prep)}` +
-    `${info.looks ? ` · Ấn tượng ngoại hình ${sign(info.looks)}` : ""} → khả năng đỗ ${formatPercent(info.chance)}`;
+    `${info.looks ? ` · Ấn tượng ngoại hình ${sign(info.looks)}` : ""}${info.abroad ? ` · Ngoại ngữ, học tập và hòa nhập ${sign(info.abroad)}` : ""} → khả năng đỗ ${formatPercent(info.chance)}`;
 }
 // Tung kết quả phỏng vấn một lần (kết quả được lưu ngay nên tải lại không đổi).
 export function rollInterview(player, quality, random = Math.random, careerId) {
@@ -74,8 +77,10 @@ export const PROMOTION = { base: 0.65, perYearExperience: 0.02, maxExperience: 0
 export function getPromotionChance(player, age) {
   const years = Math.max(0, age - (player.employedSince ?? age));
   const merit = Math.min(PROMOTION.maxMerit, player.workMerit ?? 0);
+  const integration = (player.careerPath?.id === "study-abroad" || hasInternationalDegreeForCareer(player)) && player.abroadProgress
+    ? clamp(((player.abroadProgress.integration ?? 50) - 50) * 0.001, -0.05, 0.05) : 0;
   return clamp(PROMOTION.base + Math.min(PROMOTION.maxExperience, years * PROMOTION.perYearExperience) +
-    ((player.intelligence ?? 50) - 50) * getIntellectWeight(player.careerPath?.id) / 100 + merit * PROMOTION.perMerit, PROMOTION.min, PROMOTION.max);
+    ((player.intelligence ?? 50) - 50) * getIntellectWeight(player.careerPath?.id) / 100 + merit * PROMOTION.perMerit + integration, PROMOTION.min, PROMOTION.max);
 }
 
 // Học bổng khuyến khích khi đang học (kết quả học tập tốt): trí tuệ từ 80 được giảm học phí năm đó.

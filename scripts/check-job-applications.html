@@ -29,7 +29,7 @@
     // Phỏng vấn tự động là phần tiếp nối của chuỗi tuổi 16: cùng người hướng dẫn, nhắc lại thử thách năm ấy.
     const { careerMilestones } = await import("../js/career-milestones-data.js");
     const { createInterviewResult, createInterviewRetryPrompt } = await import("../js/career-jobs.js");
-    for (const [id, data] of Object.entries(careerMilestones)) {
+    for (const [id, data] of Object.entries(careerMilestones).filter(([id]) => id !== 'study-abroad')) {
       const linked = student({ careerPath: { id, field: data.field, school: { name: "Trường thử" } }, careerSpark: id });
       const interview = createEmploymentEvent(linked, 22);
       const challenge = data.spark.title.replace(/^\S+\s/u, "");

@@ -1,4 +1,5 @@
 import { recordAchievementFlags } from "./achievements-data.js";
+import { applyActivityGain } from "./stat-budget.js";
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { tarotCards, tarotGroups, tarotTopics } from "./tarot-data.js";
 
@@ -87,9 +88,8 @@ export function applyTarotEffect(player, card) {
   const effect = card.group === "cups" ? { happiness: 2 } : card.group === "swords" ? { intelligence: 1 } : card.effect;
   const changes = [];
   for (const [stat, value] of Object.entries(effect)) {
-    const before = player[stat];
-    player[stat] = Math.min(100, before + value);
-    if (player[stat] > before) changes.push(`${statLabels[stat]} +${player[stat] - before}`);
+    const gained = applyActivityGain(player, stat, value);
+    if (gained) changes.push(`${statLabels[stat]} +${gained}`);
   }
   return changes;
 }

@@ -6,7 +6,7 @@ import { oldHouseSpecialEvent } from "./special-event-40.js";
 import { createLastTrainSpecialEvent } from "./special-event-45.js";
 import { theaterSpecialEvent } from "./special-event-50.js";
 import { luggageSpecialEvent } from "./special-event-55.js";
-import { createLaterSpecialEvent } from "./special-later-life.js";
+import { createCentennialMemorial, createLaterSpecialEvent } from "./special-later-life.js";
 import { reviewEventMedia } from "./semantic-event-media.js";
 import { createLifeStoryEvents } from "./life-stories.js";
 import { createCareerSparkEvents } from "./career-milestones.js";
@@ -37,7 +37,8 @@ export function getBaseAgeEvents(age, careerPath, player = {}) {
   if (age === 16) return createCareerSparkEvents(player.studyBlock, Math.random, player);
   if (age === 105) return [createLaterSpecialEvent(age, player)];
   if (age === 45) return [createLastTrainSpecialEvent(player)];
-  const fixed = ageEvents[age] ?? [];
+  const memorial = age === 100 ? createCentennialMemorial(player) : null;
+  const fixed = [...(ageEvents[age] ?? []), ...(memorial ? [memorial] : [])];
   // 50 và 55 có sự kiện riêng; các tuổi khác từ 51 tới 104 có thể có sự kiện đặc biệt tuổi già.
   if (age >= 51 && age <= 104 && age !== 55) {
     const special = createLaterSpecialEvent(age, player);

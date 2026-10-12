@@ -10,7 +10,9 @@ import { stage70To79 } from './stage-70-79.js';
 import { stage80To89 } from './stage-80-89.js';
 import { stage90To104 } from './stage-90-104.js';
 
+import { studyAbroadStories } from './study-abroad.js';
 export const lifeStoryCatalog = [
+  ...studyAbroadStories,
   ...stage01To10,
   ...stage11To23,
   ...stage26To32,

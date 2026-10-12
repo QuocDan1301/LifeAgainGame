@@ -1,7 +1,9 @@
+import { getStudyAbroadCountry } from "./study-abroad.js";
 import { formatMoney } from "./money-format.js";
 
 // Fixed yearly income in VNĐ for game balance, ordered by career levels 1–3.
 export const careerAnnualSalaries = {
+  "study-abroad": [180_000_000, 360_000_000, 720_000_000],
   acting: [96_000_000, 240_000_000, 720_000_000],
   military: [84_000_000, 144_000_000, 240_000_000],
   singing: [96_000_000, 240_000_000, 720_000_000],
@@ -27,14 +29,16 @@ export const careerAnnualSalaries = {
   general: [96_000_000, 180_000_000, 300_000_000],
 };
 
-export function getCareerAnnualSalary(careerId, level) {
+export function getCareerAnnualSalary(careerId, level, careerPath = null) {
   if (!Number.isInteger(level) || level < 1 || level > 3) return 0;
+  const country = getStudyAbroadCountry(careerPath);
+  if (careerId === 'study-abroad' && country) return country.salaries[level - 1];
   return (careerAnnualSalaries[careerId] ?? careerAnnualSalaries.general)[level - 1];
 }
 
 export function getPlayerAnnualSalary(player) {
   if (player.employmentStatus !== "employed" || player.isAlive === false) return 0;
-  return getCareerAnnualSalary(player.careerPath?.id, player.careerLevel);
+  return getCareerAnnualSalary(player.careerPath?.id, player.careerLevel, player.careerPath);
 }
 
 export const formatSalary = formatMoney;

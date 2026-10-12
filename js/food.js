@@ -1,4 +1,5 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
+import { applyActivityGain, describeActivityRoom, previewActivityGain } from "./stat-budget.js";
 
 // Ăn uống: trả tiền để tăng chỉ số. Mỗi món ăn được một lần mỗi năm để chỉ số
 // không bị đẩy lên tối đa chỉ bằng cách mua liên tục.
@@ -16,7 +17,11 @@ export const dishes = [
 ];
 
 export const statLabels = { health: "Sức khỏe", intelligence: "Trí tuệ", happiness: "Hạnh phúc", appearance: "Ngoại hình" };
-const effectText = (effects) => Object.entries(effects).map(([stat, value]) => `${statLabels[stat]} +${value}`).join(" · ");
+// Điểm thực nhận (đã tính mức 100 và giới hạn tăng mỗi năm) hiện trước khi trả tiền.
+const effectText = (player, effects) => Object.entries(effects).map(([stat, value]) => {
+  const real = previewActivityGain(player, stat, value);
+  return `${statLabels[stat]} +${real}${real < value ? ` (tối đa +${value})` : ""}`;
+}).join(" · ");
 export const hasEatenThisYear = (player, id) => (player.mealsEaten?.[id] ?? -1) === player.age;
 
 export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
@@ -44,9 +49,8 @@ export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
     player.mealsEaten = { ...(player.mealsEaten ?? {}), [dish.id]: player.age };
     const changes = [];
     for (const [stat, value] of Object.entries(dish.effects)) {
-      const before = player[stat];
-      player[stat] = Math.min(100, before + value);
-      if (player[stat] > before) changes.push(`${statLabels[stat]} +${player[stat] - before}`);
+      const gained = applyActivityGain(player, stat, value);
+      if (gained) changes.push(`${statLabels[stat]} +${gained}`);
     }
     const content = `${dish.icon} Ăn ${dish.name}: Tiền -${formatMoneyAmount(dish.price)} VNĐ${changes.length ? ` · ${changes.join(" · ")}` : ""}.`;
     const log = { age: player.age, content, summary: content };
@@ -66,7 +70,7 @@ export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
     });
     const card = element("section", "dialog-card");
     card.append(element("h3", "", "🍽️ Thực đơn hôm nay"),
-      element("p", "side-job-intro", "Mỗi món ăn được một lần mỗi năm. Chỉ số tối đa 100."));
+      element("p", "side-job-intro", `Mỗi món ăn được một lần mỗi năm. Chỉ số tối đa 100. ${describeActivityRoom(player)}`));
     const items = element("div", "shop-items");
     for (const dish of dishes) {
       const eaten = hasEatenThisYear(player, dish.id);
@@ -78,7 +82,7 @@ export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
       item.append(
         element("h4", "", `${dish.icon} ${dish.name}`),
         element("p", "", dish.description),
-        element("p", "shop-figures", `💰 Giá: ${formatMoney(dish.price)}\n✨ ${effectText(dish.effects)}`),
+        element("p", "shop-figures", `💰 Giá: ${formatMoney(dish.price)}\n✨ ${effectText(player, dish.effects)}`),
         action,
       );
       items.append(item);

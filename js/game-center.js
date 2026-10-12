@@ -7,6 +7,7 @@ import {
 } from "./game-center-data.js";
 import { playArcadeGame } from "./arcade-games.js";
 import { recordAchievementFlags } from "./achievements-data.js";
+import { applyActivityGain } from "./stat-budget.js";
 
 // Game Center: đổi xu, chơi trò, đổi quà và xem bộ sưu tập (dữ liệu trong player.arcade).
 // Phí và hạnh phúc được tính ngay khi bắt đầu, cùng một lần lưu; lượt đang chơi nằm trong
@@ -194,11 +195,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
     const played = playsThisYear(player);
     data.plays = { age: player.age, count: played + 1 };
     let happiness = 0;
-    if (played < HAPPY_PLAYS_PER_YEAR) {
-      const before = player.happiness;
-      player.happiness = Math.min(100, before + 1);
-      happiness = player.happiness - before;
-    }
+    if (played < HAPPY_PLAYS_PER_YEAR) happiness = applyActivityGain(player, "happiness", 1);
     const session = {
       id: `gc-${Date.now()}-${Math.floor(Math.random() * 1e6)}`,
       game: game.id, cost: game.cost, age: player.age, happiness, score: 0, outcome: null, ...extra,

@@ -83,12 +83,13 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
     if (!canStartRelationship(player)) {
       const partner = player.partner?.name ?? "người ấy";
       body.append(element("p", "license-age-note", player.marriedAtAge != null
-        ? `💍 Bạn đã kết hôn với ${partner}. Trung tâm mai mối chỉ dành cho người đang độc thân.`
-        : `💞 Bạn đang hẹn hò với ${partner}. Trung tâm mai mối chỉ dành cho người đang độc thân.`));
+        ? `💍 Bạn đã kết hôn với ${partner}. Bạn không thể mở thêm mối quan hệ khi đã kết hôn hoặc đang hẹn hò đủ hai người.`
+        : `💞 Bạn đang hẹn hò với ${partner}. Bạn không thể mở thêm mối quan hệ khi đã kết hôn hoặc đang hẹn hò đủ hai người.`));
     } else if (player.age < DATING_MIN_AGE) {
       body.append(element("p", "license-age-note",
         `🔞 Bạn cần đủ ${DATING_MIN_AGE} tuổi mới được đến trung tâm mai mối. Còn ${DATING_MIN_AGE - player.age} năm nữa nhé!`));
     }
+    if (player.partner && canStartRelationship(player)) body.append(element("p", "license-age-note", "Bạn có thể tìm hiểu người thứ hai. Mối quan hệ hiện tại vẫn tiếp tục; quen hai người có nguy cơ bị phát hiện và mất lòng tin."));
     const allowed = canStartRelationship(player) && player.age >= DATING_MIN_AGE;
     const list = element("div", "shop-groups");
     for (const center of matchmakingCenters) {
@@ -143,8 +144,9 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
     const actions = element("div", "license-actions");
     actions.append(
       button("shop-buy love-accept", "💞 Đồng ý hẹn hò", () => {
-        if (!canStartRelationship(state.player)) return;
-        Object.assign(state.player, getDatingUpdates(state.player, person, state.player.age));
+        const updates = getDatingUpdates(state.player, person, state.player.age);
+        if (!Object.keys(updates).length) return;
+        Object.assign(state.player, updates);
         state.player.happiness = Math.min(100, state.player.happiness + 3);
         recordAchievementFlags(state, ["first-love"]);
         record(`💞 Tôi bắt đầu hẹn hò với ${person.name}, người được ${center.name} giới thiệu.\n${describePerson(person)}`,

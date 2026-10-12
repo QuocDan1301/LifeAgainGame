@@ -1,0 +1,107 @@
+<!doctype html><meta charset="utf-8"><title>Study abroad integration checks</title>
+<pre id="abroad-check-result">Running…</pre>
+<script type="module">
+const result = document.getElementById('abroad-check-result');
+const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+const backupKey = 'abroadTestBackup';
+const resumed = location.search.includes('resume');
+const returning = new URLSearchParams(location.search).has('return');
+const assert = (ok, message) => { if (!ok) throw Error(message); };
+let navigating = false;
+try {
+  if (!resumed) sessionStorage.setItem(backupKey, JSON.stringify(keys.map(k => localStorage.getItem(k))));
+  const { state, createInitialState } = await import('../js/state.js');
+  const { careerEvent } = await import('../js/career-event.js');
+  const { achievements } = await import('../js/achievements-data.js');
+  if (resumed) Object.assign(state, JSON.parse(localStorage.getItem(keys[0])));
+  else {
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: 'Test', age: 17, studyBlock: 'TD', money: 0,
+      health: 80, happiness: 80, intelligence: 80, appearance: 80, relatives: [], illnessPlan: [] });
+    state.pendingEvent = { ...careerEvent, stage: 'choice', age: 18 };
+    localStorage.setItem(keys[0], JSON.stringify(state));
+  }
+  localStorage.setItem(keys[1], JSON.stringify(Object.fromEntries(achievements.map(a => [a.id, true]))));
+  localStorage.setItem(keys[2], '[]');
+  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  parsed.querySelectorAll('script').forEach(n => n.remove());
+  parsed.querySelectorAll('[src]').forEach(n => n.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  document.getElementById('game-screen').hidden = false;
+  document.getElementById('lobby-screen').hidden = true;
+  Math.random = () => 0.99;
+  await import('../js/main.js');
+  const choose = i => document.querySelectorAll('#event-choices button')[i].click();
+  if (!resumed) {
+    choose(state.pendingEvent.choices.findIndex(c => c.careerPath?.id === 'study-abroad'));
+    if (state.pendingEvent.mediaTransition) document.getElementById('event-confirm').click();
+    assert(state.pendingEvent.kind === 'exam-prep', 'New direction reaches exam preparation: ' + JSON.stringify({ kind: state.pendingEvent?.kind, title: state.pendingEvent?.title, stage: state.pendingEvent?.stage, choice: state.pendingEvent?.choices?.[0] }));
+    choose(0);
+    // Exam preparation uses a narrative transition before the question.
+    if (state.pendingEvent.stage !== 'choice') document.getElementById('event-confirm').click();
+    assert(state.pendingEvent.kind === 'career-test', 'Admission question appears');
+    choose(state.pendingEvent.choices.findIndex(c => c.correct));
+    if (state.pendingEvent.stage !== 'choice') document.getElementById('event-confirm').click();
+    assert(document.querySelectorAll('#event-choices button').length === 7, 'All countries are rendered');
+    choose(0);
+    document.getElementById('event-confirm').click();
+    assert(state.pendingEvent.kind === 'study-abroad-major', 'Country choice opens its own major selection');
+    assert(document.querySelectorAll('#event-choices button').length === 4, 'Four majors rendered');
+    choose(0);
+    assert(state.player.money === 0 && !state.player.careerPath, 'Country selection waits for confirmation');
+    assert(document.getElementById('event-content').textContent.includes('150 triệu'), 'First year cost is visible');
+    document.getElementById('event-confirm').click();
+    assert(state.player.careerPath.school.countryId === 'japan', 'Confirmed country stored');
+    assert(state.player.careerPath.school.majorId === 'business' && state.player.abroadProgress.language === 30, 'Major and progress are saved');
+    assert(state.player.money === -150000000, 'Tuition and living deducted once');
+    const saved = JSON.stringify(state);
+    document.getElementById('event-confirm').click();
+    assert(JSON.stringify(state) === saved, 'Double confirmation is harmless');
+    navigating = true; location.href = returning ? '?resume=1&return=1' : '?resume=1';
+  } else {
+    assert(state.player.careerPath.school.countryId === 'japan', 'Real reload retains country');
+    assert(state.player.money === -150000000, 'Reload does not charge again');
+    assert(state.logs.some(l => (l.content ?? '').includes('Học phí')), 'Financial charge is logged');
+    document.getElementById('age-up').click();
+    assert(state.pendingEvent.kind === 'study-abroad-year', 'Age 19 has a dedicated student event');
+    choose(0); document.getElementById('event-confirm').click();
+    assert(state.player.abroadProgress.language === 55, 'Language improves at confirmation');
+    document.getElementById('age-up').click();
+    assert(state.pendingEvent.kind === 'study-abroad-drama', 'Age 20 has drama');
+    choose(0); choose(0);
+    assert(state.pendingEvent.specialStep === 3, 'Three dialogue steps');
+    choose(0); document.getElementById('event-confirm').click();
+    assert(state.logs.some(l => (l.content ?? '').includes('Bạn cùng phòng:')), 'Dialogue transcript saved');
+    document.getElementById('age-up').click();
+    choose(1); document.getElementById('event-confirm').click();
+    const debt = state.player.money;
+    document.getElementById('age-up').click();
+    assert(state.pendingEvent.kind === 'study-abroad-graduation', 'Graduation offers separate destinations');
+    choose(returning ? 1 : 0); document.getElementById('event-confirm').click();
+    assert(state.player.abroadDestination === (returning ? 'return' : 'stay') && state.player.money === debt - (returning ? 0 : 90000000), 'Graduation charges only the chosen destination living cost');
+    document.getElementById('activities-dialog').showModal();
+    document.getElementById('activity-jobs').click();
+    const listing = document.querySelectorAll('#job-body .job-career');
+    const own = [...listing].find(b => b.dataset.career === state.player.careerPath.id);
+    assert(own && !own.disabled, 'Correct major is available');
+    assert(returning ? state.player.overseasEducation.countryId === 'japan' && state.player.careerPath.id === 'business' : listing.length === 1 && own.textContent.includes('Nhật Bản'), 'Chosen destination and education retained');
+    Math.random = () => 0;
+    own.click();
+    const interview = state.player.jobInterview;
+    const good = interview.choices.findIndex(c => c.quality === 'good' || c.correct);
+    document.querySelectorAll('#job-body .job-answer')[good].click();
+    assert(state.player.employmentStatus === 'employed', 'Local overseas employer hires');
+    assert(state.player.workCountryId === (returning ? 'vietnam' : 'japan'), 'Workplace matches destination');
+    assert(state.player.money === debt - (returning ? 0 : 90000000) + (returning ? 108000000 : 216000000), 'First salary added once');
+    assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.workCountryId === (returning ? 'vietnam' : 'japan'), 'Destination job is persisted');
+    result.textContent = `PASS (${returning ? 'return to Vietnam' : 'stay abroad'}): admission, majors, fees, reload, language, work, dialogue, graduation, job listing, interview, salary and saved country`;
+  }
+} catch (e) { result.textContent = `FAIL: ${e.stack}`; }
+finally {
+  if (!navigating) {
+    const backup = JSON.parse(sessionStorage.getItem(backupKey) ?? '[]');
+    keys.forEach((k, i) => backup[i] == null ? localStorage.removeItem(k) : localStorage.setItem(k, backup[i]));
+    sessionStorage.removeItem(backupKey);
+  }
+}
+</script>

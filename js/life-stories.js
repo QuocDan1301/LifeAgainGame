@@ -8,11 +8,13 @@ import { RETIREMENT_AGE } from './career-salary.js';
 import { getChildAge } from './family.js';
 
 const relative = (player, id) => player.relatives?.find(person => person.id === id);
+const ROAD_VEHICLES = new Set(['motorbike', 'big-bike', 'car', 'porsche', 'lamborghini', 'rolls-royce']);
 const isEmployed = (player, age) => player.employmentStatus === 'employed' && age < RETIREMENT_AGE;
 
 // Hoàn cảnh dùng trong `needs`. Các cặp bổ sung nhau (partner/single, children/noChildren…)
 // để mỗi người chơi luôn có đủ sự kiện hợp với đời mình.
 export const NEEDS = {
+  studyAbroad: (player, age) => age >= 18 && age <= 21 && player.careerPath?.id === 'study-abroad' && player.careerPath.school?.type === 'international',
   father: player => relative(player, 'father')?.alive === true,
   mother: player => relative(player, 'mother')?.alive === true,
   anyParent: player => ['father', 'mother'].some(id => relative(player, id)?.alive === true),
@@ -33,7 +35,8 @@ export const NEEDS = {
   student: (player, age) => age >= 18 && age <= 21 && Boolean(player.careerPath) &&
     !['military', 'esports', 'football'].includes(player.careerPath.id),
   notStudent: (player, age) => !NEEDS.student(player, age),
-  vehicle: player => player.purchases?.some(item => /xe đạp|xe máy|ô tô|motorcycle|bicycle/iu.test(`${item.id} ${item.name}`)) === true,
+  // Xe mua trong Mua sắm chỉ lưu mã (motorbike, car…), không lưu tên.
+  vehicle: player => player.purchases?.some(item => ROAD_VEHICLES.has(item.id)) === true,
   mobile: player => (player.health ?? 0) >= 30,
   frail: player => (player.health ?? 0) < 30,
 };
@@ -150,6 +153,14 @@ export function situationMood(story) {
 
 const withFace = (text, mood, key) => `${text} ${pickFace(mood, key)}`;
 
+// Thứ tự lựa chọn xoay vòng theo sự kiện và theo ván chơi (cố định khi tải lại), để lựa chọn
+// có lợi nhất không luôn nằm ở ô đầu tiên như trong dữ liệu.
+function orderChoices(story, player) {
+  const choices = story.choices;
+  const offset = choices.length > 1 ? faceSeed(`${story.id}|${player.name ?? ''}|${player.province ?? ''}`) % choices.length : 0;
+  return [...choices.slice(offset), ...choices.slice(0, offset)];
+}
+
 function toGameEvent(story, age, player) {
   player = { ...player, storyAge: age };
   const icon = story.icon ?? (age < 6 ? '1F9F8' : age < 18 ? '1F4DA' : age < 60 ? '1F4AC' : '1F375');
@@ -169,7 +180,9 @@ function toGameEvent(story, age, player) {
     conditionText: `Tuổi ${age}; còn sống${requirements.length ? '; ' + requirements.join(', ') : ''}.`,
     automaticResult: false,
     everydayDifficultyApplied: true,
-    choices: [...story.choices, ...(story.choices.every(choice => choice.money < 0 || choice.home || choice.salaryMonths) ? [{ label: 'Chưa chi tiền lúc này', text: 'Tôi xem lại số tiền trong ví và quyết định để dành. Chuyện này phải chờ thêm.', effects: {} }] : [])].map((source, index) => {
+    choices: [...orderChoices(story, player), ...(story.choices.every(choice => choice.money < 0 || choice.home || choice.salaryMonths) ? [{ label: 'Chưa chi tiền lúc này', text: 'Tôi xem lại số tiền trong ví và quyết định để dành. Chuyện này phải chờ thêm.', effects: {} }] : [])].map((source) => {
+      const authored = story.choices.indexOf(source);
+      const index = authored < 0 ? story.choices.length : authored;
       const choice = prepareStoryChoice(source, player, age);
       return ({
       label: fillStoryText(choice.label, player, child),

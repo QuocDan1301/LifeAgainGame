@@ -29,13 +29,13 @@ const success = (label, text) => ({
   title: "💎 Phát hiện đổi đời",
   text,
   effects: { happiness: 15, intelligence: 5 },
-  money: 100_000_000,
+  money: 60_000_000,
   achievementIds: ["story-diamond"],
   confirmText: "Nhận thành tựu!",
   logContent:
     "💎 Năm 20 tuổi, tôi cùng đám bạn phát hiện một mỏ kim cương trong chuyến đi núi Bà Đen. Chuyến đi dự tính chỉ tốn tiền bánh tráng bỗng trở thành câu chuyện được cả nhà nhắc lại mỗi dịp Tết.",
   logSummary:
-    "💎 Tìm thấy mỏ kim cương trong chuyến đi núi Bà Đen.\nHạnh phúc +15 · Trí tuệ +5 · Tiền +100.000.000 VNĐ",
+    "💎 Tìm thấy mỏ kim cương trong chuyến đi núi Bà Đen.\nHạnh phúc +15 · Trí tuệ +5 · Tiền +60.000.000 VNĐ",
   ...art("1F31F", "Tinh thể kim cương tỏa sáng"),
 });
 

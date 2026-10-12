@@ -1,5 +1,6 @@
 import { formatMoney, formatMoneyAmount } from "./money-format.js";
 import { getTravelGain } from "./mood-rules.js";
+import { applyActivityGain, previewActivityGain } from "./stat-budget.js";
 
 // Du lịch: trả chi phí chuyến đi để tăng hạnh phúc. Mỗi năm đi được một chuyến.
 // Cùng một điểm đến nhiều năm liên tiếp thì hiệu quả giảm dần (xem TRAVEL_REPEAT_RATES).
@@ -43,9 +44,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
     player.money -= place.cost;
     player.tripsTaken = { ...(player.tripsTaken ?? {}), [place.id]: player.age };
     player.travelStreak = { id: place.id, lastAge: player.age, count };
-    const before = player.happiness;
-    player.happiness = Math.min(100, before + gain);
-    const gained = player.happiness - before;
+    const gained = applyActivityGain(player, "happiness", gain);
     const content = `✈️ Du lịch ${place.icon} ${place.name} (${place.country}): Tiền -${formatMoneyAmount(place.cost)} VNĐ` +
       `${gained ? ` · Hạnh phúc +${gained}` : ""}${rate < 1 ? ` (lần thứ ${count} liên tiếp, hiệu quả ${Math.round(rate * 100)}%)` : ""}.`;
     const log = { age: player.age, content, summary: content };
@@ -60,10 +59,12 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
   // Số điểm thực nhận hiển thị trước khi trả tiền: đã tính lặp lại điểm đến và mức trần 100.
   function travelFigures(place) {
     const { count, rate, raw, gain } = getTravelGain(state.player, place);
+    const real = previewActivityGain(state.player, "happiness", gain);
     const notes = [];
     if (rate < 1) notes.push(`lần thứ ${count} liên tiếp: ${Math.round(rate * 100)}% hiệu quả`);
     if (gain < raw) notes.push("chạm mức 100");
-    return `💰 Chi phí: ${formatMoney(place.cost)}\n😊 Hạnh phúc +${gain}${notes.length ? ` (${notes.join(", ")})` : ""}`;
+    else if (real < gain) notes.push(`đã gần đủ mức tăng năm nay`);
+    return `💰 Chi phí: ${formatMoney(place.cost)}\n😊 Hạnh phúc +${real}${notes.length ? ` (${notes.join(", ")})` : ""}`;
   }
 
   function render(justVisited = null) {

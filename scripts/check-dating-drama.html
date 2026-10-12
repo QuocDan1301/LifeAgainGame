@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Dating confrontation checks</title>
+<pre id="drama-check-result">Running…</pre>
+<script type="module">
+const result = document.getElementById('drama-check-result');
+const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+const backupKey = 'datingDramaTestBackup';
+const resumed = new URLSearchParams(location.search).has('resume');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+let navigating = false;
+try {
+  if (!resumed) sessionStorage.setItem(backupKey, JSON.stringify(keys.map(key => localStorage.getItem(key))));
+  const { state, createInitialState } = await import('../js/state.js');
+  const { getDatingUpdates } = await import('../js/relationships.js');
+  const { createConcurrentDatingEvent } = await import('../js/concurrent-dating.js');
+  const { achievements } = await import('../js/achievements-data.js');
+  if (resumed) Object.assign(state, JSON.parse(localStorage.getItem('lifeAgainSave')));
+  else {
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { name: 'Test', age: 26, money: 500000000, health: 80, happiness: 80,
+      intelligence: 80, appearance: 80, studyBlock: 'A00', relatives: [], illnessPlan: [] });
+    for (const id of ['A', 'B']) {
+      const person = { id, name: `Người ${id}`, gender: 'female', ageAtMeeting: 25, metAtAge: 25,
+        birthDay: 1, birthMonth: 1, zodiac: 'Ma Kết', personality: 'thẳng thắn', relationship: 95,
+        stats: { health: 80, intelligence: 80, happiness: 80, appearance: 80 } };
+      Object.assign(state.player, getDatingUpdates(state.player, person, 25));
+    }
+    state.pendingEvent = { ...createConcurrentDatingEvent(state.player, 27, () => 0), stage: 'choice', age: 27 };
+    localStorage.setItem('lifeAgainSave', JSON.stringify(state));
+  }
+  localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(achievements.map(a => [a.id, true]))));
+  localStorage.setItem('lifeAgainAchievementQueue', '[]');
+  const html = await (await fetch('../index.html')).text();
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  parsed.querySelectorAll('script').forEach(node => node.remove());
+  parsed.querySelectorAll('[src]').forEach(node => node.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  document.getElementById('game-screen').hidden = false;
+  document.getElementById('lobby-screen').hidden = true;
+  Math.random = () => 0.99;
+  await import('../js/main.js');
+  const choose = index => document.querySelectorAll('#event-choices button')[index].click();
+  if (!resumed) {
+    assert(document.querySelectorAll('.dating-dialogue-turn').length === 3, 'Opening must show three spoken turns');
+    assert(document.querySelector('.dating-dialogue').textContent.includes('Người B'), 'Second person is visible');
+    choose(1);
+    assert(state.pendingEvent.datingDrama.step === 2, 'Denial advances to evidence');
+    assert(document.getElementById('event-title').textContent.includes('Dấu thời gian'), 'Denial gets its own response');
+    assert(state.player.partner.relationship === 95 && state.player.happiness === 80, 'Dialogue has no early consequences');
+    navigating = true;
+    location.href = '?resume=1';
+  } else {
+    assert(state.pendingEvent.datingDrama.step === 2 && state.pendingEvent.datingDrama.replies[0] === 'deny', 'Reload preserves reply');
+    choose(0); choose(1);
+    assert(state.pendingEvent.datingDrama.step === 4, 'Final partner response shown before result');
+    assert(document.querySelector('.dating-dialogue').textContent.includes('Tôi chưa tha thứ'), 'Chosen person sets a boundary');
+    choose(0);
+    assert(state.pendingEvent.stage === 'result' && state.player.otherPartners.length === 1, 'Result waits for confirmation');
+    const logContent = state.pendingEvent.logContent;
+    assert(logContent.includes('Người A:') && logContent.includes('Người B:') && logContent.includes('Tôi đáp:'), 'All dialogue is logged');
+    document.getElementById('event-confirm').click();
+    assert(state.player.partner.id === 'B' && state.player.partner.relationship === 60, 'Late confession can keep a very trusting person, with a penalty');
+    // Hạnh phúc 75 sau hậu quả; cuối năm chỉ số trên 70 hao mòn 1 điểm.
+    assert(state.player.otherPartners.length === 0 && state.player.happiness === 74, 'Consequences apply at confirmation');
+    const settled = JSON.stringify(state);
+    document.getElementById('event-confirm').click();
+    assert(JSON.stringify(state) === settled, 'Repeated confirmation has no effect');
+    result.textContent = 'PASS: dialogue bubbles, denial branch, real reload, partner response, transcript, final consequences and double confirmation';
+  }
+} catch (error) { result.textContent = `FAIL: ${error.stack}`; }
+finally {
+  if (!navigating) {
+    const backup = JSON.parse(sessionStorage.getItem(backupKey) ?? '[]');
+    keys.forEach((key, index) => backup[index] == null ? localStorage.removeItem(key) : localStorage.setItem(key, backup[index]));
+    sessionStorage.removeItem(backupKey);
+  }
+}
+</script>

@@ -94,15 +94,15 @@
     assert(state.player.lotteryTickets[1].numbers.join() === "1,2,3,10,11,12" && state.player.money === 980_000, "Buying a Vietlott ticket");
     body().querySelector(".lottery-quick").click();
     assert(body().querySelectorAll(".lottery-number.is-picked").length === 6, "Quick pick selects 6 numbers");
-    for (let i = 0; i < 8; i++) body().querySelector(".lottery-kien-thiet:not(:disabled)").click();
-    assert(state.player.lotteryTickets.length === 10 && state.player.money === 900_000, "Ten tickets bought");
-    assert([...body().querySelectorAll(".lottery-kien-thiet")].every(button => button.disabled) && buyVietlott().disabled, "Max 10 tickets per year for both types");
-    assert(body().querySelectorAll(".lottery-owned li").length === 10, "Bought tickets listed");
+    for (let i = 0; i < 28; i++) body().querySelector(".lottery-kien-thiet:not(:disabled)").click();
+    assert(state.player.lotteryTickets.length === 30 && state.player.money === 700_000, "Thirty tickets bought");
+    assert([...body().querySelectorAll(".lottery-kien-thiet")].every(button => button.disabled) && buyVietlott().disabled, "Max 30 tickets per year for both types");
+    assert(body().querySelectorAll(".lottery-owned li").length === 30, "Bought tickets listed");
     const purchaseLogs = state.logs.filter(log => log.age === 18 && log.lotteryPurchase);
-    assert(purchaseLogs.length === 1 && purchaseLogs[0].content.startsWith("🎟️ Mua 10 vé số: Tiền -100k VNĐ.")
-      && purchaseLogs[0].lotteryPurchase.kienThiet.length === 9 && purchaseLogs[0].content.includes("• Vietlott: 01 02 03 10 11 12"), "All purchases of the year share one diary line");
+    assert(purchaseLogs.length === 1 && purchaseLogs[0].content.startsWith("🎟️ Mua 30 vé số: Tiền -300k VNĐ.")
+      && purchaseLogs[0].lotteryPurchase.kienThiet.length === 29 && purchaseLogs[0].content.includes("• Vietlott: 01 02 03 10 11 12"), "All purchases of the year share one diary line");
     const diaryLines = [...$("life-log").querySelectorAll("p")].filter(line => line.textContent.includes("vé số"));
-    assert(diaryLines.length === 1 && diaryLines[0].textContent.includes("Mua 10 vé số") && diaryLines[0].textContent.includes(first), "Diary shows one updated line listing the tickets");
+    assert(diaryLines.length === 1 && diaryLines[0].textContent.includes("Mua 30 vé số") && diaryLines[0].textContent.includes(first), "Diary shows one updated line listing the tickets");
     $("close-lottery").click();
 
     // Đặt kết quả năm để biết trước: vé đầu trùng 4 số cuối, vé Vietlott trùng 3 số.
@@ -118,7 +118,7 @@
     assert(yearLog && yearLog.content.includes(`Vé ${first} trùng 4 số cuối`) && yearLog.content.includes("01 02 03 10 11 12 trùng 3 số"), "Age-up draws and records results");
     assert(!state.player.lotteryTickets.length && !Object.keys(state.player.lotteryDraws).length, "Tickets cleared after the draw");
     assert($("life-log").textContent.includes("Xổ số kiến thiết mở thưởng"), "Result shown in the diary");
-    result.textContent = "PASS: prize tables; quick pick; age 18+; 10 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary";
+    result.textContent = "PASS: prize tables; quick pick; age 18+; 30 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {

@@ -1,3 +1,4 @@
+import { createStudyAbroadSchoolEvent } from "./study-abroad.js";
 import { openMojiArt } from "./event-art.js";
 import { ensureEventOpenMoji } from "./event-openmoji.js";
 import { getAnnualTuition, TUITION_FIRST_AGE, TUITION_LAST_AGE } from "./family.js";
@@ -104,6 +105,7 @@ export const academyLogos = {
 };
 
 function createSchoolEventData(careerPath, player = {}) {
+  if (careerPath.id === "study-abroad") return createStudyAbroadSchoolEvent(careerPath, player);
   if (careerPath.id === "esports") {
     const academies = [
       ["flash-academy", "Team Flash Academy"],

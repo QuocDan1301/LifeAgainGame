@@ -93,14 +93,16 @@ function profilesFor(age) {
     for (const partner of partners)
       for (const kids of age >= 26 && partner !== 'none' && partner !== 'dating' ? [false, 'young', 'older'] : [false])
         for (const employed of age >= 18 && age < 62 ? [true, false] : [false])
-          for (const studying of age >= 18 && age <= 21 ? [true, false] : [false])
+          for (const studying of age >= 18 && age <= 21 ? ['domestic', 'abroad', false] : [false])
           for (const health of [80, 20])
             for (const money of [0, -300_000_000, 500_000_000]) {
               if (partner === 'widowed' && age < 26) continue;
               list.push({
                 isAlive: true, name: 'Thử', money, health, storyFlags: [],
                 employmentStatus: employed ? 'employed' : 'unemployed',
-                careerPath: age < 18 ? null : studying || age > 21 ? { id: 'programming' } : { id: 'military' },
+                careerPath: age < 18 ? null : studying === 'abroad'
+                  ? { id: 'study-abroad', school: { type: 'international', countryId: 'japan' } }
+                  : studying || age > 21 ? { id: 'programming' } : { id: 'military' },
                 relatives: [{ id: 'father', name: 'Nguyễn Văn Dân', alive: fa === 'alive' }, { id: 'mother', name: 'Trần Thị Hà', alive: mo === 'alive' }],
                 partner: partner === 'dating' || partner === 'married' ? { id: 'p', name: 'Lê Minh Thư' } : null,
                 marriedAtAge: partner === 'married' ? Math.max(20, age - 10) : null,

@@ -82,9 +82,9 @@ export const laterLifeStories = {
       },
       {
         "title": "🎁 Người nhận quà hôm nay là tôi",
-        "text": "Một tuần sau, hàng xóm gọi tôi ra đầu hẻm. Chiếc bàn đã được sửa, mái hiên cũng được gia cố. Trên bàn là bộ dụng cụ mới cùng một cuốn sổ ghi đầy lời cảm ơn.\n\nMẹ cậu học sinh bật chiếc radio tôi sửa. Tiếng nhạc vang lên, bà nói: “Có những thứ chú giữ lại cho mọi người, tiền không mua lại được.”\n\nĐại diện chương trình hỗ trợ sáng kiến cộng đồng của địa phương cũng có mặt. Sau khi được người dân đề cử và xét chọn, góc sửa đồ của tôi nhận 100.000.000 VNĐ tiền thưởng và hỗ trợ hoạt động từ nhà tài trợ trong câu chuyện.\n\nTôi đứng ngơ ra. Cả đời quen hỏi người khác “Hỏng chỗ nào?”, giờ đến lượt mình chẳng biết nói gì.",
+        "text": "Một tuần sau, hàng xóm gọi tôi ra đầu hẻm. Chiếc bàn đã được sửa, mái hiên cũng được gia cố. Trên bàn là bộ dụng cụ mới cùng một cuốn sổ ghi đầy lời cảm ơn.\n\nMẹ cậu học sinh bật chiếc radio tôi sửa. Tiếng nhạc vang lên, bà nói: “Có những thứ chú giữ lại cho mọi người, tiền không mua lại được.”\n\nĐại diện chương trình hỗ trợ sáng kiến cộng đồng của địa phương cũng có mặt. Sau khi được người dân đề cử và xét chọn, góc sửa đồ của tôi nhận 60.000.000 VNĐ tiền thưởng và hỗ trợ hoạt động từ nhà tài trợ trong câu chuyện.\n\nTôi đứng ngơ ra. Cả đời quen hỏi người khác “Hỏng chỗ nào?”, giờ đến lượt mình chẳng biết nói gì.",
         "warningPhrases": [
-          "100.000.000 VNĐ tiền thưởng và hỗ trợ hoạt động"
+          "60.000.000 VNĐ tiền thưởng và hỗ trợ hoạt động"
         ],
         "choices": [
           {
@@ -125,9 +125,9 @@ export const laterLifeStories = {
       },
       {
         "title": "🔍 Hai chuyên gia, hai kết luận",
-        "text": "Tại bàn thẩm định, người thứ nhất nhìn chữ ký rồi khẳng định: “Tranh thật! Tôi mua ngay 200 triệu, chỉ cần bác quyết hôm nay.”\n\nNgười thứ hai chưa kết luận. Bà đề nghị kiểm tra chất liệu, nguồn gốc và những lần phục chế, đồng thời nói rõ kết quả có thể không như mong đợi.\n\nNgười mua đầu tiên giục: “Chờ kiểm tra là mất giá đó bác!”",
+        "text": "Tại bàn thẩm định, người thứ nhất nhìn chữ ký rồi khẳng định: “Tranh thật! Tôi mua ngay 70 triệu, chỉ cần bác quyết hôm nay.”\n\nNgười thứ hai chưa kết luận. Bà đề nghị kiểm tra chất liệu, nguồn gốc và những lần phục chế, đồng thời nói rõ kết quả có thể không như mong đợi.\n\nNgười mua đầu tiên giục: “Chờ kiểm tra là mất giá đó bác!”",
         "warningPhrases": [
-          "200 triệu"
+          "70 triệu"
         ],
         "choices": [
           {
@@ -135,7 +135,7 @@ export const laterLifeStories = {
             "text": "Kết quả cho thấy tranh có giá trị, nhưng cần làm rõ một chi tiết ở mặt sau. Sang tình huống 3."
           },
           {
-            "label": "Hai trăm triệu, chốt cho chắc!",
+            "label": "Bảy mươi triệu, chốt cho chắc!",
             "text": "Tôi ký giao tranh trước khi kiểm tra điều khoản thanh toán. Người mua chỉ trả khoản đặt cọc nhỏ rồi tranh chấp phần còn lại. Tôi kiệt sức vì nhiều ngày giải quyết. −20 sức khỏe, kết thúc chuỗi."
           }
         ],
@@ -159,9 +159,9 @@ export const laterLifeStories = {
       },
       {
         "title": "💰 Một chữ nhỏ, một khoản tiền lớn",
-        "text": "Bức tranh được xác thực và có đơn vị sưu tầm đề nghị mua với giá 500.000.000 VNĐ.\n\nNgay trước lúc bàn giao, tôi nhận thông báo chuyển tiền trên điện thoại. Người đến lấy tranh bảo: “Bác thấy báo tiền rồi đó, cho cháu mang đi kẻo trễ xe.”\n\nTôi nhìn kỹ: thông báo là tin nhắn kèm đường link, chưa phải giao dịch được xác nhận trong tài khoản ngân hàng.",
+        "text": "Bức tranh được xác thực và có đơn vị sưu tầm đề nghị mua với giá 180.000.000 VNĐ.\n\nNgay trước lúc bàn giao, tôi nhận thông báo chuyển tiền trên điện thoại. Người đến lấy tranh bảo: “Bác thấy báo tiền rồi đó, cho cháu mang đi kẻo trễ xe.”\n\nTôi nhìn kỹ: thông báo là tin nhắn kèm đường link, chưa phải giao dịch được xác nhận trong tài khoản ngân hàng.",
         "warningPhrases": [
-          "500.000.000 VNĐ",
+          "180.000.000 VNĐ",
           "tin nhắn kèm đường link"
         ],
         "choices": [
@@ -350,7 +350,7 @@ export const laterLifeStories = {
             "text": "Khóa không mở. Tôi tưởng lấy nhầm hộp nên quay lại tìm khắp vườn, mệt đến mức phải dừng cuộc tìm kiếm. −20 sức khỏe, kết thúc chuỗi."
           }
         ],
-        "afterChoices": "Trong hộp là tấm ảnh thời trẻ và lá thư:\n\n“Khoản ông góp giúp tôi mở tiệm năm ấy, tôi vẫn ghi chép đầy đủ. Tiệm đã sang nhượng, phần của ông là 200.000.000 đồng. Tôi đã chuẩn bị giấy tờ, cô trông nhà sẽ đưa ông. Mấy câu đố chỉ để ông chịu ghé thăm căn nhà lần cuối.”\n\nTôi gọi ngay cho bạn:\n\n“Tiền thì tôi nhận. Còn tiền vé xe, tính lãi riêng nha!”"
+        "afterChoices": "Trong hộp là tấm ảnh thời trẻ và lá thư:\n\n“Khoản ông góp giúp tôi mở tiệm năm ấy, tôi vẫn ghi chép đầy đủ. Tiệm đã sang nhượng, phần của ông là 100.000.000 đồng. Tôi đã chuẩn bị giấy tờ, cô trông nhà sẽ đưa ông. Mấy câu đố chỉ để ông chịu ghé thăm căn nhà lần cuối.”\n\nTôi gọi ngay cho bạn:\n\n“Tiền thì tôi nhận. Còn tiền vé xe, tính lãi riêng nha!”"
       }
     ],
     "log": "✉️ Năm 75 tuổi, tôi giải những câu đố của một người bạn cũ và nhận lại phần góp vốn tưởng đã quên. Hai đứa hẹn gặp ăn cơm. Lần này tôi nói rõ: gửi địa chỉ bình thường, đừng bắt giải mật mã nữa.",
@@ -428,9 +428,9 @@ export const laterLifeStories = {
       },
       {
         "title": "🍀 Gọi đúng ba lần mới tin",
-        "text": "Người dẫn chương trình rút phiếu cho giải đặc biệt. Tôi đang bóc chiếc bánh thì nghe đọc đúng số trên tấm vé mình giữ.\n\nTôi quay sang hỏi bác bên cạnh: “Họ gọi bàn nhận cơm hả?”\n\n“Gọi bác trúng thưởng đó!”\n\nTrên sân khấu, nhân viên kiểm tra phiếu hợp lệ rồi trao giải 500.000.000 VNĐ, do nhà tài trợ chương trình đài thọ. Đúng lúc ấy, người cầm nhầm ô chạy đến trả và xin lỗi.\n\nTôi nhìn chiếc ô, nhìn tấm phiếu, rồi bật cười. Nếu không bị cầm nhầm, giờ này tôi đã ngồi ở nhà.",
+        "text": "Người dẫn chương trình rút phiếu cho giải đặc biệt. Tôi đang bóc chiếc bánh thì nghe đọc đúng số trên tấm vé mình giữ.\n\nTôi quay sang hỏi bác bên cạnh: “Họ gọi bàn nhận cơm hả?”\n\n“Gọi bác trúng thưởng đó!”\n\nTrên sân khấu, nhân viên kiểm tra phiếu hợp lệ rồi trao giải 200.000.000 VNĐ, do nhà tài trợ chương trình đài thọ. Đúng lúc ấy, người cầm nhầm ô chạy đến trả và xin lỗi.\n\nTôi nhìn chiếc ô, nhìn tấm phiếu, rồi bật cười. Nếu không bị cầm nhầm, giờ này tôi đã ngồi ở nhà.",
         "warningPhrases": [
-          "500.000.000 VNĐ"
+          "200.000.000 VNĐ"
         ],
         "choices": [
           {
@@ -523,7 +523,7 @@ export const laterLifeStories = {
             "text": "Mã sai, két chuyển sang chế độ chờ. Tôi đã mệt sau cả buổi nên dừng lại. −10 sức khỏe, kết thúc chuỗi."
           }
         ],
-        "afterChoices": "Bên trong là một bức thư cùng hồ sơ khoản tiền thưởng đã được gia đình bác thủ thư dành sẵn:\n\n“Cảm ơn người vẫn chịu đọc kỹ, dù mọi thứ quanh mình ngày càng vội.”\n\nGia đình xác nhận tôi là người giải được câu đố và trao 200.000.000 VNĐ. Tôi xin chụp một tấm ảnh cạnh chiếc két, đứng đúng chỗ bác thủ thư năm xưa."
+        "afterChoices": "Bên trong là một bức thư cùng hồ sơ khoản tiền thưởng đã được gia đình bác thủ thư dành sẵn:\n\n“Cảm ơn người vẫn chịu đọc kỹ, dù mọi thứ quanh mình ngày càng vội.”\n\nGia đình xác nhận tôi là người giải được câu đố và trao 100.000.000 VNĐ. Tôi xin chụp một tấm ảnh cạnh chiếc két, đứng đúng chỗ bác thủ thư năm xưa."
       }
     ],
     "log": "📚 Năm 85 tuổi, tôi giải được câu đố trong thư viện cũ và nhận một khoản tiền lớn. Con cháu hỏi bí quyết, tôi bảo: “Đọc hết câu rồi hãy chọn. Hồi trẻ làm bài thi mà nhớ vậy thì đỡ khổ rồi!”",

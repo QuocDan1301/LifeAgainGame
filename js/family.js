@@ -1,5 +1,5 @@
 import { maleNames, femaleNames } from "./character-data.js";
-import { collectAssetIncome } from "./shop.js";
+import { collectAssetIncome, getAssetYearProjection } from "./shop.js";
 import { collectSideJobYear } from "./side-jobs.js";
 import { applyEmergency, collectIllnessYear } from "./hospital.js";
 import { collectLotteryYear } from "./lottery.js";
@@ -13,6 +13,8 @@ import { SCHOLARSHIP, collectCognitiveYear } from "./intellect-rules.js";
 import { collectAppearanceYear } from "./appearance-rules.js";
 import { createSchoolEntryReward } from "./school-rewards.js";
 import { createGraduationNotice } from "./job-applications.js";
+import { getStudyAbroadTuition, getStudyAbroadCountry, getStudyAbroadLivingCost } from "./study-abroad.js";
+import { collectStatWearYear } from "./stat-budget.js";
 
 export const getChildAge = (child, age) => child.initialAge + Math.max(0, age - child.joinedAtAge);
 
@@ -112,6 +114,7 @@ export const TUITION_PER_YEAR = 20_000_000;
 const tuitionByCareer = { medicine: 40_000_000 };
 export function getAnnualTuition(careerPath) {
   if (!careerPath?.school || careerPath.school.type === "academy") return 0;
+  if (careerPath.id === "study-abroad") return getStudyAbroadCountry(careerPath)?.tuition ?? 0;
   return tuitionByCareer[careerPath.id] ?? TUITION_PER_YEAR;
 }
 // Mức sống tiết kiệm (giảm mức sống khi khó khăn): sàn và tỷ lệ chi thấp hơn, đổi lại hạnh phúc -1 mỗi năm.
@@ -125,6 +128,22 @@ export function getLivingCost(age, income, mode = "normal") {
   const share = income > 0 ? Math.round((income * config.rate) / 1000) * 1000 : 0;
   return Math.max(config.floor, share);
 }
+// Sống tiết kiệm là cách xoay xở lúc khó khăn: mỗi năm bớt được tối đa 12 triệu so với mức bình thường,
+// để người thu nhập cao không thể cắt 1/3 sinh hoạt phí chỉ với Hạnh phúc -1.
+export const FRUGAL_MAX_SAVING = 12_000_000;
+export function getYearLivingCost(careerPath, age, income, mode = "normal") {
+  const cost = (living) => getStudyAbroadLivingCost(careerPath, age, income, living) || getLivingCost(age, income, living);
+  const normal = cost("normal");
+  return mode === "frugal" ? Math.max(cost("frugal"), normal - FRUGAL_MAX_SAVING) : normal;
+}
+
+// Nợ (ví âm) từ tuổi tự lo sinh hoạt bị tính lãi mỗi năm trên số nợ mang sang đầu năm,
+// nên vay để học hay để tiêu đều có giá. Thời sinh viên (trước 23 tuổi) chưa tính lãi.
+export const DEBT_INTEREST_RATE = 0.06;
+export function getDebtInterest(age, money) {
+  if (!Number.isInteger(age) || age < LIVING_COST_MIN_AGE || !(money < 0)) return 0;
+  return Math.round((-money * DEBT_INTEREST_RATE) / 1000) * 1000;
+}
 
 export function migrateChildcareDebt(player, updates) {
   const debt = player.childcareDebt ?? 0;
@@ -137,7 +156,7 @@ export function migrateChildcareDebt(player, updates) {
 }
 
 // Sức khỏe trong năm: cấp cứu sau biến cố, nghỉ dưỡng (hồi phục, lùi xét nâng bậc) và suy giảm vì tuổi cao.
-// Tuổi cao mà sức khỏe cạn thì ra đi vì tuổi già.
+// Tuổi cao: sức khỏe suy giảm dần (tối thiểu 1); nguy cơ ra đi do checkOldAgeDeath quyết định.
 function collectHealthYear(player, age) {
   const lines = [];
   // Biến cố trong năm làm sức khỏe về 0 mà không phải lựa chọn tử vong (death): nhập viện cấp cứu.
@@ -155,14 +174,12 @@ function collectHealthYear(player, age) {
   }
   const decline = getAgingDecline(age);
   if (decline) {
+    // Suy giảm tuổi già giữ tối thiểu 1: sự kiện "không gây tử vong" (bị thương còn 1) không bị
+    // tuổi tác kết liễu ngay cuối năm. Ra đi vì tuổi già do nguy cơ mỗi năm quyết định
+    // (getOldAgeDeathChance), vốn đã cao gấp nhiều lần khi sức khỏe nguy kịch.
     const before = player.health;
-    player.health = Math.max(0, before - decline);
+    player.health = Math.max(Math.min(1, before), before - decline);
     if (before !== player.health) lines.push(`🧓 Tuổi cao, sức khỏe suy giảm: Sức khỏe -${before - player.health}.`);
-    if (player.health === 0) {
-      player.isAlive = false;
-      player.deathCause = "old-age";
-      lines.push("🕯️ Cơ thể tuổi cao đã quá suy yếu và không còn gượng dậy được nữa.");
-    }
   }
   return lines.length ? { content: lines.join("\n") } : null;
 }
@@ -174,6 +191,8 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     return { childcare: { amount: 0, charges: [], content: "" } };
   }
   migrateChildcareDebt(player, updates);
+  // Lãi tính trên số nợ mang sang từ năm trước, trước mọi khoản thu chi của năm nay.
+  const interestAmount = getDebtInterest(age, player.money);
   retirePlayer(player, age);
   if (player.employmentStatus === 'retired') {
     updates = { ...updates };
@@ -181,10 +200,13 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     for (const key of ['employmentStatus', 'job', 'careerLevel', 'nextPromotionAge', 'jobWarning',
       'layoffDue', 'contractEndAge', 'contractNoticeAge', 'contractEnding', 'employedSince', 'careerSwitchOpen']) delete updates[key];
   }
+  const moneyBeforeEmployment = player.money;
   const employment = collectEmploymentYear(player, age);
-  const schooling = schoolReward === undefined ? createSchoolEntryReward(player, age, updates) : schoolReward;
+  const eventUpdates = typeof updates.money === 'number'
+    ? { ...updates, money: updates.money + player.money - moneyBeforeEmployment } : updates;
+  const schooling = schoolReward === undefined ? createSchoolEntryReward(player, age, eventUpdates) : schoolReward;
   const yearUpdates = schooling && !player.schoolRewardsReceived?.[schooling.id]
-    ? { ...updates, ...schooling.updates } : updates;
+    ? { ...eventUpdates, ...schooling.updates } : eventUpdates;
   const childcare = getChildcareExpenses(player, age, updates);
   // Lương tính theo bậc trước khi áp kết quả sự kiện (nâng bậc có hiệu lực từ năm sau).
   const payment = getAnnualSalaryPayment(player, age, yearUpdates);
@@ -193,14 +215,14 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
   // Người thân già đi, tình trạng sức khỏe thay đổi (có thông báo trước khi nguy kịch).
   const family = collectFamilyYear(player, age);
   // Sức khỏe và bệnh trước: qua đời trong năm thì không ghi thêm thu nhập hay chi phí sau dòng tử vong.
-  const health = collectHealthYear(player, age);
+  const yearHealth = collectHealthYear(player, age);
   const illness = player.isAlive === false ? null : collectIllnessYear(player, age);
   // Tuổi cao: có thể suy giảm trí tuệ nhẹ, ít hơn nếu năm qua có đọc sách, học hay trò chuyện.
   const cognition = player.isAlive === false ? null : collectCognitiveYear(player, age);
   const looks = player.isAlive === false ? null : collectAppearanceYear(player, age);
   const aging = cognition && looks ? { content: `${cognition.content}\n${looks.content}` } : cognition ?? looks;
   if (player.isAlive === false) {
-    return { childcare: { amount: 0, charges: [], content: "" }, employment, family, health, illness, cognition: aging };
+    return { childcare: { amount: 0, charges: [], content: "" }, employment, family, health: yearHealth, illness, cognition: aging };
   }
   // Tinh thần: hồi phục từ hỗ trợ, tác động kéo dài của biến cố, lời hẹn với người yêu, năm hạnh phúc thấp.
   const mood = collectMoodYear(player, age);
@@ -222,12 +244,12 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
   const sideJobs = collectSideJobYear(player, age);
   // Kiệt quệ vì làm quá sức có thể khép lại cuộc đời: không ghi thêm khoản nào sau dòng tử vong.
   if (player.isAlive === false) {
-    return { salary, childcare: { amount: 0, charges: [], content: "" }, health, illness, livestock, sideJobs };
+    return { salary, childcare: { amount: 0, charges: [], content: "" }, health: yearHealth, illness, livestock, sideJobs };
   }
   const lottery = collectLotteryYear(player, age);
   const graduation = createGraduationNotice(player, age);
   // Học phí, sinh hoạt phí và chi phí nuôi con luôn được trừ đủ; ví không đủ thì thành số âm (nợ).
-  const fullTuition = age >= TUITION_FIRST_AGE && age <= TUITION_LAST_AGE ? getAnnualTuition(player.careerPath) : 0;
+  const fullTuition = player.careerPath?.id === 'study-abroad' ? getStudyAbroadTuition(player, age) : age >= TUITION_FIRST_AGE && age <= TUITION_LAST_AGE ? getAnnualTuition(player.careerPath) : 0;
   // Học bổng khuyến khích: năm học có Trí tuệ từ 80 được giảm học phí.
   const scholarship = fullTuition && (player.intelligence ?? 0) >= SCHOLARSHIP.minIntellect;
   const tuitionAmount = scholarship ? Math.round((fullTuition * (1 - SCHOLARSHIP.rate)) / 1000) * 1000 : fullTuition;
@@ -239,42 +261,61 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     player.money -= tuition.amount;
     if (player.money < 0) tuition.content += ` Ví còn thiếu ${formatSalary(-player.money)}: đây là nợ học phí, thu nhập về sau sẽ trả dần. Bạn vẫn tiếp tục học.`;
   }
-  const livingAmount = getLivingCost(age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0), player.livingMode);
-  const living = livingAmount
-    ? { amount: livingAmount, content: `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` }
+  const livingAmount = getYearLivingCost(player.careerPath, age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0) + (assetIncome?.recurringIncome ?? 0), player.livingMode);
+  const living = livingAmount || interestAmount
+    ? { amount: livingAmount, content: livingAmount ? `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` : "" }
     : null;
   if (living) player.money -= living.amount;
+  if (interestAmount) {
+    player.money -= interestAmount;
+    living.interest = interestAmount;
+    living.content = [living.content, `🏦 Lãi nợ ${Math.round(DEBT_INTEREST_RATE * 100)}%/năm trên khoản ví âm mang sang: -${formatSalary(interestAmount)}.`].filter(Boolean).join("\n");
+  }
   if (childcare.amount) {
     player.money -= childcare.amount;
     player.children = (player.children ?? []).map(child => childcare.charges.some(charge => charge.id === child.id)
       ? { ...child, lastCarePaidAtAge: age } : child);
   }
   // Nợ thời sinh viên chưa bị phạt; từ tuổi tự lo sinh hoạt mà cuối năm ví còn âm thì phải sống tằn tiện.
-  if (living && player.money < 0) {
+  if (livingAmount && player.money < 0) {
     player.happiness = Math.max(0, (player.happiness ?? 0) - LIVING_SHORTFALL_HAPPINESS);
     living.content += ` Ví đang âm ${formatSalary(-player.money)} nên phải sống tằn tiện (Hạnh phúc -${LIVING_SHORTFALL_HAPPINESS}).`;
   }
-  if (living && player.livingMode === "frugal") {
+  if (livingAmount && player.livingMode === "frugal") {
     player.happiness = Math.max(0, (player.happiness ?? 0) + LIVING_MODES.frugal.happiness);
     living.content += ` Đang sống tiết kiệm (Hạnh phúc ${LIVING_MODES.frugal.happiness}).`;
   }
+  // Cuối năm: chỉ số cao hao mòn theo năm tháng (18–74 tuổi), phải giữ gìn bằng hoạt động mỗi năm.
+  // Tính sau học phí để mốc học bổng xét theo chỉ số trong năm học.
+  const wear = collectStatWearYear(player, age);
+  const health = yearHealth && wear ? { content: `${yearHealth.content}\n${wear.content}` } : yearHealth ?? wear;
   return { salary, childcare, schooling, tuition, employment, family, health, mood, livestock, sideJobs, living, illness, lottery, graduation, cognition: aging };
 }
 
 // Dự báo năm tới: thu nhập (lương, làm thêm) và chi phí bắt buộc (sinh hoạt, nuôi con, học phí).
 export function forecastNextYear(player) {
   const age = (player.age ?? 0) + 1;
-  const salary = player.employmentStatus === "retired" || (player.employmentStatus === "employed" && player.layoffDue !== age && player.contractEndAge !== age)
-    ? getAnnualSalaryPayment(player, age)?.amount ?? 0 : 0;
+  const forecastWorker = { ...player };
+  retirePlayer(forecastWorker, age);
+  const salary = forecastWorker.employmentStatus === "retired" || (forecastWorker.employmentStatus === "employed" && forecastWorker.layoffDue !== age && forecastWorker.contractEndAge !== age)
+    ? getAnnualSalaryPayment(forecastWorker, age)?.amount ?? 0 : 0;
   const sideJobs = player.restYear === age ? 0 : (player.sideJobs ?? [])
     .reduce((sum, job) => sum + (job.startedAtAge < age ? ({ "part-time": 12_000_000, "full-time": 72_000_000 })[job.shift] ?? 0 : 0), 0);
-  const income = salary + sideJobs;
-  const living = getLivingCost(age, income, player.livingMode);
+  const assets = getAssetYearProjection(player, age);
+  const repayments = (player.storyLoans ?? []).reduce((sum, loan) => {
+    if (!loan.repaymentYears || loan.outstanding <= 0 || age <= loan.lastRepaidAge) return sum;
+    const target = Math.floor(loan.principal * Math.min(loan.repaymentYears, age - loan.lentAtAge) / loan.repaymentYears);
+    return sum + Math.max(0, Math.min(loan.outstanding, target - loan.amountRepaid));
+  }, 0);
+  const recurringIncome = salary + sideJobs + assets.recurringIncome;
+  const income = recurringIncome + repayments;
+  const living = getYearLivingCost(player.careerPath, age, recurringIncome, player.livingMode);
+  const interest = getDebtInterest(age, player.money ?? 0);
   const childcare = getChildcareExpenses(player, age).amount ?? 0;
-  const baseTuition = age >= TUITION_FIRST_AGE && age <= TUITION_LAST_AGE ? getAnnualTuition(player.careerPath) : 0;
+  const baseTuition = player.careerPath?.id === 'study-abroad' ? getStudyAbroadTuition(player, age) : age >= TUITION_FIRST_AGE && age <= TUITION_LAST_AGE ? getAnnualTuition(player.careerPath) : 0;
   const tuition = (player.intelligence ?? 0) >= SCHOLARSHIP.minIntellect ? Math.round((baseTuition * (1 - SCHOLARSHIP.rate)) / 1000) * 1000 : baseTuition;
   const mortgage = (player.homeLoans ?? []).reduce((sum, loan) => sum +
     (loan.outstanding > 0 && age > loan.lastPaidAge ? Math.min(loan.outstanding, loan.annualPayment) : 0), 0);
-  const costs = living + childcare + tuition + mortgage;
-  return { age, income, costs, living, childcare, tuition, after: (player.money ?? 0) + income - costs };
+  const costs = living + interest + childcare + tuition + mortgage + assets.upkeep;
+  return { age, income, costs, living, interest, childcare, tuition, mortgage, upkeep: assets.upkeep, assets: assets.recurringIncome, repayments, after: (player.money ?? 0) + income - costs };
 }

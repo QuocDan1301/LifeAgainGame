@@ -2,7 +2,9 @@
 // lượt nâng bậc 1 → 2. Mỗi bước ghi [tình huống, đáp án đi tiếp, đáp án dừng];
 // bước nâng bậc ghi thêm tiêu đề ở đầu. finalScenario chọn tình huống bậc 3:
 // 0 = dẫn dắt nhiệm vụ lớn, 1 = đánh giá kế hoạch có rủi ro.
+import { studyAbroadMilestone } from "./study-abroad.js";
 export const careerMilestones = {
+  "study-abroad": studyAbroadMilestone,
   acting: {
     field: "Điện ảnh",
     icon: "1F3AC",

@@ -1,6 +1,6 @@
 # Sổ tay sự kiện đời thường
 
-Toàn bộ sự kiện đời thường của game nằm ở `js/life-stories/` (627 sự kiện, tuổi 1–104). Mỗi lần sửa hay viết thêm, kể cả khi nhờ AI, đều phải theo sổ tay này.
+Toàn bộ sự kiện đời thường của game nằm ở `js/life-stories/` (646 sự kiện, tuổi 1–104). Mỗi lần sửa hay viết thêm, kể cả khi nhờ AI, đều phải theo sổ tay này.
 
 | File | Tuổi |
 |---|---|

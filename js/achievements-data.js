@@ -518,6 +518,15 @@ export const achievements = [
     flag(),
   ),
   item(
+    "career-study-abroad",
+    "careers",
+    "Chuyên môn và lãnh đạo",
+    "🌐",
+    "Giám đốc dự án quốc tế",
+    "Đạt cấp 3 sau hành trình du học.",
+    flag(),
+  ),
+  item(
     "career-marketing",
     "careers",
     "Chuyên môn và lãnh đạo",
