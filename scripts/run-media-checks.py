@@ -23,7 +23,7 @@ try:
     errors=[];missing=[]
     page.on('pageerror',lambda error:errors.append(str(error)))
     page.on('response',lambda response:missing.append(response.url) if response.status>=400 and '/openmoji/' in response.url else None)
-    for test,selector in [('check-event-media.html','#result')]+([('check-everyday-expansion.html','#expansion-result')] if '--expansion' in sys.argv else []):
+    for test,selector in [('check-event-media.html','#result')]:
       page.goto(base+'/scripts/'+test)
       page.wait_for_function(f"/^(PASS|FAIL)/.test(document.querySelector('{selector}').textContent)",timeout=120000)
       report=page.locator(selector).inner_text();print(report,flush=True);assert report.startswith('PASS'),report

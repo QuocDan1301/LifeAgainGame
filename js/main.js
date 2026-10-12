@@ -78,6 +78,7 @@ import {
   initRelationships,
 } from "./relationships.js";
 import { getAgeEvents, isPriorityEvent } from "./events.js";
+import { pickWeightedStory } from "./life-stories.js";
 import { careerEvent } from "./career-event.js";
 import { academyLogos, createSchoolEvent } from "./career-schools.js";
 import { createDiamondSpecialStep } from "./special-event-20.js";
@@ -1818,7 +1819,7 @@ ageButton.addEventListener("click", () => {
       ? careerEvent
       : (randomAgeStory ??
         (stories?.length
-          ? stories[Math.floor(Math.random() * stories.length)]
+          ? pickWeightedStory(stories)
           : {
               title: "Một năm mới",
               text: "Một năm nữa đã trôi qua.",

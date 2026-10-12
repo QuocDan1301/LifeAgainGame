@@ -36,9 +36,9 @@ try:
           const automatic = Array.from({length:10},(_,i)=>i+1).flatMap(age =>
             getAgeEvents(age).filter(e=>e.automaticResult).map(event=>({age,id:event.id,index:0,
               automatic:true,label:'Đồng ý',effects:event.choices[0].effects})));
-          return automatic.concat([3,18,32,50,88].flatMap(age => {
+          return automatic.concat([3,19,32,50,88].flatMap(age => {
             const event=getAgeEvents(age).find(e=>e.addedEveryday && e.choices.length===3)
-              ?? getAgeEvents(age).find(e=>!e.automaticResult && e.choices?.length===2);
+              ?? getAgeEvents(age).find(e=>!e.automaticResult && e.choices?.length>=2);
             return event.choices.map((choice,index)=>({age,id:event.id,index,label:choice.label,effects:choice.effects}));
           }));
         }""")
