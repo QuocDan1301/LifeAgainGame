@@ -1,7 +1,7 @@
 import { openMojiArt } from "./event-art.js";
 import { formatMoney } from "./money-format.js";
 import { getCareerProfile, getCareerTopic, getEmploymentContext } from "./career-jobs.js";
-import { getCareerAnnualSalary } from "./career-salary.js";
+import { getCareerAnnualSalary, RETIREMENT_AGE } from "./career-salary.js";
 import { addMoodEffect } from "./mood-rules.js";
 
 // Mất việc: ba nguyên nhân tách biệt, không có xác suất sa thải ngẫu nhiên chung mỗi năm.
@@ -48,7 +48,7 @@ const dismissalPhrase = (careerId) => ({ service: "cho xuất ngũ trước hạ
 
 // Ghi nhận thời điểm bắt đầu làm và hạn hợp đồng cho công việc chính mới.
 export function startEmploymentRecord(player, age) {
-  if (player.employmentStatus !== "employed") return;
+  if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed") return;
   player.employedSince ??= age;
   if (getEmploymentType(player.careerPath?.id) === "contract" && !Number.isInteger(player.contractEndAge)) {
     player.contractEndAge = age + CONTRACT_YEARS;
@@ -93,7 +93,7 @@ function reviewChance(player, plan, age) {
 
 export function getProblemChance(player, age) {
   const p = JOB_LOSS.problem;
-  if (player.employmentStatus !== "employed" || player.jobWarning || player.layoffDue ||
+  if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed" || player.jobWarning || player.layoffDue ||
       age - (player.employedSince ?? age) < p.minYears) return 0;
   let chance = p.base + p.perStrike * getRecentStrikes(player, age);
   if (player.intelligence < 40) chance += p.lowIntelligence;
@@ -149,7 +149,7 @@ export function createWorkProblemEvent(player, age, random = Math.random) {
 // Bước 3: đánh giá lại một năm sau cảnh báo. Kết quả được quyết định khi sự kiện xuất hiện (tải lại không đổi).
 export function createJobReviewEvent(player, age, random = Math.random) {
   const warningInfo = player.jobWarning;
-  if (!warningInfo || player.employmentStatus !== "employed" || age <= warningInfo.issuedAt) return null;
+  if (!warningInfo || age >= RETIREMENT_AGE || player.employmentStatus !== "employed" || age <= warningInfo.issuedAt) return null;
   const careerId = player.careerPath?.id;
   const context = getEmploymentContext(careerId);
   const chance = reviewChance(player, warningInfo.plan, age);
@@ -175,7 +175,7 @@ export function createJobReviewEvent(player, age, random = Math.random) {
 export function createLayoffNoticeEvent(player, age, random = Math.random) {
   const careerId = player.careerPath?.id;
   const l = JOB_LOSS.layoff;
-  if (player.employmentStatus !== "employed" || getEmploymentType(careerId) !== "employee" || player.jobWarning || player.layoffDue ||
+  if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed" || getEmploymentType(careerId) !== "employee" || player.jobWarning || player.layoffDue ||
       age - (player.employedSince ?? age) < l.minYears || random() >= l.chance) return null;
   const context = getEmploymentContext(careerId);
   const salary = getCareerAnnualSalary(careerId, Number(player.careerLevel) || 1);
@@ -209,7 +209,7 @@ export function createLayoffNoticeEvent(player, age, random = Math.random) {
 
 // Hết hợp đồng: báo trước một năm (sinh nhật ngay trước năm hết hạn), cho xin gia hạn, tìm việc mới hoặc chuyển hướng.
 export function createContractNoticeEvent(player, age, random = Math.random) {
-  if (player.employmentStatus !== "employed" || !Number.isInteger(player.contractEndAge) ||
+  if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed" || !Number.isInteger(player.contractEndAge) ||
       player.contractEndAge !== age + 1 || player.contractNoticeAge === age) return null;
   const careerId = player.careerPath?.id;
   const context = getEmploymentContext(careerId);
@@ -246,7 +246,7 @@ export function createContractNoticeEvent(player, age, random = Math.random) {
 
 // Mỗi sinh nhật (trước khi trả lương năm mới): thực hiện cắt giảm hoặc hết hợp đồng đã báo trước.
 export function collectEmploymentYear(player, age) {
-  if (player.employmentStatus !== "employed") return null;
+  if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed") return null;
   const lines = [];
   const lose = (cause, extra = {}) => {
     const title = player.job;

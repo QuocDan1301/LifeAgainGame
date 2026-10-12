@@ -295,8 +295,8 @@ export const stage01To10 = [
     title: 'Tờ tiền bà dúi vào tay',
     text: 'Bà dúi vào tay tôi tờ năm mươi nghìn, dặn đừng nói với mẹ. Mẹ đã nhiều lần nói bà đừng cho tiền tụi nhỏ, để dành mà mua thuốc.',
     choices: [
-      { label: 'Giữ bí mật với bà', effects: { happiness: 2 }, flags: ['bi_mat_voi_ba'],
-        text: 'Tôi bỏ tờ tiền vào heo đất. Lần đầu tôi có bí mật chung với bà. Mỗi lần mẹ nhắc chuyện thuốc của bà, tôi nhìn đi chỗ khác.' },
+      { label: 'Giữ bí mật với bà', effects: { happiness: 2 }, money: 50_000, flags: ['bi_mat_voi_ba'],
+        text: 'Tôi giữ tờ tiền trong ví. Lần đầu tôi có bí mật chung với bà. Mỗi lần mẹ nhắc chuyện thuốc của bà, tôi nhìn đi chỗ khác.' },
       { label: 'Kể với mẹ', effects: { intelligence: 1, happiness: -1 }, flags: ['noi_that'],
         text: 'Mẹ cầm tiền trả lại bà, hai người nói qua nói lại một hồi. Bà không giận tôi. Nhưng từ đó bà cho tôi kẹo thay vì tiền.' },
     ],
@@ -447,8 +447,8 @@ export const stage01To10 = [
         text: 'Tôi mang giày mới ra sân, cả đội nhìn. Tối đó mẹ vẫn gọi điện mượn tiền. Tôi để đôi giày dưới gầm giường, không khoe với mẹ.' },
       { label: 'Đưa mẹ hết', effects: { happiness: 1, intelligence: 1 }, flags: ['gop_cho_me'],
         text: 'Mẹ không nhận, rồi nhận, rồi khóc. Cuối tháng mẹ mua cho tôi đôi giày rẻ hơn. Tôi đi tới rách đế.' },
-      { label: 'Đưa mẹ một nửa', effects: { intelligence: 1 }, flags: ['gop_cho_me'],
-        text: 'Mẹ nhận nửa ấy, nói sẽ trả. Phần còn lại không đủ mua giày. Tôi bỏ lại vào con heo mới, chờ năm sau.' },
+      { label: 'Đưa mẹ một nửa', effects: { intelligence: 1 }, money: 450_000, flags: ['gop_cho_me'],
+        text: 'Mẹ nhận nửa ấy, nói sẽ trả. Phần còn lại không đủ mua giày. Tôi giữ bốn trăm năm mươi nghìn còn lại trong ví, chờ năm sau.' },
     ],
   },
   {

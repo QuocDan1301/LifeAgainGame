@@ -413,9 +413,9 @@ export const stage50To59 = [
     title: 'Cú ngã trong nhà tắm',
     text: 'Tôi trượt chân trong nhà tắm, đập hông, đau mấy ngày. Không gãy gì. Bác sĩ khuyên lắp tay vịn, thảm chống trơn, dùng ghế khi tắm. Tôi thấy những thứ ấy là đồ của người già.',
     choices: [
-      { label: 'Lắp đủ hết', effects: { health: 2 }, flags: ['lap_tay_vin'],
+      { label: 'Lắp đủ hết', money: -10000000, effects: { health: 2 }, flags: ['lap_tay_vin'],
         text: 'Thợ lắp xong trong một buổi. Tay vịn sáng loáng, nhìn lạ mắt. Một tháng sau, tôi vịn vào nó mà không còn nghĩ gì.' },
-      { label: 'Chỉ trải thảm chống trơn', effects: { health: 1 },
+      { label: 'Chỉ trải thảm chống trơn', money: -500000, effects: { health: 1 },
         text: 'Tôi trải thảm, tắm cẩn thận hơn. Có lần đứng dậy hơi choáng, tôi vịn vào bồn rửa mặt, nghĩ tới cái tay vịn bác sĩ dặn.' },
     ],
   },
@@ -661,9 +661,9 @@ export const stage50To59 = [
     title: 'Sửa lại căn nhà',
     text: 'Căn nhà tôi ở hai mươi năm đã xuống cấp: thấm dột, điện cũ, cầu thang dốc. Sửa lớn thì tốn gần hết tiền dành dụm. Không sửa thì ở tạm cũng được, nhưng càng già càng khó.',
     choices: [
-      { label: 'Sửa lại cho người già ở', effects: { health: 2, happiness: 1 }, flags: ['sua_nha_cho_gia'],
+      { label: 'Sửa lại cho người già ở', money: -100000000, effects: { health: 2, happiness: 1 }, flags: ['sua_nha_cho_gia'],
         text: 'Thợ làm ba tháng. Cầu thang thoai thoải hơn, có tay vịn, phòng ngủ dời xuống tầng trệt. Tài khoản gần trống, nhưng nhà như mới. Tôi đi lại dễ dàng.' },
-      { label: 'Sửa những chỗ hỏng thôi', effects: { intelligence: 1 },
+      { label: 'Sửa những chỗ hỏng thôi', money: -20000000, effects: { intelligence: 1 },
         text: 'Tôi sửa mái dột, thay dây điện. Cầu thang vẫn dốc, mỗi lần lên xuống tôi đi chậm, vịn tường. Tiền vẫn còn, để dành.' },
     ],
   },
@@ -718,7 +718,7 @@ export const stage50To59 = [
     title: 'Sắp sáu mươi',
     text: 'Sắp sáu mươi tuổi. Người thân muốn tổ chức mừng thọ thật lớn. Tôi muốn dùng số tiền ấy làm một việc có ích hơn: xây một cây cầu nhỏ ở quê, nơi tụi trẻ phải lội suối đi học.',
     choices: [
-      { label: 'Góp tiền xây cầu', effects: { happiness: 4 }, flags: ['xay_cau'],
+      { label: 'Góp tiền xây cầu', money: -10000000, effects: { happiness: 4 }, flags: ['xay_cau'],
         text: 'Cây cầu xây xong sau sáu tháng, nhỏ, bằng xi măng. Ngày khánh thành, tụi nhỏ chạy qua lại trên cầu, cười. Người làng gắn một tấm biển nhỏ, tôi xin họ đừng ghi tên mình.' },
       { label: 'Làm tiệc nhỏ, góp một phần', effects: { happiness: 2 },
         text: 'Tiệc nhỏ, ấm cúng. Tôi góp một phần tiền vào quỹ xây cầu của xã. Năm sau cây cầu mới xong, tôi về đi qua đó một lần.' },
@@ -729,9 +729,9 @@ export const stage50To59 = [
     title: 'Hai chọn lựa',
     text: 'Bác sĩ nói tim tôi có vấn đề, có hai cách: đặt stent, nhanh, tốn tiền; hoặc uống thuốc lâu dài, thay đổi lối sống, rẻ hơn nhưng rủi ro cao hơn. Bác sĩ để tôi chọn.',
     choices: [
-      { label: 'Đặt stent', effects: { health: 3 }, flags: ['dat_stent'],
+      { label: 'Đặt stent', money: -80000000, effects: { health: 3 }, flags: ['dat_stent'],
         text: 'Ca can thiệp nhanh, nằm viện ba ngày. Tiền dành dụm vơi đi nhiều. Về nhà, tôi leo được cầu thang mà không thở dốc. Lâu rồi mới thấy lại cảm giác ấy.' },
-      { label: 'Uống thuốc, đổi lối sống', effects: { health: 1, intelligence: 1 },
+      { label: 'Uống thuốc, đổi lối sống', money: -6000000, effects: { health: 1, intelligence: 1 },
         text: 'Tôi bỏ thịt mỡ, đi bộ mỗi ngày, uống thuốc đúng giờ. Tim ổn định. Mỗi lần đi khám, tôi lại hồi hộp chờ bác sĩ đọc kết quả.' },
     ],
   },
@@ -762,7 +762,7 @@ export const stage50To59 = [
     title: 'Những năm còn lại',
     text: 'Gần sáu mươi, tôi vẫn chưa có việc ổn định, sống nhờ tiền dành dụm và vài việc lặt vặt. Một người bạn rủ góp vốn mở một quán nước nhỏ cho hai đứa có việc làm, có chỗ ngồi chơi.',
     choices: [
-      { label: 'Góp vốn mở quán', effects: { happiness: 3 }, flags: ['quan_nuoc_gia'],
+      { label: 'Góp vốn mở quán', money: -30000000, effects: { happiness: 3 }, flags: ['quan_nuoc_gia'],
         text: 'Quán nhỏ đầu hẻm, toàn khách quen là người già. Tiền lời đủ tiền chợ. Chiều nào hai đứa cũng ngồi đánh cờ, khách tới thì tự rót trà.' },
       { label: 'Giữ tiền, sống tằn tiện', effects: { intelligence: 1 },
         text: 'Tôi giữ tiền, tiêu dè sẻn. Bạn mở quán với người khác. Chiều nào tôi cũng ghé uống ly trà, trả tiền đầy đủ.' },

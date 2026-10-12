@@ -3,7 +3,8 @@ import { collectAssetIncome } from "./shop.js";
 import { collectSideJobYear } from "./side-jobs.js";
 import { applyEmergency, collectIllnessYear } from "./hospital.js";
 import { collectLotteryYear } from "./lottery.js";
-import { getAnnualSalaryPayment, formatSalary } from "./career-salary.js";
+import { collectHomeLoanYear, collectStoryLoanYear } from './story-transactions.js';
+import { getAnnualSalaryPayment, formatSalary, retirePlayer } from "./career-salary.js";
 import { REST_PROMOTION_DELAY, REST_RECOVERY, getAgingDecline, getHealthBand } from "./health-rules.js";
 import { collectMoodYear } from "./mood-rules.js";
 import { collectEmploymentYear, startEmploymentRecord } from "./job-loss.js";
@@ -173,6 +174,13 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     return { childcare: { amount: 0, charges: [], content: "" } };
   }
   migrateChildcareDebt(player, updates);
+  retirePlayer(player, age);
+  if (player.employmentStatus === 'retired') {
+    updates = { ...updates };
+    // Legacy pending work results cannot reopen a retired career.
+    for (const key of ['employmentStatus', 'job', 'careerLevel', 'nextPromotionAge', 'jobWarning',
+      'layoffDue', 'contractEndAge', 'contractNoticeAge', 'contractEnding', 'employedSince', 'careerSwitchOpen']) delete updates[key];
+  }
   const employment = collectEmploymentYear(player, age);
   const schooling = schoolReward === undefined ? createSchoolEntryReward(player, age, updates) : schoolReward;
   const yearUpdates = schooling && !player.schoolRewardsReceived?.[schooling.id]
@@ -202,7 +210,15 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
   }
   const salary = payment;
   // Lãi vật nuôi, cho thuê và kinh doanh cộng sau khi kết quả sự kiện đã ghi đè tiền trong ví.
-  const livestock = collectAssetIncome(player, age);
+  const assetIncome = collectAssetIncome(player, age);
+  const repayment = collectStoryLoanYear(player, age);
+  const assets = assetIncome && repayment
+    ? { amount: assetIncome.amount + repayment.amount, content: `${assetIncome.content}\n${repayment.content}` }
+    : assetIncome ?? repayment;
+  const mortgage = collectHomeLoanYear(player, age);
+  const livestock = assets && mortgage
+    ? { amount: assets.amount - mortgage.amount, content: `${assets.content}\n${mortgage.content}` }
+    : assets ?? mortgage;
   const sideJobs = collectSideJobYear(player, age);
   // Kiệt quệ vì làm quá sức có thể khép lại cuộc đời: không ghi thêm khoản nào sau dòng tử vong.
   if (player.isAlive === false) {
@@ -219,7 +235,10 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     ? { amount: tuitionAmount, content: `🎓 Học phí năm học tại ${player.careerPath.school.name}: -${formatSalary(tuitionAmount)}` +
       (scholarship ? ` (học bổng khuyến khích giảm ${Math.round(SCHOLARSHIP.rate * 100)}% nhờ kết quả học tập tốt).` : ".") }
     : null;
-  if (tuition) player.money -= tuition.amount;
+  if (tuition) {
+    player.money -= tuition.amount;
+    if (player.money < 0) tuition.content += ` Ví còn thiếu ${formatSalary(-player.money)}: đây là nợ học phí, thu nhập về sau sẽ trả dần. Bạn vẫn tiếp tục học.`;
+  }
   const livingAmount = getLivingCost(age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0), player.livingMode);
   const living = livingAmount
     ? { amount: livingAmount, content: `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` }
@@ -245,7 +264,7 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
 // Dự báo năm tới: thu nhập (lương, làm thêm) và chi phí bắt buộc (sinh hoạt, nuôi con, học phí).
 export function forecastNextYear(player) {
   const age = (player.age ?? 0) + 1;
-  const salary = player.employmentStatus === "employed" && player.layoffDue !== age && player.contractEndAge !== age
+  const salary = player.employmentStatus === "retired" || (player.employmentStatus === "employed" && player.layoffDue !== age && player.contractEndAge !== age)
     ? getAnnualSalaryPayment(player, age)?.amount ?? 0 : 0;
   const sideJobs = player.restYear === age ? 0 : (player.sideJobs ?? [])
     .reduce((sum, job) => sum + (job.startedAtAge < age ? ({ "part-time": 12_000_000, "full-time": 72_000_000 })[job.shift] ?? 0 : 0), 0);
@@ -254,6 +273,8 @@ export function forecastNextYear(player) {
   const childcare = getChildcareExpenses(player, age).amount ?? 0;
   const baseTuition = age >= TUITION_FIRST_AGE && age <= TUITION_LAST_AGE ? getAnnualTuition(player.careerPath) : 0;
   const tuition = (player.intelligence ?? 0) >= SCHOLARSHIP.minIntellect ? Math.round((baseTuition * (1 - SCHOLARSHIP.rate)) / 1000) * 1000 : baseTuition;
-  const costs = living + childcare + tuition;
+  const mortgage = (player.homeLoans ?? []).reduce((sum, loan) => sum +
+    (loan.outstanding > 0 && age > loan.lastPaidAge ? Math.min(loan.outstanding, loan.annualPayment) : 0), 0);
+  const costs = living + childcare + tuition + mortgage;
   return { age, income, costs, living, childcare, tuition, after: (player.money ?? 0) + income - costs };
 }

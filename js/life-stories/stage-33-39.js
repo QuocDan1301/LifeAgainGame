@@ -254,9 +254,9 @@ export const stage33To39 = [
     title: 'Người họ hàng vay tiền',
     text: 'Một người anh họ tới nhà, xin vay ba mươi triệu, nói làm ăn thua lỗ, chủ nợ đang đòi. Lần trước anh vay mười triệu, ba năm vẫn chưa trả. Anh ngồi ở phòng khách, uống hết ấm trà mà chưa dám đứng dậy.',
     choices: [
-      { label: 'Cho vay', effects: { happiness: -1 }, flags: ['cho_anh_ho_vay'],
+      { label: 'Cho vay', money: -30000000, lend: 'cousin', effects: { happiness: -1 }, flags: ['cho_anh_ho_vay'],
         text: 'Anh cầm tiền, nói cảm ơn rất nhiều lần. Một năm sau anh vẫn chưa trả, Tết vẫn tới chúc như mọi năm. Tôi coi như cho, nhưng không nói ra.' },
-      { label: 'Cho một khoản, không đòi lại', effects: { happiness: 1 }, flags: ['cho_anh_ho_tien'],
+      { label: 'Cho một khoản, không đòi lại', money: -5000000, effects: { happiness: 1 }, flags: ['cho_anh_ho_tien'],
         text: 'Tôi đưa năm triệu, nói anh cầm tạm, không cần trả. Anh nhìn số tiền, rồi gật đầu. Từ đó anh không hỏi vay nữa, mà Tết vẫn mang qua một giỏ trái cây.' },
       { label: 'Từ chối', effects: { happiness: -2 },
         text: 'Anh đứng dậy, nói “ừ, anh hiểu”. Cả họ biết chuyện, có người nói tôi giàu mà keo kiệt. Hai năm sau anh làm ăn khá lên, gặp tôi vẫn chào, chỉ chào thôi.' },
@@ -589,9 +589,9 @@ export const stage33To39 = [
     title: 'Tú hỏi vay tiền',
     text: 'Tú gọi, giọng ngập ngừng. Tiệm sửa xe bị cháy, Tú cần ba mươi triệu để làm lại, ngân hàng không cho vay. Tú nói hỏi tôi vì tôi là người duy nhất Tú dám hỏi. Ba mươi triệu là phần lớn số tiền tôi có.',
     choices: [
-      { label: 'Cho vay đủ', effects: { happiness: 2 }, money: -30000000, flags: ['cho_tu_vay'],
+      { label: 'Cho vay đủ', effects: { happiness: 2 }, money: -30000000, lend: 'tu', repayAfter: 3, flags: ['cho_tu_vay'],
         text: 'Tiệm mở lại sau hai tháng. Mỗi tháng Tú chuyển trả một ít, kèm tin nhắn kể chuyện tiệm. Ba năm sau trả đủ. Tết đó Tú gửi lên một bao gạo quê nặng tới nỗi bưu điện phải khiêng.' },
-      { label: 'Cho vay một nửa', effects: { happiness: 1 }, money: -15000000, flags: ['cho_tu_vay_mot_nua'],
+      { label: 'Cho vay một nửa', effects: { happiness: 1 }, money: -15000000, lend: 'tu', repayAfter: 2, flags: ['cho_tu_vay_mot_nua'],
         text: 'Tú cảm ơn, nói sẽ xoay phần còn lại. Tiệm mở lại nhỏ hơn trước. Tú trả đủ sau hai năm, không chậm tháng nào.' },
       { label: 'Từ chối', effects: { happiness: -2 }, flags: ['tu_choi_tu'],
         text: 'Tú nói “không sao, tao hiểu mà”. Sau đó Tú ít nhắn hẳn. Một năm sau, tôi thấy ảnh tiệm mới của Tú trên mạng, có ghi lời cảm ơn những người đã giúp.' },
@@ -661,6 +661,17 @@ export const stage33To39 = [
         text: 'Tôi nói {tenCon} học Văn rất khá, cô khen bài văn tả mẹ. Ông chú gật gù. Về nhà, {tenCon} hỏi sao lúc đó tôi không để con tự trả lời.' },
       { label: 'Để con tự trả lời', effects: { intelligence: 1 }, flags: ['de_con_tu_noi'],
         text: '{tenCon} nói: “Dạ bảy điểm.” Ông chú cười, gắp cho con miếng thịt. Trên đường về, tôi nói với con: “Con nói thật, ba mẹ thấy con giỏi.” {tenCon} cười, không hiểu lắm.' },
+    ],
+  },
+  {
+    id: 'ls-cousin-repayment', ages: [38, 48], requires: ['cho_anh_ho_vay'],
+    title: 'Người anh họ trả nợ',
+    text: 'Anh họ ghé lại, mang theo số tiền còn nợ. Anh nói việc làm ăn đã ổn, lần này muốn trả cho rõ ràng.',
+    choices: [
+      { label: 'Nhận tiền trả nợ', repayLoan: 'cousin', effects: { happiness: 1 },
+        text: 'Tôi nhận lại tiền, ghi vào sổ khoản vay đã trả đủ. Hai anh em ngồi uống trà, lần này nhẹ lòng hơn.' },
+      { label: 'Để anh giữ thêm một thời gian', effects: {},
+        text: 'Tôi bảo anh cứ giữ tiền để xoay xở thêm. Khoản cho vay vẫn còn trong sổ, chưa được coi là trả đủ.' },
     ],
   },
 ];

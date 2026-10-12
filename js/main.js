@@ -1,3 +1,5 @@
+import { retirePlayer } from './career-salary.js';
+import { canAffordChoice } from './story-transactions.js';
 import { renderAvatar, getAvatarSource } from "./avatar.js";
 import { createCareerTest, createExamPrepEvent, createFailedTestEvent } from "./career-tests.js";
 import {
@@ -78,7 +80,7 @@ import {
   initRelationships,
 } from "./relationships.js";
 import { getAgeEvents, isPriorityEvent } from "./events.js";
-import { pickWeightedStory } from "./life-stories.js";
+import { pickWeightedStory, fillStoryText } from "./life-stories.js";
 import { careerEvent } from "./career-event.js";
 import { academyLogos, createSchoolEvent } from "./career-schools.js";
 import { createDiamondSpecialStep } from "./special-event-20.js";
@@ -615,6 +617,8 @@ function renderMoney() {
   }
 }
 // Hiển thị tiền khi mở game
+// Update legacy employment state without inventing historical pension payments.
+retirePlayer(state.player);
 // Bản lưu từ trước lần trả lương đầu: cộng lương năm hiện tại vào ví một lần.
 if (getPlayerAnnualSalary(state.player) && state.player.lastSalaryAge == null) {
   const salary = completeCareerYear(state.player, state.player.age);
@@ -839,6 +843,15 @@ let choicesReadyAt = 0;
 function showPendingEvent() {
   const pending = state.pendingEvent;
   if (!pending) return;
+  retirePlayer(state.player, pending.age);
+  if (pending.stage === 'choice' && state.player.employmentStatus === 'retired' &&
+      ['job-warning', 'job-review', 'layoff-notice', 'contract-notice', 'career-promotion'].includes(pending.kind)) {
+    Object.assign(pending, {
+      kind: 'retirement', category: 'everyday', title: 'Một năm nghỉ hưu',
+      text: 'Tôi đã nghỉ hưu, những chuyện ở công ty không còn là việc của mình.',
+      choices: [{ label: 'Tiếp tục', text: 'Tôi dành thời gian cho cuộc sống sau nghỉ hưu.', effects: {} }],
+    });
+  }
   clearResultAnimations();
   pending.category = getEventCategory(pending);
   const categoryNote = document.getElementById("event-category");
@@ -942,6 +955,16 @@ function showPendingEvent() {
     chooseEventAction(0);
     return;
   }
+  // Saved prose is also interpolated; never reapply a saved result transaction.
+  const textPlayer = { ...state.player, storyAge: pending.age };
+  for (const key of ['title', 'text', 'content', 'logContent', 'logSummary', 'confirmText', 'imageAlt', 'imageFallbackAlt']) {
+    if (typeof pending[key] === 'string') pending[key] = fillStoryText(pending[key], textPlayer);
+  }
+  for (const choice of pending.choices ?? []) {
+    for (const key of ['label', 'title', 'text', 'logContent', 'logSummary', 'confirmText']) {
+      if (typeof choice[key] === 'string') choice[key] = fillStoryText(choice[key], textPlayer);
+    }
+  }
   reviewPendingMedia(pending);
   // Remove the old introductory line from events already saved mid-choice.
   if (
@@ -997,6 +1020,8 @@ function showPendingEvent() {
       button.type = "button";
       button.className = "event-choice";
       button.textContent = formatMoneyText(choice.label);
+      button.disabled = !canAffordChoice(state.player, choice);
+      if (button.disabled) button.textContent += ' · Không đủ tiền';
       // Resolve by academy ID as well, so previously saved choices gain logos.
       const logo = academyLogos[choice.careerPath?.school?.id];
       if (logo) {
@@ -1112,6 +1137,11 @@ function chooseEventAction(index) {
   if (!pending || pending.stage !== "choice") return;
   let choice = pending.choices[index];
   if (!choice) return;
+  if (!canAffordChoice(state.player, choice)) {
+    eligibilityFeedback.textContent = `Không đủ tiền: cần ${formatMoneyAmount(-choice.money)} VNĐ.`;
+    eligibilityFeedback.hidden = false;
+    return;
+  }
   if (pending.kind === "job-interview") {
     // Kết quả tổng thể: chất lượng câu trả lời, trí tuệ và chuẩn bị (intellect-rules.js), tung một lần.
     const assessment = rollInterview(
@@ -1266,7 +1296,7 @@ function chooseEventAction(index) {
   if (pending.kind === "career-test") {
     const passed = choice.correct === true || choice.passedOverall === true;
     const next = passed
-      ? createSchoolEvent(pending.testedCareer)
+      ? createSchoolEvent(pending.testedCareer, state.player)
       : createFailedTestEvent(pending.testedCareer, pending.retakesLeft ?? 0);
     state.pendingEvent = createMediaTransition(
       choice,
@@ -1337,7 +1367,7 @@ function chooseEventAction(index) {
     // Ngành có bài test: chọn cách chuẩn bị trước; ngành không có test đi thẳng tới chọn trường.
     const schoolEvent =
       createExamPrepEvent(choice.careerPath, state.player) ??
-      createSchoolEvent(choice.careerPath);
+      createSchoolEvent(choice.careerPath, state.player);
     state.pendingEvent = createChainStep(choice, pending, {
       ...schoolEvent,
       stage: "choice",
@@ -1615,6 +1645,7 @@ ageButton.addEventListener("click", () => {
     return;
   }
   const nextAge = state.player.age + 1;
+  retirePlayer(state.player, nextAge);
 
   // Kiểm tra tuổi thọ trước khi chọn có/không có sự kiện.
   if (checkOldAgeDeath(nextAge)) {
@@ -1697,7 +1728,7 @@ ageButton.addEventListener("click", () => {
         createMoodEvent(state.player, nextAge))
       : null;
   // Tuổi này chưa có sự kiện: ghi nhật kí và tăng tuổi trực tiếp.
-  // 80% có sự kiện, 20% không có sự kiện.
+  // Tuổi 1–10 luôn có chuyện nếu còn sự kiện phù hợp; tuổi lớn giữ 80% để có năm bình lặng.
   const eventChance = 0.8;
 
   const hasEvent =
@@ -1715,7 +1746,7 @@ ageButton.addEventListener("click", () => {
       stories.length > 0 &&
       (randomSpecialYear
         ? Boolean(randomAgeStory)
-        : Math.random() < eventChance));
+        : (nextAge <= 10 || Math.random() < eventChance)));
 
   // Lời làm quen (tối đa một lần mỗi năm): chỉ thay cho chuyện đời thường hoặc năm không có sự kiện,
   // tung sau các lượt chọn sự kiện khác để không chen vào mốc quan trọng.

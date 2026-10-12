@@ -609,7 +609,7 @@ export const stage80To89 = [
   {
     id: 'ls-thuyen-go-cho-chat', ages: [80, 100], requiresAny: ['thuyen_go_ban_tho', 'thuyen_go'],
     title: 'Con thuyền cho đứa cháu nhỏ',
-    text: 'Đứa cháu nhỏ thấy con thuyền gỗ cũ, cầm lên chơi, đẩy nó đi trên sàn nhà. Người lớn định giật lại, sợ nó làm hỏng. Con thuyền ba mang về cho tôi năm tôi ba tuổi, giờ đã gần chín mươi năm.',
+    text: 'Đứa cháu nhỏ thấy con thuyền gỗ cũ, cầm lên chơi, đẩy nó đi trên sàn nhà. Người lớn định giật lại, sợ nó làm hỏng. Con thuyền ba mang về cho tôi năm tôi ba tuổi, giờ đã {soNamConThuyen} năm.',
     choices: [
       { label: 'Để đứa nhỏ chơi, tặng luôn cho nó', effects: { happiness: 4 }, flags: ['tang_thuyen_cho_chat'],
         text: 'Tôi nói để nó chơi, con thuyền là để chơi. Đứa cháu nhỏ đẩy thuyền khắp nhà, miệng kêu “tu tu”. Tôi nhìn theo, nhớ tiếng râu ba cọ vào má năm ấy.' },

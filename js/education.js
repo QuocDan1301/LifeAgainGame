@@ -14,6 +14,7 @@ const careerIcons = {
 
 export function getEducationStatus(player) {
   if (player.isAlive === false) return { text: "Đã qua đời", icon: "🕊️" };
+  if (player.employmentStatus === "retired") return { text: "Nghỉ hưu", icon: "🌅" };
   // Chưa có công việc chính thì hiện cửa hàng làm thêm đầu tiên.
   const sideJob = getSideJobTitle(player);
   if (sideJob && !(player.employmentStatus === "employed" && player.job)) return { text: sideJob, icon: "🏪" };
@@ -114,7 +115,9 @@ export function initEducation(state, save) {
     salaryRanks.replaceChildren();
     if (state.player.careerPath) {
       document.getElementById("career-salary-current").textContent =
-        (annualSalary
+        (state.player.employmentStatus === "retired"
+          ? `Đã nghỉ hưu: lương hưu ${formatSalary(state.player.pensionAnnualAmount ?? 0)}/năm.`
+          : annualSalary
           ? `Hiện tại: ${formatSalary(annualSalary)}/năm. Lương được cộng vào ví khi nhận việc và mỗi năm tiếp theo.`
           : "Chưa có việc chính trong ngành.") + `
 ${lock.unlocked ? "⭐" : "🔒"} ${lock.reason}`;

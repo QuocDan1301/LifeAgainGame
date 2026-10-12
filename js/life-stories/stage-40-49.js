@@ -31,7 +31,7 @@ export const stage40To49 = [
     title: 'Khóa học công nghệ mới',
     text: 'Công ty đưa vào một phần mềm mới, người trẻ học trong một tuần là thạo, còn tôi mất cả tháng vẫn lóng ngóng. Có một khóa học cuối tuần do công ty tài trợ, toàn người hai mươi mấy tuổi đăng ký.',
     choices: [
-      { label: 'Đăng ký học', effects: { intelligence: 3, happiness: -1 }, flags: ['hoc_lai_cong_nghe'],
+      { label: 'Đăng ký học', money: -12000000, effects: { intelligence: 3, happiness: -1 }, flags: ['hoc_lai_cong_nghe'],
         text: 'Tôi ngồi bàn cuối, ghi chép như sinh viên. Có cậu bạn trẻ ngồi cạnh kiên nhẫn chỉ lại từng bước. Hết khóa, tôi làm được những việc trước đây phải nhờ người khác.' },
       { label: 'Nhờ đồng nghiệp làm hộ phần khó', effects: { happiness: 1 },
         text: 'Đồng nghiệp trẻ làm hộ, vui vẻ. Công việc vẫn trôi. Nhưng trong các cuộc họp, tôi bắt đầu im lặng nhiều hơn, vì không theo kịp.' },
@@ -75,7 +75,7 @@ export const stage40To49 = [
     title: 'Chiếc điện thoại của con',
     text: '{tenCon} xin điện thoại thông minh, nói cả lớp đều có, không có thì bị bỏ ra ngoài nhóm. Tôi đọc nhiều về chuyện trẻ con nghiện mạng. {tenCon} hứa chỉ dùng một tiếng mỗi ngày.',
     choices: [
-      { label: 'Mua, đặt luật một tiếng', effects: { happiness: 1 }, flags: ['con_co_dien_thoai'],
+      { label: 'Mua, đặt luật một tiếng', money: -6000000, effects: { happiness: 1 }, flags: ['con_co_dien_thoai'],
         text: '{tenCon} giữ luật được ba tuần. Tuần thứ tư, tôi thấy ánh sáng dưới chăn. Tôi nhớ có người từng thấy ánh sáng ấy dưới chăn của mình, và nhớ người đó đã làm gì.' },
       { label: 'Chưa mua', effects: { happiness: -1 }, flags: ['chua_mua_dien_thoai'],
         text: '{tenCon} giận mấy ngày, rồi mượn máy bạn để vào nhóm lớp. Cuối năm, tôi mua cho con một chiếc. Con cầm, cảm ơn rất nhỏ.' },
@@ -590,7 +590,7 @@ export const stage40To49 = [
     title: 'Người đàn ông ở bến xe',
     text: 'Ở bến xe, một người đàn ông lớn tuổi xin tôi mấy chục nghìn mua vé về quê, nói bị móc túi. Tôi từng gặp kiểu này, nhiều lần là lừa. Người ấy mặc áo sơ mi cũ, tay cầm tờ giấy ghi địa chỉ.',
     choices: [
-      { label: 'Mua vé giúp, không đưa tiền', effects: { happiness: 1, intelligence: 1 }, flags: ['mua_ve_giup'],
+      { label: 'Mua vé giúp, không đưa tiền', money: -100000, effects: { happiness: 1, intelligence: 1 }, flags: ['mua_ve_giup'],
         text: 'Tôi dẫn ông tới quầy, mua một vé. Ông cảm ơn, lên xe. Tôi đứng nhìn tới khi xe chạy. Không biết ông có thật bị móc túi không, nhưng ông đã về được nhà.' },
       { label: 'Đi qua', effects: { happiness: -1 },
         text: 'Tôi lắc đầu, đi tiếp. Lúc lên xe, tôi thấy ông vẫn đứng đó, hỏi người khác. Suốt chuyến đi, tôi nhìn ra cửa sổ, nghĩ về tờ giấy ghi địa chỉ.' },
@@ -645,9 +645,9 @@ export const stage40To49 = [
     title: 'Con xin tiền',
     text: '{tenCon} học đại học, xin thêm tiền mua máy tính đắt tiền, nói cần cho ngành học. Tôi kiểm tra thì thấy loại rẻ hơn một nửa cũng dùng được. {tenCon} nói bạn bè đều dùng loại đắt.',
     choices: [
-      { label: 'Mua loại con muốn', effects: { happiness: 1 },
+      { label: 'Mua loại con muốn', money: -30000000, effects: { happiness: 1 },
         text: '{tenCon} cảm ơn, gửi ảnh chiếc máy mới. Tháng đó tôi cắt bớt mấy khoản chi. Con không biết, cũng không cần biết.' },
-      { label: 'Mua loại vừa đủ, giải thích', effects: { intelligence: 1 }, flags: ['day_con_tieu_tien'],
+      { label: 'Mua loại vừa đủ, giải thích', money: -15000000, effects: { intelligence: 1 }, flags: ['day_con_tieu_tien'],
         text: '{tenCon} hơi buồn, nhưng nhận. Hai năm sau, con gửi tin nhắn: “Máy vẫn chạy tốt. Con hiểu rồi.” Tôi đọc, không biết con hiểu chuyện gì, nhưng thấy vui.' },
     ],
   },
@@ -693,7 +693,7 @@ export const stage40To49 = [
     choices: [
       { label: 'Xin nghỉ không lương một năm', effects: { happiness: 1, health: -1 }, flags: ['nghi_cham_ba_me'],
         text: 'Một năm ở nhà chăm người thân. Có những ngày dài vô tận, có những buổi chiều ngồi cùng nhau ngoài hiên, không ai nói gì mà vẫn thấy đủ.' },
-      { label: 'Thuê người, vẫn đi làm', effects: { happiness: -1 },
+      { label: 'Thuê người, vẫn đi làm', money: -60000000, effects: { happiness: -1 },
         text: 'Người chăm làm tốt. Tối nào tôi cũng ghé, ngồi một tiếng. Lương gần như hết vào tiền thuê. Tôi đi làm như để có cớ ra khỏi nhà.' },
     ],
   },

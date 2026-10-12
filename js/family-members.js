@@ -73,6 +73,15 @@ export const getRelativeAge = (relative, playerAge) =>
 export const getPartnerAge = (partner, playerAge) => partner.ageAtMeeting + Math.max(0, playerAge - partner.metAtAge);
 
 // Danh sách người thân đang theo dõi: cha mẹ còn sống và bạn đời (nếu có), dạng thống nhất.
+export function getRelativeActionConfig(player, type) {
+  const config = RELATIVE_ACTIONS[type];
+  if (!config) return null;
+  if ((player.age ?? 0) >= 18) return config;
+  if (type === "call") return { ...config, label: "🤗 Chơi và trò chuyện cùng nhau" };
+  if (type === "visit") return { ...config, label: "🏠 Dành thời gian cùng gia đình", cost: 0 };
+  return null;
+}
+
 export function getLivingFamily(player) {
   const list = (player.relatives ?? []).filter((relative) => relative.alive)
     .map((relative) => ({ key: relative.id, role: relative.role, name: relative.name, age: getRelativeAge(relative, player.age),

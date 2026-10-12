@@ -47,8 +47,12 @@ export function getAnnualSalaryPayment(player, age, updates = {}) {
   // Existing workers use their current rank; newly hired workers receive
   // their first salary as soon as the employment result is confirmed.
   const alreadyWorking = Boolean(getPlayerAnnualSalary(player));
-  const worker = alreadyWorking ? player : { ...player, ...updates };
-  const annualAmount = getPlayerAnnualSalary(worker);
+  // Quitting takes effect immediately; promotions still affect next year.
+  const worker = updates.employmentStatus && updates.employmentStatus !== "employed"
+    ? { ...player, ...updates } : alreadyWorking ? player : { ...player, ...updates };
+  if (worker.isAlive === false) return null;
+  const annualAmount = worker.employmentStatus === "retired"
+    ? worker.pensionAnnualAmount / PENSION_RATE : getPlayerAnnualSalary(worker);
   if (!annualAmount || !Number.isInteger(age) || age < player.age || player.lastSalaryAge >= age) return null;
   const years = alreadyWorking ? Math.max(1, age - Math.max(player.age, player.lastSalaryAge ?? player.age)) : 1;
   const rank = worker.job || `bậc ${worker.careerLevel}`;
@@ -68,6 +72,7 @@ export function getAnnualSalaryPayment(player, age, updates = {}) {
 // Resolve event money first, then add salary separately so a purchase or bonus
 // cannot overwrite annual income. Snapshot the old rank before promotion.
 export function completeCareerYear(player, age, updates = {}) {
+  retirePlayer(player, age);
   const payment = getAnnualSalaryPayment(player, age, updates);
   Object.assign(player, updates, { age });
   if (payment) {
@@ -75,4 +80,21 @@ export function completeCareerYear(player, age, updates = {}) {
     player.lastSalaryAge = age;
   }
   return payment;
+}
+
+// Preserve a pension basis once, then clear all active employment obligations.
+export function retirePlayer(player, age = player.age) {
+  if (age < RETIREMENT_AGE) return;
+  if (player.employmentStatus === "employed") {
+    player.pensionAnnualAmount = Math.round(getPlayerAnnualSalary(player) * PENSION_RATE / 1000) * 1000;
+    player.retiredJob = player.job;
+    player.employmentStatus = "retired";
+    player.job = "Nghỉ hưu";
+    player.retiredAtAge ??= age;
+  }
+  if (player.employmentStatus === "retired") Object.assign(player, {
+    nextPromotionAge: null, jobWarning: null, layoffDue: null, layoffSeverance: null,
+    contractEndAge: null, contractNoticeAge: null, contractEnding: null, employedSince: null,
+    careerSwitchOpen: false,
+  });
 }

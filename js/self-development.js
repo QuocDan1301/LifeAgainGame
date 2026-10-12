@@ -23,7 +23,7 @@ export const developmentStats = [
 
 export const developmentActivities = [
   { id: "gym", stat: "health", icon: "🏋️", name: "Tập gym",
-    description: "Đổ mồ hôi mỗi tuần, cơ thể khỏe khoắn và dẻo dai hơn.",
+    description: "Rèn thể lực thêm sau khi đã nghỉ ngơi. Lượt tập gym riêng, có thể kết hợp với nghỉ và đi bộ trong cùng năm; khi đang yếu nên hồi phục miễn phí trước.",
     packages: ["Vé tập 1 tháng", "Thẻ 6 tháng kèm huấn luyện viên", "Thẻ VIP 1 năm, huấn luyện viên riêng"] },
   { id: "yoga", stat: "health", icon: "🧘", name: "Học yoga",
     description: "Hít thở đều, giãn cơ, ngủ ngon và ít đau lưng hơn.",

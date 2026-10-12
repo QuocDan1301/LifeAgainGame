@@ -51,9 +51,9 @@ export const stage11To23 = [
   {
     id: 'ls12-mun', age: 12, needs: ['mother'],
     title: 'Mặt nổi mụn',
-    text: 'Mặt tôi nổi mụn nhiều, đi đâu cũng cúi mặt. Mẹ nói để tự hết. Đứa bạn bày tôi mua loại kem trên mạng, mặt nó láng hẳn sau một tuần. Lọ kem giá hai trăm nghìn, đúng bằng số tiền tôi để dành.',
+    text: 'Mặt tôi nổi mụn nhiều, đi đâu cũng cúi mặt. Mẹ nói để tự hết. Đứa bạn bày tôi mua loại kem trên mạng, mặt nó láng hẳn sau một tuần. Lọ kem giá hai trăm nghìn, tôi phải cân nhắc tiền đang có.',
     choices: [
-      { label: 'Mua kem bôi thử', effects: { appearance: -2, health: -1 }, flags: ['kem_tron'],
+      { label: 'Mua kem bôi thử', effects: { appearance: -2, health: -1 }, money: -200_000, flags: ['kem_tron'],
         text: 'Hai tuần đầu mặt láng thật. Sang tuần thứ ba, da nổi mẩn đỏ rát. Mẹ dẫn tôi đi khám, bác sĩ hỏi tên lọ kem rồi lắc đầu. Tiền thuốc tốn gấp mấy lần lọ kem.' },
       { label: 'Nghe mẹ, chờ mụn tự hết', effects: { appearance: -1, happiness: -1, health: 1 },
         text: 'Tôi rửa mặt đều, không nặn. Mụn kéo dài gần hết năm học. Năm đó tôi né mọi tấm ảnh chụp chung của lớp.' },
@@ -499,9 +499,9 @@ export const stage11To23 = [
     title: 'Chiếc nhẫn trong hộp thiếc',
     text: 'Bà yếu đi nhiều, nằm nhiều hơn ngồi. Hôm nay bà gọi tôi vào, mở cái hộp thiếc dưới gối, lấy ra chiếc nhẫn bạc đã mòn. Bà nói để dành cho tôi, dặn đừng cho ai biết, kẻo các cô chú lại bàn tán.',
     choices: [
-      { label: 'Nhận, giữ kín', effects: { happiness: 2 }, flags: ['ba_yeu', 'giu_nhan_ba'],
+      { label: 'Nhận, giữ kín', effects: { happiness: 2 }, keepsake: { id: 'grandma-silver-ring', name: 'Chiếc nhẫn bạc của bà', description: 'Chiếc nhẫn bạc đã mòn, bà trao từ chiếc hộp thiếc.' }, flags: ['ba_yeu', 'giu_nhan_ba'],
         text: 'Tôi giấu chiếc nhẫn trong hộp bút. Đêm nào tôi cũng mở ra nhìn. Bà hỏi “cất kỹ chưa”, tôi gật. Đó là chuyện riêng cuối cùng giữa hai bà cháu.' },
-      { label: 'Nhận, rồi kể với ba mẹ', effects: { happiness: 1, intelligence: 1 }, flags: ['ba_yeu', 'nhan_ba_cong_khai'],
+      { label: 'Nhận, rồi kể với ba mẹ', effects: { happiness: 1, intelligence: 1 }, keepsake: { id: 'grandma-silver-ring', name: 'Chiếc nhẫn bạc của bà', description: 'Chiếc nhẫn bạc đã mòn, bà trao từ chiếc hộp thiếc.' }, flags: ['ba_yeu', 'nhan_ba_cong_khai'],
         text: 'Ba mẹ nói bà cho thì cứ giữ. Chuyện tới tai cô út, cô hơi buồn vì nghĩ bà thương cháu hơn con. Bà nghe được, ngồi im cả buổi chiều.' },
       { label: 'Bảo bà cứ giữ lấy', effects: { happiness: -1 }, flags: ['ba_yeu', 'ba_giu_nhan'],
         text: 'Bà cất chiếc nhẫn vào hộp, không nói gì thêm. Mấy tháng sau, chiếc nhẫn được đeo vào tay bà lúc khâm liệm. Cô út nói bà dặn vậy.' },
@@ -578,9 +578,9 @@ export const stage11To23 = [
     title: 'Cuốn sổ lì xì',
     text: 'Trước ngày tôi đi xa, mẹ đưa cuốn sổ nhỏ ghi tiền lì xì từ năm tôi năm tuổi. Cộng lại hơn ba triệu. Mẹ nói tiền ấy mẹ đã lỡ tiêu vào học phí những năm khó, giờ mẹ sẽ trả dần. Mẹ nhìn tôi, chờ.',
     choices: [
-      { label: 'Nói mẹ không cần trả', effects: { happiness: 2 }, flags: ['tha_lixi'],
+      { label: 'Nói mẹ không cần trả', effects: { happiness: 2 }, money: 3_000_000, flags: ['tha_lixi'],
         text: 'Mẹ không nói gì, chỉ gật đầu. Hôm tôi đi, trong ba lô có thêm một phong bì. Mở ra, đúng ba triệu, kèm tờ giấy: “Của con thì con giữ.”' },
-      { label: 'Xin giữ cuốn sổ thay tiền', effects: { happiness: 3 }, flags: ['giu_so_lixi'],
+      { label: 'Xin giữ cuốn sổ thay tiền', effects: { happiness: 3 }, keepsake: { id: 'lucky-money-notebook', name: 'Cuốn sổ lì xì của mẹ', description: 'Những khoản lì xì và ghi chú mẹ giữ từ thuở nhỏ.' }, flags: ['giu_so_lixi'],
         text: 'Mẹ đưa cuốn sổ, ngập ngừng. Tôi đọc từng dòng: tuổi, số tiền, ai lì xì, có năm ghi thêm “con bị sốt”. Cuốn sổ đi theo tôi rất nhiều năm.' },
     ],
   },

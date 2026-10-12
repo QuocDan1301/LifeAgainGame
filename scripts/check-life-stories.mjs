@@ -1,6 +1,7 @@
 // Kiểm tra bộ sự kiện đời thường mới và sinh sổ dấu.
 //   node scripts/check-life-stories.mjs              → kiểm tra + mô phỏng
 //   node scripts/check-life-stories.mjs --registry   → ghi docs/su-kien-doi-thuong/SO-DAU.md
+import { canAffordChoice } from '../js/story-transactions.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { lifeStoryCatalog } from '../js/life-stories/index.js';
@@ -46,7 +47,10 @@ for (const story of lifeStoryCatalog) {
     check(!results.has(choice.text), `${where}: hai lựa chọn trùng kết quả`);
     results.add(choice.text);
     check(choice.minMoney === undefined, `${where}: minMoney đặt ở sự kiện, không đặt ở lựa chọn`);
-    if ((choice.money ?? 0) < 0) check((story.minMoney ?? 0) >= -choice.money, `${where}: lựa chọn tốn ${-choice.money} nhưng sự kiện chỉ yêu cầu minMoney ${story.minMoney ?? 0}`);
+    if ((choice.money ?? 0) < 0) {
+      check(!canAffordChoice({ money: -choice.money - 1 }, choice), `${where}: không chặn lựa chọn khi thiếu tiền`);
+      check(canAffordChoice({ money: -choice.money }, choice), `${where}: chặn nhầm khi đủ tiền`);
+    }
     for (const [stat, value] of Object.entries(choice.effects ?? {})) {
       check(allowedStats.has(stat), `${where}: chỉ số "${stat}" không hỗ trợ`);
       check(Number.isInteger(value) && value >= -5 && value <= 4, `${where}: ${stat} = ${value} (cho phép −5..4)`);
@@ -120,7 +124,7 @@ for (let age = 1; age <= 104; age++) {
 }
 
 // Mô phỏng nhiều cuộc đời: pool không rỗng, không lặp sự kiện, đo tỉ lệ chuyện cũ quay lại.
-const runs = 4000;
+const runs = process.argv.includes('--quick') ? 100 : 4000;
 let chainShown = 0, chainEligibleYears = 0;
 const shownCount = new Map();
 for (let run = 0; run < runs; run++) {

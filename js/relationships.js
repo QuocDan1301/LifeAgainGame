@@ -5,7 +5,7 @@ import { getChildAge, getAnnualChildcareCost } from "./family.js";
 import { formatSalary } from "./career-salary.js";
 import { initPanelTabs } from "./panel-tabs.js";
 import { MOOD_EFFECTS, PARTNER_ACTIONS, addMoodEffect } from "./mood-rules.js";
-import { CONDITIONS, RELATIVE_ACTIONS, ensureRelatives, getPartnerAge, getRelativeAge } from "./family-members.js";
+import { CONDITIONS, RELATIVE_ACTIONS, getRelativeActionConfig, ensureRelatives, getPartnerAge, getRelativeAge } from "./family-members.js";
 import { formatMoney } from "./money-format.js";
 
 const pick = (items, random) => items[Math.floor(random() * items.length)];
@@ -314,7 +314,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
   function relativeAction(id, type) {
     const player = state.player;
     const relative = (player.relatives ?? []).find((entry) => entry.id === id);
-    const config = RELATIVE_ACTIONS[type];
+    const config = getRelativeActionConfig(player, type);
     if (!relative?.alive || !config || player.isAlive === false || relative.done?.[type] === player.age) return;
     if (config.cost && player.money < config.cost) return;
     const next = { ...relative, done: { ...(relative.done ?? {}), [type]: player.age }, interactions: { ...(relative.interactions ?? {}) } };
@@ -331,8 +331,8 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       if (config.health) player.health = Math.max(1, (player.health ?? 0) + config.health);
       const kept = next.promise && ["call", "visit"].includes(type);
       if (kept) next.promise = null;
-      if (type === "call") { count("calls"); text = `📞 Tôi gọi điện hỏi thăm ${who}.`; }
-      if (type === "visit") { count("visits"); text = `🏠 Tôi về thăm ${who}, cả nhà ăn cơm và trò chuyện đến khuya.`; }
+      if (type === "call") { count("calls"); text = player.age < 18 ? `🤗 Tôi chơi và trò chuyện cùng ${who}.` : `📞 Tôi gọi điện hỏi thăm ${who}.`; }
+      if (type === "visit") { count("visits"); text = player.age < 18 ? `🏠 Tôi dành thời gian bên ${who}, cùng ăn cơm và chơi ở nhà.` : `🏠 Tôi về thăm ${who}, cả nhà ăn cơm và trò chuyện đến khuya.`; }
       if (type === "care") { count("cares"); next.caredAt = player.age; next.careBy = "self"; text = `🩺 Tôi trực tiếp chăm sóc ${who} khi đang ${CONDITIONS[next.condition].label.toLowerCase()}.`; }
       if (type === "helper") { count("helpers"); next.caredAt = player.age; next.careBy = "helper"; text = `🤝 Tôi nhờ người hỗ trợ chăm sóc ${who} hằng ngày.`; }
       if (type === "treatment") {
@@ -375,7 +375,9 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         (relative.promise ? `\n🗓️ Đã hẹn: gọi hoặc về thăm trước sinh nhật ${relative.promise.dueAge + 1} tuổi.` : "");
       const actions = document.createElement("div");
       actions.className = "family-actions";
-      for (const [type, config] of Object.entries(RELATIVE_ACTIONS)) {
+      for (const type of Object.keys(RELATIVE_ACTIONS)) {
+        const config = getRelativeActionConfig(player, type);
+        if (!config) continue;
         if (config.needsCare && !["weak", "severe"].includes(relative.condition)) continue;
         if (config.needsSevere && relative.condition !== "severe") continue;
         if (type === "postpone" && relative.promise) continue;
@@ -464,12 +466,14 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       ? "Đã chủ động kết nối năm nay."
       : "Miễn phí, mỗi năm một lần: tham gia câu lạc bộ, nhắn hỏi thăm người quen. Hạnh phúc +1, tăng cơ hội làm quen năm sau.";
     reachOut.append(reachNote);
-    reachOut.disabled = reached || player.isAlive === false;
+    reachOut.disabled = reached || player.isAlive === false || player.age < 6;
+    if (player.age < 6) reachNote.textContent = "Từ 6 tuổi, bạn có thể chủ động làm quen bạn mới.";
+    else if (player.age < 18 && !reached) reachNote.textContent = "Làm quen bạn cùng lớp hoặc tham gia hoạt động nhóm. Miễn phí, mỗi năm một lần; Hạnh phúc +1.";
     reachOut.addEventListener("click", () => {
-      if (state.player.reachOutAge === state.player.age || state.player.isAlive === false) return;
+      if (state.player.age < 6 || state.player.reachOutAge === state.player.age || state.player.isAlive === false) return;
       state.player.reachOutAge = state.player.age;
       state.player.happiness = Math.min(100, (state.player.happiness ?? 0) + 1);
-      const text = "🙋 Tôi chủ động tham gia một câu lạc bộ và nhắn hỏi thăm vài người quen. Hạnh phúc +1.";
+      const text = state.player.age < 18 ? "🙋 Tôi chủ động làm quen bạn cùng lớp và tham gia hoạt động nhóm. Hạnh phúc +1." : "🙋 Tôi chủ động tham gia một câu lạc bộ và nhắn hỏi thăm vài người quen. Hạnh phúc +1.";
       const log = { age: state.player.age, content: text, summary: text };
       state.logs.push(log);
       save();

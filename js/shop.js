@@ -55,6 +55,8 @@ export const shopCatalog = [
   { id: "private-jet", shop: "shopping", group: "vehicles", icon: "✈️", name: "Máy bay riêng", price: 500_000_000_000,
     achievement: "own-private-jet", description: "Bầu trời là của riêng bạn, bay đi đâu tùy thích." },
   // Bất động sản: có lãi cho thuê mỗi năm (12–15%), đủ để lãi chồng lãi tới máy bay riêng trong một đời.
+  { id: "story-home", shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà trả góp", price: 1_500_000_000, description: "Căn nhà mua qua câu chuyện, dùng để ở." },
+  { id: "story-small-home", shop: "shopping", group: "realestate", icon: "🏠", name: "Căn hộ nhỏ trả góp", price: 900_000_000, description: "Căn hộ mua qua câu chuyện, dùng để ở." },
   { id: "house", shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà lầu", price: 5_000_000_000, profit: 600_000_000,
     achievement: "own-house", description: "Căn nhà nhiều tầng khang trang, cho thuê nguyên căn." },
   { id: "restaurant", shop: "shopping", group: "realestate", icon: "🍽️", name: "Nhà hàng", price: 8_000_000_000, profit: 1_200_000_000,
@@ -396,7 +398,9 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
           : isCompanion(item) ? ` · Chăm sóc -${formatMoney(getPetUpkeep(item) * units.length)}/năm` : "";
         const sell = element("button", "shop-sell", `${many ? "Bán bớt 1" : "Bán"} · ${formatMoney(getSellPrice(item))}`);
         sell.type = "button";
-        sell.disabled = state.player.isAlive === false;
+        const loan = state.player.homeLoans?.find(entry => units.some(unit => unit.uid === entry.assetUid) && entry.outstanding > 0);
+        sell.disabled = state.player.isAlive === false || Boolean(loan);
+        if (loan) row.append(element("span", "", `Nợ nhà: ${formatMoney(loan.outstanding)} · ${formatMoney(loan.annualPayment)}/năm · ${loan.years - loan.paymentsMade} kỳ còn lại`));
         sell.addEventListener("click", () => ask(
           `💸 Bán ${item.name}?`,
           `Bạn muốn bán ${many ? "1 " : ""}${item.icon} ${item.name} với giá ${formatMoney(getSellPrice(item))} (một nửa giá mua)?` +
@@ -416,7 +420,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
         ));
         row.append(element("span", "",
           `${item.icon} ${item.name}${many ? ` ×${units.length}` : ""} · Mua lúc ${describeAges(units.map((unit) => unit.boughtAtAge))}${income}`));
-        if (isRental(item)) row.append(renderLease(item, units));
+        if (isRental(item) && item.profit) row.append(renderLease(item, units));
         if (isCompanion(item)) row.append(petButton(item, owned, renderOwned));
         row.append(sell);
         target.append(row);

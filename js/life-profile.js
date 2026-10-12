@@ -122,6 +122,8 @@ export function renderLifeSummary(state) {
   const assetValue = items.reduce((sum, [item, count]) => sum + item.price * count, 0);
   const assets = factList([
     [(player.money ?? 0) < 0 ? "Khoản nợ còn lại" : "Tiền trong ví", formatMoney(Math.abs(player.money ?? 0))],
+    ["Nợ vay nhà", formatMoney((player.homeLoans ?? []).reduce((sum, loan) => sum + loan.outstanding, 0))],
+    ["Khoản cho vay chưa thu", formatMoney((player.storyLoans ?? []).reduce((sum, loan) => sum + loan.outstanding, 0))],
     ["Tài sản", items.length
       ? items.map(([item, count]) => `${item.icon} ${item.name}${count > 1 ? ` ×${count}` : ""}`).join(", ")
       : "Không có tài sản đứng tên"],

@@ -387,14 +387,14 @@ export const stage70To79 = [
     ],
   },
   {
-    id: 'ls75-ban-doi-tham-mo', age: 75, needs: ['partner'],
-    title: 'Lễ kỷ niệm năm mươi năm',
-    text: 'Năm mươi năm kể từ ngày quen nhau. {tenBanDoi} muốn chụp một bộ ảnh cưới mới, mặc áo dài, áo vest, như lần chụp ảnh cưới ngày xưa. Tôi thấy già rồi, chụp ảnh cưới thì ngượng.',
+    id: 'ls75-ban-doi-tham-mo', age: 75, needs: ['married'],
+    title: 'Lễ kỷ niệm {soNamKetHon} năm',
+    text: '{soNamKetHon} năm kể từ ngày cưới. {tenBanDoi} muốn chụp một bộ ảnh cưới mới, mặc áo dài, áo vest, như lần chụp ảnh cưới ngày xưa. Tôi thấy già rồi, chụp ảnh cưới thì ngượng.',
     choices: [
       { label: 'Chụp', effects: { happiness: 4 }, flags: ['anh_cuoi_nam_muoi_nam'],
         text: 'Thợ ảnh kiên nhẫn, chờ hai đứa đứng dậy, ngồi xuống. {tenBanDoi} cười suốt buổi. Tấm ảnh đẹp nhất là tấm hai đứa đang cười vì bị vấp vào nhau.' },
       { label: 'Chụp một tấm ở nhà', effects: { happiness: 2 },
-        text: 'Đứa cháu chụp cho hai đứa một tấm ở hiên nhà, ánh chiều. Không áo dài, không vest. Tấm ảnh được phóng to, treo cạnh tấm ảnh cưới năm mươi năm trước.' },
+        text: 'Đứa cháu chụp cho hai đứa một tấm ở hiên nhà, ánh chiều. Không áo dài, không vest. Tấm ảnh được phóng to, treo cạnh tấm ảnh cưới {soNamKetHon} năm trước.' },
     ],
   },
   {
@@ -422,7 +422,7 @@ export const stage70To79 = [
   {
     id: 'ls75-con-nghi-huu', age: 75, needs: ['children'], childAge: [42, 60],
     title: 'Con cũng già',
-    text: '{tenCon} cũng đã ngoài năm mươi, tóc bạc, hay than đau lưng. Hôm nay con về thăm, ngồi xoa bóp chân cho tôi, rồi nói: “Con mệt quá.” Tôi nhìn con, thấy con già hơn tôi tưởng.',
+    text: '{tenCon} cũng đã {tuoiCon} tuổi, tóc bạc, hay than đau lưng. Hôm nay con về thăm, ngồi xoa bóp chân cho tôi, rồi nói: “Con mệt quá.” Tôi nhìn con, thấy con già hơn tôi tưởng.',
     choices: [
       { label: 'Kéo con nằm xuống, xoa lưng cho con', effects: { happiness: 3 }, flags: ['xoa_lung_con'],
         text: 'Con nằm xuống giường tôi, tôi xoa lưng cho con bằng đôi tay run run. Được một lúc, con ngủ thiếp đi, thở đều như hồi còn bé. Tôi ngồi canh con ngủ.' },
@@ -490,7 +490,7 @@ export const stage70To79 = [
   {
     id: 'ls76-chat-chau-khong-ve', age: 76, needs: ['children'], childAge: [42, 60],
     title: 'Chuyện của con',
-    text: '{tenCon} kể muốn ly hôn ở tuổi năm mươi, sau hai mươi lăm năm. Cả họ phản đối, nói già rồi còn bỏ nhau làm gì. Con hỏi ý tôi, người đã sống gần trọn một đời.',
+    text: '{tenCon} kể muốn ly hôn ở tuổi {tuoiCon}, sau nhiều năm chung sống. Cả họ phản đối, nói già rồi còn bỏ nhau làm gì. Con hỏi ý tôi, người đã sống gần trọn một đời.',
     choices: [
       { label: 'Nói con cứ sống cho mình', effects: { happiness: 1 }, flags: ['ung_ho_con_song_cho_minh'],
         text: '{tenCon} khóc, ôm tôi. Con ly hôn nhẹ nhàng, dọn ra ở riêng. Một năm sau, con gọi điện, giọng nhẹ như hồi hai mươi tuổi.' },

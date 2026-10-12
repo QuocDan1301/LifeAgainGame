@@ -544,8 +544,8 @@ export const careerMilestones = {
       reward: 2_000_000,
       steps: [
         ["Tôi nhận lời làm truyền thông cho hội chợ trường.", "📣 Để tôi kéo khách về cho lớp!", "📄 Tôi phát tờ rơi hộ thôi."],
-        ["Bài đăng nhiều lượt thích nhưng ít người đăng ký.", "🔍 Xem thiếu thông tin gì rồi sửa.", "📲 Đăng thêm mười bài giống vậy!"],
-        ["Nhóm tranh luận nên nhấn vào quà tặng hay nội dung hội chợ.", "🧪 Thử hai thông điệp, so kết quả.", "😌 Tôi thích cái nào thì dùng cái đó."],
+        ["Bài đăng nhiều lượt thích nhưng ít người đăng ký.", "🔍 Xem thiếu thông tin gì rồi sửa.", "📲 Nhờ các lớp chia sẻ bài để mở rộng lượt tiếp cận."],
+        ["Nhóm tranh luận nên nhấn vào quà tặng hay nội dung hội chợ.", "🧪 Thử hai thông điệp, so kết quả.", "🎁 Dùng thông điệp quà tặng để kịp hạn đăng ký."],
       ],
       success: "Chiến dịch đạt giải truyền thông học sinh. Chuyên viên Chi ghi nhận cách tôi đọc số liệu.",
       failure: "Kết quả chiến dịch chưa đạt mục tiêu chấm giải.",

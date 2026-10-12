@@ -103,7 +103,7 @@ export const academyLogos = {
   "one-star-academy": new URL("../img/teams/one-star.png", import.meta.url).href,
 };
 
-function createSchoolEventData(careerPath) {
+function createSchoolEventData(careerPath, player = {}) {
   if (careerPath.id === "esports") {
     const academies = [
       ["flash-academy", "Team Flash Academy"],
@@ -132,7 +132,7 @@ function createSchoolEventData(careerPath) {
   if (schools.length) {
     return {
       title: "🏫 Chọn trường theo học",
-      text: `Bạn đã chọn ${careerPath.field}. Hãy chọn trường bạn muốn theo học.${isContentCreator ? "\nNgành Truyền thông đa phương tiện giúp bạn học kỹ năng sản xuất nội dung cho hướng này." : ""}`,
+      text: `Bạn đã chọn ${careerPath.field}. Hãy chọn trường bạn muốn theo học.\nVí hiện có: ${formatMoney(player.money ?? 0)} VNĐ. Học phí được trừ mỗi năm từ 18–21 tuổi. Nếu ví không đủ, phần thiếu trở thành nợ (ví âm), thu nhập sau này sẽ trả dần; không mất quyền học. Kiểm tra học phí và thu nhập trước khi chọn.${isContentCreator ? "\nNgành Truyền thông đa phương tiện giúp bạn học kỹ năng sản xuất nội dung cho hướng này." : ""}`,
       choices: schools.slice(0, 3).map((entry) => ({
         label: `🏫 ${entry.name} (${entry.city}) · Học phí ${formatMoney(getAnnualTuition({ id: careerPath.id, school: entry }))}/năm (${TUITION_FIRST_AGE}–${TUITION_LAST_AGE} tuổi)`,
         title: "🎓 Bắt đầu học tại trường mới",
@@ -165,8 +165,8 @@ function createSchoolEventData(careerPath) {
   };
 }
 
-export function createSchoolEvent(careerPath) {
-  const event = createSchoolEventData(careerPath);
+export function createSchoolEvent(careerPath, player = {}) {
+  const event = createSchoolEventData(careerPath, player);
   const art = careerPath.id === "military"
     ? openMojiArt("1FA96", "Bắt đầu huấn luyện quân ngũ")
     : careerPath.id === "esports"

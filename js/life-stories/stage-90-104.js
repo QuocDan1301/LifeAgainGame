@@ -39,7 +39,7 @@ export const stage90To104 = [
   {
     id: 'ls90-ban-doi-chin-muoi', age: 90, needs: ['partner'],
     title: 'Hai người chín mươi',
-    text: 'Hai đứa cùng ngoài chín mươi. Người ta gọi là “cặp vợ chồng già nhất xóm”. Hôm nay đài truyền hình muốn quay phim hai đứa. {tenBanDoi} hỏi tôi có muốn không.',
+    text: 'Tôi đã ngoài chín mươi, {tenBanDoi} đã {tuoiBanDoi} tuổi. Người ta gọi là “cặp vợ chồng già nhất xóm”. Hôm nay đài truyền hình muốn quay phim hai đứa. {tenBanDoi} hỏi tôi có muốn không.',
     choices: [
       { label: 'Đồng ý quay', effects: { happiness: 3 }, flags: ['quay_phim_hai_nguoi'],
         text: 'Phóng viên hỏi bí quyết hạnh phúc. Hai đứa trả lời khác nhau, cãi nhau ngay trước máy quay. Đoạn phim phát lên, cả nước cười. Hai đứa xem lại, cũng cười.' },
@@ -267,7 +267,7 @@ export const stage90To104 = [
   {
     id: 'ls94-ban-doi-thay-doi', age: 94, needs: ['partner'],
     title: 'Ai chăm ai',
-    text: 'Sức khỏe {tenBanDoi} giờ khá hơn tôi. {tenBanDoi} muốn tự tay chăm tôi, không muốn người chăm sóc làm hết. {tenBanDoi} chín mươi mấy tuổi, tay cũng run.',
+    text: 'Sức khỏe {tenBanDoi} giờ khá hơn tôi. {tenBanDoi} muốn tự tay chăm tôi, không muốn người chăm sóc làm hết. {tenBanDoi} đã {tuoiBanDoi} tuổi, tay cũng run.',
     choices: [
       { label: 'Để {tenBanDoi} làm những việc nhỏ', effects: { happiness: 3 }, flags: ['ban_doi_cham_viec_nho'],
         text: '{tenBanDoi} chải tóc cho tôi mỗi sáng, chậm, run. Rồi lau mặt bằng khăn ấm. Những việc nặng để người chăm sóc lo. Buổi sáng nào cũng bắt đầu bằng bàn tay ấy.' },

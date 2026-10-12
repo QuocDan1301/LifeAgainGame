@@ -109,7 +109,7 @@ export const stage26To32 = [
     title: 'Một năm học buổi tối',
     text: 'Tôi muốn học thêm một khóa buổi tối, kéo dài một năm, học phí bằng hai tháng lương. Học xong, cơ hội lên lương rõ hơn. Nhưng một năm đó, gần như tối nào cũng ở trên lớp, không còn thời gian cho ai.',
     choices: [
-      { label: 'Đăng ký học', effects: { intelligence: 3, happiness: -2 }, flags: ['hoc_buoi_toi'],
+      { label: 'Đăng ký học', salaryMonths: 2, effects: { intelligence: 3, happiness: -2 }, flags: ['hoc_buoi_toi'],
         text: 'Tôi đi học cả năm, có tối ngủ gật trên lớp. Bạn bè rủ đi chơi, tôi từ chối riết rồi tụi nó thôi rủ. Ngày nhận bằng, tôi chụp ảnh một mình ở cổng trường.' },
       { label: 'Tự học trên mạng', effects: { intelligence: 1, happiness: 1 },
         text: 'Tôi học vào cuối tuần, tuần nào bận thì bỏ. Kiến thức có thêm, nhưng không có tấm bằng. Hồ sơ năm sau vẫn trống ở dòng đó.' },
@@ -201,13 +201,13 @@ export const stage26To32 = [
   {
     id: 'ls28-mua-nha', age: 28, needs: ['married'],
     title: 'Hợp đồng vay mười lăm năm',
-    text: '{tenBanDoi} muốn vay mua nhà, trả góp mười lăm năm, mỗi tháng hết hơn nửa lương hai đứa. Ba mẹ {tenBanDoi} cho mượn một phần. Tôi sợ nợ, vì ba mẹ tôi từng khổ nhiều năm vì một khoản vay.',
+    text: '{tenBanDoi} muốn vay mua nhà, trả góp mười lăm năm. Tôi xem kỹ giá nhà, tiền trả trước và khoản phải trả hằng năm. Tôi sợ nợ, vì ba mẹ tôi từng khổ nhiều năm vì một khoản vay.',
     choices: [
-      { label: 'Đồng ý vay', effects: { happiness: 1, health: -1 }, flags: ['vay_mua_nha'],
+      { label: 'Đồng ý vay', home: 'story-home', effects: { happiness: 1, health: -1 }, flags: ['vay_mua_nha'],
         text: 'Ngày nhận nhà, {tenBanDoi} đứng giữa phòng trống cười mãi. Đêm đó tôi nằm tính lại khoản trả góp tới gần sáng. Từ đó tôi không dám nghỉ việc ngày nào.' },
       { label: 'Thuê thêm vài năm', effects: { happiness: -1 }, flags: ['thue_them'],
         text: '{tenBanDoi} đồng ý, giọng hụt hẫng. Hai năm sau giá nhà tăng thêm một phần ba. {tenBanDoi} không nhắc chuyện cũ, nhưng xem tin bất động sản rất lâu.' },
-      { label: 'Mua căn nhỏ hơn, xa hơn', effects: { intelligence: 1 }, flags: ['nha_nho_xa'],
+      { label: 'Mua căn nhỏ hơn, xa hơn', home: 'story-small-home', effects: { intelligence: 1 }, flags: ['nha_nho_xa'],
         text: 'Căn nhà nhỏ ở rìa thành phố, khoản góp vừa sức. Mỗi ngày hai đứa đi làm thêm bốn mươi phút. Tối về, có ban công nhỏ để ngồi.' },
     ],
   },
@@ -227,7 +227,7 @@ export const stage26To32 = [
     title: 'Căn nhà cho một người',
     text: 'Tôi dành dụm đủ tiền trả trước một căn hộ nhỏ. Người nhà khuyên đợi lập gia đình rồi hãy mua, mua một mình người ta lại nghĩ mình không định lấy ai. Tôi muốn có một chỗ của riêng mình. Ngân hàng hẹn ký hợp đồng thứ hai tới.',
     choices: [
-      { label: 'Ký hợp đồng', effects: { happiness: 2, health: -1 }, flags: ['nha_rieng'],
+      { label: 'Ký hợp đồng', home: 'story-small-home', effects: { happiness: 2, health: -1 }, flags: ['nha_rieng'],
         text: 'Tôi tự sơn lại tường, tự lắp cái kệ sách. Đêm đầu ngủ ở nhà mới, phòng im tới mức nghe rõ tiếng tủ lạnh. Tôi để đèn hành lang sáng tới sáng.' },
       { label: 'Hoãn lại', effects: { happiness: -1 },
         text: 'Tôi gửi tiền vào ngân hàng, tiếp tục thuê. Mỗi lần dọn nhà trọ, tôi lại nhìn mấy thùng sách chất đống, tự hỏi lần này phải chờ ai.' },
@@ -262,7 +262,7 @@ export const stage26To32 = [
     title: 'Người thầy cũ',
     text: 'Thầy dạy tôi năm cuối cấp bị tai biến, nằm viện. Nhóm lớp cũ kêu gọi góp tiền, mỗi người tùy tâm. Một bạn đề nghị cử vài người tới thăm, chăm thầy luân phiên mỗi tối. Tôi đang rất bận.',
     choices: [
-      { label: 'Góp tiền và nhận một tối', effects: { happiness: 2, health: -1 }, flags: ['cham_thay'],
+      { label: 'Góp tiền và nhận một tối', money: -2000000, effects: { happiness: 2, health: -1 }, flags: ['cham_thay'],
         text: 'Tối tôi trực, thầy tỉnh một lúc, nhìn tôi rất lâu rồi gọi đúng tên. Thầy nói được nửa câu, hỏi tôi còn viết văn không. Tôi nói còn, dù đã mấy năm không viết.' },
       { label: 'Chỉ góp tiền', effects: { happiness: -1 },
         text: 'Tôi chuyển tiền, ghi lời chúc thầy mau khỏe. Nhóm gửi ảnh mấy bạn trực đêm. Thầy hồi phục chậm, về nhà sau hai tháng.' },
