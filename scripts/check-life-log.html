@@ -9,7 +9,7 @@
   const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
   const saved = keys.map(key => localStorage.getItem(key));
   try {
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

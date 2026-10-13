@@ -68,6 +68,6 @@ source+='export const openMojiReviewRevision = 3;\n'
 source+='export const reviewedOpenMojiEntries = '+json.dumps(entries,ensure_ascii=False,separators=(',',':'))+';\n'
 source+='export const reviewedOpenMojiBindings = '+json.dumps(safe_bindings,ensure_ascii=False,separators=(',',':'))+';\n'
 source+='export const reviewedResultTitles = '+json.dumps(safe_result_titles,ensure_ascii=False,separators=(',',':'))+';\n'
-(ROOT/'js/reviewed-event-openmoji.js').write_text(source,encoding='utf-8')
+(ROOT/'js/media/reviewed-event-openmoji.js').write_text(source,encoding='utf-8')
 (DEST/'unreviewed.json').unlink(missing_ok=True)
 print(f'Compiled {len(entries)} explicit assignments covering {len(audit)} slots and {len(safe_bindings)} stable bindings.')

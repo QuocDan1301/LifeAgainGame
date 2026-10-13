@@ -7,12 +7,12 @@
   const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
   const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
   try{
-    const {createTheaterSpecialStep:theater}=await import('../js/special-event-50.js');
-    const {createLuggageSpecialStep:luggage}=await import('../js/special-event-55.js');
-    const {getAgeEvents}=await import('../js/events.js');
-    const {state,createInitialState}=await import('../js/state.js');
-    const {achievements}=await import('../js/achievements-data.js');
-    const {getCareerProfile}=await import('../js/career-jobs.js');
+    const {createTheaterSpecialStep:theater}=await import('../js/special-events/special-event-50.js');
+    const {createLuggageSpecialStep:luggage}=await import('../js/special-events/special-event-55.js');
+    const {getAgeEvents}=await import('../js/events/events.js');
+    const {state,createInitialState}=await import('../js/core/state.js');
+    const {achievements}=await import('../js/achievements/achievements-data.js');
+    const {getCareerProfile}=await import('../js/career/career-jobs.js');
     const images=new Set();
     for(const [age,factory,length] of [[50,theater,7],[55,luggage,4]]){
       assert(getAgeEvents(age).length===5&&getAgeEvents(age).filter(e=>!e.specialId).length===4,'Two ordinary events plus a random special');

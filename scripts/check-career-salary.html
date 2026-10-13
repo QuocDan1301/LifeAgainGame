@@ -10,11 +10,11 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const originalRandom = Math.random;
   try {
-    const { formatMoneyAmount, formatMoney } = await import("../js/money-format.js");
-    const { careerAnnualSalaries, getCareerAnnualSalary, getPlayerAnnualSalary, getAnnualSalaryPayment, completeCareerYear } = await import("../js/career-salary.js");
-    const { state, createInitialState } = await import("../js/state.js");
-    const { careerEvent } = await import("../js/career-event.js");
-    const { createInterviewResult, getCareerProfile } = await import("../js/career-jobs.js");
+    const { formatMoneyAmount, formatMoney } = await import("../js/core/money-format.js");
+    const { careerAnnualSalaries, getCareerAnnualSalary, getPlayerAnnualSalary, getAnnualSalaryPayment, completeCareerYear } = await import("../js/career/career-salary.js");
+    const { state, createInitialState } = await import("../js/core/state.js");
+    const { careerEvent } = await import("../js/career/career-event.js");
+    const { createInterviewResult, getCareerProfile } = await import("../js/career/career-jobs.js");
     for (const choice of careerEvent.choices) {
       const amounts = careerAnnualSalaries[choice.careerPath.id];
       assert(amounts?.length === 3 && amounts.every(Number.isSafeInteger), "Every career needs three fixed salaries");
@@ -61,7 +61,7 @@
     document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
     Object.assign(state, createInitialState());
     Object.assign(state.player, worker(), { age: 30, money: 0, lastSalaryAge: null, health: 90, studyBlock: "A", nextPromotionAge: null });
-    const { achievements } = await import("../js/achievements-data.js");
+    const { achievements } = await import("../js/achievements/achievements-data.js");
     localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(item => [item.id, true]))));
     localStorage.setItem("lifeAgainAchievementQueue", "[]");
     document.getElementById("game-screen").hidden = false;

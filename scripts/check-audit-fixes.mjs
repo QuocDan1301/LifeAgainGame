@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import { createInitialState } from '../js/state.js';
-import { createSchoolEvent } from '../js/career-schools.js';
-import { createStudyAbroadMajorEvent, createStudyAbroadYearEvent, getStudyAbroadTuition, canGraduateAbroad, studyAbroadCountries, hasInternationalDegreeForCareer } from '../js/study-abroad.js';
-import { completeLifeYear, forecastNextYear, getDebtInterest } from '../js/family.js';
-import { getCareerAnnualSalary, getPlayerAnnualSalary } from '../js/career-salary.js';
-import { getRankLock, hasCareerMilestone } from '../js/career-milestones.js';
-import { createEmploymentEvent, createPromotionEvent, createInterviewResult } from '../js/career-jobs.js';
-import { getInterviewChance, getPromotionChance } from '../js/intellect-rules.js';
-import { getAgeEvents } from '../js/events.js';
+import { createInitialState } from '../js/core/state.js';
+import { createSchoolEvent } from '../js/career/career-schools.js';
+import { createStudyAbroadMajorEvent, createStudyAbroadYearEvent, getStudyAbroadTuition, canGraduateAbroad, studyAbroadCountries, hasInternationalDegreeForCareer } from '../js/education/study-abroad.js';
+import { completeLifeYear, forecastNextYear, getDebtInterest } from '../js/relationships/family.js';
+import { getCareerAnnualSalary, getPlayerAnnualSalary } from '../js/career/career-salary.js';
+import { getRankLock, hasCareerMilestone } from '../js/career/career-milestones.js';
+import { createEmploymentEvent, createPromotionEvent, createInterviewResult } from '../js/career/career-jobs.js';
+import { getInterviewChance, getPromotionChance } from '../js/stats/intellect-rules.js';
+import { getAgeEvents } from '../js/events/events.js';
 
 let passed = 0;
 const test = (name, run) => { run(); console.log(`PASS ${name}`); passed++; };

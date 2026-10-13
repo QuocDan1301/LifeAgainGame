@@ -31,7 +31,7 @@ try:
     loaded="document.querySelector('#event-dialog').open && document.querySelector('#event-image').complete && document.querySelector('#event-image').naturalWidth>0 && !document.querySelector('#event-image').hidden"
     def seed_hike():
       page.evaluate("""async()=>{
-        const {createInitialState}=await import('/js/state.js');const {getAgeEvents}=await import('/js/events.js');
+        const {createInitialState}=await import('/js/core/state.js');const {getAgeEvents}=await import('/js/events/events.js');
         const saved=createInitialState();saved.player.age=12;saved.player.health=80;
         saved.pendingEvent={...getAgeEvents(13).find(event=>event.id==='teen-13-2'),stage:'choice',age:13,image:'/removed-image.svg',imageOptions:[]};
         localStorage.setItem('lifeAgainSave',JSON.stringify(saved));
@@ -57,7 +57,7 @@ try:
     seed_hike();page.locator('#event-choices button').nth(1).click();page.wait_for_function(loaded)
     assert '/animated/svg/1F62E-200D-1F4A8.svg' in page.locator('#event-image').get_attribute('src')
     page.evaluate("""async()=>{
-      const {createInitialState}=await import('/js/state.js');const {createLostChildSpecialStep}=await import('/js/special-event-10.js');
+      const {createInitialState}=await import('/js/core/state.js');const {createLostChildSpecialStep}=await import('/js/special-events/special-event-10.js');
       const saved=createInitialState();saved.player.age=9;saved.player.health=80;
       saved.pendingEvent={...createLostChildSpecialStep(1),stage:'choice',age:10};localStorage.setItem('lifeAgainSave',JSON.stringify(saved));
     }""")
@@ -70,7 +70,7 @@ try:
     page.goto(base+'/scripts/check-event-media.html')
     page.wait_for_function("/^(PASS|FAIL)/.test(document.querySelector('#result').textContent)",timeout=120000)
     decoded=page.evaluate("""async()=>{
-      const {openMojiCatalog}=await import('/js/openmoji-catalog.js');
+      const {openMojiCatalog}=await import('/js/media/openmoji-catalog.js');
       const audit=await(await fetch('/js/img/events/full-media-audit.json')).json();
       const paths=[...new Set([...Object.keys(openMojiCatalog).map(code=>'/js/img/events/openmoji/animated/svg/'+code+'.svg'),...audit.map(row=>'/'+row.fallback)])];
       const failures=[];

@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import { createInitialState } from '../js/state.js';
-import { shopCatalog, collectAssetIncome, getAssetYearProjection } from '../js/shop.js';
-import { completeLifeYear, forecastNextYear, getDebtInterest, getYearLivingCost, DEBT_INTEREST_RATE, FRUGAL_MAX_SAVING } from '../js/family.js';
-import { ACTIVITY_GAIN_CAP, applyActivityGain, collectStatWearYear, previewActivityGain } from '../js/stat-budget.js';
-import { getTienLenPot, TIEN_LEN_MAX_STAKE } from '../js/tien-len.js';
-import { studyAbroadCountries, createStudyAbroadSchoolEvent } from '../js/study-abroad.js';
-import { collectLotteryYear, getVietlottJackpot, VIETLOTT_JACKPOT, VIETLOTT_JACKPOT_GROWTH, VIETLOTT_JACKPOT_MAX } from '../js/lottery.js';
-import { createLaterSpecialStep } from '../js/special-later-life.js';
-import { createOldHouseSpecialStep } from '../js/special-event-40.js';
-import { createLuggageSpecialStep } from '../js/special-event-55.js';
+import { createInitialState } from '../js/core/state.js';
+import { shopCatalog, collectAssetIncome, getAssetYearProjection } from '../js/leisure/shop.js';
+import { completeLifeYear, forecastNextYear, getDebtInterest, getYearLivingCost, DEBT_INTEREST_RATE, FRUGAL_MAX_SAVING } from '../js/relationships/family.js';
+import { ACTIVITY_GAIN_CAP, applyActivityGain, collectStatWearYear, previewActivityGain } from '../js/core/stat-budget.js';
+import { getTienLenPot, TIEN_LEN_MAX_STAKE } from '../js/leisure/tien-len.js';
+import { studyAbroadCountries, createStudyAbroadSchoolEvent } from '../js/education/study-abroad.js';
+import { collectLotteryYear, getVietlottJackpot, VIETLOTT_JACKPOT, VIETLOTT_JACKPOT_GROWTH, VIETLOTT_JACKPOT_MAX } from '../js/leisure/lottery.js';
+import { createLaterSpecialStep } from '../js/special-events/special-later-life.js';
+import { createOldHouseSpecialStep } from '../js/special-events/special-event-40.js';
+import { createLuggageSpecialStep } from '../js/special-events/special-event-55.js';
 
 let passed = 0;
 function test(name, body) { body(); passed++; console.log(`PASS ${name}`); }

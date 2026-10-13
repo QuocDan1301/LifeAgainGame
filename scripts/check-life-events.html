@@ -10,11 +10,11 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const J = await import("../js/job-loss.js");
-    const FM = await import("../js/family-members.js");
-    const M = await import("../js/mood-rules.js");
-    const { completeLifeYear, forecastNextYear, getLivingCost } = await import("../js/family.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const J = await import("../js/career/job-loss.js");
+    const FM = await import("../js/relationships/family-members.js");
+    const M = await import("../js/stats/mood-rules.js");
+    const { completeLifeYear, forecastNextYear, getLivingCost } = await import("../js/relationships/family.js");
     const apply = (p, choice) => {
       Object.assign(p, choice.playerUpdates ?? {});
       for (const [stat, value] of Object.entries(choice.effects ?? {})) p[stat] = Math.max(0, Math.min(100, p[stat] + value));

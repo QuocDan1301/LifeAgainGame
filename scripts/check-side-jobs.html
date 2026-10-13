@@ -10,10 +10,10 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const { convenienceStores, shiftTypes, collectSideJobYear, getSideJobTitle } = await import("../js/side-jobs.js");
-    const { getEducationStatus } = await import("../js/education.js");
-    const { achievements } = await import("../js/achievements-data.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { convenienceStores, shiftTypes, collectSideJobYear, getSideJobTitle } = await import("../js/career/side-jobs.js");
+    const { getEducationStatus } = await import("../js/education/education.js");
+    const { achievements } = await import("../js/achievements/achievements-data.js");
     assert(convenienceStores.map(s => s.name).join() === "Circle K,GS25,Mini Stop,FamilyMart,7-Eleven", "Five convenience stores");
     assert(shiftTypes["part-time"].salary < shiftTypes["full-time"].salary, "Part-time pays less than full-time");
     assert(shiftTypes["part-time"].health === -5 && shiftTypes["full-time"].health === -10, "Health cost per year");

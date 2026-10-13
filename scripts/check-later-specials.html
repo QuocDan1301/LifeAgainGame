@@ -7,11 +7,11 @@
   const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
   const backup = keys.map(key => localStorage.getItem(key)), random = Math.random;
   try {
-    const {createLaterSpecialStep: step, createLaterSpecialEvent: event, canStartCentennialStory} = await import('../js/special-later-life.js');
-    const {laterLifeStories} = await import('../js/special-later-life-data.js');
-    const {getAgeEvents} = await import('../js/events.js');
-    const {state, createInitialState} = await import('../js/state.js');
-    const {achievements} = await import('../js/achievements-data.js');
+    const {createLaterSpecialStep: step, createLaterSpecialEvent: event, canStartCentennialStory} = await import('../js/special-events/special-later-life.js');
+    const {laterLifeStories} = await import('../js/special-events/special-later-life-data.js');
+    const {getAgeEvents} = await import('../js/events/events.js');
+    const {state, createInitialState} = await import('../js/core/state.js');
+    const {achievements} = await import('../js/achievements/achievements-data.js');
     const spouse = {id:'spouse', name:'Bạn đời', gender:'female', relationship:80, metAtAge:25, ageAtMeeting:24, stats:{health:80,intelligence:50,happiness:50,appearance:50}};
     const married = {partner:spouse, marriedAtAge:30, children:[]};
     assert(canStartCentennialStory(married),'Living spouse with relationship 80 qualifies');

@@ -8,12 +8,12 @@
   const previous = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createEarthAuctionSpecialStep: step } = await import('../js/special-event-30.js');
-    const { getAgeEvents } = await import('../js/events.js');
-    const { state, createInitialState } = await import('../js/state.js');
-    const { createAdmirer, getDatingUpdates } = await import('../js/relationships.js');
-    const { achievements } = await import('../js/achievements-data.js');
-    const { getCareerProfile } = await import('../js/career-jobs.js');
+    const { createEarthAuctionSpecialStep: step } = await import('../js/special-events/special-event-30.js');
+    const { getAgeEvents } = await import('../js/events/events.js');
+    const { state, createInitialState } = await import('../js/core/state.js');
+    const { createAdmirer, getDatingUpdates } = await import('../js/relationships/relationships.js');
+    const { achievements } = await import('../js/achievements/achievements-data.js');
+    const { getCareerProfile } = await import('../js/career/career-jobs.js');
     assert(getAgeEvents(30).length === 5 && getAgeEvents(30).filter(e => !e.specialId).length === 4,
       'Age 30 retains two everyday stories plus its special story');
     assert(!step(0) && !step(8), 'Reject invalid steps');

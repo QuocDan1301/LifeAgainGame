@@ -9,9 +9,9 @@
   const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
   const saved = keys.map(key => localStorage.getItem(key));
   try {
-    const { dishes } = await import("../js/food.js");
+    const { dishes } = await import("../js/stats/food.js");
     assert(dishes.length === 5 && dishes.every(d => d.price > 0 && Object.keys(d.effects).length), "Five dishes with price and stat boosts");
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

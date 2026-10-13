@@ -32,7 +32,7 @@ try:
         page.add_init_script('Math.random = () => 0.5;')
         page.goto(base + '/index.html')
         cases = page.evaluate("""async () => {
-          const {getAgeEvents}=await import('/js/events.js');
+          const {getAgeEvents}=await import('/js/events/events.js');
           const automatic = Array.from({length:10},(_,i)=>i+1).flatMap(age =>
             getAgeEvents(age).filter(e=>e.automaticResult).map(event=>({age,id:event.id,index:0,
               automatic:true,label:'Đồng ý',effects:event.choices[0].effects})));
@@ -44,9 +44,9 @@ try:
         }""")
         for case in cases:
             page.evaluate("""async ({age,id}) => {
-              const {createInitialState}=await import('/js/state.js');
-              const {getAgeEvents}=await import('/js/events.js');
-              const {achievements}=await import('/js/achievements-data.js');
+              const {createInitialState}=await import('/js/core/state.js');
+              const {getAgeEvents}=await import('/js/events/events.js');
+              const {achievements}=await import('/js/achievements/achievements-data.js');
               const saved=createInitialState();
               Object.assign(saved.player,{age:age-1,health:60,intelligence:60,happiness:60,appearance:60,
                 studyBlock:'A00',employmentStatus:'declined',datingActivitiesOnly:true,nextPromotionAge:null});

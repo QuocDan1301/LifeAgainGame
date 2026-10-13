@@ -1,18 +1,18 @@
 <!doctype html><meta charset="utf-8"><pre id="audit">Running…</pre>
 <script type="module">
 try {
-  const {getAgeEvents}=await import('../js/events.js');
-  const {careerEvent}=await import('../js/career-event.js');
-  const {reviewEventMedia}=await import('../js/semantic-event-media.js');
-  const {createInitialState}=await import('../js/state.js');
-  const {createOrientationEvent}=await import('../js/special-event-24.js');
-  const {createDatingEvent,createMarriageEvent}=await import('../js/relationships.js');
-  const {createChildProposalEvent}=await import('../js/family.js');
-  const {createSchoolEvent}=await import('../js/career-schools.js');
-  const {createCareerTest,createFailedTestEvent}=await import('../js/career-tests.js');
-  const {createJobInterview,createInterviewResult,createInterviewRetryPrompt,createPromotionEvent}=await import('../js/career-jobs.js');
-  const {createLaterSpecialStep}=await import('../js/special-later-life.js');
-  const factories=await Promise.all([10,20,30,35,40,45,50,55].map(age=>import('../js/special-event-'+age+'.js')));
+  const {getAgeEvents}=await import('../js/events/events.js');
+  const {careerEvent}=await import('../js/career/career-event.js');
+  const {reviewEventMedia}=await import('../js/media/semantic-event-media.js');
+  const {createInitialState}=await import('../js/core/state.js');
+  const {createOrientationEvent}=await import('../js/special-events/special-event-24.js');
+  const {createDatingEvent,createMarriageEvent}=await import('../js/relationships/relationships.js');
+  const {createChildProposalEvent}=await import('../js/relationships/family.js');
+  const {createSchoolEvent}=await import('../js/career/career-schools.js');
+  const {createCareerTest,createFailedTestEvent}=await import('../js/career/career-tests.js');
+  const {createJobInterview,createInterviewResult,createInterviewRetryPrompt,createPromotionEvent}=await import('../js/career/career-jobs.js');
+  const {createLaterSpecialStep}=await import('../js/special-events/special-later-life.js');
+  const factories=await Promise.all([10,20,30,35,40,45,50,55].map(age=>import('../js/special-events/special-event-'+age+'.js')));
   const steps=factories.map(module=>Object.entries(module).find(([key,value])=>/SpecialStep$/.test(key)&&typeof value==='function')[1]);
   const events=[];
   const collect=(event,age,variant='')=>{if(event)events.push({age,variant,event:reviewEventMedia({...structuredClone(event),age})});};

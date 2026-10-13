@@ -10,7 +10,7 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const L = await import("../js/lottery.js");
+    const L = await import("../js/leisure/lottery.js");
     // Vé kiến thiết: so số cuối đúng thứ tự, chỉ nhận giải cao nhất.
     assert(L.kienThietResult("123456", "000056").prize === 100_000, "2 last digits");
     assert(L.kienThietResult("123456", "000456").prize === 200_000, "3 last digits");
@@ -53,7 +53,7 @@
     assert(oldLogs.length === 3 && oldLogs[1].content === "🎟️ Mua 3 vé số: Tiền -30k VNĐ.\n• Kiến thiết: 547001, 823295\n• Vietlott: 01 02 03 10 11 12"
       && oldLogs[1].summary === oldLogs[1].content && oldLogs[2].content.startsWith("🎟️ Mua 1 vé số"), "Old one-line-per-ticket logs merged by age");
 
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

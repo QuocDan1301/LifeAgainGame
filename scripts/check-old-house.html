@@ -7,11 +7,11 @@
   const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
   const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
   try{
-    const {createOldHouseSpecialStep:step}=await import('../js/special-event-40.js');
-    const {getAgeEvents}=await import('../js/events.js');
-    const {state,createInitialState}=await import('../js/state.js');
-    const {achievements}=await import('../js/achievements-data.js');
-    const {getCareerProfile}=await import('../js/career-jobs.js');
+    const {createOldHouseSpecialStep:step}=await import('../js/special-events/special-event-40.js');
+    const {getAgeEvents}=await import('../js/events/events.js');
+    const {state,createInitialState}=await import('../js/core/state.js');
+    const {achievements}=await import('../js/achievements/achievements-data.js');
+    const {getCareerProfile}=await import('../js/career/career-jobs.js');
     assert(getAgeEvents(40).length===5&&getAgeEvents(40).filter(e=>!e.specialId).length===4,'Two ordinary stories plus one special');
     const achievement=achievements.find(e=>e.id==='story-reincarnation');
     assert(achievement.title==='Lời hẹn âm dương'&&achievement.description.includes('con về'),'Stable achievement ID and new description');

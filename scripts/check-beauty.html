@@ -10,11 +10,11 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const realRandom = Math.random;
   try {
-    const { surgeryPackages } = await import("../js/beauty.js");
+    const { surgeryPackages } = await import("../js/stats/beauty.js");
     assert(surgeryPackages.length === 3, "Three surgery packages");
     assert(surgeryPackages.every((p, i, all) => i === 0 || (p.price > all[i - 1].price && p.successRate > all[i - 1].successRate
       && p.gain.appearance > all[i - 1].gain.appearance && p.loss.health > all[i - 1].loss.health)), "Pricier packages: higher success, bigger gains and losses");
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

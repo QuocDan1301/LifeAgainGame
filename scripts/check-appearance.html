@@ -10,10 +10,10 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const A = await import("../js/appearance-rules.js");
-    const { createAcquaintanceEvent } = await import("../js/acquaintance.js");
-    const I = await import("../js/intellect-rules.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const A = await import("../js/stats/appearance-rules.js");
+    const { createAcquaintanceEvent } = await import("../js/relationships/acquaintance.js");
+    const I = await import("../js/stats/intellect-rules.js");
     const near = (a, b) => Math.abs(a - b) < 1e-9;
 
     // 2. Cơ hội làm quen: 15% + (NH − 50) × 0,2 + 10% giao tiếp, 5–35%.

@@ -10,9 +10,9 @@ const assert = (ok, message) => { if (!ok) throw Error(message); };
 let navigating = false;
 try {
   if (!resumed) sessionStorage.setItem(backupKey, JSON.stringify(keys.map(k => localStorage.getItem(k))));
-  const { state, createInitialState } = await import('../js/state.js');
-  const { careerEvent } = await import('../js/career-event.js');
-  const { achievements } = await import('../js/achievements-data.js');
+  const { state, createInitialState } = await import('../js/core/state.js');
+  const { careerEvent } = await import('../js/career/career-event.js');
+  const { achievements } = await import('../js/achievements/achievements-data.js');
   if (resumed) Object.assign(state, JSON.parse(localStorage.getItem(keys[0])));
   else {
     Object.assign(state, createInitialState());

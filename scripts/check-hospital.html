@@ -10,10 +10,10 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const { diseases, planIllnesses, collectIllnessYear, getIllnessStage, getTreatmentCost, getIllnessOutlook, getDisease } =
-      await import("../js/hospital.js");
-    const { EMERGENCY } = await import("../js/health-rules.js");
+      await import("../js/stats/hospital.js");
+    const { EMERGENCY } = await import("../js/stats/health-rules.js");
     assert(diseases.length === 10 && new Set(diseases.map(d => d.id)).size === 10 && diseases.every(d => d.cost > 0), "Ten diseases with fees");
     assert(diseases.every(d => d.severeAfter < d.criticalAfter && d.loss.length === 3 && d.criticalRisk > 0), "Each disease has its own stage config");
     assert(new Set(diseases.map(d => d.criticalAfter)).size > 1, "No single fatal deadline for every disease");

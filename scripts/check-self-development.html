@@ -9,13 +9,13 @@
   const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
   const saved = keys.map(key => localStorage.getItem(key));
   try {
-    const D = await import("../js/self-development.js");
+    const D = await import("../js/stats/self-development.js");
     assert(D.developmentActivities.length === 8 && D.developmentStats.every(s => D.developmentActivities.filter(a => a.stat === s.id).length === 2),
       "Two activities for each of the four stats");
     assert(D.packageTiers.every((t, i) => i === 0 || (t.price > D.packageTiers[i - 1].price && t.gain > D.packageTiers[i - 1].gain)),
       "Paying more raises the stat more");
     assert(D.developmentActivities.every(a => a.packages.length === D.packageTiers.length), "Every activity has every package");
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

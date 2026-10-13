@@ -11,10 +11,10 @@ const assert = (value, message) => { if (!value) throw new Error(message); };
 let navigating = false;
 try {
   if (!resumed) sessionStorage.setItem(backupKey, JSON.stringify(keys.map(key => localStorage.getItem(key))));
-  const { state, createInitialState } = await import('../js/state.js');
-  const { getDatingUpdates } = await import('../js/relationships.js');
-  const { createConcurrentDatingEvent } = await import('../js/concurrent-dating.js');
-  const { achievements } = await import('../js/achievements-data.js');
+  const { state, createInitialState } = await import('../js/core/state.js');
+  const { getDatingUpdates } = await import('../js/relationships/relationships.js');
+  const { createConcurrentDatingEvent } = await import('../js/relationships/concurrent-dating.js');
+  const { achievements } = await import('../js/achievements/achievements-data.js');
   if (resumed) Object.assign(state, JSON.parse(localStorage.getItem('lifeAgainSave')));
   else {
     Object.assign(state, createInitialState());

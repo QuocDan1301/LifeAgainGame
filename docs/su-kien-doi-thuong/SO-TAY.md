@@ -1,6 +1,6 @@
 # Sổ tay sự kiện đời thường
 
-Toàn bộ sự kiện đời thường của game nằm ở `js/life-stories/` (646 sự kiện, tuổi 1–104). Mỗi lần sửa hay viết thêm, kể cả khi nhờ AI, đều phải theo sổ tay này.
+Toàn bộ sự kiện đời thường của game nằm ở `js/events/life-stories/` (646 sự kiện, tuổi 1–104). Mỗi lần sửa hay viết thêm, kể cả khi nhờ AI, đều phải theo sổ tay này.
 
 | File | Tuổi |
 |---|---|
@@ -22,7 +22,7 @@ Toàn bộ sự kiện đời thường của game nằm ở `js/life-stories/` 
 - **Sự kiện chuỗi** (nối với chuyện cũ) mở trong một **khoảng tuổi**, chỉ xuất hiện khi người chơi có đủ dấu, chiếm tối đa 2 trong 4 chỗ và được bốc với trọng số ×3. Khi chuỗi sẵn sàng, khoảng 50% số năm nó được bốc.
 - Mỗi sự kiện chỉ xuất hiện một lần trong một đời (dấu `seen:<id>` được ghi tự động).
 - **Không có sự kiện đời thường** ở các tuổi 15, 16, 18, 22, 24, 25, 105, vì đây là năm có sự kiện đặc biệt không thể thay thế (18 tuổi luôn là sự kiện chọn ngành).
-- Sự kiện đặc biệt (lạc đường năm 10 tuổi, mỏ kim cương, chuyến tàu cuối…) vẫn do `js/events.js` lo, không nằm trong bộ này.
+- Sự kiện đặc biệt (lạc đường năm 10 tuổi, mỏ kim cương, chuyến tàu cuối…) vẫn do `js/events/events.js` lo, không nằm trong bộ này.
 
 ### Những điều game tự quyết: không viết vào sự kiện đời thường
 
@@ -36,11 +36,11 @@ Cưới, sinh con, nhận con nuôi, người thân hay bạn đời qua đời,
 - Hệ quả thể hiện qua **hành động hoặc lời nói của người khác** (“Ba nhìn xuống chén”), đừng chỉ ghi “mọi người buồn”.
 - **Giới tính người chơi là ngẫu nhiên.** Không để ai gọi người chơi bằng “ông”, “bà”, “anh”, “chị”, “cô chú”, và không viết “anh/chị”. Cháu chắt gọi người chơi là “cố”, người lạ gọi là “cụ”, “bác”.
 - Cấm: “vô cùng”, “bỗng nhiên”, “bạn cảm thấy”, câu mở đầu bằng “Thật là”, “rút ra bài học”, dấu `!`. Script kiểm tra sẽ tự bắt các lỗi này.
-- **Mặt cười do game tự gắn**, đừng viết emoji vào dữ liệu. `js/life-stories.js` thêm một mặt cười vào cuối tình huống và cuối mỗi kết quả, chọn theo cảm xúc:
+- **Mặt cười do game tự gắn**, đừng viết emoji vào dữ liệu. `js/events/life-stories.js` thêm một mặt cười vào cuối tình huống và cuối mỗi kết quả, chọn theo cảm xúc:
   - Kết quả: hạnh phúc từ +3 trở lên 😄🥰, +1/+2 🙂😌, 0 thì xét chỉ số khác, −1 😕😬, −2/−3 😔😢, từ −4 trở xuống 😭.
   - Tình huống: mặt phân vân 🤔😟😬; nếu là chuyện buồn thì mặt buồn.
   - Chuyện buồn được nhận ra qua từ khóa (qua đời, đám tang, quan tài, viếng, bệnh nặng, khóc…). Khi đó kết quả tích cực chỉ dùng mặt bùi ngùi 🥲😌, không cười tươi.
-  - Muốn đổi bộ mặt hoặc từ khóa thì sửa `FACES` và `SOMBER` trong `js/life-stories.js`.
+  - Muốn đổi bộ mặt hoặc từ khóa thì sửa `FACES` và `SOMBER` trong `js/events/life-stories.js`.
 - Độ dài: tình huống tối đa 60 chữ, kết quả tối đa 55 chữ, nhãn lựa chọn tối đa 12 chữ (đếm theo âm tiết).
 - Bối cảnh trung tính vùng miền, vì tỉnh thành là ngẫu nhiên. Tránh từ quá địa phương (hẻm/ngõ → “đầu đường”). Không dùng “cấp huyện” vì cấp huyện đã bỏ từ 2025.
 - Sự kiện cố định (không có `requires`) **không được khẳng định một ký ức mà người chơi có thể chưa từng trải qua**. Muốn nhắc chuyện cũ thì viết thành sự kiện chuỗi.
@@ -156,7 +156,7 @@ Còn rất nhiều dấu đã gieo nhưng chưa có sự kiện nối: xem [SO-D
 
 ## 8. Sửa hoặc viết thêm
 
-1. Sửa trong file giai đoạn tương ứng. Viết giai đoạn mới thì import trong `js/life-stories/index.js`.
+1. Sửa trong file giai đoạn tương ứng. Viết giai đoạn mới thì import trong `js/events/life-stories/index.js`.
 2. Chạy `node scripts/check-life-stories.mjs --registry`. Script kiểm tra:
    - độ dài, lối viết cấm, dấu hợp lệ, tiền không bị âm;
    - mọi hoàn cảnh (ba mẹ còn hay mất, độc thân hay có gia đình hay góa, có con nhỏ hay con lớn hay không con, có việc hay không, khỏe hay yếu, có tiền hay không) đều nhận ít nhất 3 sự kiện mỗi tuổi;

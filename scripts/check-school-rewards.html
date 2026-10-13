@@ -8,9 +8,9 @@
   const previous = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createSchoolEntryReward } = await import('../js/school-rewards.js');
-    const { completeLifeYear } = await import('../js/family.js');
-    const { state, createInitialState } = await import('../js/state.js');
+    const { createSchoolEntryReward } = await import('../js/education/school-rewards.js');
+    const { completeLifeYear } = await import('../js/relationships/family.js');
+    const { state, createInitialState } = await import('../js/core/state.js');
     const stats = ['health','intelligence','happiness','appearance'];
     const base = age => ({ ...createInitialState().player, age, health:50, intelligence:50, happiness:50, appearance:50 });
     for (const [age,min,money] of [[6,1,0],[11,2,500000],[15,3,1000000]]) {
@@ -33,7 +33,7 @@
     assert(reward.updates.money === 2000000 && !reward.updates.health, 'University awards cash only');
     completeLifeYear(freshman,18,{careerPath:path},reward);
     // Năm nhập học cũng trừ học phí năm nhất (ví có thể âm).
-    const { getAnnualTuition } = await import('../js/family.js');
+    const { getAnnualTuition } = await import('../js/relationships/family.js');
     assert(freshman.money === 2000000 - getAnnualTuition(path) && !createSchoolEntryReward(freshman,19,{careerPath:path}), 'University cash (minus first-year tuition) only once per life');
     for (const careerPath of [{id:'military',school:null}, {id:'military',school:{name:'Học viện Quân sự'}},
       {id:'esports',school:{name:'Team Flash Academy',type:'academy'}}, {id:'culinary',school:{name:'Trường Cao đẳng Du lịch'}}]) {
@@ -47,7 +47,7 @@
     Object.assign(state,createInitialState());
     Object.assign(state.player,base(5));
     localStorage.removeItem('lifeAgainSave');
-    const { achievements } = await import('../js/achievements-data.js');
+    const { achievements } = await import('../js/achievements/achievements-data.js');
     localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
     localStorage.setItem('lifeAgainAchievementQueue','[]');
     Math.random = () => 0;

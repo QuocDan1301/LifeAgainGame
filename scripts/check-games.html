@@ -19,7 +19,7 @@
   const random = Math.random;
   const matchMedia = window.matchMedia;
   try {
-    const G = await import("../js/games.js");
+    const G = await import("../js/leisure/games.js");
     const card = (rank, suit = "♠") => ({ rank, suit });
     assert(G.games.map(g => g.name).join() === "Sấp ngửa,Đoán xúc xắc,Vòng quay tài lộc,Hộp bí ẩn,Leo tháp tài lộc,Đua thú may mắn,Xì dách,Tiến lên miền Nam", "Eight games");
 
@@ -70,7 +70,7 @@
 
     // Giao diện, tắt hoạt ảnh để kiểm thử nhanh.
     window.matchMedia = query => query.includes("reduced-motion") ? { matches: true, addEventListener() {} } : matchMedia.call(window, query);
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

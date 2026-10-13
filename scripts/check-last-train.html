@@ -7,11 +7,11 @@
   const keys=['lifeAgainSave','lifeAgainAchievements','lifeAgainAchievementQueue'];
   const saved=keys.map(key=>localStorage.getItem(key));const random=Math.random;
   try{
-    const {createLastTrainSpecialStep:step,createLastTrainSpecialEvent}=await import('../js/special-event-45.js');
-    const {getAgeEvents}=await import('../js/events.js');
-    const {state,createInitialState}=await import('../js/state.js');
-    const {achievements}=await import('../js/achievements-data.js');
-    const {getCareerProfile}=await import('../js/career-jobs.js');
+    const {createLastTrainSpecialStep:step,createLastTrainSpecialEvent}=await import('../js/special-events/special-event-45.js');
+    const {getAgeEvents}=await import('../js/events/events.js');
+    const {state,createInitialState}=await import('../js/core/state.js');
+    const {achievements}=await import('../js/achievements/achievements-data.js');
+    const {getCareerProfile}=await import('../js/career/career-jobs.js');
     {const pool=getAgeEvents(45),ordinary=pool.filter(e=>!e.specialId).length;assert(pool.filter(e=>e.specialId).length===1&&ordinary>=3&&ordinary<=4,'Ordinary stories (up to four) plus the special');}
     assert(!step(0)&&!step(5),'Invalid scenes rejected');
     const images=new Set();

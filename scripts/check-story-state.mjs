@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import { lifeStoryCatalog } from '../js/life-stories/index.js';
-import { createLifeStoryEvents, fillStoryText, isLifeStoryEligible } from '../js/life-stories.js';
-import { prepareStoryChoice, canAffordChoice, collectHomeLoanYear, collectStoryLoanYear } from '../js/story-transactions.js';
-import { getAnnualSalaryPayment, completeCareerYear, retirePlayer } from '../js/career-salary.js';
-import { createWorkProblemEvent, createJobReviewEvent, createLayoffNoticeEvent, createContractNoticeEvent } from '../js/job-loss.js';
-import { getShopItem } from '../js/shop.js';
-import { getChildAge, completeLifeYear, forecastNextYear } from '../js/family.js';
+import { lifeStoryCatalog } from '../js/events/life-stories/index.js';
+import { createLifeStoryEvents, fillStoryText, isLifeStoryEligible } from '../js/events/life-stories.js';
+import { prepareStoryChoice, canAffordChoice, collectHomeLoanYear, collectStoryLoanYear } from '../js/core/story-transactions.js';
+import { getAnnualSalaryPayment, completeCareerYear, retirePlayer } from '../js/career/career-salary.js';
+import { createWorkProblemEvent, createJobReviewEvent, createLayoffNoticeEvent, createContractNoticeEvent } from '../js/career/job-loss.js';
+import { getShopItem } from '../js/leisure/shop.js';
+import { getChildAge, completeLifeYear, forecastNextYear } from '../js/relationships/family.js';
 
 let checks = 0;
 function test(name, body) { body(); checks++; console.log(`PASS ${name}`); }

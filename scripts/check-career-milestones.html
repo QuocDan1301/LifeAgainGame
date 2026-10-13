@@ -10,12 +10,12 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { getAgeEvents } = await import("../js/events.js");
-    const { createInitialState, state } = await import("../js/state.js");
-    const { careerMilestones } = await import("../js/career-milestones.js");
-    const { careerAnnualSalaries } = await import("../js/career-salary.js");
-    const { careerEvent } = await import("../js/career-event.js");
-    const { createEmploymentEvent, getCareerProfile } = await import("../js/career-jobs.js");
+    const { getAgeEvents } = await import("../js/events/events.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { careerMilestones } = await import("../js/career/career-milestones.js");
+    const { careerAnnualSalaries } = await import("../js/career/career-salary.js");
+    const { careerEvent } = await import("../js/career/career-event.js");
+    const { createEmploymentEvent, getCareerProfile } = await import("../js/career/career-jobs.js");
     const ids = careerEvent.choices.map(choice => choice.careerPath.id);
     assert(ids.length === 23 && ids.every(id => careerMilestones[id] && careerAnnualSalaries[id]), "Every career has milestone data");
     for (const [id, data] of Object.entries(careerMilestones)) {
@@ -25,7 +25,7 @@
     const sixteen = getAgeEvents(16);
     assert(sixteen.length === ids.length && sixteen.every(event => event.kind === "career-spark" && !event.addedEveryday),
       "Age 16 only offers the career discovery chain");
-    const { canChooseCareer } = await import("../js/study-blocks.js");
+    const { canChooseCareer } = await import("../js/education/study-blocks.js");
     const free = ["military", "esports", "tiktok", "youtube"];
     assert(free.every(id => canChooseCareer(id, "TD") && !["A00", "A01", "B00", "C00", "D01"].some(block => canChooseCareer(id, block))),
       "The four free careers belong only to Khối Tự do");
@@ -41,7 +41,7 @@
     parsed.querySelectorAll("script").forEach(element => element.remove());
     parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
     document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
-    const { achievements } = await import("../js/achievements-data.js");
+    const { achievements } = await import("../js/achievements/achievements-data.js");
     localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(entry => [entry.id, true]))));
     localStorage.setItem("lifeAgainAchievementQueue", "[]");
     document.getElementById("game-screen").hidden = false;

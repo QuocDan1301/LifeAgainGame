@@ -44,5 +44,5 @@ manifest={'version':VERSION,'source':f'https://github.com/hfg-gmuend/openmoji/re
 # Preserve the catalog path used by existing tools, with the full current data.
 (ROOT/'js/img/events/openmoji-catalog.json').write_text(json.dumps(metadata,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 entries={code:{'annotation':next((row['annotation'] for row in metadata if row['hexcode']==code),code)} for code in installed['color']['codes']}
-(ROOT/'js/openmoji-catalog.js').write_text('// Official complete OpenMoji '+VERSION+' SVG library.\nexport const openMojiVersion = '+json.dumps(VERSION)+';\nexport const openMojiCatalog = '+json.dumps(entries,ensure_ascii=False,separators=(',',':'))+';\n',encoding='utf-8')
+(ROOT/'js/media/openmoji-catalog.js').write_text('// Official complete OpenMoji '+VERSION+' SVG library.\nexport const openMojiVersion = '+json.dumps(VERSION)+';\nexport const openMojiCatalog = '+json.dumps(entries,ensure_ascii=False,separators=(',',':'))+';\n',encoding='utf-8')
 print(f"Installed OpenMoji {VERSION}: {len(entries)} icons, color SVG, metadata and license.",flush=True)

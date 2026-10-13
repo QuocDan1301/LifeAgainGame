@@ -10,9 +10,9 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const { careerEvent } = await import("../js/career-event.js");
-    const { FOOTBALL_MIN_HEALTH } = await import("../js/health-rules.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { careerEvent } = await import("../js/career/career-event.js");
+    const { FOOTBALL_MIN_HEALTH } = await import("../js/stats/health-rules.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

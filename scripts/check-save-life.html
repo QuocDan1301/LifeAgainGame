@@ -8,11 +8,11 @@
   const previous = keys.map(key=>localStorage.getItem(key));
   const random = Math.random;
   try {
-    const {createSaveLifeSpecialStep:step} = await import('../js/special-event-35.js');
-    const {getAgeEvents} = await import('../js/events.js');
-    const {state,createInitialState} = await import('../js/state.js');
-    const {createAdmirer,getDatingUpdates} = await import('../js/relationships.js');
-    const {achievements} = await import('../js/achievements-data.js');
+    const {createSaveLifeSpecialStep:step} = await import('../js/special-events/special-event-35.js');
+    const {getAgeEvents} = await import('../js/events/events.js');
+    const {state,createInitialState} = await import('../js/core/state.js');
+    const {createAdmirer,getDatingUpdates} = await import('../js/relationships/relationships.js');
+    const {achievements} = await import('../js/achievements/achievements-data.js');
     assert(getAgeEvents(35).length===5 && getAgeEvents(35).filter(e=>!e.specialId).length===4,'Two ordinary stories plus the age-35 special');
     let deaths=0,wins=0,safe=0;
     for(let i=1;i<=4;i++) {

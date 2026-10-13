@@ -10,10 +10,10 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { getAgeEvents, ageEvents, isPriorityEvent } = await import("../js/events.js");
-    const { createInitialState, state } = await import("../js/state.js");
-    const { createAdmirer, createDatingEvent, createMarriageEvent, getDatingUpdates, getMarriageUpdates, restoreMarriageSchedule } = await import("../js/relationships.js");
-    const { getPromotionUpdates, createEmploymentEvent, getCareerProfile } = await import("../js/career-jobs.js");
+    const { getAgeEvents, ageEvents, isPriorityEvent } = await import("../js/events/events.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { createAdmirer, createDatingEvent, createMarriageEvent, getDatingUpdates, getMarriageUpdates, restoreMarriageSchedule } = await import("../js/relationships/relationships.js");
+    const { getPromotionUpdates, createEmploymentEvent, getCareerProfile } = await import("../js/career/career-jobs.js");
     let count = 0;
     assert(getAgeEvents(25).length === 0, "Age 25 has no ordinary stories");
     for (let age = 29; age <= 39; age++) {
@@ -79,7 +79,7 @@
       appearance: 70, studyBlock: "A", employmentStatus: "employed", careerLevel: 1,
       careerPath: { id: "programming", field: "Công nghệ thông tin" }, careerSpark: "programming",
       job: getCareerProfile("programming").ranks[0], lastSalaryAge: 31, nextPromotionAge: null });
-    const { achievements } = await import("../js/achievements-data.js");
+    const { achievements } = await import("../js/achievements/achievements-data.js");
     localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(entry => [entry.id, true]))));
     localStorage.setItem("lifeAgainAchievementQueue", "[]");
     document.getElementById("game-screen").hidden = false;

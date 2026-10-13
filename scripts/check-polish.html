@@ -10,13 +10,13 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const M = await import("../js/career-milestones.js");
-    const { createEmploymentEvent, createPromotionEvent } = await import("../js/career-jobs.js");
-    const { createLostChildSpecialStep } = await import("../js/special-event-10.js");
-    const { getTrainingGain, developmentActivities } = await import("../js/self-development.js");
-    const A = await import("../js/appearance-rules.js");
-    const { renderLifeSummary } = await import("../js/life-profile.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const M = await import("../js/career/career-milestones.js");
+    const { createEmploymentEvent, createPromotionEvent } = await import("../js/career/career-jobs.js");
+    const { createLostChildSpecialStep } = await import("../js/special-events/special-event-10.js");
+    const { getTrainingGain, developmentActivities } = await import("../js/stats/self-development.js");
+    const A = await import("../js/stats/appearance-rules.js");
+    const { renderLifeSummary } = await import("../js/core/life-profile.js");
 
     // 4. Khóa bậc nghề: một hàm dùng chung, theo mã ngành, tiến độ thuộc từng cuộc đời.
     const law = { id: "law", field: "Luật" };
@@ -70,7 +70,7 @@
     Object.assign(state.player, { name: "Test", age: 99, health: 88, isAlive: false, deathCause: "old-age", oldAgeDeath: { health: 88, chance: 0.12 } });
     renderLifeSummary(state);
     assert($("death-content").textContent.includes("Dù sức khỏe vẫn còn 88%") && $("death-content").textContent.includes("12%"), "Old-age death with high health is explained");
-    const { careerEvent } = await import("../js/career-event.js");
+    const { careerEvent } = await import("../js/career/career-event.js");
     Object.assign(state, createInitialState());
     Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 80, happiness: 60, intelligence: 60, appearance: 50, money: 0,
       studyBlock: "D01", careerSpark: "law", illnessPlan: [], relatives: [], friends: [{ id: "f1", name: "Hải", since: 15, bond: 50 }], healthCheckAge: 17 });

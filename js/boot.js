@@ -1,17 +1,17 @@
 // Bến xe chỉ tải phần nhỏ cần cho nó. Phần chơi (dữ liệu và ảnh sự kiện...) nặng hơn nhiều
 // nên chỉ tải khi người chơi vào game, lúc đó màn hình tải sẽ che.
-import { state, createInitialState } from "./state.js";
-import { initLobby } from "./lobby.js";
-import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCache } from "./module-refresh.js";
-import { initMusic } from "./music.js";
-import { moveCloseButtonsOutside } from "./dialog-close.js";
+import { state, createInitialState } from "./core/state.js";
+import { initLobby } from "./ui/lobby.js";
+import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCache } from "./core/module-refresh.js";
+import { initMusic } from "./ui/music.js";
+import { moveCloseButtonsOutside } from "./ui/dialog-close.js";
 
 // Nút ✕ của mọi popup nằm ngoài khung, ở góc trên bên phải.
 moveCloseButtonsOutside();
 initMusic();
 
 // Khi bến xe đã hiện, tải sẵn phần chơi vào bộ nhớ đệm lúc máy rảnh để bấm vào game nhanh hơn.
-const warmGame = () => warmModuleCache(["./main.js"]);
+const warmGame = () => warmModuleCache([new URL("./main.js", import.meta.url).href]);
 if ("requestIdleCallback" in window) requestIdleCallback(warmGame, { timeout: 4000 });
 else setTimeout(warmGame, 1500);
 
@@ -22,7 +22,7 @@ async function recoverFromStaleFiles() {
   document.getElementById("lobby-screen").hidden = false;
   document.getElementById("lobby-message").textContent = "Đang cập nhật phiên bản mới của game…";
   window.appLoader?.show("Đang cập nhật phiên bản mới");
-  await refreshModuleCache(["./boot.js", "./main.js"]);
+  await refreshModuleCache([new URL("./boot.js", import.meta.url).href, new URL("./main.js", import.meta.url).href]);
   location.reload();
   return true;
 }
@@ -36,11 +36,11 @@ initLobby(async saved => {
   let modules;
   try {
     modules = await Promise.all([
-      import("./career-jobs.js"),
-      import("./relationships.js"),
-      import("./family.js"),
-      import("./event-category.js"),
-      import("./special-event-24.js"),
+      import("./career/career-jobs.js"),
+      import("./relationships/relationships.js"),
+      import("./relationships/family.js"),
+      import("./events/event-category.js"),
+      import("./special-events/special-event-24.js"),
     ]);
   } catch (error) {
     if (await recoverFromStaleFiles()) return;

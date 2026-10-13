@@ -9,8 +9,8 @@
   const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
   const saved = keys.map(key => localStorage.getItem(key));
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const { matchmakingCenters, createMatch } = await import("../js/matchmaking.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { matchmakingCenters, createMatch } = await import("../js/relationships/matchmaking.js");
     assert(matchmakingCenters.length >= 3, "Several centers");
     assert(matchmakingCenters[0].maxAgeGap === 30, "Cheapest center allows up to 30 years apart");
     for (let i = 1; i < matchmakingCenters.length; i++) {

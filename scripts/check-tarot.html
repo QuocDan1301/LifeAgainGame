@@ -14,7 +14,7 @@
   const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainTarotCollection"];
   const saved = keys.map(key => localStorage.getItem(key));
   try {
-    const T = await import("../js/tarot.js");
+    const T = await import("../js/leisure/tarot.js");
     const count = group => T.tarotCards.filter(c => c.group === group).length;
     assert(T.tarotCards.length === 78 && count("major") === 22 && ["wands", "cups", "swords", "pentacles"].every(g => count(g) === 14),
       "78 cards: 22 major + 4 suits × 14");
@@ -61,7 +61,7 @@
     assert(JSON.stringify(ids(() => true)) === '["tarot-first","tarot-major","tarot-suits","tarot-all"]', "All 78 cards");
 
     localStorage.removeItem("lifeAgainTarotCollection");
-    const { createInitialState, state } = await import("../js/state.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());

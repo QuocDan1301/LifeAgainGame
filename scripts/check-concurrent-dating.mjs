@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import { createDatingDramaStep } from '../js/dating-drama.js';
-import { createInitialState } from '../js/state.js';
-import { canStartRelationship, getDatingUpdates, getBreakupUpdates, getMarriageUpdates, createMarriageEvent } from '../js/relationships.js';
-import { getDatingPartners, selectDatingPartnerUpdates, createConcurrentDatingEvent, postponeDatingMarriage } from '../js/concurrent-dating.js';
-import { collectFamilyYear, createRelativeDeathEvent, getLivingFamily } from '../js/family-members.js';
-import { createChildProposalEvent, completeLifeYear } from '../js/family.js';
-import { createAcquaintanceEvent } from '../js/acquaintance.js';
-import { getStatWear } from '../js/stat-budget.js';
+import { createDatingDramaStep } from '../js/relationships/dating-drama.js';
+import { createInitialState } from '../js/core/state.js';
+import { canStartRelationship, getDatingUpdates, getBreakupUpdates, getMarriageUpdates, createMarriageEvent } from '../js/relationships/relationships.js';
+import { getDatingPartners, selectDatingPartnerUpdates, createConcurrentDatingEvent, postponeDatingMarriage } from '../js/relationships/concurrent-dating.js';
+import { collectFamilyYear, createRelativeDeathEvent, getLivingFamily } from '../js/relationships/family-members.js';
+import { createChildProposalEvent, completeLifeYear } from '../js/relationships/family.js';
+import { createAcquaintanceEvent } from '../js/relationships/acquaintance.js';
+import { getStatWear } from '../js/core/stat-budget.js';
 let count = 0;
 const test = (name, body) => { body(); count++; console.log(`PASS ${name}`); };
 const person = (id, age = 25) => ({ id, name: `Người ${id}`, gender: 'female', ageAtMeeting: age,

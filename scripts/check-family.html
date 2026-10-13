@@ -8,9 +8,9 @@
   const previous = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const {state,createInitialState} = await import('../js/state.js');
-    const {createAdmirer,getDatingUpdates,getMarriageUpdates,getBreakupUpdates,canStartRelationship,createDatingEvent} = await import('../js/relationships.js');
-    const {createChildProposalEvent,getChildProposalUpdates,getAnnualChildcareCost,getChildcareExpenses,completeLifeYear,getChildAge,migrateChildcareDebt} = await import('../js/family.js');
+    const {state,createInitialState} = await import('../js/core/state.js');
+    const {createAdmirer,getDatingUpdates,getMarriageUpdates,getBreakupUpdates,canStartRelationship,createDatingEvent} = await import('../js/relationships/relationships.js');
+    const {createChildProposalEvent,getChildProposalUpdates,getAnnualChildcareCost,getChildcareExpenses,completeLifeYear,getChildAge,migrateChildcareDebt} = await import('../js/relationships/family.js');
     Math.random = () => 0.99;
     const base = () => ({...createInitialState().player, age:34, gender:'male', health:90,
       happiness:70, intelligence:70, appearance:70, studyBlock:'A', money:1_000_000_000});
@@ -74,7 +74,7 @@
     Object.assign(state,createInitialState());
     Object.assign(state.player,married(),{money:0,employmentStatus:'employed',careerLevel:1,
       careerPath:{id:'programming',field:'Công nghệ thông tin'},job:'Lập trình viên',lastSalaryAge:34,nextPromotionAge:null});
-    const {achievements} = await import('../js/achievements-data.js');
+    const {achievements} = await import('../js/achievements/achievements-data.js');
     localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(item=>[item.id,true]))));
     localStorage.setItem('lifeAgainAchievementQueue','[]');
     document.getElementById('game-screen').hidden=false;

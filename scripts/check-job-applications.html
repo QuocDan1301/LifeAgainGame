@@ -10,12 +10,12 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const { getJobApplicationBlocker, createGraduationNotice, GRADUATION_AGE } = await import("../js/job-applications.js");
-    const { createEmploymentEvent, createJobInterview } = await import("../js/career-jobs.js");
-    const { getCareerAnnualSalary } = await import("../js/career-salary.js");
-    const { getEducationStatus } = await import("../js/education.js");
-    const { careerPaths } = await import("../js/career-event.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { getJobApplicationBlocker, createGraduationNotice, GRADUATION_AGE } = await import("../js/career/job-applications.js");
+    const { createEmploymentEvent, createJobInterview } = await import("../js/career/career-jobs.js");
+    const { getCareerAnnualSalary } = await import("../js/career/career-salary.js");
+    const { getEducationStatus } = await import("../js/education/education.js");
+    const { careerPaths } = await import("../js/career/career-event.js");
     const path = { id: "programming", field: "Công nghệ thông tin", school: { id: "test", name: "Đại học Thử nghiệm" } };
     const student = extra => ({ ...createInitialState().player, age: 21, health: 80, careerPath: path, ...extra });
 
@@ -27,8 +27,8 @@
     assert(createEmploymentEvent(student({ age: 24, employmentStatus: "unemployed", careerSpark: "programming" }), 25)?.kind === "job-interview-retry",
       "Milestone keeps the yearly retry prompt");
     // Phỏng vấn tự động là phần tiếp nối của chuỗi tuổi 16: cùng người hướng dẫn, nhắc lại thử thách năm ấy.
-    const { careerMilestones } = await import("../js/career-milestones-data.js");
-    const { createInterviewResult, createInterviewRetryPrompt } = await import("../js/career-jobs.js");
+    const { careerMilestones } = await import("../js/career/career-milestones-data.js");
+    const { createInterviewResult, createInterviewRetryPrompt } = await import("../js/career/career-jobs.js");
     for (const [id, data] of Object.entries(careerMilestones).filter(([id]) => id !== 'study-abroad')) {
       const linked = student({ careerPath: { id, field: data.field, school: { name: "Trường thử" } }, careerSpark: id });
       const interview = createEmploymentEvent(linked, 22);

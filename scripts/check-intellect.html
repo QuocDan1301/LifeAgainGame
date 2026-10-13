@@ -10,11 +10,11 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const I = await import("../js/intellect-rules.js");
-    const T = await import("../js/career-tests.js");
-    const { createInterviewResult, createPromotionEvent } = await import("../js/career-jobs.js");
-    const { completeLifeYear } = await import("../js/family.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const I = await import("../js/stats/intellect-rules.js");
+    const T = await import("../js/career/career-tests.js");
+    const { createInterviewResult, createPromotionEvent } = await import("../js/career/career-jobs.js");
+    const { completeLifeYear } = await import("../js/relationships/family.js");
     const near = (a, b) => Math.abs(a - b) < 1e-9;
 
     // 1. Các mức trí tuệ.
@@ -112,7 +112,7 @@
     localStorage.setItem("lifeAgainAchievementQueue", "[]");
     document.getElementById("game-screen").hidden = false;
     document.getElementById("lobby-screen").hidden = true;
-    const { careerEvent } = await import("../js/career-event.js");
+    const { careerEvent } = await import("../js/career/career-event.js");
     Object.assign(state, createInitialState());
     Object.assign(state.player, { name: "Test", gender: "male", age: 17, health: 80, happiness: 60, intelligence: 30, appearance: 50,
       money: 0, studyBlock: "D01", illnessPlan: [], relatives: [], healthCheckAge: 17 });

@@ -2,15 +2,15 @@
 <script type="module">
 try {
   const assert=(condition,message)=>{if(!condition)throw Error(message)};
-  const {getEventOpenMoji}=await import('../js/event-openmoji.js');
-  const {openMojiCatalog}=await import('../js/openmoji-catalog.js');
-  const {getAgeEvents}=await import('../js/events.js');
-  const {reviewPendingMedia}=await import('../js/semantic-event-media.js');
-  const {createEventImageRenderer}=await import('../js/event-image.js');
+  const {getEventOpenMoji}=await import('../js/media/event-openmoji.js');
+  const {openMojiCatalog}=await import('../js/media/openmoji-catalog.js');
+  const {getAgeEvents}=await import('../js/events/events.js');
+  const {reviewPendingMedia}=await import('../js/media/semantic-event-media.js');
+  const {createEventImageRenderer}=await import('../js/media/event-image.js');
   const library=await(await fetch('../js/img/events/openmoji/library-manifest.json')).json();
   assert(Object.keys(openMojiCatalog).length===4495,'Complete official OpenMoji library');
   assert(library.styles.color.count===4495,'Complete color library');
-  // Bộ sự kiện đời thường mới (js/life-stories): mỗi cảnh và mỗi kết quả có một OpenMoji chính thức.
+  // Bộ sự kiện đời thường mới (js/events/life-stories): mỗi cảnh và mỗi kết quả có một OpenMoji chính thức.
   const hike=getAgeEvents(13).find(event=>event.lifeStory);
   assert(hike&&openMojiCatalog[hike.imageOptions[0].plan.code],'Everyday scene uses an official OpenMoji');
   assert(hike.choices.every(choice=>openMojiCatalog[choice.imageOptions[0]?.plan?.code]),'Every everyday result uses an official OpenMoji');

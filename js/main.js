@@ -1,49 +1,49 @@
-import { createStudyAbroadMajorEvent, createStudyAbroadYearEvent, createStudyAbroadDramaStep } from "./study-abroad.js";
-import { createDatingDramaStep } from "./dating-drama.js";
+import { createStudyAbroadMajorEvent, createStudyAbroadYearEvent, createStudyAbroadDramaStep } from "./education/study-abroad.js";
+import { createDatingDramaStep } from "./relationships/dating-drama.js";
 import {
   createConcurrentDatingEvent,
   postponeDatingMarriage,
-} from "./concurrent-dating.js";
-import { retirePlayer } from "./career-salary.js";
-import { canAffordChoice } from "./story-transactions.js";
-import { renderAvatar, getAvatarSource } from "./avatar.js";
+} from "./relationships/concurrent-dating.js";
+import { retirePlayer } from "./career/career-salary.js";
+import { canAffordChoice } from "./core/story-transactions.js";
+import { renderAvatar, getAvatarSource } from "./ui/avatar.js";
 import {
   createCareerTest,
   createExamPrepEvent,
   createFailedTestEvent,
-} from "./career-tests.js";
+} from "./career/career-tests.js";
 import {
   studyBlocks,
   canChooseCareer,
   getStudyBlockLabel,
-} from "./study-blocks.js";
+} from "./education/study-blocks.js";
 import {
   compactLogText,
   createEventLogSummary,
   summarizeLifeLog,
-} from "./log-summary.js";
-import { createEventImageRenderer } from "./event-image.js";
+} from "./core/log-summary.js";
+import { createEventImageRenderer } from "./media/event-image.js";
 import {
   formatMoney,
   formatMoneyAmount,
   formatMoneyText,
-} from "./money-format.js";
+} from "./core/money-format.js";
 import {
   createChainStep,
   createMediaTransition,
-} from "./event-media-transition.js";
-import { rollEverydayLuck } from "./everyday-difficulty.js";
-import { createAcquaintanceEvent } from "./acquaintance.js";
+} from "./media/event-media-transition.js";
+import { rollEverydayLuck } from "./events/everyday-difficulty.js";
+import { createAcquaintanceEvent } from "./relationships/acquaintance.js";
 import {
   createCastingEvent,
   createMeetFamilyEvent,
-} from "./appearance-rules.js";
+} from "./stats/appearance-rules.js";
 import {
   EXAM_PREP,
   createProjectBugEvent,
   createRiskOfferEvent,
   rollInterview,
-} from "./intellect-rules.js";
+} from "./stats/intellect-rules.js";
 import {
   LOW_HAPPINESS,
   SUPPORT_OPTIONS,
@@ -52,7 +52,7 @@ import {
   getMoodEffectLoss,
   isSupportActive,
   softenSetback,
-} from "./mood-rules.js";
+} from "./stats/mood-rules.js";
 import {
   EMERGENCY,
   FOOTBALL_MIN_HEALTH,
@@ -60,12 +60,12 @@ import {
   formatChance,
   getHealthBand,
   getOldAgeDeathChance,
-} from "./health-rules.js";
-import { eventCategories, getEventCategory } from "./event-category.js";
-import { getSpecialDialogue } from "./special-dialogue.js";
-import { state } from "./state.js";
-import { initEducation } from "./education.js";
-import { createSchoolEntryReward } from "./school-rewards.js";
+} from "./stats/health-rules.js";
+import { eventCategories, getEventCategory } from "./events/event-category.js";
+import { getSpecialDialogue } from "./events/special-dialogue.js";
+import { state } from "./core/state.js";
+import { initEducation } from "./education/education.js";
+import { createSchoolEntryReward } from "./education/school-rewards.js";
 import {
   LIVING_MODES,
   DEBT_INTEREST_RATE,
@@ -75,13 +75,13 @@ import {
   getChildProposalUpdates,
   getChildcareExpenses,
   completeLifeYear,
-} from "./family.js";
+} from "./relationships/family.js";
 import {
   createContractNoticeEvent,
   createJobReviewEvent,
   createLayoffNoticeEvent,
   createWorkProblemEvent,
-} from "./job-loss.js";
+} from "./career/job-loss.js";
 import {
   CONDITIONS,
   FAMILY_SUPPORT,
@@ -89,42 +89,42 @@ import {
   createRelativeDeathEvent,
   ensureRelatives,
   getLivingFamily,
-} from "./family-members.js";
+} from "./relationships/family-members.js";
 import {
   completeCareerYear,
   getAnnualSalaryPayment,
   getPlayerAnnualSalary,
-} from "./career-salary.js";
+} from "./career/career-salary.js";
 import {
   createDatingEvent,
   createMarriageEvent,
   getDatingUpdates,
   getMarriageUpdates,
   initRelationships,
-} from "./relationships.js";
-import { getAgeEvents, isPriorityEvent } from "./events.js";
-import { pickWeightedStory, fillStoryText } from "./life-stories.js";
-import { careerEvent } from "./career-event.js";
-import { academyLogos, createSchoolEvent } from "./career-schools.js";
-import { createDiamondSpecialStep } from "./special-event-20.js";
-import { createEarthAuctionSpecialStep } from "./special-event-30.js";
-import { createSaveLifeSpecialStep } from "./special-event-35.js";
-import { createOldHouseSpecialStep } from "./special-event-40.js";
-import { createLastTrainSpecialStep } from "./special-event-45.js";
-import { createTheaterSpecialStep } from "./special-event-50.js";
-import { createLuggageSpecialStep } from "./special-event-55.js";
-import { createLaterSpecialStep } from "./special-later-life.js";
-import { reviewPendingMedia } from "./semantic-event-media.js";
-import { initLifeProfile, renderLifeSummary } from "./life-profile.js";
-import { initShop } from "./shop.js";
-import { initLicenses } from "./licenses.js";
+} from "./relationships/relationships.js";
+import { getAgeEvents, isPriorityEvent } from "./events/events.js";
+import { pickWeightedStory, fillStoryText } from "./events/life-stories.js";
+import { careerEvent } from "./career/career-event.js";
+import { academyLogos, createSchoolEvent } from "./career/career-schools.js";
+import { createDiamondSpecialStep } from "./special-events/special-event-20.js";
+import { createEarthAuctionSpecialStep } from "./special-events/special-event-30.js";
+import { createSaveLifeSpecialStep } from "./special-events/special-event-35.js";
+import { createOldHouseSpecialStep } from "./special-events/special-event-40.js";
+import { createLastTrainSpecialStep } from "./special-events/special-event-45.js";
+import { createTheaterSpecialStep } from "./special-events/special-event-50.js";
+import { createLuggageSpecialStep } from "./special-events/special-event-55.js";
+import { createLaterSpecialStep } from "./special-events/special-later-life.js";
+import { reviewPendingMedia } from "./media/semantic-event-media.js";
+import { initLifeProfile, renderLifeSummary } from "./core/life-profile.js";
+import { initShop } from "./leisure/shop.js";
+import { initLicenses } from "./career/licenses.js";
 import {
   initSideJobs,
   canReduceSideJobs,
   quitSideJobs,
   reduceSideJobs,
-} from "./side-jobs.js";
-import { initJobApplications } from "./job-applications.js";
+} from "./career/side-jobs.js";
+import { initJobApplications } from "./career/job-applications.js";
 import {
   ILLNESS_STAGES,
   describeIllness,
@@ -132,35 +132,35 @@ import {
   getDisease,
   getIllnessStage,
   initHospital,
-} from "./hospital.js";
-import { initMatchmaking } from "./matchmaking.js";
-import { initGames } from "./games.js";
-import { initFood } from "./food.js";
-import { initBeauty } from "./beauty.js";
-import { initLottery, mergeLotteryPurchaseLogs } from "./lottery.js";
-import { initTravel } from "./travel.js";
-import { initGameCenter } from "./game-center.js";
-import { initTarot } from "./tarot.js";
-import { playEventSound, playOutcomeSound } from "./music.js";
-import { initSelfDevelopment } from "./self-development.js";
-import { createLostChildSpecialStep } from "./special-event-10.js";
+} from "./stats/hospital.js";
+import { initMatchmaking } from "./relationships/matchmaking.js";
+import { initGames } from "./leisure/games.js";
+import { initFood } from "./stats/food.js";
+import { initBeauty } from "./stats/beauty.js";
+import { initLottery, mergeLotteryPurchaseLogs } from "./leisure/lottery.js";
+import { initTravel } from "./leisure/travel.js";
+import { initGameCenter } from "./leisure/game-center.js";
+import { initTarot } from "./leisure/tarot.js";
+import { playEventSound, playOutcomeSound } from "./ui/music.js";
+import { initSelfDevelopment } from "./stats/self-development.js";
+import { createLostChildSpecialStep } from "./special-events/special-event-10.js";
 import {
   createOrientationEvent,
   getOrientationLabel,
-} from "./special-event-24.js";
+} from "./special-events/special-event-24.js";
 import {
   createEmploymentEvent,
   createInterviewResult,
   createJobInterview,
   createMilestonePromotionEvent,
   getPromotionUpdates,
-} from "./career-jobs.js";
-import { createCareerSparkStep, getRankLock } from "./career-milestones.js";
+} from "./career/career-jobs.js";
+import { createCareerSparkStep, getRankLock } from "./career/career-milestones.js";
 import {
   initAchievements,
   checkAchievements,
   recordAchievementFlags,
-} from "./achievements.js";
+} from "./achievements/achievements.js";
 const statNames = {
   health: "Sức khỏe",
   intelligence: "Trí tuệ",

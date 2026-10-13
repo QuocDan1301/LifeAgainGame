@@ -10,12 +10,12 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const H = await import("../js/health-rules.js");
-    const { collectSideJobYear } = await import("../js/side-jobs.js");
-    const { completeLifeYear } = await import("../js/family.js");
-    const { createInterviewResult } = await import("../js/career-jobs.js");
-    const { createSaveLifeSpecialStep } = await import("../js/special-event-35.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const H = await import("../js/stats/health-rules.js");
+    const { collectSideJobYear } = await import("../js/career/side-jobs.js");
+    const { completeLifeYear } = await import("../js/relationships/family.js");
+    const { createInterviewResult } = await import("../js/career/career-jobs.js");
+    const { createSaveLifeSpecialStep } = await import("../js/special-events/special-event-35.js");
     const player = extra => ({ ...createInitialState().player, age: 30, health: 80, happiness: 50, intelligence: 50,
       appearance: 50, money: 0, illnessPlan: [], illnesses: [], ...extra });
     const job = (shift = "full-time") => [{ storeId: "gs25", shift, startedAtAge: 20 }];

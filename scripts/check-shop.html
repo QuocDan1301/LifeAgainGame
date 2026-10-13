@@ -10,9 +10,9 @@
   const saved = keys.map(key => localStorage.getItem(key));
   const random = Math.random;
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const { shopCatalog, shops, getSellPrice, collectAssetIncome, isAtLimit, isCompanion } = await import("../js/shop.js");
-    const { achievements } = await import("../js/achievements-data.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { shopCatalog, shops, getSellPrice, collectAssetIncome, isAtLimit, isCompanion } = await import("../js/leisure/shop.js");
+    const { achievements } = await import("../js/achievements/achievements-data.js");
     assert(shopCatalog.every(item => item.price > 0 && item.description && shops[item.shop].groups.some(g => g.id === item.group)),
       "Every item has a price, description and a valid group");
     assert(shopCatalog.filter(item => item.group === "vehicles").every(item => !item.profit), "Vehicles only have a price");

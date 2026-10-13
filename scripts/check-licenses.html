@@ -9,8 +9,8 @@
   const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
   const saved = keys.map(key => localStorage.getItem(key));
   try {
-    const { createInitialState, state } = await import("../js/state.js");
-    const { licenseTypes } = await import("../js/licenses.js");
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const { licenseTypes } = await import("../js/career/licenses.js");
     assert(licenseTypes.map(t => t.id).join() === "motorbike,car", "Two licence types");
     assert(licenseTypes.every(t => t.questions.length === 5 && t.questions.every(q => q.answers.length === 2 && [0, 1].includes(q.correct))),
       "Each licence has 5 questions with 2 answers");

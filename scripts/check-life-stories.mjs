@@ -1,13 +1,13 @@
 // Kiểm tra bộ sự kiện đời thường mới và sinh sổ dấu.
 //   node scripts/check-life-stories.mjs              → kiểm tra + mô phỏng
 //   node scripts/check-life-stories.mjs --registry   → ghi docs/su-kien-doi-thuong/SO-DAU.md
-import { canAffordChoice } from '../js/story-transactions.js';
+import { canAffordChoice } from '../js/core/story-transactions.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { lifeStoryCatalog } from '../js/life-stories/index.js';
+import { lifeStoryCatalog } from '../js/events/life-stories/index.js';
 import {
   EXCLUDED_AGES, POOL_SIZE, NEEDS, hasLifeStories, isLifeStoryEligible, createLifeStoryEvents, pickWeightedStory, seenFlag,
-} from '../js/life-stories.js';
+} from '../js/events/life-stories.js';
 
 const words = value => String(value).match(/[\p{L}\p{N}]+/gu)?.length ?? 0;
 const allowedStats = new Set(['health', 'happiness', 'intelligence', 'appearance']);
