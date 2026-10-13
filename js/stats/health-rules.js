@@ -12,7 +12,7 @@ export const HEALTH_BANDS = [
 export const getHealthBand = (health) => HEALTH_BANDS.find((band) => (Number(health) || 0) >= band.min);
 
 // Nhận việc (làm thêm hoặc xin việc chính) theo sức khỏe.
-const hasAnyJob = (player) => player.employmentStatus === "employed" || (player.sideJobs ?? []).length > 0;
+const hasAnyJob = (player) => player.employmentStatus === "employed" || (player.sideJobs ?? []).length > 0 || (player.streetJobs ?? []).length > 0;
 export function getJobHealthRule(player) {
   const band = getHealthBand(player.health);
   if (band.id === "critical" || band.id === "empty") {

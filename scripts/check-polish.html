@@ -78,7 +78,7 @@
     Math.random = () => 0.99;
     await import("../js/main.js");
     const choiceButton = text => [...$("event-choices").querySelectorAll("button")].find(b => b.textContent.includes(text));
-    assert(choiceButton("Luật").textContent.includes("mở được bậc 3") && choiceButton("Kế toán").textContent.includes("🔒 Tối đa bậc 2"),
+    assert(choiceButton("Luật").textContent.includes("mở được bậc 3") && choiceButton("Kế toán").textContent.includes("Tối đa bậc 2") && choiceButton("Kế toán").textContent.includes("chuỗi tuổi 16"),
       "Career choice shows the lock icon and reason");
     document.querySelectorAll("dialog[open]").forEach(d => d.close());
     state.pendingEvent = null;

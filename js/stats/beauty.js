@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { applyActivityGain, previewActivityGain } from "../core/stat-budget.js";
@@ -63,7 +64,7 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
   function record(content, outcome) {
     const log = { age: state.player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderStats();
     renderLogEntry(log);

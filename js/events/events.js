@@ -1,3 +1,4 @@
+import { createCasualLifeEvents } from "./casual-life.js";
 import { diamondSpecialEvent } from "../special-events/special-event-20.js";
 import { lostChildSpecialEvent } from "../special-events/special-event-10.js";
 import { earthAuctionSpecialEvent } from "../special-events/special-event-30.js";
@@ -52,5 +53,6 @@ export function getAgeEvents(age, careerPath, player = {}) {
     isPriorityEvent(event) || event.specialId || event.choices?.some(choice => choice.memory || choice.keepsake),
   ).map(event => event.choices?.some(choice => choice.memory) && !event.specialId
     ? { ...event, category: "special" } : event);
-  return [...reserved, ...createLifeStoryEvents(age, player)].map(event => reviewEventMedia({ ...event, age }));
+  const casual = createCasualLifeEvents(age, player);
+  return [...reserved, ...(casual.length ? casual : createLifeStoryEvents(age, player))].map(event => reviewEventMedia({ ...event, age }));
 }

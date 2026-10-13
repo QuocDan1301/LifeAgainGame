@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { getLicenseType, hasLicense } from "../career/licenses.js";
@@ -67,8 +68,8 @@ export const shopCatalog = [
   { id: "resort", shop: "shopping", group: "realestate", icon: "🏝️", name: "Resort", price: 200_000_000_000, profit: 12_000_000_000, limit: 1,
     achievement: "own-resort", description: "Khu nghỉ dưỡng ven biển, sóng vỗ rì rào." },
   // Kinh doanh: tự có lãi mỗi năm, không cần cho thuê.
-  { id: "noodle-cart", shop: "shopping", group: "business", icon: "🍜", name: "Xe hủ tiếu", price: 30_000_000, profit: 3_000_000, limit: 3,
-    achievement: "own-noodle-cart", description: "Gánh hủ tiếu đầu đời, nước lèo ngọt thanh, khách quen ghé mỗi tối." },
+  { id: "noodle-cart", shop: "shopping", group: "business", icon: "🍜", name: "Xe hủ tiếu", price: 30_000_000, limit: 3,
+    achievement: "own-noodle-cart", description: "Phương tiện để nhận nghề Bán hủ tiếu trong Hoạt động → Làm thêm. Không tự sinh lãi hoặc cho thuê." },
   { id: "cafe", shop: "shopping", group: "business", icon: "☕", name: "Quán cafe", price: 1_500_000_000, profit: 120_000_000, limit: 2,
     achievement: "own-cafe", description: "Một góc nhỏ thơm mùi cà phê, khách quen ghé mỗi sáng." },
 ];
@@ -202,7 +203,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
   const record = (content) => {
     const log = { age: state.player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderLogEntry(log);
   };

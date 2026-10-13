@@ -1,3 +1,4 @@
+import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 
 // Mua vé số (từ 18 tuổi): vé 10.000 VNĐ, tối đa 30 vé mỗi năm cho cả hai loại.
@@ -244,7 +245,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     else log.lotteryPurchase.kienThiet.push(saved.number);
     setPurchaseLogText(log);
     if (isNew) state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     isNew ? renderLogEntry(log) : updateLogEntry(log);
   }
@@ -464,7 +465,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
 
   function closeResults() {
     delete state.player.lotteryReveal;
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     if (resultDialog.open) resultDialog.close();
   }
 
@@ -499,6 +500,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
   // Chờ các popup khác (sự kiện, thành tựu) đóng hẳn rồi mới mở, để không chồng lên nhau.
   function showResults() {
     clearTimeout(waiting);
+    if (isSavePaused()) return;
     const reveal = state.player.lotteryReveal;
     if (!reveal) return;
     if (state.player.isAlive === false || !reveal.draws?.length) {

@@ -1,3 +1,4 @@
+import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { describeAges } from "./shop.js";
@@ -173,7 +174,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     node.addEventListener("click", onClick);
     return node;
   };
-  const save = () => localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  const save = () => saveGame(state);
   const gameOf = (id) => games.find((game) => game.id === id);
   const playsUsed = () => (state.player.gamePlays?.age === state.player.age ? state.player.gamePlays.count : 0);
   const playsLeft = () => Math.max(0, GAMES_PER_YEAR - playsUsed());
@@ -191,6 +192,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
 
   // Ghi kết quả vào ví và nhật ký; giao diện chỉ cập nhật sau khi hoạt ảnh kết thúc.
   function settle(round, payoutAmount, detail) {
+    if (isSavePaused()) return;
     const game = gameOf(round.game);
     state.player.money += payoutAmount;
     state.player.gameRound = null;
@@ -668,6 +670,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
         }
       });
       setTimeout(() => {
+        if (isSavePaused()) return;
         if (!safe) return finish(round.floor, true);
         round.floor += 1;
         if (round.floor === TOWER_MULTIPLIERS.length) return finish(round.floor, false);

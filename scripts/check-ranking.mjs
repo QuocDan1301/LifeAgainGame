@@ -1,0 +1,64 @@
+import assert from 'node:assert/strict';
+import { Readable } from 'node:stream';
+import { createInitialState } from '../js/core/state.js';
+import { observeRanking, calculateLifeScore, rankingSnapshot, seasonId, buildLeaderboard } from '../js/ranking/scoring.js';
+import { createRankingService } from '../server/ranking-server.mjs';
+
+const state = createInitialState();
+state.player.name = 'An'; state.player.happiness = 70;
+for (let age = 0; age <= 80; age++) { state.player.age = age; observeRanking(state); }
+state.player.isAlive = false;
+const snapshot = rankingSnapshot(state);
+const score = calculateLifeScore(snapshot);
+assert.equal(score.eligible, true); assert.equal(score.breakdown.happiness, 140); assert.equal(score.breakdown.longevity, 160);
+assert.equal(score.total, 330);
+assert.equal(calculateLifeScore({ ...snapshot, startedAge: 24 }).eligible, false);
+const gap = structuredClone(snapshot); delete gap.happiness[40]; assert.equal(calculateLifeScore(gap).eligible, false);
+assert.throws(() => calculateLifeScore({ ...snapshot, finished: false }));
+assert.equal(calculateLifeScore({ ...snapshot, achievements: ['unknown', 'unknown'] }).breakdown.achievements, 0);
+assert.equal(calculateLifeScore({ ...snapshot, money: 1e12, debts: [1e12] }).breakdown.wealth, 0);
+assert.equal(calculateLifeScore({ ...snapshot, assets: ['unknown'] }).netWorth, 0);
+assert.equal(seasonId(new Date('2026-10-31T16:59:00Z')), '2026-10');
+assert.equal(seasonId(new Date('2026-10-31T17:00:00Z')), '2026-11');
+const accounts = [{ id: 'a', nickname: 'An', avatar: '🙂' }, { id: 'b', nickname: 'Bình', avatar: '😊' }];
+const runs = Array.from({ length: 6 }, (_, index) => ({ id: index, accountId: 'a', season: '2026-10', score: { eligible: true, total: (index + 1) * 100 } }));
+runs.push({ id: 7, accountId: 'a', season: '2026-09', score: { eligible: true, total: 1000 } });
+assert.equal(buildLeaderboard(accounts, runs, '2026-10')[0].score, 2000);
+assert.equal(buildLeaderboard(accounts, runs, 'all')[0].score, 3000);
+assert.equal(buildLeaderboard(accounts, [...runs, { accountId: 'b', season: '2026-10', score: { eligible: true, total: 600 } }, { accountId: 'b', season: '2026-10', score: { eligible: true, total: 600 } }], '2026-10')[0].id, 'a');
+console.log('PASS scoring: annual averages; full coverage; bounds; assets and debt; Vietnam seasons; best five; lifetime seasons');
+
+const handler = createRankingService({ dataFile: null, now: () => new Date('2026-10-13T08:00:00Z') });
+async function request(route, body, cookie = '', method = body ? 'POST' : 'GET', extra = {}) {
+  const req = Readable.from(body ? [JSON.stringify(body)] : []);
+  req.url = '/api/ranking/' + route; req.method = method; req.socket = { remoteAddress: '127.0.0.1' };
+  req.headers = { host: 'localhost:8080', cookie, 'content-type': 'application/json', ...extra };
+  let status, headers, output;
+  await handler(req, { writeHead(code, values) { status = code; headers = values; }, end(value) { output = JSON.parse(value); } });
+  return { status, headers, body: output };
+}
+const registration = await request('register', { username: 'tester', nickname: '<b>An</b>', password: 'test-password', avatar: '😊' });
+assert.equal(registration.status, 200); assert.ok(registration.headers['Set-Cookie'].includes('HttpOnly'));
+assert.equal(registration.body.user.passwordHash, undefined);
+const cookie = registration.headers['Set-Cookie'].split(';')[0];
+assert.equal((await request('register', { username: 'tester', nickname: 'B', password: 'test-password' })).status, 409);
+assert.equal((await request('login', { username: 'tester', password: 'wrong-pass' })).status, 401);
+assert.equal((await request('status', null, cookie)).body.user.nickname, '<b>An</b>');
+assert.equal((await request('start', { localId: state.player.ranking.id })).status, 401);
+const start = await request('start', { localId: state.player.ranking.id }, cookie);
+assert.equal(start.status, 200);
+const again = await request('start', { localId: state.player.ranking.id }, cookie);
+assert.equal(again.body.id, start.body.id);
+const finish = await request('finish', { id: start.body.id, snapshot, score: 999999 }, cookie);
+assert.equal(finish.status, 200); assert.equal(finish.body.run.score.total, score.total);
+assert.equal((await request('finish', { id: start.body.id, snapshot }, cookie)).body.duplicate, true);
+const board = await request('board?scope=2026-10', null, cookie);
+assert.equal(board.body.entries.length, 1); assert.equal(board.body.mine.rank, 1); assert.equal(board.body.mine.runs, 1);
+const second = await request('register', { username: 'second', nickname: 'Bình', password: 'test-password' });
+const otherCookie = second.headers['Set-Cookie'].split(';')[0];
+assert.equal((await request('finish', { id: start.body.id, snapshot }, otherCookie)).status, 403);
+assert.equal((await request('start', { localId: state.player.ranking.id }, otherCookie)).status, 409);
+assert.equal((await request('logout', {}, cookie, 'POST', { origin: 'http://evil.test' })).status, 403);
+assert.equal((await request('logout', {}, cookie)).status, 200);
+assert.equal((await request('status', null, cookie)).body.user, null);
+console.log('PASS server: register/login; session cookies; isolation; server scoring; duplicate prevention; real player board; logout; cross-origin rejection');

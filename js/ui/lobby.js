@@ -1,3 +1,4 @@
+import { beginSaveSession, endSaveSession, trackSavedGame } from "../core/save-store.js";
 import { createInitialState } from "../core/state.js";
 import {
   maleNames,
@@ -33,13 +34,16 @@ export function initLobby(enterGame) {
   function showError(message) {
     get("lobby-message").textContent = message;
   }
-  function refresh() {
+  async function refresh() {
     try {
-      recoverTicketPurchase();
+      await recoverTicketPurchase();
       get("ticket-count").textContent = getTickets().toLocaleString("vi-VN");
       let saved = null;
       try {
         saved = readSavedGame();
+        if (!saved && localStorage.getItem(SAVE_KEY)) {
+          showError("Bản lưu có dữ liệu không hợp lệ nên chưa thể chơi tiếp. Bản lưu hiện tại chưa bị thay đổi.");
+        }
       } catch {
         showError("Bản lưu cũ không đọc được. Bạn có thể tạo cuộc đời mới.");
       }
@@ -158,7 +162,9 @@ export function initLobby(enterGame) {
             "Bạn chào đời vào một buổi sáng yên bình.",
           ]),
       });
-      startLife(next, expectedSave);
+      await beginSaveSession();
+      await startLife(next, expectedSave);
+      trackSavedGame();
       close(randomGenderDialog);
       close(createDialog);
       await enterGame(next);
@@ -171,6 +177,7 @@ export function initLobby(enterGame) {
       showError("Chưa vào được game: " + e.message);
       refresh();
     } finally {
+      if (!home.hidden) await endSaveSession();
       busy = false;
     }
   }
@@ -210,7 +217,9 @@ export function initLobby(enterGame) {
     if (busy) return;
     busy = true;
     try {
-      recoverTicketPurchase();
+      await beginSaveSession();
+      await recoverTicketPurchase();
+      trackSavedGame();
       const saved = readSavedGame();
       if (!canContinue(saved)) {
         refresh();
@@ -220,6 +229,7 @@ export function initLobby(enterGame) {
     } catch (e) {
       showError("Chưa vào được game: " + e.message);
     } finally {
+      if (!home.hidden) await endSaveSession();
       busy = false;
     }
   });

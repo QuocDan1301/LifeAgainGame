@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { EMERGENCY, REST_ILLNESS_LOSS_RATE, formatChance, getEmergencyDeathChance, getHealthBand } from "./health-rules.js";
@@ -183,7 +184,7 @@ export function initHospital(state, { renderMoney, renderLogEntry, onChange = ()
   const record = (content) => {
     const log = { age: state.player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderLogEntry(log);
     onChange();

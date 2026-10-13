@@ -16,7 +16,7 @@
     assert(shopCatalog.every(item => item.price > 0 && item.description && shops[item.shop].groups.some(g => g.id === item.group)),
       "Every item has a price, description and a valid group");
     assert(shopCatalog.filter(item => item.group === "vehicles").every(item => !item.profit), "Vehicles only have a price");
-    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group) && !item.id.startsWith("story-")).every(item => item.profit > 0),
+    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group) && !item.id.startsWith("story-") && item.id !== "noodle-cart").every(item => item.profit > 0),
       "Real estate, businesses and animals earn yearly");
     const expected = ["own-house", "own-resort", "own-hotel", "own-restaurant", "own-cafe", "own-noodle-cart", "own-motorbike",
       "own-big-bike", "own-car", "own-lamborghini", "own-porsche", "own-rolls-royce", "own-private-jet"];
@@ -46,8 +46,8 @@
       purchases: [{ uid: "b", id: "cafe", boughtAtAge: 30, rentedAtAge: 30 }, { uid: "c", id: "car", boughtAtAge: 30 },
         { uid: "d", id: "house", boughtAtAge: 29 }, { uid: "e", id: "noodle-cart", boughtAtAge: 30 }] };
     const income = collectAssetIncome(sample, 31);
-    assert(income.amount === 1_800_000 + 120_000_000 + 3_000_000 && sample.money === income.amount,
-      "Animals and businesses (cafe, noodle cart) earn automatically; real estate only while rented");
+    assert(income.amount === 1_800_000 + 120_000_000 && sample.money === income.amount,
+      "Animals and cafe earn automatically; noodle carts require active work; real estate only while rented");
     assert(shopCatalog.filter(item => item.group === "business").map(item => item.id).sort().join() === "cafe,noodle-cart",
       "Cafe and noodle cart share the business group");
     const lease = { purchases: [{ uid: "r", id: "house", boughtAtAge: 30, rentedAtAge: 30 }], money: 0 };
@@ -138,7 +138,7 @@
       $("event-confirm").click();
     }
     const yearLog = state.logs.at(-1).content;
-    assert(yearLog.includes("Lãi từ 1 vật nuôi") && yearLog.includes("Lãi kinh doanh"), "Yearly income in the diary");
+    assert(yearLog.includes("Lãi từ 1 vật nuôi") && !yearLog.includes("Lãi kinh doanh"), "Yearly income in the diary");
     closeOthers();
 
     // Cho thuê bất động sản trong Tài sản

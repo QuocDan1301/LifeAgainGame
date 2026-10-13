@@ -15,7 +15,8 @@
     const { state, createInitialState } = await import("../js/core/state.js");
     const { careerEvent } = await import("../js/career/career-event.js");
     const { createInterviewResult, getCareerProfile } = await import("../js/career/career-jobs.js");
-    for (const choice of careerEvent.choices) {
+    assert(careerEvent.choices.some(choice => choice.careerPath.id === "casual") && !careerAnnualSalaries.casual, "Casual life has no fixed career salary");
+    for (const choice of careerEvent.choices.filter(choice => choice.careerPath.id !== "casual")) {
       const amounts = careerAnnualSalaries[choice.careerPath.id];
       assert(amounts?.length === 3 && amounts.every(Number.isSafeInteger), "Every career needs three fixed salaries");
       assert(amounts[0] > 0 && amounts[0] < amounts[1] && amounts[1] < amounts[2], "Salary must increase by rank");

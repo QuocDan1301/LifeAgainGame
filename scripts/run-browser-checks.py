@@ -10,6 +10,9 @@ import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+# Windows consoles may otherwise fail while printing Vietnamese test results.
+sys.stdout.reconfigure(encoding='utf-8')
+sys.stderr.reconfigure(encoding='utf-8')
 
 def worker(url):
     sys.path.insert(0, str(Path(tempfile.gettempdir()) / 'HoiSinhMediaTools'))

@@ -3968,3 +3968,11 @@ dialog {
   font-weight: 700;
 }
 .lottery-jackpot-next.is-player { background: #effbe9; color: #1d7a35; }
+
+/* Con đường xấu: lựa chọn rõ ràng và dễ đọc trên điện thoại. */
+#crime-dialog { width: min(540px, calc(100vw - 40px)); box-sizing: border-box; max-height: 85vh; overflow-y: auto; border: 2px solid #594537; border-radius: 18px; padding: 24px; background: #fff8ed; color: #392a22; }
+#crime-dialog h2 { margin-top: 0; }
+#crime-dialog p { line-height: 1.6; }
+#crime-dialog button { display: block; width: 100%; margin-top: 12px; padding: 14px; white-space: normal; text-align: left; line-height: 1.5; border: 1px solid #bba78d; border-radius: 10px; background: #f1e5d3; color: #392a22; cursor: pointer; }
+#crime-dialog button:disabled { opacity: .5; cursor: default; }
+#crime-dialog button:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }

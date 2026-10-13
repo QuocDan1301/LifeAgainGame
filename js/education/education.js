@@ -23,6 +23,8 @@ export function getEducationStatus(player) {
 function getBaseEducationStatus(player) {
   if (player.isAlive === false) return { text: "Đã qua đời", icon: "🕊️" };
   if (player.employmentStatus === "retired") return { text: "Nghỉ hưu", icon: "🌅" };
+  if (player.casualService) return { text: "Đang thực hiện nghĩa vụ quân sự", icon: "🪖" };
+  if (player.casualLife && player.age >= 62 && !(player.streetJobs ?? []).length) return { text: "Nghỉ mưu sinh", icon: "🌅" };
   // Chưa có công việc chính thì hiện cửa hàng làm thêm đầu tiên.
   const sideJob = getSideJobTitle(player);
   if (sideJob && !(player.employmentStatus === "employed" && player.job)) return { text: sideJob, icon: "🏪" };

@@ -1,3 +1,4 @@
+import { saveGame, isSavePaused, onSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import {
@@ -44,7 +45,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     node.addEventListener("click", onClick);
     return node;
   };
-  const save = () => localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  const save = () => saveGame(state);
   const table = () => state.player.tienLen;
   const game = () => table()?.game ?? null;
   const pushLog = (content) => {
@@ -264,15 +265,17 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
   // Máy chỉ dùng bài trên tay mình, bài đã đánh và số lá còn lại của người khác.
   function schedule() {
     // Đã hẹn lượt máy thì để nguyên: lúc tới giờ máy sẽ xem lại trạng thái bàn.
-    if (timer) return;
+    if (timer || isSavePaused()) return;
     const round = game();
     if (!viewing || !dialog.open || !round || round.over) return;
     const chopper = [1, 2, 3].some((seat) => chooseAiOutOfTurnChop(round, seat));
     if (round.turn === 0 && !chopper) return;
     timer = setTimeout(aiStep, 700 + Math.random() * 500);
   }
+  onSavePaused(stopTimer);
   function aiStep() {
     timer = null;
+    if (isSavePaused()) return;
     const round = game();
     if (!viewing || !round || round.over) return;
     // Lần lượt từng hành động: chặt ngoài lượt bằng bốn đôi thông được xét trước.

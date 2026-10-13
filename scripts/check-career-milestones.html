@@ -16,7 +16,8 @@
     const { careerAnnualSalaries } = await import("../js/career/career-salary.js");
     const { careerEvent } = await import("../js/career/career-event.js");
     const { createEmploymentEvent, getCareerProfile } = await import("../js/career/career-jobs.js");
-    const ids = careerEvent.choices.map(choice => choice.careerPath.id);
+    const ids = careerEvent.choices.map(choice => choice.careerPath.id).filter(id => id !== "casual");
+    assert(careerEvent.choices.some(choice => choice.careerPath.id === "casual") && !careerMilestones.casual && !careerAnnualSalaries.casual, "Casual life has no salaried ranks or discovery chain");
     assert(ids.length === 23 && ids.every(id => careerMilestones[id] && careerAnnualSalaries[id]), "Every career has milestone data");
     for (const [id, data] of Object.entries(careerMilestones)) {
       assert(data.spark.steps.length === 3 && data.promotion.steps.length === 4, `Chain length for ${id}`);

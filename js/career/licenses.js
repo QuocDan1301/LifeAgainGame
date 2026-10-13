@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { playOutcomeSound } from "../ui/music.js";
 // Học bằng lái: mỗi loại có 5 câu hỏi, mỗi câu 2 đáp án; correct là vị trí đáp án đúng.
 // Giao diện không bao giờ hiện đáp án đúng, kể cả khi người chơi trả lời sai.
@@ -113,7 +114,7 @@ export function initLicenses(state, { renderLogEntry }) {
       state.player.licenses = [...(state.player.licenses ?? []), { id: type.id, receivedAtAge: state.player.age }];
       const log = { age: state.player.age, content: `🪪 Thi đạt và nhận ${type.name}.`, summary: `🪪 Nhận ${type.name}.` };
       state.logs.push(log);
-      localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+      saveGame(state);
       renderLogEntry(log);
     }
     card.append(

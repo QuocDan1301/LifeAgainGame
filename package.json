@@ -1,0 +1,12 @@
+{
+  "name": "life-again-game",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/ranking-server.mjs",
+    "test:ranking": "node scripts/check-ranking.mjs && node scripts/check-supabase-storage.mjs",
+    "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
+  }
+}

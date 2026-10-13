@@ -1,3 +1,4 @@
+import { saveGame, isSavePaused, onSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import {
@@ -36,10 +37,15 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
   const save = () => {
     clearTimeout(saveTimer);
     saveTimer = null;
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
   };
   // Điểm của trò tính giờ thay đổi liên tục: gom lại lưu mỗi chút một.
-  const saveSoon = () => { saveTimer ??= setTimeout(save, 800); };
+  const saveSoon = () => { if (!isSavePaused()) saveTimer ??= setTimeout(save, 800); };
+  onSavePaused(() => {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    endGame();
+  });
   const arcade = () => arcadeOf(state.player);
   const pushLog = (content) => {
     const log = { age: state.player.age, content, summary: content };
@@ -225,7 +231,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
       wallet = next;
     };
     show(wallet, stage);
-    const current = (session) => arcade().session?.id === session.id;
+    const current = (session) => !isSavePaused() && arcade().session?.id === session.id;
     stopGame = playArcadeGame("cow", {
       stage,
       coins: () => arcade().coins,
@@ -260,7 +266,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
     const stage = element("section", `dialog-card gc-stage gc-stage-${game.id}`);
     stage.append(element("h3", "", `${game.icon} ${game.name}`));
     show(walletBar(false), stage);
-    const current = () => arcade().session?.id === session.id;
+    const current = () => !isSavePaused() && arcade().session?.id === session.id;
     stopGame = playArcadeGame(game.id, {
       stage,
       session,
@@ -295,7 +301,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
       wallet = next;
     };
     show(wallet, stage);
-    const current = (session) => arcade().session?.id === session.id;
+    const current = (session) => !isSavePaused() && arcade().session?.id === session.id;
     stopGame = playArcadeGame("claw", {
       stage,
       cost: game.cost,
@@ -338,6 +344,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
 
   // Cộng thưởng và ghi nhật ký đúng một lần cho mỗi lượt.
   function settle(session, wasInterrupted = false) {
+    if (isSavePaused()) return null;
     const data = arcade();
     if (data.session?.id !== session.id) return null;
     data.session = null;

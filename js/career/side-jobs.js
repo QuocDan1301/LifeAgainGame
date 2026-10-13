@@ -1,3 +1,5 @@
+import { saveGame } from "../core/save-store.js";
+import { collectStreetYear, getStreetJobBlocker, startStreetJob, streetJobs, isServing } from "./street-work.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
@@ -33,7 +35,7 @@ export const getSideJobShift = (player) => jobsOf(player)[0]?.shift ?? null;
 // Tên hiển thị khi chưa có công việc chính: chỉ lấy cửa hàng đầu tiên.
 export function getSideJobTitle(player) {
   const first = getStore(jobsOf(player)[0]?.storeId);
-  return first ? `Nhân viên ${first.name}` : null;
+  return first ? `Nhân viên ${first.name}` : streetJobs.find(job => (player.streetJobs ?? []).some(entry => entry.id === job.id))?.name ?? null;
 }
 
 // Trả lương và trừ sức khỏe khi sang tuổi mới, cho mỗi việc đã làm từ năm trước (trả theo ca).
@@ -41,8 +43,10 @@ export function getSideJobTitle(player) {
 // Năm nghỉ dưỡng: tạm nghỉ mọi ca, không lương ca, không hao sức.
 // Làm đến kiệt sức (sức khỏe về 0): nhập viện cấp cứu, không tự động tử vong.
 export function collectSideJobYear(player, age, random = Math.random) {
+  const street = collectStreetYear(player, age, random);
+  if (isServing(player)) return street;
   const working = jobsOf(player).filter((job) => job.startedAtAge < age && getStore(job.storeId) && shiftTypes[job.shift]);
-  if (!working.length) return null;
+  if (!working.length) return street;
   const stores = working.map((job) => getStore(job.storeId).name).join(", ");
   const shiftName = shiftTypes[working[0].shift].name;
   if (player.restYear === age) {
@@ -64,7 +68,7 @@ export function collectSideJobYear(player, age, random = Math.random) {
     (lost ? ` Sức khỏe -${lost}.` : "") +
     (sickLeave ? " Sức khỏe yếu nên phải nghỉ ốm nhiều ca, mất một nửa lương ca." : "");
   if (health === 0) content += `\n${applyEmergency(player, "Làm thêm quá sức khiến cơ thể kiệt sức.", age, random)}`;
-  return { amount, content };
+  return { amount: amount + (street?.amount ?? 0), content: [content, street?.content].filter(Boolean).join("\n") };
 }
 
 // Giảm ca khi sức khỏe nguy hiểm: chỉ giữ một ca part-time (ca full-time chuyển thành part-time).
@@ -75,8 +79,9 @@ export function reduceSideJobs(player) {
   return true;
 }
 export function quitSideJobs(player) {
-  const had = jobsOf(player).length > 0;
+  const had = jobsOf(player).length > 0 || (player.streetJobs ?? []).length > 0;
   player.sideJobs = [];
+  player.streetJobs = [];
   return had;
 }
 export const canReduceSideJobs = (player) => jobsOf(player).length > 1 || jobsOf(player)[0]?.shift === "full-time";
@@ -105,7 +110,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
   const record = (content) => {
     const log = { age: state.player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderStats();
     renderLogEntry(log);
@@ -139,7 +144,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         focusFirst();
       });
       choice.dataset.shift = shift.id;
-      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken || !health.allowed);
+      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken || !health.allowed || isServing(state.player));
       const note = element("span", "side-job-note", tooYoung ? `Từ ${SIDE_JOB_MIN_AGE} tuổi.` : blocked
         ? `Đang làm ${shiftTypes[working].name}, cần nghỉ hết mới chuyển được.`
         : fullTimeTaken ? "Bạn đã có một việc full-time." : shift.rule);
@@ -147,6 +152,26 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       list.append(choice);
     }
     body.append(list);
+    body.append(element("h3", "", "🧭 Nghề tự do · Từ 18 tuổi"));
+    body.append(element("p", "side-job-intro", "Người đi học vẫn có thể nhận nghề. Thu nhập ròng nhận từ năm sau; dừng ở tuổi nghỉ hưu. Bán phương tiện sẽ tạm dừng thu nhập."));
+    for (const job of streetJobs) {
+      const hired = (state.player.streetJobs ?? []).some(entry => entry.id === job.id);
+      const blocker = getStreetJobBlocker(state.player, job.id);
+      const row = element("article", "shop-item");
+      row.append(element("h4", "", `${job.icon} ${job.name}`),
+        element("p", "side-job-note", `${formatMoney(job.income)}/năm · Sức khỏe ${job.health}/năm · Cần ${job.assetName}.`));
+      const action = button(hired ? "shop-sell" : "shop-buy", hired ? "🚪 Nghỉ nghề" : "📝 Nhận nghề", () => {
+        if (hired) state.player.streetJobs = (state.player.streetJobs ?? []).filter(entry => entry.id !== job.id);
+        else if (!startStreetJob(state.player, job.id)) return;
+        record(`${job.icon} ${hired ? "Nghỉ nghề" : "Nhận nghề"} ${job.name.toLowerCase()}.`);
+        renderPicker();
+      });
+      action.dataset.streetJob = job.id;
+      action.disabled = hired ? state.player.isAlive === false : Boolean(blocker);
+      row.append(action);
+      if (blocker && !hired) row.append(element("p", "side-job-note", blocker));
+      body.append(row);
+    }
   }
 
   function renderStores() {
@@ -168,7 +193,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         "Nhận việc",
         () => {
           const jobs = jobsOf(state.player);
-          if (!getJobHealthRule(state.player).allowed) return;
+          if (!getJobHealthRule(state.player).allowed || isServing(state.player)) return;
           if (state.player.age < SIDE_JOB_MIN_AGE || jobs.some((job) => job.storeId === store.id) ||
               (jobs.length && (jobs[0].shift !== shift.id || shift.id === "full-time"))) return;
           state.player.sideJobs = [...jobs, { storeId: store.id, shift: shift.id, startedAtAge: state.player.age }];
@@ -214,6 +239,18 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
             record(`🚪 Nghỉ công việc chính: ${job}.`);
             renderJobsPanel();
           }));
+      list.append(row);
+    }
+    for (const entry of player.streetJobs ?? []) {
+      const job = streetJobs.find(item => item.id === entry.id);
+      if (!job) continue;
+      const row = element("li", "shop-owned");
+      row.append(element("span", "", `${job.icon} ${job.name} · Thu nhập ròng ${formatMoney(job.income)}/năm · Cần ${job.assetName}`),
+        quit(`🚪 Nghỉ nghề ${job.name.toLowerCase()}?`, "Ngừng nghề này từ năm nay.", () => {
+          state.player.streetJobs = (state.player.streetJobs ?? []).filter(item => item.id !== job.id);
+          record(`🚪 Nghỉ nghề ${job.name.toLowerCase()}.`);
+          renderJobsPanel();
+        }));
       list.append(row);
     }
     for (const job of jobsOf(player)) {

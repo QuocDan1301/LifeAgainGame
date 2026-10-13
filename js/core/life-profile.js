@@ -1,3 +1,4 @@
+import { saveGame } from "./save-store.js";
 import { getDatingPartners } from '../relationships/concurrent-dating.js';
 import { formatMoney, formatMoneyText } from "./money-format.js";
 import { getShopItem } from "../leisure/shop.js";
@@ -246,7 +247,7 @@ export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchie
     player.lastRepairLessonAge = player.age;
     const log = { age: player.age, content: "🛠️ Tôi dạy sửa đồ miễn phí cho hàng xóm. Mỗi món đồ được sửa lại cũng nối thêm một câu chuyện giữa mọi người.", summary: "Dạy sửa đồ miễn phí cho hàng xóm." };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderStats();
     renderLogEntry(log);
     checkAchievements();

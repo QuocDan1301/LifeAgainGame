@@ -1,0 +1,56 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Casual life UI checks</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+const saved = keys.map(key => localStorage.getItem(key));
+try {
+  const { state, createInitialState } = await import('../js/core/state.js');
+  const { careerEvent } = await import('../js/career/career-event.js');
+  const gender = new URLSearchParams(location.search).get('gender') ?? 'male';
+  const html = await (await fetch('../index.html')).text();
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  parsed.querySelectorAll('script').forEach(element => element.remove());
+  parsed.querySelectorAll('[src]').forEach(element => element.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  document.getElementById('game-screen').hidden = false;
+  document.getElementById('lobby-screen').hidden = true;
+  localStorage.setItem('lifeAgainAchievements', '{}'); localStorage.setItem('lifeAgainAchievementQueue', '[]');
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { gender, age: 17, health: 90, happiness: 80, intelligence: 70,
+    appearance: 70, money: 200_000_000, studyBlock: 'A00', relatives: [], illnessPlan: [] });
+  state.pendingEvent = { ...careerEvent, stage: 'choice', age: 18 };
+  await import('../js/main.js');
+  const $ = id => document.getElementById(id);
+  const closeAchievements = () => { document.querySelectorAll('dialog[open]').forEach(d => { if (d.id.includes('achievement')) d.close(); }); };
+  const chooseFirst = () => { $('event-choices').querySelector('button').click(); $('event-confirm').click(); closeAchievements(); };
+  const index = state.pendingEvent.choices.findIndex(c => c.careerPath?.id === 'casual');
+  assert(index >= 0, 'Casual choice visible with a science study block');
+  $('event-choices').children[index].click();
+  assert(state.pendingEvent.stage === 'result', 'Choice bypasses university and entrance test');
+  $('event-confirm').click(); closeAchievements();
+  assert(state.player.age === 18 && state.player.casualLife, 'Casual path starts');
+  assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.casualLife, 'Choice saved');
+  if (gender === 'male') {
+    assert(state.player.casualService.releaseAge === 20, 'Immediate service for men');
+    $('age-up').click(); assert(state.pendingEvent.id === 'casual-training', 'Training year'); chooseFirst();
+    $('age-up').click(); assert(state.pendingEvent.id === 'casual-discharge', 'Discharge overrides age-20 special'); chooseFirst();
+    assert(!state.player.casualService && state.player.age === 20, 'Returned to civilian life');
+  } else assert(!state.player.casualService, 'No forced service for women');
+  $('activities').click(); $('activity-part-time').click();
+  assert($('side-job-body').querySelector('[data-street-job="noodle-seller"]').disabled, 'Cart needed');
+  assert($('side-job-body').querySelector('[data-street-job="motorbike-taxi"]').disabled, 'Motorbike needed');
+  $('close-side-job').click();
+  state.player.purchases.push({ id: 'noodle-cart', boughtAtAge: state.player.age }, { id: 'motorbike', boughtAtAge: state.player.age });
+  $('activities').click(); $('activity-part-time').click();
+  $('side-job-body').querySelector('[data-street-job="noodle-seller"]').click();
+  $('side-job-body').querySelector('[data-street-job="motorbike-taxi"]').click();
+  assert(state.player.streetJobs.length === 2, 'Both freelance jobs can be started');
+  assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.streetJobs.length === 2, 'Jobs saved');
+  result.textContent = `PASS ${gender}: age-18 route; service; asset requirements; both jobs; save`;
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+finally { keys.forEach((key, i) => saved[i] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[i])); }
+</script>

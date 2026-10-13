@@ -1,6 +1,7 @@
 import { maleNames, femaleNames } from "../core/character-data.js";
 import { collectAssetIncome, getAssetYearProjection } from "../leisure/shop.js";
 import { collectSideJobYear } from "../career/side-jobs.js";
+import { getStreetIncome } from "../career/street-work.js";
 import { applyEmergency, collectIllnessYear } from "../stats/hospital.js";
 import { collectLotteryYear } from "../leisure/lottery.js";
 import { collectHomeLoanYear, collectStoryLoanYear } from '../core/story-transactions.js';
@@ -190,6 +191,23 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     Object.assign(player, updates, { age });
     return { childcare: { amount: 0, charges: [], content: "" } };
   }
+  // Năm thụ án (kể cả năm ra tù): không có lương, làm thêm hay học phí bên ngoài.
+  if (player.prison && player.prison.releaseAge > player.age) {
+    const childcare = getChildcareExpenses(player, age, updates);
+    const interest = getDebtInterest(age, player.money);
+    Object.assign(player, updates, { age });
+    const family = collectFamilyYear(player, age);
+    const health = collectHealthYear(player, age);
+    const illness = player.isAlive === false ? null : collectIllnessYear(player, age);
+    if (player.isAlive !== false) {
+      player.money -= childcare.amount + interest;
+      player.children = (player.children ?? []).map(child => childcare.charges.some(charge => charge.id === child.id)
+        ? { ...child, lastCarePaidAtAge: age } : child);
+    }
+    return { childcare: player.isAlive === false ? { amount: 0, charges: [], content: "" } : childcare,
+      family, health, illness,
+      living: interest && player.isAlive !== false ? { content: `🏦 Lãi nợ trong năm thụ án: -${formatSalary(interest)}.` } : null };
+  }
   migrateChildcareDebt(player, updates);
   // Lãi tính trên số nợ mang sang từ năm trước, trước mọi khoản thu chi của năm nay.
   const interestAmount = getDebtInterest(age, player.money);
@@ -307,7 +325,7 @@ export function forecastNextYear(player) {
     const target = Math.floor(loan.principal * Math.min(loan.repaymentYears, age - loan.lentAtAge) / loan.repaymentYears);
     return sum + Math.max(0, Math.min(loan.outstanding, target - loan.amountRepaid));
   }, 0);
-  const recurringIncome = salary + sideJobs + assets.recurringIncome;
+  const recurringIncome = salary + sideJobs + getStreetIncome(player, age) + assets.recurringIncome;
   const income = recurringIncome + repayments;
   const living = getYearLivingCost(player.careerPath, age, recurringIncome, player.livingMode);
   const interest = getDebtInterest(age, player.money ?? 0);

@@ -1,3 +1,4 @@
+import { isSavePaused } from "../core/save-store.js";
 import {
   BASKET_FINAL_SECONDS, basketPoints, CLAW_BOX, CLAW_CHUTE, CLAW_REACH, CLAW_SECONDS, CLAW_START, clampClaw, clawChuteCenter,
   clawTargets, cowTypes, formatPercent, gameOf, LASSO_FLIGHT, pickWeighted, plushOf, plushRarities, whackTargets,
@@ -63,6 +64,7 @@ function strokeLine(ctx, x1, y1, x2, y2) {
 function runLoop(step) {
   let last = performance.now();
   let frame = requestAnimationFrame(function tick(now) {
+    if (isSavePaused()) return;
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     if (step(dt) !== false) frame = requestAnimationFrame(tick);

@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { applyActivityGain } from "../core/stat-budget.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
@@ -113,7 +114,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
     node.addEventListener("click", onClick);
     return node;
   };
-  const save = () => localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  const save = () => saveGame(state);
   const topicOf = (id) => tarotTopics.find((topic) => topic.id === id);
   const focusFirst = () => (body.querySelector(".tarot-primary:not(:disabled), .shop-group:not(:disabled), .tarot-back-card")
     ?? body.querySelector("button:not(:disabled)"))?.focus({ preventScroll: true });

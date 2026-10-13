@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: life-again-game
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm run test:ranking
+    startCommand: npm start
+    healthCheckPath: /api/ranking/status
+    envVars:
+      - key: NODE_VERSION
+        value: 24
+      - key: RANKING_STORAGE
+        value: supabase
+      - key: SUPABASE_URL
+        value: https://qjxwgvcedzbdzsktyyof.supabase.co
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: COOKIE_SECURE
+        value: 'true'

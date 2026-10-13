@@ -1,0 +1,4 @@
+.ranking-data/
+.env
+.env.*
+!.env.example

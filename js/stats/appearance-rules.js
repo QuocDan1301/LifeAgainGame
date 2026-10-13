@@ -1,5 +1,6 @@
 import { openMojiArt } from "../media/event-art.js";
 import { formatMoney } from "../core/money-format.js";
+import { getCasualRomanceAdjustment } from "../relationships/casual-romance.js";
 
 // Cấu hình tập trung cho cơ chế phụ thuộc Ngoại hình. Các con số là thông số gameplay.
 // Ngoại hình chỉ ảnh hưởng ấn tượng ban đầu, cơ hội được làm quen và một số nghề liên quan đến hình ảnh.
@@ -24,18 +25,20 @@ export function wasSocialThisYear(player, age) {
 }
 export function getSocialContext(player, age) {
   if (age < ACQUAINTANCE.minAge || player.isAlive === false) return null;
-  if (player.employmentStatus === "employed") return "work";
+  if (player.casualService || (player.prison && player.prison.releaseAge > player.age)) return null;
+  if (player.employmentStatus === "employed" || (player.streetJobs ?? []).some(entry => (player.purchases ?? []).some(item => item.id === (entry.id === "noodle-seller" ? "noodle-cart" : "motorbike")))) return "work";
+  if (player.casualLife && age >= 18) return "community";
   if (age <= ACQUAINTANCE.schoolUntil && (age < 18 || player.careerPath?.school)) return "school";
   if (wasSocialThisYear(player, age)) return "community";
   return null;
 }
 export function getAcquaintanceChance(player, age) {
   const social = wasSocialThisYear(player, age) ? ACQUAINTANCE.socialBonus : 0;
-  return clamp(ACQUAINTANCE.base + ((player.appearance ?? 50) - 50) * ACQUAINTANCE.perPoint + social, ACQUAINTANCE.min, ACQUAINTANCE.max);
+  return clamp(ACQUAINTANCE.base + ((player.appearance ?? 50) - 50) * ACQUAINTANCE.perPoint + social + getCasualRomanceAdjustment(player) * 0.25, ACQUAINTANCE.min, ACQUAINTANCE.max);
 }
 // Lời mời hẹn tìm hiểu: ngoại hình chỉ tạo lợi thế nhỏ (±10%), không bảo đảm đồng ý cũng không khiến mọi lời mời thất bại.
 export const ROMANCE = { base: 0.55, perPoint: 0.002, min: 0.35, max: 0.75, startBond: 70, bondPerPoint: 0.06, maxBondBonus: 3 };
-export const getRomanceChance = (player) => clamp(ROMANCE.base + ((player.appearance ?? 50) - 50) * ROMANCE.perPoint, ROMANCE.min, ROMANCE.max);
+export const getRomanceChance = (player) => clamp(ROMANCE.base + ((player.appearance ?? 50) - 50) * ROMANCE.perPoint + getCasualRomanceAdjustment(player), player.casualLife ? 0.15 : ROMANCE.min, ROMANCE.max);
 export const getStartingBond = (player) =>
   ROMANCE.startBond + clamp(Math.round(((player.appearance ?? 50) - 50) * ROMANCE.bondPerPoint), -ROMANCE.maxBondBonus, ROMANCE.maxBondBonus);
 

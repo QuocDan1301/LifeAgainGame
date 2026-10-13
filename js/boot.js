@@ -4,11 +4,13 @@ import { state, createInitialState } from "./core/state.js";
 import { initLobby } from "./ui/lobby.js";
 import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCache } from "./core/module-refresh.js";
 import { initMusic } from "./ui/music.js";
+import { initRankingUI } from "./ranking/ranking-ui.js";
 import { moveCloseButtonsOutside } from "./ui/dialog-close.js";
 
 // Nút ✕ của mọi popup nằm ngoài khung, ở góc trên bên phải.
 moveCloseButtonsOutside();
 initMusic();
+initRankingUI();
 
 // Khi bến xe đã hiện, tải sẵn phần chơi vào bộ nhớ đệm lúc máy rảnh để bấm vào game nhanh hơn.
 const warmGame = () => warmModuleCache([new URL("./main.js", import.meta.url).href]);

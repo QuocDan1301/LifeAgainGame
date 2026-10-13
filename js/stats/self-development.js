@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { TAROT_DISCOUNT_MAX, consumeTarotBuff, getActiveTarotBuff, getTarotDiscountedFee, getTarotStatBonus } from "../leisure/tarot.js";
 import { HEAVY_TRAINING, LIGHT_TRAINING, RECOVERY_ACTIVITIES, getHealthBand, isWeakForTraining } from "./health-rules.js";
@@ -135,7 +136,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       `${bonus ? " (có lá Gậy hỗ trợ)" : ""}${discount ? ` (lá Tiền giảm ${formatMoneyAmount(discount)} VNĐ)` : ""}.`;
     const log = { age: player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderStats();
     renderLogEntry(log);
@@ -166,7 +167,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       `${extras.length ? ` · ${extras.join(" · ")}` : ""}.`;
     const log = { age: player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderStats();
     renderLogEntry(log);
     renderStat(stat, activity.id);

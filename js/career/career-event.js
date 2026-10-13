@@ -1,6 +1,7 @@
 import { openMojiArt } from "../media/event-art.js";
 // Chọn ngành học hoặc hướng nghề nghiệp ở tuổi 18.
 export const careerPaths = [
+  ["casual", "🧭", "Lông bông (không thích đi học)"],
   ["study-abroad", "✈️", "Đi du học"],
   ["acting", "🎬", "Diễn xuất"],
   ["military", "🪖", "Nhập ngũ"],
@@ -35,7 +36,7 @@ export const careerEvent = {
     label: `${emoji} ${field}`,
     title: `${emoji} Hành trình mới bắt đầu`,
     text: `Bạn chọn hướng ${field}.\nBạn bắt đầu học hỏi, rèn luyện và tích lũy kinh nghiệm cho hành trình này.`,
-    careerPath: { id, field, status: `Đang theo đuổi ${field}` },
+    careerPath: { id, field, status: `Đang theo đuổi ${field}`, ...(id === "casual" ? { school: null } : {}) },
     confirmText: "Bắt đầu hành trình!",
   })),
 };

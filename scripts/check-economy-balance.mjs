@@ -24,7 +24,7 @@ test('Investment yields and quantity limits constrain compounding', () => {
     assert.ok(item.profit / item.price <= 0.100001, item.id);
     assert.ok(item.limit > 0, item.id);
   }
-  assert.equal(shopCatalog.find(item => item.id === 'noodle-cart').profit * 3, 9_000_000);
+  assert.equal(shopCatalog.find(item => item.id === 'noodle-cart').profit, undefined);
 });
 test('Forecast includes rentals, businesses, livestock, pet upkeep and the loan bill', () => {
   const p = worker();
@@ -35,9 +35,9 @@ test('Forecast includes rentals, businesses, livestock, pet upkeep and the loan 
     years: 15, startedAtAge: 50, lastPaidAge: 50, paymentsMade: 0 }];
   const before = JSON.stringify(p); const forecast = forecastNextYear(p);
   assert.equal(JSON.stringify(p), before);
-  assert.equal(forecast.assets, 424_800_000);
+  assert.equal(forecast.assets, 421_800_000);
   assert.equal(forecast.upkeep, 3_500_000);
-  assert.equal(forecast.living, 199_440_000);
+  assert.equal(forecast.living, 198_540_000);
   actualYear(p, 51);
   assert.equal(p.money, forecast.after);
 });

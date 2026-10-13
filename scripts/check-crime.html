@@ -1,0 +1,49 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Crime integration checks</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+const saved = keys.map(key => localStorage.getItem(key));
+try {
+  const { state, createInitialState } = await import('../js/core/state.js');
+  const html = await (await fetch('../index.html')).text();
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  parsed.querySelectorAll('script').forEach(element => element.remove());
+  parsed.querySelectorAll('[src]').forEach(element => element.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  document.getElementById('game-screen').hidden = false;
+  document.getElementById('lobby-screen').hidden = true;
+  localStorage.setItem('lifeAgainAchievements', '{}');
+  localStorage.setItem('lifeAgainAchievementQueue', '[]');
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { age: 24, health: 80, happiness: 80, intelligence: 70,
+    appearance: 70, money: 100_000_000, studyBlock: 'A00', employmentStatus: 'declined',
+    nextPromotionAge: null, relatives: [], illnessPlan: [] });
+  await import('../js/main.js');
+  const $ = id => document.getElementById(id);
+  $('activities').click(); $('activity-crime').click();
+  assert($('crime-dialog').open, 'Crime dialog opens');
+  const original = Math.random;
+  try { Math.random = () => 0; $('crime-dialog').querySelector('button').click(); }
+  finally { Math.random = original; }
+  assert(state.player.prison.releaseAge === 26, 'Arrest and sentence');
+  assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.prison.releaseAge === 26, 'Sentence saved');
+  $('crime-dialog').close();
+  $('activities').click(); $('activity-food').click();
+  assert(!$('food-dialog').open && $('crime-dialog').open, 'Outside activity blocked in prison');
+  $('crime-dialog').close();
+  $('age-up').click();
+  assert(state.pendingEvent?.id === 'prison-year', 'Age 25 prison priority: ' + JSON.stringify({ pending: state.pendingEvent?.id, age: state.player.age, disabled: $('age-up').disabled, dialogs: [...document.querySelectorAll('dialog[open]')].map(d => d.id) }));
+  $('event-choices').querySelector('button').click(); $('event-confirm').click();
+  assert(state.player.age === 25 && state.player.prison, 'Prison year completes');
+  $('age-up').click();
+  assert(state.pendingEvent?.id === 'prison-release', 'Release story opens on time');
+  $('event-choices').querySelector('button').click(); $('event-confirm').click();
+  assert(state.player.age === 26 && state.player.prison === null, 'Release completes');
+  result.textContent = 'PASS: crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release';
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+finally { keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index])); }
+</script>

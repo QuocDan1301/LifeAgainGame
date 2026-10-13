@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { celebrateAchievement } from "../ui/achievement-confetti.js";
 import { formatMoneyText } from "../core/money-format.js";
 import { scrollerOf } from "../ui/dialog-close.js";
@@ -108,7 +109,7 @@ export function initAchievements(state) {
 
     // Lưu dữ liệu sau khi reset.
     persist();
-    localStorage.setItem("lifeAgainSave", JSON.stringify(gameState));
+    saveGame(gameState);
 
     // Hiển thị lại các thẻ mờ và bộ đếm thành tựu.
     renderAchievements();
@@ -153,7 +154,7 @@ export function checkAchievements() {
   }
   if (lifeIds.size !== previousCount) {
     gameState.player.lifeAchievementIds = [...lifeIds];
-    localStorage.setItem("lifeAgainSave", JSON.stringify(gameState));
+    saveGame(gameState);
   }
   if (changed) {
     persist();

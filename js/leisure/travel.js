@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { getTravelGain } from "../stats/mood-rules.js";
 import { applyActivityGain, previewActivityGain } from "../core/stat-budget.js";
@@ -49,7 +50,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
       `${gained ? ` · Hạnh phúc +${gained}` : ""}${rate < 1 ? ` (lần thứ ${count} liên tiếp, hiệu quả ${Math.round(rate * 100)}%)` : ""}.`;
     const log = { age: player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderStats();
     renderLogEntry(log);

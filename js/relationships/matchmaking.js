@@ -1,4 +1,7 @@
+import { saveGame } from "../core/save-store.js";
 import { maleNames, femaleNames } from "../core/character-data.js";
+import { getRomanceChance } from "../stats/appearance-rules.js";
+import { getCasualRomanceNote } from "./casual-romance.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
@@ -67,7 +70,7 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
     $("activities-dialog").showModal();
   });
   const wallet = () => element("p", "shop-wallet", `Ví hiện có: ${formatMoney(state.player.money)}`);
-  const save = () => localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  const save = () => saveGame(state);
   const record = (content, summary = content) => {
     const log = { age: state.player.age, content, summary };
     state.logs.push(log);
@@ -138,12 +141,21 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
   }
 
   function renderProfile(center, gender, person) {
+    const accepted = !state.player.casualLife || (person.casualRomanceAccepted ??= Math.random() < getRomanceChance(state.player));
     const card = element("section", "dialog-card love-profile");
     card.append(element("h3", "", `${person.gender === "female" ? "👩" : "👨"} Hồ sơ được giới thiệu`),
       element("p", "love-profile-text", describePerson(person)));
     const actions = element("div", "license-actions");
     actions.append(
-      button("shop-buy love-accept", "💞 Đồng ý hẹn hò", () => {
+      button("shop-buy love-accept", state.player.casualLife ? "💞 Ngỏ lời tìm hiểu" : "💞 Đồng ý hẹn hò", () => {
+        if (!canStartRelationship(state.player)) return;
+        if (!accepted) {
+          const note = getCasualRomanceNote(state.player);
+          record(`🤝 ${person.name} muốn làm bạn trước. ${note}`);
+          body.replaceChildren(backToActivities(), element("p", "love-profile-text", `${person.name} cảm ơn lời mời nhưng chưa muốn hẹn hò. ${note} Tôi tôn trọng quyết định của người ấy.`));
+          focusFirst();
+          return;
+        }
         const updates = getDatingUpdates(state.player, person, state.player.age);
         if (!Object.keys(updates).length) return;
         Object.assign(state.player, updates);

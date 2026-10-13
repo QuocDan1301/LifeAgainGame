@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { getStudyAbroadCountry, getOverseasJobBlocker } from "../education/study-abroad.js";
 import { formatMoney } from "../core/money-format.js";
 import { careerPaths } from "./career-event.js";
@@ -19,6 +20,7 @@ const PROMOTION_WAIT_YEARS = 2;
 
 export function getJobApplicationBlocker(player) {
   if (player.isAlive === false) return "Nhân vật đã qua đời.";
+  if (player.careerPath?.id === "casual") return "Bạn không đi học tiếp. Vào Hoạt động → Làm thêm để nhận nghề tự do.";
   if (!player.careerPath) return "Bạn chưa chọn ngành học nên chưa có hồ sơ để nộp.";
   if (player.age < GRADUATION_AGE) {
     return `🎓 Học xong mới xin việc được. Còn ${GRADUATION_AGE - player.age} năm nữa (${GRADUATION_AGE} tuổi).`;
@@ -40,7 +42,7 @@ export function getJobApplicationBlocker(player) {
 
 // Dòng nhắc trong nhật ký năm học xong, cho người không được phỏng vấn tự động.
 export function createGraduationNotice(player, age) {
-  if (age !== GRADUATION_AGE || !player.careerPath || player.employmentStatus === "employed" ||
+  if (age !== GRADUATION_AGE || !player.careerPath || player.careerPath.id === "casual" || player.employmentStatus === "employed" ||
       hasCareerMilestone(player)) return null;
   const country = getStudyAbroadCountry(player.careerPath);
   if (country) return { content: `🎓 Bạn đã hoàn thành chặng du học tại ${country.name}. Vào Hoạt động → Xin việc để nộp hồ sơ và phỏng vấn tại nước này.` };
@@ -66,7 +68,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     node.addEventListener("click", onClick);
     return node;
   };
-  const save = () => localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  const save = () => saveGame(state);
   const focusFirst = () => (body.querySelector(".job-answer, .shop-group:not(:disabled)")
     ?? body.querySelector("button:not(:disabled)"))?.focus({ preventScroll: true });
   const backToActivities = () => button("shop-back", "← Quay lại Hoạt động", () => {

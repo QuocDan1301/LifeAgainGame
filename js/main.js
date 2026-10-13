@@ -1,4 +1,9 @@
-import { createStudyAbroadMajorEvent, createStudyAbroadYearEvent, createStudyAbroadDramaStep } from "./education/study-abroad.js";
+import { saveGame } from "./core/save-store.js";
+import {
+  createStudyAbroadMajorEvent,
+  createStudyAbroadYearEvent,
+  createStudyAbroadDramaStep,
+} from "./education/study-abroad.js";
 import { createDatingDramaStep } from "./relationships/dating-drama.js";
 import {
   createConcurrentDatingEvent,
@@ -64,6 +69,11 @@ import {
 import { eventCategories, getEventCategory } from "./events/event-category.js";
 import { getSpecialDialogue } from "./events/special-dialogue.js";
 import { state } from "./core/state.js";
+import { observeRanking } from "./ranking/scoring.js";
+import { initRankingGame } from "./ranking/ranking-ui.js";
+import { createCasualStartChoice, createCasualServiceEvent, isServing } from "./career/street-work.js";
+import { addEventEmotions, addChoiceIcon } from "./events/event-emotions.js";
+import { createPrisonEvent, initCrime, isInPrison } from "./events/crime.js";
 import { initEducation } from "./education/education.js";
 import { createSchoolEntryReward } from "./education/school-rewards.js";
 import {
@@ -155,7 +165,10 @@ import {
   createMilestonePromotionEvent,
   getPromotionUpdates,
 } from "./career/career-jobs.js";
-import { createCareerSparkStep, getRankLock } from "./career/career-milestones.js";
+import {
+  createCareerSparkStep,
+  getRankLock,
+} from "./career/career-milestones.js";
 import {
   initAchievements,
   checkAchievements,
@@ -460,9 +473,15 @@ function showFinanceCheck() {
         (forecast.tuition
           ? ` · Học phí: ${formatMoney(forecast.tuition)}`
           : "") +
-        (forecast.mortgage ? ` · Trả góp nhà: ${formatMoney(forecast.mortgage)}` : "") +
-        (forecast.upkeep ? ` · Chăm thú cưng: ${formatMoney(forecast.upkeep)}` : "") +
-        (forecast.interest ? ` · Lãi nợ: ${formatMoney(forecast.interest)}` : ""),
+        (forecast.mortgage
+          ? ` · Trả góp nhà: ${formatMoney(forecast.mortgage)}`
+          : "") +
+        (forecast.upkeep
+          ? ` · Chăm thú cưng: ${formatMoney(forecast.upkeep)}`
+          : "") +
+        (forecast.interest
+          ? ` · Lãi nợ: ${formatMoney(forecast.interest)}`
+          : ""),
     ),
     node(
       "li",
@@ -565,7 +584,8 @@ function getLifeAlertItems(player) {
     items.push({
       short: "📉 Đang sống tiết kiệm",
       title: "📉 Đang sống tiết kiệm (Hạnh phúc -1/năm)",
-      detail: "Thu nhập đã đủ chi phí năm tới. Có thể trở lại mức sống bình thường trong Phương án tài chính.",
+      detail:
+        "Thu nhập đã đủ chi phí năm tới. Có thể trở lại mức sống bình thường trong Phương án tài chính.",
       action: { label: "💸 Phương án tài chính", run: showFinanceCheck },
     });
   }
@@ -750,7 +770,7 @@ function renderLogContent(element, text) {
 }
 // Hide chain bookkeeping in results and journals, including older saves.
 function cleanLogText(text) {
-  return formatMoneyText(text)
+  const cleaned = formatMoneyText(text)
     .replace(
       /\n?Sức khỏe luôn còn ít nhất 1 điểm; chuỗi này không gây tử vong\./giu,
       "",
@@ -759,6 +779,7 @@ function cleanLogText(text) {
     .replace(/(?:kết thúc chuỗi|chuỗi kết thúc)(?:\s+mà)?\s*,?\s*/giu, "")
     .replace(/[,;]\s*\./g, ".")
     .replace(/([.!?])\s*\./g, "$1");
+  return addEventEmotions(cleaned);
 }
 function appendColoredNumbers(element, text) {
   // Tách các số có dấu + hoặc - ra khỏi nội dung
@@ -840,9 +861,11 @@ function renderEducation() {
   const description =
     state.player.isAlive === false
       ? "Cuộc đời đã kết thúc"
-      : state.player.age < 11
-        ? "Mở khi vào cấp 2 (11 tuổi)"
-        : "Mở hoạt động";
+      : isInPrison(state.player)
+        ? `Đang thụ án · Ra tù ở tuổi ${state.player.prison.releaseAge}`
+        : state.player.age < 11
+          ? "Mở khi vào cấp 2 (11 tuổi)"
+          : "Mở hoạt động";
   button.title = description;
   button.setAttribute("aria-label", `Hoạt động. ${description}`);
 }
@@ -883,7 +906,9 @@ function renderLogLines(element, text) {
     const badge = document.createElement("span");
     badge.classList.add("log-repeat");
     badge.textContent = ` ×${count}`;
-    (element.querySelector(".log-line:last-child .log-text") ?? element).append(badge);
+    (element.querySelector(".log-line:last-child .log-text") ?? element).append(
+      badge,
+    );
   }
 }
 function renderLogEntry(log) {
@@ -1000,6 +1025,7 @@ function showStudyBlocks() {
   if (
     state.player.isAlive === false ||
     state.player.age < 15 ||
+    isInPrison(state.player) ||
     state.player.studyBlock ||
     (state.pendingEvent && !pendingCareer)
   )
@@ -1013,7 +1039,7 @@ function showStudyBlocks() {
     button.type = "button";
     button.className = "event-choice";
     const heading = document.createElement("strong");
-    heading.textContent = `${getStudyBlockLabel(block.id)}: ${block.subjects}`;
+    heading.textContent = `🎓 ${getStudyBlockLabel(block.id)}: ${block.subjects}`;
     const description = document.createElement("span");
     description.textContent = `Nhóm ngành chính: ${careerEvent.choices
       .filter((choice) => block.careers.includes(choice.careerPath.id))
@@ -1063,7 +1089,8 @@ motionPreference.addEventListener("change", () => {
 });
 // Lưu toàn bộ tiến trình, gồm cả bước sự kiện đang mở
 function saveEventProgress() {
-  localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  observeRanking(state);
+  saveGame(state);
 }
 // Thời điểm nút lựa chọn/xác nhận vừa hiện: chạm thật trong khoảng này được coi là nhấn đúp và bỏ qua.
 const DOUBLE_TAP_GUARD_MS = 350;
@@ -1072,6 +1099,7 @@ let choicesReadyAt = 0;
 function showPendingEvent() {
   const pending = state.pendingEvent;
   if (!pending) return;
+  if (pending.stage === "choice" && pending.id === "career-18") pending.choices = careerEvent.choices.map(choice => ({ ...choice }));
   retirePlayer(state.player, pending.age);
   if (
     pending.stage === "choice" &&
@@ -1109,6 +1137,7 @@ function showPendingEvent() {
     pending.age === 25 &&
     pending.stage === "choice" &&
     pending.kind !== "workplace-dating" &&
+    pending.kind !== "prison" &&
     !pending.addedEveryday
   ) {
     const dating = createDatingEvent(state.player, 25);
@@ -1251,10 +1280,10 @@ function showPendingEvent() {
   if (pending.stage === "choice") {
     // Bước 1: tình huống và các lựa chọn
     eventContent.replaceChildren();
-    let remaining = pending.text;
+    let remaining = addEventEmotions(pending.text);
     while (remaining) {
       const matches = (pending.warningPhrases ?? [])
-        .filter(phrase => typeof phrase === 'string' && phrase.length > 0)
+        .filter((phrase) => typeof phrase === "string" && phrase.length > 0)
         .map((phrase) => ({ phrase, index: remaining.indexOf(phrase) }))
         .filter((match) => match.index >= 0)
         .sort((a, b) => a.index - b.index);
@@ -1285,7 +1314,7 @@ function showPendingEvent() {
         const speaker = document.createElement("strong");
         speaker.textContent = line.speaker;
         const words = document.createElement("p");
-        words.textContent = line.text;
+        words.textContent = addEventEmotions(line.text);
         turn.append(speaker, words);
         dialogue.append(turn);
       }
@@ -1312,7 +1341,7 @@ function showPendingEvent() {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "event-choice";
-      button.textContent = formatMoneyText(choice.label);
+      button.textContent = addChoiceIcon(formatMoneyText(choice.label));
       const blocker = getChoiceBlocker(choice);
       button.disabled = Boolean(blocker);
       if (blocker) button.textContent += ` · ${blocker}`;
@@ -1334,17 +1363,20 @@ function showPendingEvent() {
           { once: true },
         );
         const label = document.createElement("span");
-        label.textContent = choice.label.replace(/^🎮\s*/u, "");
+        label.textContent = addChoiceIcon(choice.label.replace(/^🎮\s*/u, ""));
         button.replaceChildren(emblem, label);
       }
       // Màn chọn ngành tuổi 18: cho biết ngành này mở được bậc 3 hay tối đa bậc 2 (và vì sao).
-      if (choice.careerPath && !Object.hasOwn(choice.careerPath, "school")) {
+      if (choice.careerPath && choice.careerPath.id !== "casual" && !Object.hasOwn(choice.careerPath, "school")) {
         const lock = getRankLock(state.player, choice.careerPath.id);
         const note = document.createElement("small");
         note.className = "event-choice-note";
-        note.textContent = choice.careerPath.id === "study-abroad" ? lock.reason : lock.unlocked
-          ? "⭐ Có dấu mốc tuổi 16: mở được bậc 3"
-          : "🔒 Tối đa bậc 2 · bậc 3 cần chuỗi tuổi 16 của chính ngành này";
+        note.textContent =
+          choice.careerPath.id === "study-abroad"
+            ? lock.reason
+            : lock.unlocked
+              ? "⭐ Có dấu mốc tuổi 16: mở được bậc 3"
+              : "Tối đa bậc 2 · bậc 3 cần chuỗi tuổi 16 của chính ngành này";
         button.append(note);
       }
       button.addEventListener("click", (event) => {
@@ -1384,7 +1416,7 @@ function showPendingEvent() {
           ? `\n\n${childcare.content}`
           : ""),
     );
-    eventConfirm.textContent = pending.confirmText ?? "Xác nhận";
+    eventConfirm.textContent = addChoiceIcon(pending.confirmText ?? "Xác nhận");
     eventConfirm.hidden = false;
   }
   // Kết quả đậu/rớt có âm thanh ăn mừng hoặc tiếc nuối (chỉ phát một lần cho mỗi kết quả).
@@ -1428,7 +1460,10 @@ function getChoiceOutcome(pending, choice) {
 // Nhãn khóa của lựa chọn: thiếu tiền hoặc chưa đủ Trí tuệ (ví dụ điều kiện xét tuyển du học).
 function getChoiceBlocker(choice) {
   if (!canAffordChoice(state.player, choice)) return "Không đủ tiền";
-  if (choice.minIntelligence && (state.player.intelligence ?? 0) < choice.minIntelligence) {
+  if (
+    choice.minIntelligence &&
+    (state.player.intelligence ?? 0) < choice.minIntelligence
+  ) {
     return `Cần Trí tuệ ${choice.minIntelligence}`;
   }
   return "";
@@ -1444,7 +1479,10 @@ function chooseEventAction(index) {
     eligibilityFeedback.hidden = false;
     return;
   }
-  if (choice.minIntelligence && (state.player.intelligence ?? 0) < choice.minIntelligence) {
+  if (
+    choice.minIntelligence &&
+    (state.player.intelligence ?? 0) < choice.minIntelligence
+  ) {
     eligibilityFeedback.textContent = `Chưa đủ điều kiện: cần Trí tuệ từ ${choice.minIntelligence} (hiện có ${state.player.intelligence ?? 0}).`;
     eligibilityFeedback.hidden = false;
     return;
@@ -1452,16 +1490,29 @@ function chooseEventAction(index) {
   if (pending.kind === "study-abroad-country" && choice.careerPath) {
     const next = createStudyAbroadMajorEvent(choice.careerPath, state.player);
     if (!next) return;
-    state.pendingEvent = createChainStep(choice, pending, { ...next, stage: "choice", age: pending.age });
-    saveEventProgress(); showPendingEvent(); return;
+    state.pendingEvent = createChainStep(choice, pending, {
+      ...next,
+      stage: "choice",
+      age: pending.age,
+    });
+    saveEventProgress();
+    showPendingEvent();
+    return;
   }
   if (pending.kind === "study-abroad-drama" && choice.nextStep) {
     const replies = [...(pending.abroadReplies ?? []), choice.abroadReply];
-    const next = createStudyAbroadDramaStep(state.player, pending.age, choice.nextStep, replies);
+    const next = createStudyAbroadDramaStep(
+      state.player,
+      pending.age,
+      choice.nextStep,
+      replies,
+    );
     if (!next) return;
-    next.logPrefix = `${pending.logPrefix ?? ""}${(pending.dialogueLines ?? []).map(l => `${l.speaker}: ${l.text}`).join("\n")}\nTôi đáp: ${choice.label}\n`;
+    next.logPrefix = `${pending.logPrefix ?? ""}${(pending.dialogueLines ?? []).map((l) => `${l.speaker}: ${l.text}`).join("\n")}\nTôi đáp: ${choice.label}\n`;
     state.pendingEvent = { ...next, stage: "choice", age: pending.age };
-    saveEventProgress(); showPendingEvent(); return;
+    saveEventProgress();
+    showPendingEvent();
+    return;
   }
   if (pending.kind === "job-interview") {
     // Kết quả tổng thể: chất lượng câu trả lời, trí tuệ và chuẩn bị (intellect-rules.js), tung một lần.
@@ -1698,6 +1749,9 @@ function chooseEventAction(index) {
     saveEventProgress();
     showPendingEvent();
     return;
+  }
+  if (choice.careerPath?.id === "casual" && pending.age === 18) {
+    choice = createCasualStartChoice(state.player, choice);
   }
   // Bóng đá cần thể lực: Sức khỏe dưới mức tối thiểu thì chưa được chọn học.
   if (
@@ -1999,7 +2053,7 @@ function chooseEventAction(index) {
 ageButton.addEventListener("click", () => {
   if (state.pendingEvent || state.player.isAlive === false) return;
   // Ván Tiến lên chưa xong (chưa có người thắng, chưa xác nhận bỏ ván) thì chưa được sang năm mới.
-  if (gamesUi.hasActiveTienLen()) {
+  if (!isInPrison(state.player) && gamesUi.hasActiveTienLen()) {
     if (!document.querySelector("dialog[open]")) {
       gamesUi.openTienLen(
         "⏳ Ván Tiến lên đang dở: đánh xong hoặc bỏ ván rồi mới sang năm mới.",
@@ -2007,11 +2061,16 @@ ageButton.addEventListener("click", () => {
     }
     return;
   }
-  if (state.player.age >= 15 && !state.player.studyBlock) {
+  if (
+    !isInPrison(state.player) &&
+    state.player.age >= 15 &&
+    !state.player.studyBlock
+  ) {
     showStudyBlocks();
     return;
   }
   if (
+    !isInPrison(state.player) &&
     state.player.healthCheckAge !== state.player.age &&
     getAgeUpHealthRisks().any
   ) {
@@ -2042,6 +2101,8 @@ ageButton.addEventListener("click", () => {
   let childEvent = createChildProposalEvent(state.player, nextAge);
   const fixedPriorityEvent =
     (nextAge === 105 ? ageStories[0] : null) ??
+    createPrisonEvent(state.player, nextAge) ??
+    createCasualServiceEvent(state.player, nextAge) ??
     (nextAge === 16
       ? (() => {
           const sparks = ageStories.filter(
@@ -2050,7 +2111,9 @@ ageButton.addEventListener("click", () => {
           return sparks[Math.floor(Math.random() * sparks.length)] ?? null;
         })()
       : null) ??
-    (nextAge === 100 ? ageStories.find(event => event.id === "centennial-memorial") : null) ??
+    (nextAge === 100
+      ? ageStories.find((event) => event.id === "centennial-memorial")
+      : null) ??
     createStudyAbroadYearEvent(state.player, nextAge) ??
     promotionEvent ??
     orientationEvent ??
@@ -2232,6 +2295,7 @@ ageButton.addEventListener("click", () => {
     return;
   }
   const pickedStory =
+    (["prison", "casual-service"].includes(priorityEvent?.kind) ? priorityEvent : null) ??
     quietYearAcquaintance ??
     (nextAge === 25 ? datingEvent : null) ??
     priorityEvent ??
@@ -2463,8 +2527,16 @@ if (
 if (state.pendingEvent) {
   showPendingEvent();
 }
+initRankingGame(state, saveEventProgress);
 initAchievements(state);
 initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements });
+initCrime(state, {
+  save: saveEventProgress,
+  renderMoney,
+  renderStats,
+  renderEducation,
+  renderLogEntry,
+});
 initShop(state, {
   renderMoney,
   renderStats,
@@ -2504,7 +2576,11 @@ initMatchmaking(state, {
 const gamesUi = initGames(state, { renderMoney, renderLogEntry });
 initFood(state, { renderMoney, renderStats, renderLogEntry });
 initBeauty(state, { renderMoney, renderStats, renderLogEntry });
-const lotteryUi = initLottery(state, { renderMoney, renderLogEntry, updateLogEntry });
+const lotteryUi = initLottery(state, {
+  renderMoney,
+  renderLogEntry,
+  updateLogEntry,
+});
 // Tải lại trang khi chưa xem kết quả xổ số: mở lại popup.
 lotteryUi.showResults();
 initTravel(state, { renderMoney, renderStats, renderLogEntry });
@@ -2556,7 +2632,7 @@ fortuneButton.addEventListener("click", () => {
     const randomIndex = Math.floor(Math.random() * fortunePredictions.length);
     state.player.fortune = fortunePredictions[randomIndex];
     // Lưu cùng nhân vật để tải lại trang vẫn giữ nguyên.
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
   }
   fortuneName.textContent = `Dành cho ${state.player.name}`;
   fortuneContent.textContent = state.player.fortune;
@@ -2576,6 +2652,7 @@ function showLifeSummary() {
   deathDialog.showModal();
   deathDialog.scrollTop = 0;
   playOutcomeSound("death");
+  queueMicrotask(() => document.dispatchEvent(new Event("ranking-life-ended")));
 }
 deathDialog.addEventListener("cancel", (event) => event.preventDefault());
 document

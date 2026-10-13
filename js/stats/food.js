@@ -1,3 +1,4 @@
+import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { applyActivityGain, describeActivityRoom, previewActivityGain } from "../core/stat-budget.js";
 
@@ -55,7 +56,7 @@ export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
     const content = `${dish.icon} Ăn ${dish.name}: Tiền -${formatMoneyAmount(dish.price)} VNĐ${changes.length ? ` · ${changes.join(" · ")}` : ""}.`;
     const log = { age: player.age, content, summary: content };
     state.logs.push(log);
-    localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+    saveGame(state);
     renderMoney();
     renderStats();
     renderLogEntry(log);

@@ -9,6 +9,8 @@ import { MOOD_EFFECTS, PARTNER_ACTIONS, addMoodEffect } from "../stats/mood-rule
 import { CONDITIONS, RELATIVE_ACTIONS, getRelativeActionConfig, ensureRelatives, getPartnerAge, getRelativeAge } from "./family-members.js";
 import { formatMoney } from "../core/money-format.js";
 import { applyActivityGain } from "../core/stat-budget.js";
+import { getRomanceChance } from "../stats/appearance-rules.js";
+import { getCasualRomanceNote } from "./casual-romance.js";
 
 const pick = (items, random) => items[Math.floor(random() * items.length)];
 const integer = (min, max, random) => min + Math.floor(random() * (max - min + 1));
@@ -71,11 +73,12 @@ export function describePerson(person, currentAge = person.metAtAge) {
 }
 
 export function canStartRelationship(player) {
-  return getDatingPartners(player).length < 2 && player.marriedAtAge == null && player.isAlive !== false;
+  return !player.casualService && !(player.prison && player.prison.releaseAge > player.age) && getDatingPartners(player).length < 2 && player.marriedAtAge == null && player.isAlive !== false;
 }
 
 export function createDatingEvent(player, age, random = Math.random) {
   if (!canStartRelationship(player) || player.datingActivitiesOnly) return null;
+  if (player.casualLife) return createCasualDatingEvent(player, age, random);
   const person = createAdmirer(player, age, random);
   const working = player.employmentStatus === "employed";
   const setting = working ? `Trong một ngày làm việc tại ${person.workplace}`
@@ -598,4 +601,28 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     onChange(log);
   });
   document.getElementById("close-relationships").addEventListener("click", () => dialog.close());
+}
+
+export function createCasualDatingEvent(player, age, random = Math.random) {
+  if (!player.casualLife || age < 18 || !canStartRelationship(player) || player.datingActivitiesOnly) return null;
+  const person = createAdmirer(player, age, random);
+  const accepted = random() < getRomanceChance(player);
+  const job = (player.streetJobs ?? []).find(entry => (player.purchases ?? []).some(item => item.id ===
+    (entry.id === "noodle-seller" ? "noodle-cart" : "motorbike")));
+  const meeting = job?.id === "noodle-seller" ? "Một người quen thường ghé xe hủ tiếu bắt chuyện với tôi."
+    : job?.id === "motorbike-taxi" ? "Trong lúc nghỉ giữa những cuốc xe, tôi gặp một người quen ở quán nước."
+    : "Trong một buổi gặp bạn bè ở khu phố, tôi gặp một người có thể trò chuyện rất tự nhiên.";
+  const note = getCasualRomanceNote(player);
+  return { id: `casual-romance-${age}`, kind: "workplace-dating", category: "love", person,
+    title: "💌 Chuyện tình trên con đường riêng", text: `${meeting} Người ấy tên ${person.name}. Chúng tôi nói về sở thích và những dự định sắp tới.\n\n${describePerson(person)}\n\n${note}`,
+    choices: [
+      { label: "💞 Ngỏ lời tìm hiểu nghiêm túc", acceptDating: accepted,
+        title: accepted ? "💞 Có người đồng hành" : "🤝 Người ấy muốn làm bạn trước",
+        text: accepted ? `${person.name} đồng ý tìm hiểu. Người ấy trân trọng sự chân thành của tôi; bằng cấp không quyết định tất cả. Chúng tôi hẹn nhau cùng cố gắng cho những ngày sắp tới.`
+          : `${person.name} muốn làm bạn trước. ${note} Tôi tôn trọng quyết định, thay vì hứa những điều mình chưa làm được.`,
+        effects: { happiness: accepted ? 5 : -2 }, achievementIds: accepted ? ["first-love"] : [] },
+      { label: "💬 Chia sẻ thật lòng, làm bạn trước", text: `Tôi kể thật cuộc sống của mình. ${person.name} lắng nghe; chúng tôi giữ liên lạc mà không vội đặt tên cho mối quan hệ.`,
+        effects: { happiness: 3 }, playerUpdates: { friends: [...(player.friends ?? []), { id: person.id, name: person.name, gender: person.gender, since: age, bond: 55 }] } },
+      { label: "🧭 Tập trung ổn định cuộc sống", text: "Tôi chưa ngỏ lời. Tôi muốn chăm sóc cuộc sống của mình và giữ liên lạc với người ấy bằng sự chân thành.", effects: { intelligence: 2 } },
+    ] };
 }

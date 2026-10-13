@@ -901,7 +901,7 @@ export function createPromotionEvent(player, random = Math.random, age = player.
 
 export function createEmploymentEvent(player, age) {
   // Đã đến tuổi nghỉ hưu thì không còn phỏng vấn lại hay xét nâng bậc.
-  if (!player.careerPath || age >= RETIREMENT_AGE) return null;
+  if (!player.careerPath || player.careerPath.id === "casual" || age >= RETIREMENT_AGE) return null;
   // Chỉ người hoàn thành chuỗi tuổi 16 và học đúng ngành đó mới được tự động phỏng vấn ở tuổi 22
   // (và được hỏi thử lại mỗi năm). Những người khác tự nộp hồ sơ ở Hoạt động → Xin việc.
   const milestone = hasCareerMilestone(player);
