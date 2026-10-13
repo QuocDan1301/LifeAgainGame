@@ -4,14 +4,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomBytes, randomUUID, scryptSync, timingSafeEqual, createHash } from 'node:crypto';
-import { calculateLifeScore, buildLeaderboard, seasonId } from '../js/ranking/scoring.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const hash = token => createHash('sha256').update(token).digest('hex');
 const publicUser = account => account ? { id: account.id, nickname: account.nickname, avatar: account.avatar } : null;
 const AVATARS = ['🙂', '😊', '😎', '🦊', '🐼', '🐱', '🦁', '🐸'];
-export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data', 'rankings.json'), now = () => new Date(), storage = null, secureCookies = false, adminAccountIds = [] } = {}) {
-  let db = dataFile && fs.existsSync(dataFile) ? JSON.parse(fs.readFileSync(dataFile, 'utf8')) : { accounts: [], sessions: [], starts: [], runs: [] };
+export function createAccountService({ dataFile = path.join(ROOT, '.ranking-data', 'rankings.json'), now = () => new Date(), storage = null, secureCookies = false, adminAccountIds = [] } = {}) {
+  let db = dataFile && fs.existsSync(dataFile) ? JSON.parse(fs.readFileSync(dataFile, 'utf8')) : { accounts: [], sessions: [] };
+  const accountData = payload => ({ accounts: payload.accounts, sessions: payload.sessions, ...(payload.adminAudit ? { adminAudit: payload.adminAudit } : {}) });
+  db = accountData(db);
   let committed = structuredClone(db);
   let revision = 0;
   const persist = async () => {
@@ -32,28 +33,18 @@ export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data
   async function handler(req, res) {
     const reply = (status, data, headers = {}) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers }); res.end(JSON.stringify(data)); };
     try {
-      if (storage) { const loaded = await storage.load(); db = loaded.payload; revision = loaded.revision; committed = structuredClone(db); }
+      if (storage) { const loaded = await storage.load(); db = accountData(loaded.payload); revision = loaded.revision; committed = structuredClone(db); }
       const url = new URL(req.url, 'http://localhost');
-      if (!url.pathname.startsWith('/api/ranking/')) return reply(404, { error: 'Không tìm thấy.' });
+      if (!url.pathname.startsWith('/api/account/')) return reply(404, { error: 'Không tìm thấy.' });
       if (!['GET', 'POST'].includes(req.method)) return reply(405, { error: 'Thao tác không được hỗ trợ.' });
       if (req.method === 'POST' && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return reply(403, { error: 'Yêu cầu khác nguồn bị từ chối.' });
       if (req.method === 'POST' && !String(req.headers['content-type'] ?? '').startsWith('application/json')) return reply(415, { error: 'Dữ liệu cần có định dạng JSON.' });
-      const token = /(?:^|;\s*)rankingSession=([a-f0-9]{64})(?:;|$)/.exec(req.headers.cookie ?? '')?.[1];
+      const token = /(?:^|;\s*)accountSession=([a-f0-9]{64})(?:;|$)/.exec(req.headers.cookie ?? '')?.[1];
       const session = token && db.sessions.find(item => item.token === hash(token) && item.expires > now().getTime());
       const account = session && db.accounts.find(item => item.id === session.accountId && !item.disabled);
       const isAdmin = Boolean(account && adminAccountIds.includes(account.id));
-      const route = url.pathname.slice('/api/ranking/'.length);
-      if (req.method === 'GET' && route === 'status') return reply(200, { available: true, user: account ? { ...publicUser(account), admin: isAdmin } : null, season: seasonId(now()), beta: true });
-      if (req.method === 'GET' && route === 'board') {
-        const scope = url.searchParams.get('scope') ?? seasonId(now());
-        if (scope !== 'all' && !/^\d{4}-(0[1-9]|1[0-2])$/.test(scope)) return reply(400, { error: 'Mùa không hợp lệ.' });
-        const board = buildLeaderboard(db.accounts.filter(item => !item.disabled), db.runs.filter(item => !item.excluded), scope);
-        return reply(200, { entries: board.slice(0, 100), mine: board.find(item => item.id === account?.id) ?? null, scope });
-      }
-      if (req.method === 'GET' && route === 'history') {
-        if (!account) return reply(401, { error: 'Hãy đăng nhập.' });
-        return reply(200, { runs: db.runs.filter(run => run.accountId === account.id).map(({ snapshot, ...run }) => run) });
-      }
+      const route = url.pathname.slice('/api/account/'.length);
+      if (req.method === 'GET' && route === 'status') return reply(200, { available: true, user: account ? { ...publicUser(account), admin: isAdmin } : null });
       if (route.startsWith('admin/')) {
         if (!account) return reply(401, { error: 'Hãy đăng nhập.' });
         if (!isAdmin) return reply(403, { error: 'Chỉ quản trị viên được truy cập.' });
@@ -62,16 +53,11 @@ export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data
           const page = Math.max(1, Math.min(100000, Number.parseInt(url.searchParams.get('page'), 10) || 1));
           const matches = db.accounts.filter(item => !search || item.username.includes(search) || item.nickname.toLowerCase().includes(search));
           const accounts = matches.slice((page - 1) * 50, page * 50).map(item => {
-            const runs = db.runs.filter(run => run.accountId === item.id);
-            return { ...publicUser(item), username: item.username, disabled: Boolean(item.disabled), admin: adminAccountIds.includes(item.id), createdAt: item.createdAt ?? null,
-              runs: runs.length, best: Math.max(0, ...runs.filter(run => !run.excluded).map(run => run.score.total)) };
+            return { ...publicUser(item), username: item.username, disabled: Boolean(item.disabled), admin: adminAccountIds.includes(item.id), createdAt: item.createdAt ?? null };
           });
-          return reply(200, { accounts, total: matches.length, page, pages: Math.ceil(matches.length / 50), stats: { accounts: db.accounts.length, disabled: db.accounts.filter(item => item.disabled).length, runs: db.runs.length } });
+          return reply(200, { accounts, total: matches.length, page, pages: Math.ceil(matches.length / 50), stats: { accounts: db.accounts.length, disabled: db.accounts.filter(item => item.disabled).length } });
         }
-        if (req.method === 'GET' && route === 'admin/runs') {
-          if (!db.accounts.some(item => item.id === url.searchParams.get('accountId'))) return reply(404, { error: 'Không tìm thấy tài khoản.' });
-          return reply(200, { runs: db.runs.filter(run => run.accountId === url.searchParams.get('accountId')).slice().reverse().map(({ snapshot, ...run }) => run) });
-        }
+
       }
       if (req.method !== 'POST') return reply(404, { error: 'Không tìm thấy.' });
       let raw = '';
@@ -82,7 +68,7 @@ export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data
       let body;
       try { body = JSON.parse(raw || '{}'); } catch { return reply(400, { error: 'Dữ liệu JSON không hợp lệ.' }); }
       if (!body || typeof body !== 'object' || Array.isArray(body)) return reply(400, { error: 'Dữ liệu không hợp lệ.' });
-      if (route === 'admin/account-state' || route === 'admin/run-state') {
+      if (route === 'admin/account-state') {
         if (route === 'admin/account-state') {
           const target = db.accounts.find(item => item.id === body.id);
           if (!target) return reply(404, { error: 'Không tìm thấy tài khoản.' });
@@ -90,13 +76,8 @@ export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data
           if (adminAccountIds.includes(target.id)) return reply(400, { error: 'Không thể khóa tài khoản quản trị.' });
           target.disabled = body.disabled;
           if (body.disabled) db.sessions = db.sessions.filter(item => item.accountId !== target.id);
-        } else {
-          const target = db.runs.find(item => item.id === body.id);
-          if (!target) return reply(404, { error: 'Không tìm thấy cuộc đời.' });
-          if (typeof body.excluded !== 'boolean') return reply(400, { error: 'Trạng thái không hợp lệ.' });
-          target.excluded = body.excluded;
         }
-        db.adminAudit = [...(db.adminAudit ?? []), { actorId: account.id, action: route, targetId: body.id, disabled: body.disabled, excluded: body.excluded, at: now().toISOString() }].slice(-1000);
+        db.adminAudit = [...(db.adminAudit ?? []), { actorId: account.id, action: route, targetId: body.id, disabled: body.disabled, at: now().toISOString() }].slice(-1000);
         await persist();
         return reply(200, { ok: true });
       }
@@ -125,40 +106,15 @@ export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data
         db.sessions = db.sessions.filter(item => item.expires > now().getTime());
         db.sessions.push({ token: hash(newToken), accountId: user.id, expires: now().getTime() + 30 * 86400_000 });
         await persist();
-        return reply(200, { user: publicUser(user) }, { 'Set-Cookie': `rankingSession=${newToken}; HttpOnly; SameSite=Strict; Path=/api/ranking; Max-Age=2592000${secureCookies || req.socket?.encrypted ? '; Secure' : ''}` });
+        return reply(200, { user: publicUser(user) }, { 'Set-Cookie': `accountSession=${newToken}; HttpOnly; SameSite=Strict; Path=/api/account; Max-Age=2592000${secureCookies || req.socket?.encrypted ? '; Secure' : ''}` });
       }
       if (!account) return reply(401, { error: 'Hãy đăng nhập.' });
       if (route === 'logout') {
         db.sessions = db.sessions.filter(item => item !== session); await persist();
-        return reply(200, { ok: true }, { 'Set-Cookie': 'rankingSession=; HttpOnly; SameSite=Strict; Path=/api/ranking; Max-Age=0' });
-      }
-      if (route === 'start') {
-        if (typeof body.localId !== 'string' || !/^[a-f0-9-]{36}$/.test(body.localId)) return reply(400, { error: 'Mã cuộc đời không hợp lệ.' });
-        let start = db.starts.find(item => item.localId === body.localId);
-        if (start && start.accountId !== account.id) return reply(409, { error: 'Cuộc đời thuộc người chơi khác.' });
-        if (!start) { start = { id: randomUUID(), localId: body.localId, accountId: account.id, startedAt: now().toISOString() }; db.starts.push(start); await persist(); }
-        return reply(200, { id: start.id, accountId: account.id });
-      }
-      if (route === 'finish') {
-        const start = db.starts.find(item => item.id === body.id && item.accountId === account.id);
-        if (!start) return reply(403, { error: 'Cuộc đời chưa được đăng ký cho tài khoản này.' });
-        const existing = db.runs.find(item => item.id === start.id);
-        if (existing) return reply(200, { run: existing, duplicate: true });
-        const snapshot = body.snapshot;
-        if (!snapshot || !Array.isArray(snapshot.achievements) || snapshot.achievements.length > 500 ||
-            !Array.isArray(snapshot.assets) || snapshot.assets.length > 500 || !Array.isArray(snapshot.debts) || snapshot.debts.length > 100 ||
-            !Array.isArray(snapshot.workYears) || snapshot.workYears.length > 106 || !Array.isArray(snapshot.relationshipYears) || snapshot.relationshipYears.length > 106 ||
-            !Number.isFinite(snapshot.money) || Math.abs(snapshot.money) > 1e15) return reply(400, { error: 'Dữ liệu tổng kết không hợp lệ.' });
-        let score;
-        try { score = calculateLifeScore(snapshot); } catch (error) { return reply(400, { error: error.message }); }
-        if (!score.eligible) return reply(400, { error: 'Cần có dữ liệu hạnh phúc từ tuổi 0 đến hết cuộc đời để tham gia xếp hạng.' });
-        const run = { id: start.id, accountId: account.id, season: seasonId(now()), completedAt: now().toISOString(),
-          name: String(snapshot.name ?? '').slice(0, 40), age: snapshot.age, path: String(snapshot.path ?? '').slice(0, 60), score };
-        db.runs.push(run); await persist();
-        return reply(200, { run });
+        return reply(200, { ok: true }, { 'Set-Cookie': 'accountSession=; HttpOnly; SameSite=Strict; Path=/api/account; Max-Age=0' });
       }
       return reply(404, { error: 'Không tìm thấy.' });
-    } catch (error) { return reply(error.code === 'CONFLICT' ? 409 : 503, { error: 'Chưa lưu được dữ liệu xếp hạng. Hãy thử lại.' }); }
+    } catch (error) { return reply(error.code === 'CONFLICT' ? 409 : 503, { error: 'Chưa lưu được dữ liệu tài khoản. Hãy thử lại.' }); }
   }
   let queue = Promise.resolve();
   return (req, res) => {
@@ -169,7 +125,7 @@ export function createRankingService({ dataFile = path.join(ROOT, '.ranking-data
 }
 
 export function createGameServer(options = {}) {
-  const service = createRankingService(options);
+  const service = createAccountService(options);
   return http.createServer(async (req, res) => {
     const url = new URL(req.url, 'http://localhost');
     if (url.pathname.startsWith('/api/')) return service(req, res);
@@ -190,8 +146,8 @@ export function createGameServer(options = {}) {
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const port = Number(process.env.PORT ?? 8080);
-  const cloud = process.env.RANKING_STORAGE === 'supabase';
-  if (process.env.RENDER && !cloud) throw new Error('Render cần RANKING_STORAGE=supabase để không mất dữ liệu.');
+  const cloud = (process.env.ACCOUNT_STORAGE ?? process.env.RANKING_STORAGE) === 'supabase';
+  if (process.env.RENDER && !cloud) throw new Error('Render cần ACCOUNT_STORAGE=supabase để không mất dữ liệu.');
   const options = cloud ? { dataFile: null, storage: createSupabaseStorage({ url: process.env.SUPABASE_URL, key: process.env.SUPABASE_SECRET_KEY }), secureCookies: process.env.COOKIE_SECURE === 'true' } : {};
   // Không nhận người chơi trước khi xác nhận schema và khóa Supabase hoạt động.
   if (cloud) await options.storage.load();

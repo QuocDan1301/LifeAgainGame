@@ -10,20 +10,13 @@ async function read(route) {
   assert.equal(response.status, 200, `${route}: HTTP ${response.status}`);
   return response;
 }
-const status = await (await read('/api/ranking/status')).json();
+const status = await (await read('/api/account/status')).json();
 assert.equal(status.available, true);
 assert.equal(status.user, null);
-assert.match(status.season, /^\d{4}-(0[1-9]|1[0-2])$/);
-for (const scope of [status.season, 'all']) {
-  const board = await (await read(`/api/ranking/board?scope=${scope}`)).json();
-  assert.ok(Array.isArray(board.entries));
-  assert.equal(board.scope, scope);
-  assert.equal(board.mine, null);
-}
 assert.match(await (await read('/')).text(), /<html/i);
-assert.match((await read('/js/ranking/ranking-ui.js')).headers.get('content-type'), /javascript/);
-for (const route of ['/.env', '/server/ranking-server.mjs', '/supabase/ranking-schema.sql', '/.ranking-data/rankings.json']) {
+assert.match((await read('/js/account/account-ui.js')).headers.get('content-type'), /javascript/);
+for (const route of ['/.env', '/server/account-server.mjs', '/supabase/account-schema.sql', '/api/ranking/board', '/.ranking-data/rankings.json']) {
   const response = await fetch(new URL(route, base), { signal: AbortSignal.timeout(60000), redirect: 'error' });
   assert.equal(response.status, 404, `${route} phải được bảo vệ`);
 }
-console.log('PASS deployment: trang game; API; hai bảng xếp hạng; tệp bí mật được bảo vệ');
+console.log('PASS deployment: trang game; API; đăng nhập; tệp bí mật được bảo vệ');

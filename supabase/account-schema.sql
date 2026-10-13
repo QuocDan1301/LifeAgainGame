@@ -1,5 +1,5 @@
 -- Chạy một lần trong SQL Editor của project Supabase.
--- Chạy lại an toàn: không xóa tài khoản hoặc điểm đã có.
+-- Giữ tài khoản hiện có; loại bỏ dữ liệu xếp hạng.
 begin;
 create schema if not exists life_again_private;
 revoke all on schema life_again_private from public, anon, authenticated;
@@ -12,8 +12,11 @@ create table if not exists life_again_private.ranking_state (
 alter table life_again_private.ranking_state enable row level security;
 revoke all on life_again_private.ranking_state from public, anon, authenticated;
 insert into life_again_private.ranking_state (id, payload)
-values (1, '{"accounts": [], "sessions": [], "starts": [], "runs": []}'::jsonb)
+values (1, '{"accounts": [], "sessions": []}'::jsonb)
 on conflict (id) do nothing;
+update life_again_private.ranking_state
+set payload = payload - 'starts' - 'runs', revision = revision + 1, updated_at = now()
+where payload ? 'starts' or payload ? 'runs';
 
 create or replace function public.life_again_read_state()
 returns jsonb language sql security definer set search_path = '' as $$
@@ -27,16 +30,15 @@ begin
   if jsonb_typeof(next_payload) <> 'object'
     or jsonb_typeof(next_payload->'accounts') is distinct from 'array'
     or jsonb_typeof(next_payload->'sessions') is distinct from 'array'
-    or jsonb_typeof(next_payload->'starts') is distinct from 'array'
-    or jsonb_typeof(next_payload->'runs') is distinct from 'array' then
-    raise exception 'Invalid ranking payload' using errcode = '22023';
+ then
+    raise exception 'Invalid account payload' using errcode = '22023';
   end if;
   update life_again_private.ranking_state
-    set payload = next_payload, revision = revision + 1, updated_at = now()
+    set payload = next_payload - 'starts' - 'runs', revision = revision + 1, updated_at = now()
     where id = 1 and revision = expected_revision
     returning revision into saved_revision;
   if not found then
-    raise exception 'Ranking revision conflict' using errcode = '40001';
+    raise exception 'Account revision conflict' using errcode = '40001';
   end if;
   return jsonb_build_object('revision', saved_revision);
 end;

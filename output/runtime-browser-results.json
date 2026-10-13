@@ -1,0 +1,6 @@
+[
+  "PASS real tabs: a second playing session is blocked",
+  "PASS quota error: visible pause, retry and preserved money after reload",
+  "PASS lock released: remaining tab can enter after the first closes",
+  "PASS 390px viewport: no horizontal page overflow"
+]

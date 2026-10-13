@@ -5,8 +5,8 @@
   "type": "module",
   "engines": { "node": "24.x" },
   "scripts": {
-    "start": "node --env-file-if-exists=.env server/ranking-server.mjs",
-    "test:ranking": "node scripts/check-ranking.mjs && node scripts/check-supabase-storage.mjs && node scripts/check-admin.mjs",
+    "start": "node --env-file-if-exists=.env server/account-server.mjs",
+    "test:account": "node scripts/check-account.mjs && node scripts/check-supabase-storage.mjs && node scripts/check-admin.mjs",
     "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
   }
 }

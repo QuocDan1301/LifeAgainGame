@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { createGameServer } from '../server/ranking-server.mjs';
+import { createGameServer } from '../server/account-server.mjs';
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PLAYWRIGHT_PATH ?? 'C:/Users/Admin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 const db = { accounts: [], sessions: [], starts: [], runs: [] };
@@ -10,7 +10,7 @@ const ids = [];
 const server = createGameServer({ dataFile: null, storage, adminAccountIds: ids });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
-const register = async (username, nickname) => (await fetch(base+'/api/ranking/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, nickname, password: 'test-password' }) })).json();
+const register = async (username, nickname) => (await fetch(base+'/api/account/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, nickname, password: 'test-password' }) })).json();
 const owner = await register('owner', 'Chủ dự án'); ids.push(owner.user.id);
 await register('player', '<script>Người chơi</script>');
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true });

@@ -69,8 +69,6 @@ import {
 import { eventCategories, getEventCategory } from "./events/event-category.js";
 import { getSpecialDialogue } from "./events/special-dialogue.js";
 import { state } from "./core/state.js";
-import { observeRanking } from "./ranking/scoring.js";
-import { initRankingGame } from "./ranking/ranking-ui.js";
 import { createCasualStartChoice, createCasualServiceEvent, isServing } from "./career/street-work.js";
 import { addEventEmotions, addChoiceIcon } from "./events/event-emotions.js";
 import { createPrisonEvent, initCrime, isInPrison } from "./events/crime.js";
@@ -1089,7 +1087,6 @@ motionPreference.addEventListener("change", () => {
 });
 // Lưu toàn bộ tiến trình, gồm cả bước sự kiện đang mở
 function saveEventProgress() {
-  observeRanking(state);
   saveGame(state);
 }
 // Thời điểm nút lựa chọn/xác nhận vừa hiện: chạm thật trong khoảng này được coi là nhấn đúp và bỏ qua.
@@ -2527,7 +2524,6 @@ if (
 if (state.pendingEvent) {
   showPendingEvent();
 }
-initRankingGame(state, saveEventProgress);
 initAchievements(state);
 initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements });
 initCrime(state, {
@@ -2652,7 +2648,6 @@ function showLifeSummary() {
   deathDialog.showModal();
   deathDialog.scrollTop = 0;
   playOutcomeSound("death");
-  queueMicrotask(() => document.dispatchEvent(new Event("ranking-life-ended")));
 }
 deathDialog.addEventListener("cancel", (event) => event.preventDefault());
 document

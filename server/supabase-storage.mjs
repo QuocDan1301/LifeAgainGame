@@ -6,7 +6,7 @@ export function createSupabaseStorage({ url, key, request = fetch }) {
   async function rpc(name, body) {
     let response;
     try { response = await request(new URL(`/rest/v1/rpc/${name}`, base), { method: 'POST', headers: { apikey: key, 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(12000) }); }
-    catch { throw new Error('Chưa kết nối được cơ sở dữ liệu xếp hạng.'); }
+    catch { throw new Error('Chưa kết nối được cơ sở dữ liệu tài khoản.'); }
     if (!response.ok) {
       const error = new Error(response.status === 401 || response.status === 403 ? 'Kiểm tra khóa máy chủ và quyền cơ sở dữ liệu.' : 'Chưa lưu được dữ liệu Supabase. Hãy thử lại.');
       // Lỗi xung đột phiên bản: không ghi đè dữ liệu của máy chủ khác.
@@ -19,11 +19,12 @@ export function createSupabaseStorage({ url, key, request = fetch }) {
     async load() {
       const record = await rpc('life_again_read_state', {});
       if (!Number.isSafeInteger(record?.revision) || !record.payload ||
-          ['accounts', 'sessions', 'starts', 'runs'].some(key => !Array.isArray(record.payload[key]))) throw new Error('Dữ liệu Supabase chưa được khởi tạo đúng.');
+          ['accounts', 'sessions'].some(key => !Array.isArray(record.payload[key]))) throw new Error('Dữ liệu Supabase chưa được khởi tạo đúng.');
       return record;
     },
     async save(payload, revision) {
-      const record = await rpc('life_again_write_state', { expected_revision: revision, next_payload: payload });
+      // Hai mảng rỗng giữ tương thích với schema cũ; không ghi nhận cuộc đời hay điểm.
+      const record = await rpc('life_again_write_state', { expected_revision: revision, next_payload: { ...payload, starts: [], runs: [] } });
       if (!Number.isSafeInteger(record?.revision) || record.revision !== revision + 1) throw new Error('Chưa xác nhận được lần lưu dữ liệu.');
       return record.revision;
     },

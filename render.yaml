@@ -4,13 +4,13 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm run test:ranking
+    buildCommand: npm run test:account
     startCommand: npm start
-    healthCheckPath: /api/ranking/status
+    healthCheckPath: /api/account/status
     envVars:
       - key: NODE_VERSION
         value: 24
-      - key: RANKING_STORAGE
+      - key: ACCOUNT_STORAGE
         value: supabase
       - key: SUPABASE_URL
         value: https://qjxwgvcedzbdzsktyyof.supabase.co
