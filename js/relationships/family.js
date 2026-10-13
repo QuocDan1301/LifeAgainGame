@@ -5,7 +5,7 @@ import { getStreetIncome } from "../career/street-work.js";
 import { applyEmergency, collectIllnessYear } from "../stats/hospital.js";
 import { collectLotteryYear } from "../leisure/lottery.js";
 import { collectHomeLoanYear, collectStoryLoanYear } from '../core/story-transactions.js';
-import { getAnnualSalaryPayment, formatSalary, retirePlayer } from "../career/career-salary.js";
+import { getAnnualSalaryPayment, formatSalary, retirePlayer, RETIREMENT_AGE } from "../career/career-salary.js";
 import { REST_PROMOTION_DELAY, REST_RECOVERY, getAgingDecline, getHealthBand } from "../stats/health-rules.js";
 import { collectMoodYear } from "../stats/mood-rules.js";
 import { collectEmploymentYear, startEmploymentRecord } from "../career/job-loss.js";
@@ -192,7 +192,9 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     Object.assign(player, updates, { age });
     return { childcare: { amount: 0, charges: [], content: "" } };
   }
-  // Năm thụ án (kể cả năm ra tù): không có lương, làm thêm hay học phí bên ngoài.
+  // Năm thụ án (kể cả năm ra tù): không có lương, làm thêm, học phí hay sinh hoạt phí bên ngoài; không thu tiền
+  // cho thuê, không tốn chi phí thú cưng; trả góp nhà tạm ngừng và lịch trả lùi lại (không trừ dồn khi ra tù).
+  // Vẫn trả chi phí nuôi con và lãi nợ.
   if ((player.prison && player.prison.releaseAge > player.age) ||
       (updates.prison && updates.prison.releaseAge > age)) {
     const childcare = getChildcareExpenses(player, age, updates);
@@ -201,14 +203,22 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     const family = collectFamilyYear(player, age);
     const health = collectHealthYear(player, age);
     const illness = player.isAlive === false ? null : collectIllnessYear(player, age);
+    const notes = [];
     if (player.isAlive !== false) {
       player.money -= childcare.amount + interest;
       player.children = (player.children ?? []).map(child => childcare.charges.some(charge => charge.id === child.id)
         ? { ...child, lastCarePaidAtAge: age } : child);
+      if (interest) notes.push(`🏦 Lãi nợ trong năm thụ án: -${formatSalary(interest)}.`);
+      const due = (loan) => loan.outstanding > 0 && age > loan.startedAtAge && age > loan.lastPaidAge;
+      if ((player.homeLoans ?? []).some(due)) {
+        player.homeLoans = player.homeLoans.map(loan => due(loan) ? { ...loan, lastPaidAge: age } : loan);
+        notes.push("🏠 Trả góp nhà tạm ngừng trong năm thụ án; lịch trả lùi lại một năm.");
+      }
+      if (getAssetYearProjection(player, age).recurringIncome) notes.push("🔑 Năm thụ án không thu được tiền cho thuê hay lãi kinh doanh.");
     }
     return { childcare: player.isAlive === false ? { amount: 0, charges: [], content: "" } : childcare,
       family, health, illness,
-      living: interest && player.isAlive !== false ? { content: `🏦 Lãi nợ trong năm thụ án: -${formatSalary(interest)}.` } : null };
+      living: notes.length ? { content: notes.join("\n") } : null };
   }
   migrateChildcareDebt(player, updates);
   // Lãi tính trên số nợ mang sang từ năm trước, trước mọi khoản thu chi của năm nay.
@@ -315,11 +325,18 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
 // Dự báo năm tới: thu nhập (lương, làm thêm) và chi phí bắt buộc (sinh hoạt, nuôi con, học phí).
 export function forecastNextYear(player) {
   const age = (player.age ?? 0) + 1;
+  // Năm thụ án tính như completeLifeYear: chỉ còn chi phí nuôi con và lãi nợ.
+  if (player.prison && player.prison.releaseAge > (player.age ?? 0)) {
+    const interest = getDebtInterest(age, player.money ?? 0);
+    const childcare = getChildcareExpenses(player, age).amount ?? 0;
+    return { age, income: 0, costs: interest + childcare, living: 0, interest, childcare, tuition: 0, mortgage: 0, upkeep: 0,
+      assets: 0, repayments: 0, after: (player.money ?? 0) - interest - childcare };
+  }
   const forecastWorker = { ...player };
   retirePlayer(forecastWorker, age);
   const salary = forecastWorker.employmentStatus === "retired" || (forecastWorker.employmentStatus === "employed" && forecastWorker.layoffDue !== age && forecastWorker.contractEndAge !== age)
     ? getAnnualSalaryPayment(forecastWorker, age)?.amount ?? 0 : 0;
-  const sideJobs = player.restYear === age ? 0 : (player.sideJobs ?? [])
+  const sideJobs = player.restYear === age || age >= RETIREMENT_AGE ? 0 : (player.sideJobs ?? [])
     .reduce((sum, job) => sum + (job.startedAtAge < age ? shiftTypes[job.shift]?.salary ?? 0 : 0), 0);
   const assets = getAssetYearProjection(player, age);
   const repayments = (player.storyLoans ?? []).reduce((sum, loan) => {

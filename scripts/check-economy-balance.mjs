@@ -6,7 +6,7 @@ import { ACTIVITY_GAIN_CAP, applyActivityGain, collectStatWearYear, previewActiv
 import { getTienLenPot, TIEN_LEN_MAX_STAKE } from '../js/leisure/tien-len.js';
 import { ACTIVITY_SLOTS_PER_YEAR, getActivitySlotsLeft, useActivitySlot } from '../js/core/stat-budget.js';
 import { getPlayerAnnualSalary, getAnnualSalaryPayment, careerAnnualSalaries } from '../js/career/career-salary.js';
-import { getStudentJobBlocker, shiftTypes } from '../js/career/side-jobs.js';
+import { getStudentJobBlocker, shiftTypes, collectSideJobYear } from '../js/career/side-jobs.js';
 import { getLifestyleIllnessChance, collectIllnessYear } from '../js/stats/hospital.js';
 import { studyAbroadCountries, createStudyAbroadSchoolEvent } from '../js/education/study-abroad.js';
 import { collectLotteryYear, getVietlottJackpot, VIETLOTT_JACKPOT, VIETLOTT_JACKPOT_GROWTH, VIETLOTT_JACKPOT_MAX } from '../js/leisure/lottery.js';
@@ -225,5 +225,30 @@ test('Poor health and overwork raise the yearly risk of lifestyle illness; check
   collectIllnessYear(sick, 40, () => 0);
   assert.equal(sick.illnesses.length, 1);
   assert.equal(sick.lifestyleIllnesses, 1);
+});
+test('Convenience-store shifts end at retirement and are not forecast afterwards', () => {
+  const p = { ...worker(), age: 61, employmentStatus: 'unemployed', sideJobs: [{ storeId: 'gs25', shift: 'part-time', startedAtAge: 50 }] };
+  assert.equal(forecastNextYear(p).income - forecastNextYear({ ...p, sideJobs: [] }).income, 0, 'No side-job income forecast at 62');
+  const year = collectSideJobYear(p, 62, () => 0.99);
+  assert.equal(p.sideJobs.length, 0);
+  assert.equal(year.amount, 0);
+  assert.match(year.content, /nghỉ hưu/);
+});
+test('Prison years skip rent and pet costs, pause the mortgage without a lump sum, and match the forecast', () => {
+  const p = { ...worker(), age: 30, money: 1_000_000_000, employmentStatus: 'unemployed', job: null, careerLevel: 0,
+    prison: { enteredAge: 30, releaseAge: 33, crime: 'Trộm cắp', years: 3 },
+    purchases: [{ id: 'house', uid: 'h', boughtAtAge: 20, rentedAtAge: 29 }], livestock: [{ id: 'cat', uid: 'c', boughtAtAge: 20 }],
+    homeLoans: [{ principal: 1_000_000_000, outstanding: 500_000_000, annualPayment: 100_000_000, years: 10,
+      startedAtAge: 25, lastPaidAge: 30, paymentsMade: 5 }] };
+  for (const age of [31, 32, 33]) {
+    const forecast = forecastNextYear(p);
+    actualYear(p, age);
+    assert.equal(p.money, forecast.after, `Forecast matches the prison year ${age}`);
+  }
+  assert.equal(p.money, 1_000_000_000, 'No rent, pet upkeep, living cost or mortgage while serving');
+  assert.equal(p.homeLoans[0].outstanding, 500_000_000);
+  p.prison = null;
+  actualYear(p, 34);
+  assert.equal(p.homeLoans[0].outstanding, 400_000_000, 'One instalment after release, not the paused years at once');
 });
 console.log(`${passed} economy balance groups passed.`);

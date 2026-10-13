@@ -139,7 +139,24 @@
     document.querySelector('.love-accept').click();
     assert(state.player.partner?.id === saved.pendingMatch.person.id && !JSON.parse(localStorage.getItem('lifeAgainSave')).player.pendingMatch,
       'Accepting starts dating that person and clears the saved profile');
-    result.textContent = 'PASS: age-18 career and age-24 chain keep priority over deferrable events; deferred support follows; relatives saved on load; contract notices after skipped or renewed terms; prisoners limited to remote family actions; family support paid once; paid matchmaking profile survives closing';
+    // Từ 62 tuổi: không nhận ca làm thêm; phương án tài chính không gợi ý tìm việc.
+    reset({ age: 62, money: -50_000_000, employmentStatus: 'retired', relatives: [] });
+    $('activities').click(); $('activity-part-time').click();
+    assert([...document.querySelectorAll('.side-job-shift')].every(b => b.disabled) && $('side-job-body').textContent.includes('nghỉ hưu'),
+      'Retirees cannot take convenience-store shifts');
+    document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+    $('age-up').click();
+    while (state.pendingEvent) {
+      const buttons = [...document.querySelectorAll('#event-choices button')].filter(b => !b.disabled);
+      if (state.pendingEvent.stage === 'choice') buttons[0].click(); else $('event-confirm').click();
+      document.querySelectorAll('dialog[open]').forEach(dialog => dialog.id !== 'event-dialog' && dialog.close());
+    }
+    if (state.player.isAlive !== false) {
+      [...document.querySelectorAll('#health-alert button')].find(b => b.textContent.includes('Phương án tài chính'))?.click();
+      const labels = [...document.querySelectorAll('#finance-check-body button')].map(b => b.textContent).join(' | ');
+      assert(labels && !labels.includes('Tìm việc'), `Retirees are not offered job searches: ${labels}`);
+    }
+    result.textContent = 'PASS: age-18 career and age-24 chain keep priority over deferrable events; deferred support follows; relatives saved on load; contract notices after skipped or renewed terms; prisoners limited to remote family actions; family support paid once; paid matchmaking profile survives closing; no side jobs or job offers after retirement';
   } catch (error) {
     result.textContent = `FAIL: ${error.message}\n${error.stack ?? ''}`;
   } finally {

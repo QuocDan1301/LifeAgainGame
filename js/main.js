@@ -100,6 +100,7 @@ import {
   getLivingFamily,
 } from "./relationships/family-members.js";
 import {
+  RETIREMENT_AGE,
   completeCareerYear,
   getAnnualSalaryPayment,
   getPlayerAnnualSalary,
@@ -518,13 +519,17 @@ function showFinanceCheck() {
       ),
     );
   }
-  choices.append(
-    action("🧰 Tìm việc làm thêm", () => {
-      dialog.close();
-      document.getElementById("activity-part-time").click();
-    }),
-  );
-  if (player.employmentStatus !== "employed") {
+  // Đã nghỉ hưu hoặc đang thụ án thì không còn tìm việc làm thêm hay việc chính.
+  const canSeekWork = player.age < RETIREMENT_AGE && !isInPrison(player);
+  if (canSeekWork) {
+    choices.append(
+      action("🧰 Tìm việc làm thêm", () => {
+        dialog.close();
+        document.getElementById("activity-part-time").click();
+      }),
+    );
+  }
+  if (canSeekWork && player.employmentStatus !== "employed") {
     choices.append(
       action("💼 Tìm việc chính (Xin việc)", () => {
         dialog.close();

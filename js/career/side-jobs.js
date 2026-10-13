@@ -3,7 +3,7 @@ import { collectStreetYear, getStreetJobBlocker, startStreetJob, streetJobs, isS
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
-import { getPlayerAnnualSalary } from "./career-salary.js";
+import { getPlayerAnnualSalary, RETIREMENT_AGE } from "./career-salary.js";
 import { SICK_LEAVE, getHealthBand, getJobHealthRule } from "../stats/health-rules.js";
 import { applyEmergency } from "../stats/hospital.js";
 import { describeJobLossCause, getJobLossUpdates } from "./job-loss.js";
@@ -27,6 +27,7 @@ export const shiftTypes = {
 export const ALL_STORES_ACHIEVEMENT = "side-job-all-stores";
 // Chỉ được nhận việc làm thêm khi nhân vật đủ 16 tuổi.
 export const SIDE_JOB_MIN_AGE = 16;
+// Từ tuổi nghỉ hưu không nhận ca làm thêm nữa; ca đang làm kết thúc ở sinh nhật nghỉ hưu (như nghề tự do).
 
 // Đang đi học (dưới 18 tuổi, hoặc 18–21 tuổi đang theo học ở trường): chỉ làm part-time, tối đa
 // STUDENT_MAX_STORES cửa hàng và chưa nhận nghề tự do, để việc làm thêm không vượt cả lương chính thức.
@@ -55,6 +56,12 @@ export function getSideJobTitle(player) {
 // Làm đến kiệt sức (sức khỏe về 0): nhập viện cấp cứu, không tự động tử vong.
 export function collectSideJobYear(player, age, random = Math.random) {
   const street = collectStreetYear(player, age, random);
+  if (age >= RETIREMENT_AGE && jobsOf(player).length) {
+    const stores = jobsOf(player).map((job) => getStore(job.storeId)?.name).filter(Boolean).join(", ");
+    player.sideJobs = [];
+    const content = `🌅 Tôi nghỉ ca làm thêm${stores ? ` ở ${stores}` : ""} khi đến tuổi nghỉ hưu.`;
+    return { amount: street?.amount ?? 0, content: [content, street?.content].filter(Boolean).join("\n") };
+  }
   if (isServing(player)) return street;
   const working = jobsOf(player).filter((job) => job.startedAtAge < age && getStore(job.storeId) && shiftTypes[job.shift]);
   if (!working.length) return street;
@@ -136,10 +143,12 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
     }));
     const working = getSideJobShift(state.player);
     const tooYoung = state.player.age < SIDE_JOB_MIN_AGE;
+    const retired = state.player.age >= RETIREMENT_AGE;
     if (tooYoung) {
       body.append(element("p", "license-age-note",
         `🔞 Bạn cần đủ ${SIDE_JOB_MIN_AGE} tuổi mới được đi làm thêm. Còn ${SIDE_JOB_MIN_AGE - state.player.age} năm nữa nhé!`));
     }
+    if (retired) body.append(element("p", "license-age-note", `🌅 Từ ${RETIREMENT_AGE} tuổi bạn đã nghỉ hưu, không nhận ca làm thêm nữa.`));
     const health = getJobHealthRule(state.player);
     if (!tooYoung && (health.message || health.warning)) {
       body.append(element("p", health.allowed ? "side-job-health-warning" : "license-age-note", health.message ?? health.warning));
@@ -156,8 +165,8 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       });
       choice.dataset.shift = shift.id;
       const studentBlock = shift.id === "full-time" ? getStudentJobBlocker(state.player, shift.id) : "";
-      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken || studentBlock || !health.allowed || isServing(state.player));
-      const note = element("span", "side-job-note", tooYoung ? `Từ ${SIDE_JOB_MIN_AGE} tuổi.` : studentBlock ? studentBlock : blocked
+      choice.disabled = Boolean(tooYoung || retired || blocked || fullTimeTaken || studentBlock || !health.allowed || isServing(state.player));
+      const note = element("span", "side-job-note", tooYoung ? `Từ ${SIDE_JOB_MIN_AGE} tuổi.` : retired ? "Đã nghỉ hưu." : studentBlock ? studentBlock : blocked
         ? `Đang làm ${shiftTypes[working].name}, cần nghỉ hết mới chuyển được.`
         : fullTimeTaken ? "Bạn đã có một việc full-time." : shift.rule);
       choice.append(note);
@@ -206,7 +215,8 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         "Nhận việc",
         () => {
           const jobs = jobsOf(state.player);
-          if (!getJobHealthRule(state.player).allowed || isServing(state.player) || getStudentJobBlocker(state.player, shift.id)) return;
+          if (!getJobHealthRule(state.player).allowed || isServing(state.player) || getStudentJobBlocker(state.player, shift.id) ||
+              state.player.age >= RETIREMENT_AGE || state.player.isAlive === false) return;
           if (state.player.age < SIDE_JOB_MIN_AGE || jobs.some((job) => job.storeId === store.id) ||
               (jobs.length && (jobs[0].shift !== shift.id || shift.id === "full-time"))) return;
           state.player.sideJobs = [...jobs, { storeId: store.id, shift: shift.id, startedAtAge: state.player.age }];
