@@ -1,7 +1,7 @@
 import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { getTravelGain } from "../stats/mood-rules.js";
-import { applyActivityGain, previewActivityGain } from "../core/stat-budget.js";
+import { NO_SLOT_LABEL, applyActivityGain, describeActivitySlots, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
 // Du lịch: trả chi phí chuyến đi để tăng hạnh phúc. Mỗi năm đi được một chuyến.
 // Cùng một điểm đến nhiều năm liên tiếp thì hiệu quả giảm dần (xem TRAVEL_REPEAT_RATES).
@@ -40,7 +40,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
 
   function travel(place) {
     const player = state.player;
-    if (player.isAlive === false || player.money < place.cost || hasTripThisYear(player)) return;
+    if (player.isAlive === false || player.money < place.cost || hasTripThisYear(player) || !useActivitySlot(player)) return;
     const { count, rate, gain } = getTravelGain(player, place);
     player.money -= place.cost;
     player.tripsTaken = { ...(player.tripsTaken ?? {}), [place.id]: player.age };
@@ -85,12 +85,13 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
       for (const place of places) {
         const visited = hasTraveledThisYear(player, place.id);
         const traveled = hasTripThisYear(player);
+        const free = getActivitySlotsLeft(player) > 0;
         const affordable = player.money >= place.cost;
         const item = element("article", `shop-item food-item${place.id === justVisited ? " is-eaten" : ""}`);
         const action = button("shop-buy travel-go",
-          visited ? "✅ Đã đi năm nay" : traveled ? "Hẹn năm sau" : affordable ? "🧳 Lên đường" : "Không đủ tiền", () => travel(place));
+          visited ? "✅ Đã đi năm nay" : traveled ? "Hẹn năm sau" : !free ? NO_SLOT_LABEL : affordable ? "🧳 Lên đường" : "Không đủ tiền", () => travel(place));
         action.dataset.place = place.id;
-        action.disabled = traveled || !affordable || player.isAlive === false;
+        action.disabled = traveled || !free || !affordable || player.isAlive === false;
         item.append(
           element("h4", "", `${place.icon} ${place.name} · ${place.country}`),
           element("p", "shop-figures", travelFigures(place)),
@@ -102,7 +103,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
       return card;
     });
     body.replaceChildren(back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)}`),
-      element("p", "game-motto", "Mỗi năm đi được một chuyến. Hạnh phúc tối đa 100. Cùng một nơi nhiều năm liền sẽ bớt hào hứng: năm thứ hai 75%, từ năm thứ ba 50%; đổi nơi hoặc nghỉ một năm thì vui trọn vẹn."), ...cards);
+      element("p", "game-motto", `Mỗi năm đi được một chuyến. Hạnh phúc tối đa 100. Cùng một nơi nhiều năm liền sẽ bớt hào hứng: năm thứ hai 75%, từ năm thứ ba 50%; đổi nơi hoặc nghỉ một năm thì vui trọn vẹn. ${describeActivitySlots(player)}`), ...cards);
   }
 
   $("activity-travel").addEventListener("click", () => {

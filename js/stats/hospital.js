@@ -3,7 +3,7 @@ import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { EMERGENCY, REST_ILLNESS_LOSS_RATE, formatChance, getEmergencyDeathChance, getHealthBand } from "./health-rules.js";
 
-// Mỗi ván có 0–2 bệnh, phát ngẫu nhiên ở tuổi 18–95. Bệnh tách khỏi chỉ số Sức khỏe: tập luyện
+// Mỗi ván có 0–2 bệnh định sẵn, phát ngẫu nhiên ở tuổi 18–95, cộng bệnh do lối sống (LIFESTYLE_ILLNESS). Bệnh tách khỏi chỉ số Sức khỏe: tập luyện
 // không chữa được bệnh, chỉ điều trị ở Bệnh viện mới khỏi. Bệnh chưa điều trị nặng dần theo số năm:
 // Nhẹ → Nặng (severeAfter năm) → Nguy kịch (criticalAfter năm); mỗi mức trừ sức khỏe khác nhau (loss)
 // và chỉ ở mức Nguy kịch mới có nguy cơ tử vong mỗi năm (criticalRisk). Các con số là thông số gameplay.
@@ -138,6 +138,8 @@ export function collectIllnessYear(player, age, random = Math.random) {
     }
   }
   if (player.isAlive !== false) {
+    const lifestyle = rollLifestyleIllness(player, age, random);
+    if (lifestyle) lines.push(lifestyle);
     for (const planned of player.illnessPlan) {
       const disease = getDisease(planned.id);
       if (!disease || planned.age !== age || (player.illnesses ?? []).some((entry) => entry.id === planned.id)) continue;
@@ -146,6 +148,42 @@ export function collectIllnessYear(player, age, random = Math.random) {
     }
   }
   return lines.length ? { content: lines.join("\n") } : null;
+}
+
+// Bệnh do lối sống: ngoài lịch bệnh định sẵn, sức khỏe kém, làm việc quá tải và tinh thần chán nản kéo dài
+// làm tăng nguy cơ mắc bệnh mới mỗi năm. Khám sức khỏe định kỳ năm trước giảm một nửa nguy cơ.
+export const LIFESTYLE_ILLNESS = {
+  byBand: { good: 0, fair: 0.02, weak: 0.05, critical: 0.08, empty: 0.08 },
+  overwork: 0.03, overworkLoad: 3, strained: 0.02, strainedYears: 2, olderFrom: 50, olderRate: 1.5,
+  checkupRate: 0.5, maxPerLife: 3,
+};
+export const CHECKUP = { cost: 2_000_000 };
+// Tải công việc: việc chính 1, full-time 2, mỗi ca part-time 0,5, mỗi nghề tự do 1.
+export function getWorkload(player) {
+  return (player.employmentStatus === "employed" ? 1 : 0) +
+    (player.sideJobs ?? []).reduce((sum, job) => sum + (job.shift === "full-time" ? 2 : 0.5), 0) +
+    (player.streetJobs ?? []).length;
+}
+export function getLifestyleIllnessChance(player, age) {
+  if (age < ILLNESS_MIN_AGE || age > ILLNESS_MAX_AGE || (player.lifestyleIllnesses ?? 0) >= LIFESTYLE_ILLNESS.maxPerLife) return 0;
+  let chance = LIFESTYLE_ILLNESS.byBand[getHealthBand(player.health).id] ?? 0;
+  if (getWorkload(player) >= LIFESTYLE_ILLNESS.overworkLoad) chance += LIFESTYLE_ILLNESS.overwork;
+  if ((player.strainedYears ?? 0) >= LIFESTYLE_ILLNESS.strainedYears) chance += LIFESTYLE_ILLNESS.strained;
+  if (age >= LIFESTYLE_ILLNESS.olderFrom) chance *= LIFESTYLE_ILLNESS.olderRate;
+  if (player.checkupAge === age - 1) chance *= LIFESTYLE_ILLNESS.checkupRate;
+  return Math.min(0.25, chance);
+}
+function rollLifestyleIllness(player, age, random) {
+  const chance = getLifestyleIllnessChance(player, age);
+  if (!chance || random() >= chance) return null;
+  const pool = diseases.filter((disease) => age >= (disease.minAge ?? 0) &&
+    !(player.illnesses ?? []).some((entry) => entry.id === disease.id) &&
+    !(player.illnessPlan ?? []).some((planned) => planned.id === disease.id && planned.age >= age));
+  if (!pool.length) return null;
+  const disease = pool[Math.floor(random() * pool.length)];
+  player.illnesses = [...(player.illnesses ?? []), { id: disease.id, since: age }];
+  player.lifestyleIllnesses = (player.lifestyleIllnesses ?? 0) + 1;
+  return `🩺 Sức khỏe sa sút và nhịp sống quá tải khiến bạn mắc ${disease.icon} ${disease.name} (mức Nhẹ). Giữ sức khỏe, giảm tải công việc và khám định kỳ giúp phòng bệnh: Hoạt động → Bệnh viện.`;
 }
 
 // Mô tả tình trạng hiện tại và nguy cơ năm tới của một bệnh (dùng cho Bệnh viện và thẻ bệnh).
@@ -253,6 +291,21 @@ export function initHospital(state, { renderMoney, renderLogEntry, onChange = ()
         render();
       }));
 
+    // Khám định kỳ: giảm một nửa nguy cơ mắc bệnh do lối sống ở sinh nhật tới.
+    const checkup = element("section", "dialog-card hospital-checkup");
+    const checked = player.checkupAge === player.age;
+    const chance = getLifestyleIllnessChance(player, player.age + 1);
+    checkup.append(element("h3", "", "🩺 Khám sức khỏe định kỳ"),
+      element("p", "side-job-intro", `${formatMoney(CHECKUP.cost)}, mỗi năm một lần. Giảm một nửa nguy cơ mắc bệnh do lối sống năm tới ` +
+        `(hiện ${formatChance(chance)}). Sức khỏe tốt, không làm quá tải và tinh thần ổn định giúp nguy cơ thấp nhất.`),
+      Object.assign(button("shop-buy hospital-checkup-go", checked ? "✅ Đã khám năm nay" : player.money < CHECKUP.cost ? "Không đủ tiền" : "🩺 Đi khám", () => {
+        if (state.player.isAlive === false || state.player.checkupAge === state.player.age || state.player.money < CHECKUP.cost) return;
+        state.player.money -= CHECKUP.cost;
+        state.player.checkupAge = state.player.age;
+        record(`🩺 Khám sức khỏe định kỳ: Tiền -${formatMoneyAmount(CHECKUP.cost)} VNĐ. Nguy cơ mắc bệnh do lối sống năm tới giảm một nửa.`);
+        render();
+      }), { disabled: checked || player.money < CHECKUP.cost || player.isAlive === false }));
+
     const prices = element("section", "dialog-card");
     prices.append(element("h3", "", "📋 Bảng giá viện phí (mức Nhẹ)"));
     const table = element("ul", "dialog-entries hospital-prices");
@@ -265,7 +318,7 @@ export function initHospital(state, { renderMoney, renderLogEntry, onChange = ()
       "Bệnh để lâu sẽ nặng dần: mức Nặng viện phí ×1,5, mức Nguy kịch ×2 và có nguy cơ tử vong mỗi năm. " +
       "Sức khỏe thấp làm bệnh tiến triển nhanh hơn. Tập luyện không chữa được bệnh. " +
       `Sức khỏe cạn khi bệnh chưa nguy kịch thì được cấp cứu (${formatMoney(EMERGENCY.cost)}).`));
-    body.replaceChildren(back, wallet, current, rest, prices);
+    body.replaceChildren(back, wallet, current, rest, checkup, prices);
   }
 
   function open() {

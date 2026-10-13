@@ -1,0 +1,26 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/style.css"><title>Tower UI checks</title><pre id="result">Running…</pre>
+<script type="module">
+const assert = (value, message) => { if (!value) throw new Error(message); };
+try {
+  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  parsed.querySelectorAll('script').forEach(el => el.remove()); parsed.querySelectorAll('[src]').forEach(el => el.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  const { createInitialState } = await import('../js/core/state.js');
+  const { initGames } = await import('../js/leisure/games.js');
+  const state = createInitialState(); Object.assign(state.player, { age: 30, money: 10_000_000 });
+  state.player.gameRound = { game: 'tower', bet: 100_000, choice: 'climb', safeDoors: [0, 0, 0, 0, 0], floor: 0, phase: 'choose' };
+  initGames(state, { renderMoney() {}, renderLogEntry() {} });
+  const open = () => { document.querySelectorAll('dialog[open]').forEach(el => el.close()); document.getElementById('activity-games').click(); };
+  open();
+  assert(document.querySelectorAll('.game-floor').length === 5, 'Five monetary milestones');
+  assert(document.querySelector('[aria-label="Mở cửa trái"]'), 'Door has accessible name');
+  document.querySelector('[aria-label="Mở cửa trái"]').click();
+  assert([...document.querySelectorAll('.game-door')].every(el => el.disabled), 'Both doors disabled during reveal');
+  await new Promise(resolve => setTimeout(resolve, 750));
+  assert(state.player.gameRound.floor === 1 && document.querySelector('.game-tower-stop').textContent.includes('190k'), 'Cash-out amount matches cleared floor');
+  assert(document.querySelector('.game-tower-next').textContent.includes('380k'), 'Next-floor target is visible');
+  window.towerTest = { state, open };
+  document.getElementById('result').textContent = 'PASS tower UI: five milestones; named doors; reveal lock; current floor; accurate cash-out and next-floor amounts';
+} catch (error) { document.getElementById('result').textContent = 'FAIL: ' + error.stack; }
+</script>

@@ -2,32 +2,39 @@ import { getStudyAbroadCountry } from "../education/study-abroad.js";
 import { formatMoney } from "../core/money-format.js";
 
 // Fixed yearly income in VNĐ for game balance, ordered by career levels 1–3.
+// Bậc 3 nằm trong khoảng 300–720 triệu: nghề cao nhất chỉ gấp khoảng 2 lần nghề thấp nhất,
+// để chọn ngành theo sở thích và dấu mốc tuổi 16 thay vì chỉ theo lương.
+// Nghề thi đấu (bóng đá, esports) lương cao nhưng sau ATHLETE_PEAK_END tuổi chuyển sang huấn luyện,
+// bình luận với ATHLETE_LATE_RATE lương.
 export const careerAnnualSalaries = {
-  "study-abroad": [180_000_000, 360_000_000, 720_000_000],
-  acting: [96_000_000, 240_000_000, 720_000_000],
-  military: [84_000_000, 144_000_000, 240_000_000],
-  singing: [96_000_000, 240_000_000, 720_000_000],
+  "study-abroad": [180_000_000, 360_000_000, 540_000_000],
+  acting: [96_000_000, 240_000_000, 600_000_000],
+  military: [96_000_000, 168_000_000, 360_000_000],
+  singing: [96_000_000, 240_000_000, 600_000_000],
   painting: [84_000_000, 180_000_000, 420_000_000],
   medicine: [144_000_000, 300_000_000, 600_000_000],
   programming: [120_000_000, 240_000_000, 480_000_000],
-  accounting: [96_000_000, 180_000_000, 300_000_000],
+  accounting: [96_000_000, 192_000_000, 360_000_000],
   law: [120_000_000, 264_000_000, 540_000_000],
-  teaching: [84_000_000, 144_000_000, 240_000_000],
-  football: [120_000_000, 360_000_000, 1_200_000_000],
+  teaching: [96_000_000, 168_000_000, 360_000_000],
+  football: [120_000_000, 300_000_000, 720_000_000],
   psychology: [96_000_000, 192_000_000, 360_000_000],
-  esports: [120_000_000, 300_000_000, 900_000_000],
-  tiktok: [96_000_000, 240_000_000, 600_000_000],
-  youtube: [120_000_000, 300_000_000, 840_000_000],
+  esports: [120_000_000, 264_000_000, 660_000_000],
+  tiktok: [96_000_000, 216_000_000, 540_000_000],
+  youtube: [120_000_000, 264_000_000, 600_000_000],
   business: [108_000_000, 216_000_000, 480_000_000],
   finance: [132_000_000, 264_000_000, 600_000_000],
-  mechanical: [96_000_000, 180_000_000, 336_000_000],
+  mechanical: [96_000_000, 192_000_000, 360_000_000],
   architecture: [120_000_000, 240_000_000, 480_000_000],
   fashion: [96_000_000, 216_000_000, 480_000_000],
   marketing: [108_000_000, 240_000_000, 540_000_000],
-  tourism: [96_000_000, 180_000_000, 300_000_000],
+  tourism: [96_000_000, 192_000_000, 360_000_000],
   culinary: [84_000_000, 180_000_000, 420_000_000],
   general: [96_000_000, 180_000_000, 300_000_000],
 };
+export const ATHLETE_CAREERS = ["football", "esports"];
+export const ATHLETE_PEAK_END = 35;
+export const ATHLETE_LATE_RATE = 0.6;
 
 export function getCareerAnnualSalary(careerId, level, careerPath = null) {
   if (!Number.isInteger(level) || level < 1 || level > 3) return 0;
@@ -36,9 +43,11 @@ export function getCareerAnnualSalary(careerId, level, careerPath = null) {
   return (careerAnnualSalaries[careerId] ?? careerAnnualSalaries.general)[level - 1];
 }
 
-export function getPlayerAnnualSalary(player) {
+export function getPlayerAnnualSalary(player, age = player.age) {
   if (player.employmentStatus !== "employed" || player.isAlive === false) return 0;
-  return getCareerAnnualSalary(player.careerPath?.id, player.careerLevel, player.careerPath);
+  const salary = getCareerAnnualSalary(player.careerPath?.id, player.careerLevel, player.careerPath);
+  return ATHLETE_CAREERS.includes(player.careerPath?.id) && age > ATHLETE_PEAK_END
+    ? Math.round((salary * ATHLETE_LATE_RATE) / 1000) * 1000 : salary;
 }
 
 export const formatSalary = formatMoney;
@@ -56,7 +65,7 @@ export function getAnnualSalaryPayment(player, age, updates = {}) {
     ? { ...player, ...updates } : alreadyWorking ? player : { ...player, ...updates };
   if (worker.isAlive === false) return null;
   const annualAmount = worker.employmentStatus === "retired"
-    ? worker.pensionAnnualAmount / PENSION_RATE : getPlayerAnnualSalary(worker);
+    ? worker.pensionAnnualAmount / PENSION_RATE : getPlayerAnnualSalary(worker, age);
   if (!annualAmount || !Number.isInteger(age) || age < player.age || player.lastSalaryAge >= age) return null;
   const years = alreadyWorking ? Math.max(1, age - Math.max(player.age, player.lastSalaryAge ?? player.age)) : 1;
   const rank = worker.job || `bậc ${worker.careerLevel}`;
@@ -70,7 +79,9 @@ export function getAnnualSalaryPayment(player, age, updates = {}) {
   }
   const amount = annualAmount * years;
   return { age, amount, annualAmount, years, rank,
-    content: `💰 Nhận lương ${yearsText} ở bậc ${rank}: +${formatSalary(amount)}.` };
+    content: `💰 Nhận lương ${yearsText} ở bậc ${rank}: +${formatSalary(amount)}.` +
+      (ATHLETE_CAREERS.includes(worker.careerPath?.id) && age > ATHLETE_PEAK_END
+        ? ` Đã qua tuổi thi đấu đỉnh cao, bạn chuyển sang huấn luyện và bình luận (${Math.round(ATHLETE_LATE_RATE * 100)}% lương bậc).` : "") };
 }
 
 // Resolve event money first, then add salary separately so a purchase or bonus

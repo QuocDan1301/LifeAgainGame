@@ -1,6 +1,6 @@
 import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
-import { applyActivityGain, describeActivityRoom, previewActivityGain } from "../core/stat-budget.js";
+import { NO_SLOT_LABEL, applyActivityGain, describeActivityRoom, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
 // Ăn uống: trả tiền để tăng chỉ số. Mỗi món ăn được một lần mỗi năm để chỉ số
 // không bị đẩy lên tối đa chỉ bằng cách mua liên tục.
@@ -45,7 +45,8 @@ export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
 
   function eat(dish) {
     const player = state.player;
-    if (player.isAlive === false || player.money < dish.price || hasEatenThisYear(player, dish.id)) return;
+    if (player.isAlive === false || player.money < dish.price || hasEatenThisYear(player, dish.id) ||
+        !useActivitySlot(player)) return;
     player.money -= dish.price;
     player.mealsEaten = { ...(player.mealsEaten ?? {}), [dish.id]: player.age };
     const changes = [];
@@ -77,9 +78,10 @@ export function initFood(state, { renderMoney, renderStats, renderLogEntry }) {
       const eaten = hasEatenThisYear(player, dish.id);
       const affordable = player.money >= dish.price;
       const item = element("article", `shop-item food-item${dish.id === justEaten ? " is-eaten" : ""}`);
-      const action = button("shop-buy food-eat", eaten ? "✅ Đã ăn năm nay" : affordable ? "🍴 Ăn" : "Không đủ tiền", () => eat(dish));
+      const free = getActivitySlotsLeft(player) > 0;
+      const action = button("shop-buy food-eat", eaten ? "✅ Đã ăn năm nay" : !free ? NO_SLOT_LABEL : affordable ? "🍴 Ăn" : "Không đủ tiền", () => eat(dish));
       action.dataset.dish = dish.id;
-      action.disabled = eaten || !affordable || player.isAlive === false;
+      action.disabled = eaten || !free || !affordable || player.isAlive === false;
       item.append(
         element("h4", "", `${dish.icon} ${dish.name}`),
         element("p", "", dish.description),

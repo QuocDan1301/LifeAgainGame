@@ -1,0 +1,75 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/style.css">
+<title>Auction checks</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+try {
+  const parsed = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  parsed.querySelectorAll('script').forEach(el => el.remove());
+  parsed.querySelectorAll('[src]').forEach(el => el.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  const { createInitialState } = await import('../js/core/state.js');
+  const { initGames } = await import('../js/leisure/games.js');
+  const { trackSavedGame } = await import('../js/core/save-store.js');
+  const state = createInitialState();
+  Object.assign(state.player, { age: 18, money: 10_000_000, isAlive: true });
+  const initialMoney = state.player.money;
+  const logs = [];
+  initGames(state, { renderMoney() {}, renderLogEntry(entry) { logs.push(entry); } });
+  const { initLifeProfile } = await import('../js/core/life-profile.js');
+  initLifeProfile(state, { renderStats() {}, renderLogEntry() {}, checkAchievements() {} });
+  const body = document.getElementById('games-body');
+  const click = text => { const button = [...body.querySelectorAll('button')].find(el => el.textContent === text); assert(button, text); button.click(); };
+  const open = () => { document.querySelectorAll('dialog[open]').forEach(el => el.close()); document.getElementById('activity-games').click(); body.querySelector('[data-game=auction]').click(); };
+  open();
+  assert(!state.player.auction && !state.player.gamePlays, 'Preview does not consume a play');
+  body.querySelector('.auction-start').click();
+  assert(state.player.gamePlays.count === 1, 'Starting consumes one play');
+  const id = state.player.auction.id, fee = state.player.auction.fee;
+  assert(state.player.money === initialMoney, 'Starting does not debit purchase money');
+  const saved = JSON.parse(localStorage.getItem('lifeAgainSave'));
+  assert(saved.player.auction.id === id, 'Artifact and hidden truth saved immediately');
+  open();
+  assert(state.player.auction.id === id && state.player.gamePlays.count === 1, 'Reopening resumes same session');
+  click(`🔎 Thuê chuyên gia · ${(await import('../js/core/money-format.js')).formatMoney(fee)}`);
+  assert(state.player.money === initialMoney - fee && state.player.auction.appraised, 'Appraisal debits once');
+  assert(body.querySelector('.auction-appraisal'), 'Estimate is visible');
+  assert(!body.textContent.includes('Giá trị xác thực'), 'Truth stays hidden before result');
+  // Resume serialized state, then use a fixture where all NPCs abandon the lot.
+  Object.assign(state, JSON.parse(localStorage.getItem('lifeAgainSave'))); trackSavedGame();
+  state.player.auction.bidders.forEach(bidder => { bidder.limit = 0; });
+  open(); body.querySelector('.auction-bid').click();
+  const bought = state.player.auctionItems[0];
+  assert(bought.uid === id && state.player.auction.settled, 'Won lot enters assets once');
+  assert(state.player.money === initialMoney - fee - bought.paid, 'Only purchase price and appraisal deducted');
+  const moneyAfterBuy = state.player.money;
+  open(); assert(state.player.auctionItems.length === 1 && state.player.money === moneyAfterBuy, 'Result reopen never duplicates purchase');
+  document.querySelectorAll('dialog[open]').forEach(el => el.close());
+  document.getElementById('assets').click();
+  const artifactTab = [...document.querySelectorAll('#life-tabs button')].find(el => el.textContent.includes('Cổ vật'));
+  assert(artifactTab, 'Artifact collection has its own asset tab'); artifactTab.click();
+  const sell = document.querySelector('.auction-sell'); assert(sell, 'Artifact is sellable from assets');
+  sell.click(); document.getElementById('shop-confirm').click();
+  assert(state.player.money === moneyAfterBuy + bought.value && state.player.auctionItems.length === 0, 'Selling pays real value');
+  sell.click(); document.getElementById('shop-confirm').click();
+  assert(state.player.money === moneyAfterBuy + bought.value, 'Stale sale cannot pay twice');
+  open(); body.querySelector('.auction-next').click(); body.querySelector('.auction-start').click();
+  assert(state.player.gamePlays.count === 2 && state.player.auction.id !== id, 'New session consumes exactly one play');
+  const beforeWithdraw = state.player.money; click('Bỏ cuộc');
+  assert(state.player.money === beforeWithdraw && state.player.auctionItems.length === 0, 'Withdraw never charges purchase price');
+  state.player.gamePlays.count = 5; open();
+  assert(body.querySelector('.auction-next').disabled, 'No new session after annual limit');
+  assert(logs.length >= 4, 'Appraisal, purchase, sale and withdrawal reach game log');
+  state.player.auction = null; state.player.age = 17;
+  document.querySelectorAll('dialog[open]').forEach(el => el.close()); document.getElementById('activity-games').click();
+  assert(body.querySelector('[data-game=auction]').disabled, 'Under 18 cannot start');
+  state.player.age = 18; state.player.gamePlays.count = 0;
+  open(); body.querySelector('.auction-start').click();
+  click(`🔎 Thuê chuyên gia · ${(await import('../js/core/money-format.js')).formatMoney(state.player.auction.fee)}`);
+  result.textContent = 'PASS auction UI: preview; annual play count; durable hidden truth; resume; appraisal; buy; asset sale; duplicate protection; withdrawal; age and annual limits';
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+</script>

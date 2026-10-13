@@ -4,7 +4,7 @@ import { askConfirm } from "../ui/confirm-dialog.js";
 import {
   addPlush, arcadeGames, arcadeOf, CLAW_RARE_ACHIEVEMENT, CLAW_SECONDS, CLAW_START, COIN_VALUE, coinPacks, cowOf, cowTypes,
   describeTiers, formatPercent, gameOf, HAPPY_PLAYS_PER_YEAR, judgeClawGrab, playsThisYear, plushies, plushOf, plushRarities,
-  prizes, rarityLabels, rollCowOutcome, stockClawMachine, ticketsForScore,
+  prizes, collectibles, rarityLabels, rollCowOutcome, stockClawMachine, ticketsForScore,
 } from "./game-center-data.js";
 import { playArcadeGame } from "./arcade-games.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
@@ -14,6 +14,8 @@ import { applyActivityGain } from "../core/stat-budget.js";
 // Phí và hạnh phúc được tính ngay khi bắt đầu, cùng một lần lưu; lượt đang chơi nằm trong
 // arcade.session. Đóng popup hay tải lại trang giữa chừng thì lượt được tính với kết quả đã lưu
 // lúc đó (không hoàn xu). Thưởng chỉ cộng khi xóa session nên mỗi lượt được tính đúng một lần.
+import { annualChallenges, progressOf, challengeProgress, recordArcadeResult, claimChallenge, ALBUM_MILESTONES, albumCount, claimAlbumMilestone, recordDescription } from "./game-center-progress.js";
+
 export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry, checkAchievements = () => {} }) {
   const $ = (id) => document.getElementById(id);
   const dialog = $("game-center-dialog");
@@ -94,19 +96,86 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
       card.disabled = !game.ready;
       card.append(element("span", "gc-game-icon", game.icon), element("span", "gc-game-name", game.name),
         element("span", "gc-game-meta", game.ready ? `${game.cost} xu · thưởng ${game.reward}` : "Sắp ra mắt"));
+      card.append(element("span", "gc-personal-record", recordDescription(game, progressOf(arcade(), state.player.age).records[game.id])));
       grid.append(card);
     }
     const links = element("div", "gc-links");
     links.append(button("shop-group gc-link", "🎁 Quầy đổi quà", renderPrizes),
-      button("shop-group gc-link", "🧸 Bộ sưu tập", renderCollection));
+      button("shop-group gc-link", "🧸 Bộ sưu tập", renderCollection),
+      button("shop-group gc-link", "🏅 Kỷ lục cá nhân", renderRecords),
+      button("shop-group gc-link", "📖 Album quà", renderAlbum));
     show(toActivities(), walletBar(),
       element("p", "game-motto", happyLeft()
         ? `Năm nay còn ${happyLeft()}/${HAPPY_PLAYS_PER_YEAR} lượt chơi được +1 hạnh phúc.`
         : "Năm nay đã hết lượt cộng hạnh phúc, nhưng vẫn nhận thưởng như thường."),
-      grid, links);
+      grid, renderChallenges(), links);
   }
 
   // ---------- Đổi xu ----------
+function renderChallenges() {
+    const data = arcade(), annual = progressOf(data, state.player.age).annual;
+    const section = element("section", "gc-challenges");
+    section.append(element("h3", "", `🎯 Thử thách tuổi ${state.player.age}`),
+      element("p", "gc-progress-note", "Ba mục tiêu mới mỗi tuổi. Chỉ tính lượt hoàn thành; thưởng nhận một lần và không đổi ra tiền."));
+    for (const task of annualChallenges(state.player.age)) {
+      const value = challengeProgress(task, annual), claimed = annual.claimed.includes(task.id);
+      const row = element("article", "gc-challenge");
+      const description = element("div", "");
+      description.append(element("strong", "", task.title), element("span", "gc-progress-note", `${value}/${task.target} · Thưởng ${task.tickets} vé`));
+      const meter = element("progress", "gc-progress"); meter.max = task.target; meter.value = value; meter.setAttribute("aria-label", task.title); description.append(meter);
+      const claim = button("gc-claim", claimed ? "Đã nhận" : value >= task.target ? "Nhận vé" : "Đang thực hiện", () => {
+        if (isSavePaused() || state.player.isAlive === false) return;
+        const earned = claimChallenge(arcade(), state.player.age, task.id); if (!earned) return;
+        const log = pushLog(`🎯 Game Center: hoàn thành “${earned.title}”, nhận ${earned.tickets} vé thưởng.`);
+        save(); renderLogEntry(log); renderHub();
+      });
+      claim.dataset.challenge = task.id; claim.disabled = claimed || value < task.target || state.player.isAlive === false;
+      row.append(description, claim); section.append(row);
+    }
+    return section;
+  }
+  function renderRecords() {
+    const records = progressOf(arcade(), state.player.age).records;
+    const card = element("section", "dialog-card gc-records");
+    card.append(element("h3", "", "🏅 Thành tích của bạn"), element("p", "gc-progress-note", "Lưu riêng theo nhân vật, giữ qua các năm. Lượt bị đóng giữa chừng không tính kỷ lục hoặc thử thách."));
+    for (const game of arcadeGames) {
+      const row = element("article", "gc-record-row");
+      row.append(element("strong", "", `${game.icon} ${game.name}`), element("span", "", recordDescription(game, records[game.id])));
+      card.append(row);
+    }
+    show(toHub(), walletBar(), card);
+  }
+  function renderAlbum() {
+    const data = arcade(), progress = progressOf(data, state.player.age);
+    const card = element("section", "dialog-card gc-album");
+    card.append(element("h3", "", `📖 Album quà · ${albumCount(progress)}/${collectibles.length}`),
+      element("p", "gc-progress-note", "Mỗi loại quà mở một ô. Đã từng nhận thì luôn ghi nhớ, kể cả khi tặng đi; mốc thưởng nhận một lần trong cuộc đời."));
+    const grid = element("div", "gc-album-grid");
+    for (const item of collectibles) {
+      const discovered = Boolean(progress.album[item.id]);
+      const tile = element("article", `gc-album-item${discovered ? " is-discovered" : ""}`);
+      tile.append(element("span", "gc-album-icon", discovered ? item.icon : "?"), element("strong", "", item.name),
+        element("small", "", discovered ? "Đã khám phá" : item.tickets ? `Đổi ${item.tickets} vé ở quầy quà` : `Gắp thú · ${rarityLabels[item.rarity]}`));
+      grid.append(tile);
+    }
+    card.append(grid);
+    for (const milestone of ALBUM_MILESTONES) {
+      const claimed = progress.milestones.includes(milestone.id);
+      const row = element("article", "gc-album-milestone");
+      row.append(element("span", "", `🏅 ${milestone.title} · ${milestone.count} loại · +${milestone.tickets} vé`));
+      const claim = button("gc-album-claim", claimed ? "Đã nhận huy hiệu" : "Nhận mốc thưởng", () => {
+        if (isSavePaused() || state.player.isAlive === false) return;
+        const earned = claimAlbumMilestone(arcade(), state.player.age, milestone.id); if (!earned) return;
+        const log = pushLog(`📖 Game Center: đạt huy hiệu “${earned.title}”, nhận ${earned.tickets} vé.`);
+        save(); renderLogEntry(log); renderAlbum();
+      });
+      claim.dataset.milestone = milestone.id;
+      claim.disabled = claimed || albumCount(progress) < milestone.count || state.player.isAlive === false;
+      row.append(claim); card.append(row);
+    }
+    show(toHub(), walletBar(), card);
+  }
+
   function renderExchange() {
     const card = element("section", "dialog-card");
     card.append(element("h3", "", "🪙 Đổi xu"), element("p", "side-job-intro",
@@ -353,6 +422,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
     let text;
     let detail;
     let win = false;
+    let earnedTickets = 0;
     if (game.id === "cow") {
       // Kết quả đã bốc khi thả dây (kể cả khi lượt bị gián đoạn). Bản lưu cũ chưa có thì tính như trượt/thoát.
       const outcome = session.outcome ?? { result: session.phase === "pull" ? "escaped" : "miss" };
@@ -382,6 +452,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
       const plush = item ? plushOf(item.id) : null;
       if (outcome.result === "caught" && plush) {
         addPlush(data, plush);
+        progressOf(data, state.player.age).album[plush.id] = true;
         if (plush.rarity === "rare") recordAchievementFlags(state, [CLAW_RARE_ACHIEVEMENT]);
         machine.items = machine.items.filter((entry) => entry !== item);
         win = true;
@@ -400,11 +471,17 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
     } else {
       const tickets = ticketsForScore(game, session.score);
       data.tickets += tickets;
+      earnedTickets = tickets;
       win = tickets > 0;
       title = `🏁 ${session.score} điểm!`;
       text = tickets ? `Nhận ${tickets} vé thưởng.` : `Cần từ ${game.tiers[1][0]} điểm để nhận vé. Thử lại nhé!`;
       detail = `${session.score} điểm, nhận ${tickets} vé`;
     }
+    const progress = recordArcadeResult(data, state.player.age, session, { tickets: earnedTickets, win, interrupted: wasInterrupted });
+    if (progress?.newBest) text += `\n🏅 Kỷ lục cá nhân mới: ${progress.best} điểm.`;
+    const annual = progressOf(data, state.player.age).annual;
+    const ready = annualChallenges(state.player.age).filter(task => !annual.claimed.includes(task.id) && challengeProgress(task, annual) >= task.target);
+    if (ready.length && !wasInterrupted) text += `\n🎯 Có ${ready.length} thử thách hoàn thành. Về Game Center để nhận thưởng.`;
     const log = pushLog(`${game.icon} Game Center · ${game.name}: ${detail}${wasInterrupted ? " (lượt bị gián đoạn)" : ""}. ` +
       `Phí ${session.cost} xu${session.happiness ? ` · Hạnh phúc +${session.happiness}` : ""}.`);
     save();
@@ -457,6 +534,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
     if (state.player.isAlive === false || data.tickets < prize.tickets) return;
     data.tickets -= prize.tickets;
     data.collection[prize.id] = (data.collection[prize.id] ?? 0) + 1;
+    progressOf(data, state.player.age).album[prize.id] = true;
     const log = pushLog(`🎁 Game Center: đổi ${prize.icon} ${prize.name} bằng ${prize.tickets} vé.`);
     save();
     renderLogEntry(log);
@@ -519,6 +597,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
   function giftItem(item) {
     const player = state.player;
     const data = arcade();
+    progressOf(data, state.player.age);
     const partner = player.partner;
     const store = item.kind === "plush" ? null : data.collection;
     const have = item.kind === "plush" ? data.plushes[item.id]?.count ?? 0 : store[item.id] ?? 0;

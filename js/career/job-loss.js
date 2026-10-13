@@ -264,10 +264,12 @@ export function collectEmploymentYear(player, age) {
     if (prepared) player.moodEffects = player.moodEffects.map((effect) => (effect.id === "job-loss" && effect.startedAt === age ? { ...effect, years: 1 } : effect));
     lines.push(`📉 Bị cắt giảm nhân sự ở vị trí ${title}: nhận trợ cấp ${formatMoney(severance)}, Hạnh phúc -${loss}. Việc làm thêm và kinh nghiệm vẫn còn.`);
   } else if (Number.isInteger(player.contractEndAge) && age >= player.contractEndAge) {
-    if (player.contractNoticeAge == null) {
-      // Chưa kịp báo trước (năm đó có sự kiện quan trọng hơn): tự gia hạn thêm một năm để luôn có thông báo.
-      player.contractEndAge = age + 1;
-      lines.push(`📄 Hợp đồng ${player.job} được gia hạn tạm thêm một năm (đến ${age + 1} tuổi) trong lúc chờ thương lượng.`);
+    // Chỉ kết thúc khi đã báo trước cho chính hợp đồng này (contractEnding). contractNoticeAge còn lại từ lần
+    // gia hạn trước không tính. Chưa kịp báo (năm đó có sự kiện quan trọng hơn): gia hạn tạm đến hai sinh nhật sau,
+    // để sinh nhật kế tiếp có thông báo trước một năm như thường lệ.
+    if (!player.contractEnding) {
+      player.contractEndAge = age + 2;
+      lines.push(`📄 Hợp đồng ${player.job} được gia hạn tạm đến ${age + 2} tuổi trong lúc chờ thương lượng.`);
     } else {
       const { title, loss } = lose("contract");
       lines.push(`📄 Hết hợp đồng ở vị trí ${title}: Hạnh phúc -${loss}. Không có trợ cấp; kinh nghiệm vẫn còn để ứng tuyển lại.`);

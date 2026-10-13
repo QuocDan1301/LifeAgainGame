@@ -81,7 +81,7 @@ test('Graduation opens paid work, promotions use international ranks and achieve
   assert.ok(winner);
   assert.deepEqual(winner.achievementIds, ['career-study-abroad']);
   assert.equal(getCareerProfile(path.id).achievement, 'career-study-abroad');
-  assert.deepEqual([1, 2, 3].map(l => getCareerAnnualSalary(path.id, l)), [180e6, 360e6, 720e6]);
+  assert.deepEqual([1, 2, 3].map(l => getCareerAnnualSalary(path.id, l)), [180e6, 360e6, 540e6]);
 });
 test('Foreign student stories require the actual country program and study age', () => {
   const p = player(); p.careerPath = createSchoolEvent(path, p).choices[0].careerPath;
@@ -106,7 +106,7 @@ test('International workers lose salary on quitting and receive only pension at 
   assert.ok(!a.salary);
   const b = year(retired, 62);
   assert.equal(retired.employmentStatus, 'retired');
-  assert.equal(b.salary.amount, 432e6);
+  assert.equal(b.salary.amount, 324e6);
   assert.ok(!b.tuition);
 });
 test('Four separate majors persist; student progress changes recruitment chances', () => {

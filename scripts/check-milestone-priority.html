@@ -1,0 +1,150 @@
+<!doctype html><meta charset="utf-8"><title>Milestone priority checks</title>
+<pre id="milestone-result">Running…</pre>
+<script>
+// Các mốc chỉ xảy ra một lần (chọn ngành 18 tuổi, chuỗi 24 tuổi) không được bị sự kiện có thể hoãn
+// (chuỗi hỗ trợ tinh thần, điều tra lại, người thân qua đời) chiếm mất, vì sau năm đó chúng không quay lại.
+// Kèm các kiểm tra trạng thái: người đang ở tù không làm được việc phải có mặt bên ngoài.
+(async () => {
+  const result = document.getElementById('milestone-result');
+  const assert = (value, message) => { if (!value) throw Error(message); };
+  const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+  const previous = keys.map(key => localStorage.getItem(key));
+  const random = Math.random;
+  try {
+    const html = await (await fetch('../index.html')).text();
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    parsed.querySelectorAll('script').forEach(element => element.remove());
+    parsed.querySelectorAll('[src]').forEach(element => element.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+    const { state, createInitialState } = await import('../js/core/state.js');
+    const { trackSavedGame } = await import('../js/core/save-store.js');
+    const { achievements } = await import('../js/achievements/achievements-data.js');
+    localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(achievements.map(item => [item.id, true]))));
+    localStorage.setItem('lifeAgainAchievementQueue', '[]');
+    document.getElementById('game-screen').hidden = false;
+    document.getElementById('lobby-screen').hidden = true;
+    const reset = player => {
+      Object.assign(state, createInitialState());
+      Object.assign(state.player, { name: 'Test', gender: 'male', health: 80, intelligence: 60, happiness: 60, appearance: 60,
+        studyBlock: 'A00', relatives: [], illnessPlan: [], ...player });
+      localStorage.setItem('lifeAgainSave', JSON.stringify(state));
+      trackSavedGame();
+      document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+      document.getElementById('age-up').disabled = false;
+    };
+    reset({ age: 1 });
+    Math.random = () => 0.99;
+    // Cha mẹ sinh ngẫu nhiên khi bản lưu chưa có phải được lưu ngay, nếu không tải lại sẽ đổi người.
+    reset({ age: 1, relatives: undefined });
+    delete state.player.relatives;
+    localStorage.setItem('lifeAgainSave', JSON.stringify(state));
+    trackSavedGame();
+    await import('../js/main.js');
+    assert(Array.isArray(JSON.parse(localStorage.getItem('lifeAgainSave')).player.relatives),
+      'Relatives created on load are saved at once, so a reload keeps the same parents');
+    const $ = id => document.getElementById(id);
+
+    // 18 tuổi: ba năm buồn liên tiếp mở chuỗi hỗ trợ, nhưng năm chọn ngành vẫn phải là chọn ngành.
+    reset({ age: 17, happiness: 10, lowHappinessYears: 3 });
+    $('age-up').click();
+    assert(state.pendingEvent?.id === 'career-18', `Age 18 must offer the career choice, got ${state.pendingEvent?.kind ?? state.pendingEvent?.id}`);
+    // Chuỗi hỗ trợ vẫn đến vào năm sau (ba năm buồn vẫn còn đó).
+    reset({ age: 18, happiness: 10, lowHappinessYears: 3, careerPath: { id: 'accounting', field: 'Kế toán', school: { name: 'Đại học Kinh tế' } } });
+    $('age-up').click();
+    assert(state.pendingEvent?.kind === 'happiness-support', `The deferred support chain arrives the following year, got ${state.pendingEvent?.kind ?? state.pendingEvent?.id} at ${state.player.age} (low ${state.player.lowHappinessYears}, open ${[...document.querySelectorAll('dialog[open]')].map(d => d.id)})`);
+
+    // 24 tuổi: điều tra lại đến hạn cùng năm thì chuỗi 24 tuổi đi trước, điều tra dời sang năm sau.
+    const offense = { crime: 'Gian lận tài chính', reward: 50_000_000, fine: 37_500_000, years: 3, risk: 0.3 };
+    reset({ age: 23, careerPath: { id: 'accounting', field: 'Kế toán' }, employmentStatus: 'employed', careerLevel: 1,
+      job: 'Kế toán viên', employedSince: 22, lastSalaryAge: 23, nextPromotionAge: 27,
+      workInvestigation: { dueAge: 24, caught: false, offense, receivedAtAge: 22 } });
+    $('age-up').click();
+    assert(state.pendingEvent?.kind === 'orientation-chain', `Age 24 must open the orientation chain, got ${state.pendingEvent?.kind}`);
+
+    // Hợp đồng: năm báo trước bị chiếm chỗ thì vẫn có thông báo ở năm sau, không gia hạn ngầm mãi mãi
+    // và không kết thúc khi chưa báo cho chính hợp đồng này.
+    const { completeLifeYear } = await import('../js/relationships/family.js');
+    const { createContractNoticeEvent } = await import('../js/career/job-loss.js');
+    const worker = extra => ({ ...createInitialState().player, age: 30, money: 0, health: 80, happiness: 60, intelligence: 60,
+      appearance: 60, relatives: [], illnessPlan: [], careerPath: { id: 'programming' }, careerLevel: 1, employmentStatus: 'employed',
+      job: 'Dev', employedSince: 27, lastSalaryAge: 30, contractEndAge: 32, ...extra });
+    const skipped = worker();
+    completeLifeYear(skipped, 31);
+    completeLifeYear(skipped, 32);
+    assert(skipped.employmentStatus === 'employed' && skipped.contractEndAge === 34, 'A missed notice postpones the end so a notice can come');
+    assert(createContractNoticeEvent(skipped, 33, () => 0.99), 'The postponed contract gets its notice the next birthday');
+    const renewed = worker({ contractEndAge: 35, contractNoticeAge: 31, contractEnding: null });
+    for (let age = 31; age <= 35; age++) completeLifeYear(renewed, age);
+    assert(renewed.employmentStatus === 'employed', 'A renewed contract never ends without its own notice');
+    const ending = worker({ contractEndAge: 32, contractNoticeAge: 31, contractEnding: true });
+    completeLifeYear(ending, 31); completeLifeYear(ending, 32);
+    assert(ending.employmentStatus !== 'employed', 'A contract ends on time after its notice');
+
+    // Ở tù: không về thăm, chăm sóc trực tiếp, dành thời gian với người yêu hay vuốt ve thú cưng.
+    const { createAdmirer } = await import('../js/relationships/relationships.js');
+    const partner = { ...createAdmirer({ ...state.player, age: 30, orientation: 'heterosexual' }, 30, () => 0.4), condition: 'weak' };
+    reset({ age: 30, money: 100_000_000, partner, relationshipStartedAtAge: 28,
+      prison: { enteredAge: 29, releaseAge: 33, crime: 'Trộm cắp', years: 4 },
+      relatives: [{ id: 'mother', role: 'Mẹ', name: 'Lan', ageAtPlayerBirth: 25, alive: true, bond: 70, condition: 'weak',
+        trackedFrom: 0, interactions: {}, done: {}, promise: null }],
+      livestock: [{ id: 'cat', uid: 'cat-1', boughtAtAge: 20 }] });
+    $('relationships').click();
+    const action = (type, root = document) => root.querySelector(`[data-action="${type}"]${type === 'together' || type === 'talk' ? '' : '[data-relative]'}`);
+    const visit = document.querySelector('[data-relative="mother"][data-action="visit"]');
+    const care = document.querySelector('[data-relative="mother"][data-action="care"]');
+    const call = document.querySelector('[data-relative="mother"][data-action="call"]');
+    assert(visit?.disabled && care?.disabled, 'Prisoners cannot visit or personally care for relatives');
+    assert(call && !call.disabled, 'Prisoners can still phone relatives');
+    const together = document.querySelector('.relationship-action[data-action="together"]');
+    const talk = document.querySelector('.relationship-action[data-action="talk"]');
+    assert(together?.disabled && talk && !talk.disabled, 'Prisoners cannot spend a day out with their partner but can still talk');
+    const money = state.player.money;
+    visit.disabled = false; visit.click();
+    assert(state.player.money === money && !state.player.relatives[0].done?.visit, 'The visit handler itself refuses prisoners');
+    document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+    $('assets').click();
+    const pet = document.querySelector('.shop-pet');
+    assert(pet?.disabled, 'Prisoners cannot pet their animals at home');
+    // Hỗ trợ từ bố mẹ: bấm hai lần vào cùng một nút chỉ nhận một lần.
+    reset({ age: 30, money: -100_000_000, relatives: [{ id: 'mother', role: 'Mẹ', name: 'Lan', ageAtPlayerBirth: 25, alive: true,
+      bond: 70, condition: 'healthy', trackedFrom: 0, interactions: {}, done: {}, promise: null }] });
+    $('age-up').click(); // vẽ lại thẻ cảnh báo theo trạng thái mới
+    document.querySelectorAll('dialog[open]').forEach(dialog => dialog.id !== 'event-dialog' && dialog.close());
+    while (state.pendingEvent) {
+      const buttons = [...document.querySelectorAll('#event-choices button')].filter(b => !b.disabled);
+      if (state.pendingEvent.stage === 'choice') buttons[0].click(); else $('event-confirm').click();
+      document.querySelectorAll('dialog[open]').forEach(dialog => dialog.id !== 'event-dialog' && dialog.close());
+    }
+    state.player.familySupportAge = null;
+    const financeButton = [...document.querySelectorAll('#health-alert button')].find(b => b.textContent.includes('Phương án tài chính'));
+    assert(financeButton, 'A negative forecast shows the finance options');
+    financeButton.click();
+    const support = [...document.querySelectorAll('#finance-check-body button')].find(b => b.textContent.includes('hỗ trợ từ bố mẹ'));
+    const before = state.player.money;
+    support.click(); support.click();
+    assert(state.player.money === before + 10_000_000, `Family support is paid once per click burst, got ${state.player.money - before}`);
+    // Mai mối: hồ sơ đã trả phí được lưu cùng lúc trừ tiền; đóng hộp thoại rồi mở lại vẫn là người đó, không trừ phí lần hai.
+    reset({ age: 25, money: 10_000_000, orientation: 'heterosexual' });
+    $('activities').click(); $('activity-love').click();
+    document.querySelector('.love-center[data-center="basic"]').click();
+    document.querySelector('.love-gender[data-gender="female"]').click();
+    $('shop-confirm').click();
+    const shown = document.querySelector('.love-profile-text')?.textContent;
+    const saved = JSON.parse(localStorage.getItem('lifeAgainSave')).player;
+    assert(shown && saved.pendingMatch?.person && saved.money === 8_000_000, 'The paid profile is saved together with the fee');
+    document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());
+    $('activities').click(); $('activity-love').click();
+    assert(document.querySelector('.love-profile-text')?.textContent === shown && state.player.money === 8_000_000,
+      'Reopening shows the same paid profile without charging again');
+    document.querySelector('.love-accept').click();
+    assert(state.player.partner?.id === saved.pendingMatch.person.id && !JSON.parse(localStorage.getItem('lifeAgainSave')).player.pendingMatch,
+      'Accepting starts dating that person and clears the saved profile');
+    result.textContent = 'PASS: age-18 career and age-24 chain keep priority over deferrable events; deferred support follows; relatives saved on load; contract notices after skipped or renewed terms; prisoners limited to remote family actions; family support paid once; paid matchmaking profile survives closing';
+  } catch (error) {
+    result.textContent = `FAIL: ${error.message}\n${error.stack ?? ''}`;
+  } finally {
+    Math.random = random;
+    keys.forEach((key, index) => previous[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, previous[index]));
+  }
+})();
+</script>

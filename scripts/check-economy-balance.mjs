@@ -4,6 +4,10 @@ import { shopCatalog, collectAssetIncome, getAssetYearProjection } from '../js/l
 import { completeLifeYear, forecastNextYear, getDebtInterest, getYearLivingCost, DEBT_INTEREST_RATE, FRUGAL_MAX_SAVING } from '../js/relationships/family.js';
 import { ACTIVITY_GAIN_CAP, applyActivityGain, collectStatWearYear, previewActivityGain } from '../js/core/stat-budget.js';
 import { getTienLenPot, TIEN_LEN_MAX_STAKE } from '../js/leisure/tien-len.js';
+import { ACTIVITY_SLOTS_PER_YEAR, getActivitySlotsLeft, useActivitySlot } from '../js/core/stat-budget.js';
+import { getPlayerAnnualSalary, getAnnualSalaryPayment, careerAnnualSalaries } from '../js/career/career-salary.js';
+import { getStudentJobBlocker, shiftTypes } from '../js/career/side-jobs.js';
+import { getLifestyleIllnessChance, collectIllnessYear } from '../js/stats/hospital.js';
 import { studyAbroadCountries, createStudyAbroadSchoolEvent } from '../js/education/study-abroad.js';
 import { collectLotteryYear, getVietlottJackpot, VIETLOTT_JACKPOT, VIETLOTT_JACKPOT_GROWTH, VIETLOTT_JACKPOT_MAX } from '../js/leisure/lottery.js';
 import { createLaterSpecialStep } from '../js/special-events/special-later-life.js';
@@ -37,7 +41,7 @@ test('Forecast includes rentals, businesses, livestock, pet upkeep and the loan 
   assert.equal(JSON.stringify(p), before);
   assert.equal(forecast.assets, 421_800_000);
   assert.equal(forecast.upkeep, 3_500_000);
-  assert.equal(forecast.living, 198_540_000);
+  assert.equal(forecast.living, 290_900_000, '30% of the first 200 million, 50% above');
   actualYear(p, 51);
   assert.equal(p.money, forecast.after);
 });
@@ -51,7 +55,7 @@ test('Loan principal repayments increase wallet but not living costs', () => {
   const p = worker(); p.storyLoans = [{ id: 'tu', principal: 30_000_000, outstanding: 30_000_000,
     repaymentYears: 3, lentAtAge: 50, lastRepaidAge: 50, amountRepaid: 0 }];
   const f = forecastNextYear(p);
-  assert.equal(f.repayments, 10_000_000); assert.equal(f.living, 72_000_000);
+  assert.equal(f.repayments, 10_000_000); assert.equal(f.living, 80_000_000);
   actualYear(p, 51); assert.equal(p.money, f.after);
 });
 test('Existing assets above the new cap remain owned and are paid only for future years', () => {
@@ -147,10 +151,11 @@ test('Activity gains are capped per stat per year from 70, and high stats wear d
   assert.ok(ACTIVITY_GAIN_CAP > 3 && ACTIVITY_GAIN_CAP < 30);
 });
 test('Tien len charges a table fee and caps the stake', () => {
-  assert.equal(getTienLenPot(100_000), 360_000);
+  assert.equal(getTienLenPot(100_000), 320_000);
   assert.ok(getTienLenPot(TIEN_LEN_MAX_STAKE) < TIEN_LEN_MAX_STAKE * 4);
   // Bấm gợi ý mỗi lượt thắng khoảng 28%: với phí bàn, kỳ vọng xấp xỉ hòa vốn thay vì lãi 13%.
-  assert.ok(0.28 * getTienLenPot(1_000_000) / 1_000_000 < 1.02);
+  assert.ok(0.28 * getTienLenPot(1_000_000) / 1_000_000 < 0.95);
+  assert.ok(0.35 * getTienLenPot(1_000_000) / 1_000_000 < 1.15);
 });
 test('Study abroad admission requires intelligence by country, with one open option', () => {
   assert.ok(studyAbroadCountries.some(country => !country.minIntellect));
@@ -181,5 +186,44 @@ test('Vietlott jackpot accumulates yearly, resets when anyone wins and pays the 
   const big = { age: 30, money: 0, vietlottPot: { amount: VIETLOTT_JACKPOT_MAX, updatedAge: 30 } };
   collectLotteryYear(big, 31, noOther);
   assert.equal(getVietlottJackpot(big), VIETLOTT_JACKPOT_MAX, 'Capped');
+});
+test('Each year has a limited number of free-time activity slots', () => {
+  const p = worker(); p.age = 30;
+  for (let i = 0; i < ACTIVITY_SLOTS_PER_YEAR; i++) assert.equal(useActivitySlot(p), true);
+  assert.equal(getActivitySlotsLeft(p), 0);
+  assert.equal(useActivitySlot(p), false, 'No more slots this year');
+  p.age = 31; assert.equal(getActivitySlotsLeft(p), ACTIVITY_SLOTS_PER_YEAR, 'Slots reset on the next birthday');
+});
+test('Top salaries stay within about twice of each other; athletes earn less after their peak', () => {
+  const tops = Object.entries(careerAnnualSalaries).filter(([id]) => id !== 'general').map(([, ranks]) => ranks[2]);
+  assert.ok(Math.max(...tops) <= 2.5 * Math.min(...tops));
+  const p = { ...worker(), careerPath: { id: 'football' }, careerLevel: 3, age: 30 };
+  const peak = getPlayerAnnualSalary(p);
+  assert.ok(getPlayerAnnualSalary(p, 36) < peak);
+  p.age = 36; p.lastSalaryAge = 36;
+  assert.match(getAnnualSalaryPayment(p, 37).content, /huấn luyện/);
+});
+test('Students only take part-time shifts in at most two stores; part-time is a lighter, fair option', () => {
+  const student = { ...worker(), age: 19, careerPath: { id: 'law', school: { name: 'Luật' } }, sideJobs: [] };
+  assert.ok(getStudentJobBlocker(student, 'full-time'));
+  assert.equal(getStudentJobBlocker(student, 'part-time'), '');
+  student.sideJobs = [{ storeId: 'gs25', shift: 'part-time' }, { storeId: 'circle-k', shift: 'part-time' }];
+  assert.ok(getStudentJobBlocker(student, 'part-time'));
+  assert.equal(getStudentJobBlocker({ ...student, age: 22, sideJobs: [] }, 'full-time'), '');
+  const part = shiftTypes['part-time'], full = shiftTypes['full-time'];
+  assert.ok(part.salary / -part.health >= 0.95 * full.salary / -full.health, 'Part-time pays about as well per health point as full-time');
+  assert.ok(-part.health * 5 <= -full.health, 'Five part-time shifts are no harder on health than one full-time job');
+});
+test('Poor health and overwork raise the yearly risk of lifestyle illness; checkups halve it', () => {
+  const healthy = { ...worker(), health: 90, sideJobs: [], streetJobs: [] };
+  assert.equal(getLifestyleIllnessChance(healthy, 40), 0);
+  const tired = { ...worker(), age: 39, health: 30, sideJobs: [{ storeId: 'gs25', shift: 'full-time' }], streetJobs: [], strainedYears: 3 };
+  const risk = getLifestyleIllnessChance(tired, 40);
+  assert.ok(risk > 0.05);
+  assert.ok(Math.abs(getLifestyleIllnessChance({ ...tired, checkupAge: 39 }, 40) - risk / 2) < 1e-9);
+  const sick = { ...tired, illnesses: [], illnessPlan: [] };
+  collectIllnessYear(sick, 40, () => 0);
+  assert.equal(sick.illnesses.length, 1);
+  assert.equal(sick.lifestyleIllnesses, 1);
 });
 console.log(`${passed} economy balance groups passed.`);

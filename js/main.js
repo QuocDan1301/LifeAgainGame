@@ -72,6 +72,7 @@ import { state } from "./core/state.js";
 import { createCasualStartChoice, createCasualServiceEvent, isServing } from "./career/street-work.js";
 import { addEventEmotions, addChoiceIcon } from "./events/event-emotions.js";
 import { createPrisonEvent, initCrime, isInPrison } from "./events/crime.js";
+import { createWorkTemptationEvent, createWorkInvestigationEvent } from "./career/work-temptation.js";
 import { initEducation } from "./education/education.js";
 import { createSchoolEntryReward } from "./education/school-rewards.js";
 import {
@@ -505,6 +506,8 @@ function showFinanceCheck() {
       action(
         `👪 Nhận hỗ trợ từ bố mẹ (+${formatMoney(FAMILY_SUPPORT.amount)})`,
         () => {
+          // Kiểm tra lại lúc bấm: nút cũ (bấm hai lần, hộp thoại chưa vẽ lại) không được nhận thêm lần nữa.
+          if (!canGetFamilySupport(state.player)) return;
           state.player.money += FAMILY_SUPPORT.amount;
           state.player.familySupportAge = state.player.age;
           record(
@@ -758,10 +761,6 @@ function showHealthCheck() {
 }
 // Hiển thị chỉ số khi mở game
 renderStats();
-function changeStat(value) {
-  const change = Math.floor(Math.random() * 7) - 3;
-  return Math.max(0, Math.min(100, value + change));
-}
 function renderLogContent(element, text) {
   element.replaceChildren();
   appendColoredNumbers(element, cleanLogText(text));
@@ -795,9 +794,6 @@ function appendColoredNumbers(element, text) {
       element.append(document.createTextNode(part));
     }
   });
-}
-function randomStat() {
-  return Math.floor(Math.random() * 81) + 10;
 }
 function updateStatColor(id, value) {
   const bar = document.getElementById(id);
@@ -2100,6 +2096,11 @@ ageButton.addEventListener("click", () => {
     (nextAge === 105 ? ageStories[0] : null) ??
     createPrisonEvent(state.player, nextAge) ??
     createCasualServiceEvent(state.player, nextAge) ??
+    // Mốc chỉ có một lần (chọn ngành 18 tuổi, chuỗi 24 tuổi) đi trước các sự kiện tự quay lại năm sau
+    // (điều tra lại, chuỗi hỗ trợ tinh thần, đánh giá công việc…), nếu không sẽ mất hẳn.
+    (nextAge === 18 ? careerEvent : null) ??
+    orientationEvent ??
+    createWorkInvestigationEvent(state.player, nextAge) ??
     (nextAge === 16
       ? (() => {
           const sparks = ageStories.filter(
@@ -2113,7 +2114,6 @@ ageButton.addEventListener("click", () => {
       : null) ??
     createStudyAbroadYearEvent(state.player, nextAge) ??
     promotionEvent ??
-    orientationEvent ??
     schoolYearEvent ??
     employmentEvent ??
     createRelativeDeathEvent(state.player, nextAge) ??
@@ -2160,7 +2160,8 @@ ageButton.addEventListener("click", () => {
     !datingEvent &&
     !orientationEvent &&
     !employmentEvent
-      ? (createWorkProblemEvent(state.player, nextAge) ??
+      ? (createWorkTemptationEvent(state.player, nextAge) ??
+        createWorkProblemEvent(state.player, nextAge) ??
         createProjectBugEvent(state.player, nextAge) ??
         createLayoffNoticeEvent(state.player, nextAge) ??
         createCastingEvent(state.player, nextAge) ??

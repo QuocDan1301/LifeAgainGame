@@ -18,7 +18,7 @@ export const convenienceStores = [
 ];
 
 export const shiftTypes = {
-  "part-time": { id: "part-time", icon: "⏰", name: "Part-time", salary: 12_000_000, health: -5,
+  "part-time": { id: "part-time", icon: "⏰", name: "Part-time", salary: 14_000_000, health: -2,
     rule: "Có thể làm nhiều cửa hàng cùng lúc." },
   "full-time": { id: "full-time", icon: "🕘", name: "Full-time", salary: 72_000_000, health: -10,
     rule: "Chỉ làm được ở 1 cửa hàng." },
@@ -28,6 +28,17 @@ export const ALL_STORES_ACHIEVEMENT = "side-job-all-stores";
 // Chỉ được nhận việc làm thêm khi nhân vật đủ 16 tuổi.
 export const SIDE_JOB_MIN_AGE = 16;
 
+// Đang đi học (dưới 18 tuổi, hoặc 18–21 tuổi đang theo học ở trường): chỉ làm part-time, tối đa
+// STUDENT_MAX_STORES cửa hàng và chưa nhận nghề tự do, để việc làm thêm không vượt cả lương chính thức.
+export const STUDENT_MAX_STORES = 2;
+export const isStudying = (player, age = player.age) =>
+  age < 18 || (age <= 21 && Boolean(player.careerPath?.school) && player.careerPath.id !== "casual");
+export function getStudentJobBlocker(player, shiftId) {
+  if (!isStudying(player)) return "";
+  if (shiftId === "full-time") return "Đang đi học: chỉ nhận part-time.";
+  if ((player.sideJobs ?? []).length >= STUDENT_MAX_STORES) return `Đang đi học: tối đa ${STUDENT_MAX_STORES} cửa hàng part-time.`;
+  return "";
+}
 export const getStore = (id) => convenienceStores.find((store) => store.id === id);
 const jobsOf = (player) => player.sideJobs ?? [];
 export const getSideJobShift = (player) => jobsOf(player)[0]?.shift ?? null;
@@ -144,8 +155,9 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         focusFirst();
       });
       choice.dataset.shift = shift.id;
-      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken || !health.allowed || isServing(state.player));
-      const note = element("span", "side-job-note", tooYoung ? `Từ ${SIDE_JOB_MIN_AGE} tuổi.` : blocked
+      const studentBlock = shift.id === "full-time" ? getStudentJobBlocker(state.player, shift.id) : "";
+      choice.disabled = Boolean(tooYoung || blocked || fullTimeTaken || studentBlock || !health.allowed || isServing(state.player));
+      const note = element("span", "side-job-note", tooYoung ? `Từ ${SIDE_JOB_MIN_AGE} tuổi.` : studentBlock ? studentBlock : blocked
         ? `Đang làm ${shiftTypes[working].name}, cần nghỉ hết mới chuyển được.`
         : fullTimeTaken ? "Bạn đã có một việc full-time." : shift.rule);
       choice.append(note);
@@ -153,7 +165,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
     }
     body.append(list);
     body.append(element("h3", "", "🧭 Nghề tự do · Từ 18 tuổi"));
-    body.append(element("p", "side-job-intro", "Người đi học vẫn có thể nhận nghề. Thu nhập ròng nhận từ năm sau; dừng ở tuổi nghỉ hưu. Bán phương tiện sẽ tạm dừng thu nhập."));
+    body.append(element("p", "side-job-intro", "Nhận nghề khi đã thôi đi học. Thu nhập ròng nhận từ năm sau; dừng ở tuổi nghỉ hưu. Bán phương tiện sẽ tạm dừng thu nhập."));
     for (const job of streetJobs) {
       const hired = (state.player.streetJobs ?? []).some(entry => entry.id === job.id);
       const blocker = getStreetJobBlocker(state.player, job.id);
@@ -186,14 +198,15 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       const otherShift = getSideJobShift(state.player) && getSideJobShift(state.player) !== shift.id;
       const fullTimeTaken = shift.id === "full-time" && jobsOf(state.player).length > 0;
       const health = getJobHealthRule(state.player);
-      const apply = button("shop-buy side-job-apply", hired ? "✅ Đang làm ở đây" : health.allowed ? "📝 Nhận việc" : "🛑 Sức khỏe chưa cho phép", () => askConfirm(
+      const studentBlock = hired ? "" : getStudentJobBlocker(state.player, shift.id);
+      const apply = button("shop-buy side-job-apply", hired ? "✅ Đang làm ở đây" : studentBlock ? `📚 ${studentBlock}` : health.allowed ? "📝 Nhận việc" : "🛑 Sức khỏe chưa cho phép", () => askConfirm(
         `📝 Làm ${shift.name} ở ${store.name}?`,
         `Bạn sẽ làm ${shift.name} tại ${store.name}.\nLương: +${formatMoney(shift.salary)}/năm, sức khỏe ${shift.health}/năm, tính từ năm sau.` +
           (health.warning ? `\n${health.warning}` : ""),
         "Nhận việc",
         () => {
           const jobs = jobsOf(state.player);
-          if (!getJobHealthRule(state.player).allowed || isServing(state.player)) return;
+          if (!getJobHealthRule(state.player).allowed || isServing(state.player) || getStudentJobBlocker(state.player, shift.id)) return;
           if (state.player.age < SIDE_JOB_MIN_AGE || jobs.some((job) => job.storeId === store.id) ||
               (jobs.length && (jobs[0].shift !== shift.id || shift.id === "full-time"))) return;
           state.player.sideJobs = [...jobs, { storeId: store.id, shift: shift.id, startedAtAge: state.player.age }];
@@ -206,7 +219,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
         },
       ));
       apply.dataset.store = store.id;
-      apply.disabled = hired || otherShift || fullTimeTaken || !health.allowed;
+      apply.disabled = hired || otherShift || fullTimeTaken || Boolean(studentBlock) || !health.allowed;
       row.append(element("h4", "", `🏪 ${store.name}`), apply);
       items.append(row);
     }

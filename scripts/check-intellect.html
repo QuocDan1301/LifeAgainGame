@@ -71,9 +71,13 @@
     assert(I.getPromotionChance(worker({ workMerit: 2 }), 31) > I.getPromotionChance(worker(), 31), "Merit from good work helps promotion");
     let rolls = [0, 0.99];
     const notSelected = createPromotionEvent(worker(), () => rolls.shift() ?? 0, 31);
-    const handled = notSelected.choices.find(c => c.title.includes("chưa đến lượt"));
-    assert(handled && handled.correct === false && !handled.careerLevel && handled.text.includes("đúng hướng"),
-      "Good handling is acknowledged; no automatic raise");
+    assert(notSelected.choices.every(c => c.correct === false && !c.careerLevel && c.title.includes("chưa đến lượt")),
+      "An unlucky roll raises no one; every approach is acknowledged without an automatic raise");
+    const odds = c => Number(c.label.match(/≈(\d+)%/)?.[1]);
+    const push = notSelected.choices.find(c => c.label.includes("thức nhiều đêm"));
+    const balanced = notSelected.choices.find(c => c.label.includes("phối hợp"));
+    assert(push && balanced && odds(push) > odds(balanced) && push.effects.health < 0,
+      "Pushing harder raises the odds but costs health: every approach is a trade-off");
     rolls = [0, 0];
     assert(createPromotionEvent(worker(), () => rolls.shift() ?? 0, 31).choices.some(c => c.careerLevel === 2), "Selected promotions raise the rank");
     // Sự cố dự án: trí tuệ cao mở phân tích; trí tuệ thấp vẫn có cách tốt; giấu lỗi có hậu quả.

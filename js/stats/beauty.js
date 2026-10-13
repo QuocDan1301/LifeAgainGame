@@ -1,7 +1,7 @@
 import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
-import { applyActivityGain, previewActivityGain } from "../core/stat-budget.js";
+import { NO_SLOT_LABEL, applyActivityGain, describeActivitySlots, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
 // Làm đẹp: làm nail (an toàn, mỗi năm một lần) và phẫu thuật thẩm mỹ (từ 18 tuổi,
 // mỗi năm một lần). Gói càng đắt thì tỉ lệ thành công càng cao và chỉ số tăng càng
@@ -73,7 +73,7 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
 
   function doNail() {
     const player = state.player;
-    if (player.isAlive === false || player.money < NAIL.price || hasNailThisYear(player)) return;
+    if (player.isAlive === false || player.money < NAIL.price || hasNailThisYear(player) || !useActivitySlot(player)) return;
     player.money -= NAIL.price;
     player.nailAge = player.age;
     const changes = applyStats(player, NAIL.effects, 1);
@@ -83,7 +83,8 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
 
   function doSurgery(pack) {
     const player = state.player;
-    if (player.isAlive === false || player.age < SURGERY_MIN_AGE || player.money < pack.price || hasSurgeryThisYear(player)) return;
+    if (player.isAlive === false || player.age < SURGERY_MIN_AGE || player.money < pack.price || hasSurgeryThisYear(player) ||
+        !useActivitySlot(player)) return;
     player.money -= pack.price;
     player.surgeryAge = player.age;
     const success = Math.random() < pack.successRate;
@@ -101,7 +102,9 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
       dialog.close();
       $("activities-dialog").showModal();
     });
-    const parts = [back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)}`)];
+    const free = getActivitySlotsLeft(player) > 0;
+    const parts = [back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)}`),
+      element("p", "side-job-intro", describeActivitySlots(player))];
     if (outcome) {
       const result = element("p", `beauty-result is-${outcome.type}`, outcome.text);
       result.setAttribute("role", "status");
@@ -114,8 +117,8 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
     const nailDone = hasNailThisYear(player);
     const nailAffordable = player.money >= NAIL.price;
     const nailItem = element("article", "shop-item beauty-item");
-    const nailAction = button("shop-buy beauty-nail", nailDone ? "✅ Đã làm năm nay" : nailAffordable ? "💅 Làm nail" : "Không đủ tiền", doNail);
-    nailAction.disabled = nailDone || !nailAffordable || player.isAlive === false;
+    const nailAction = button("shop-buy beauty-nail", nailDone ? "✅ Đã làm năm nay" : !free ? NO_SLOT_LABEL : nailAffordable ? "💅 Làm nail" : "Không đủ tiền", doNail);
+    nailAction.disabled = nailDone || !free || !nailAffordable || player.isAlive === false;
     nailItem.append(
       element("h4", "", `${NAIL.icon} ${NAIL.name}`),
       element("p", "shop-figures", `💰 Giá: ${formatMoney(NAIL.price)}\n✨ ${listText(realGains(state.player, NAIL.effects), "+")}`),
@@ -134,7 +137,7 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
     for (const pack of surgeryPackages) {
       const affordable = player.money >= pack.price;
       const item = element("article", "shop-item beauty-item");
-      const label = tooYoung ? `🔒 Từ ${SURGERY_MIN_AGE} tuổi` : surgeryDone ? "✅ Đã phẫu thuật năm nay" : affordable ? "💉 Phẫu thuật" : "Không đủ tiền";
+      const label = tooYoung ? `🔒 Từ ${SURGERY_MIN_AGE} tuổi` : surgeryDone ? "✅ Đã phẫu thuật năm nay" : !free ? NO_SLOT_LABEL : affordable ? "💉 Phẫu thuật" : "Không đủ tiền";
       const action = button("shop-buy beauty-surgery", label, () => askConfirm(
         `${pack.icon} Phẫu thuật ${pack.name}?`,
         `Chi phí: ${formatMoney(pack.price)}.\nTỉ lệ thành công: ${Math.round(pack.successRate * 100)}%.\n` +
@@ -143,7 +146,7 @@ export function initBeauty(state, { renderMoney, renderStats, renderLogEntry }) 
         () => doSurgery(pack),
       ));
       action.dataset.package = pack.id;
-      action.disabled = tooYoung || surgeryDone || !affordable || player.isAlive === false;
+      action.disabled = tooYoung || surgeryDone || !free || !affordable || player.isAlive === false;
       item.append(
         element("h4", "", `${pack.icon} ${pack.name}`),
         element("p", "", pack.description),

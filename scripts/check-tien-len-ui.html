@@ -1,0 +1,58 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/style.css">
+<title>Tien len UI checks</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+try {
+  const html = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  html.querySelectorAll('script').forEach(el => el.remove());
+  html.querySelectorAll('[src]').forEach(el => el.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', html.body.innerHTML);
+  const { createInitialState } = await import('../js/core/state.js');
+  const { initTienLen, getTienLenPot } = await import('../js/leisure/tien-len.js');
+  const { createGame } = await import('../js/leisure/tien-len-rules.js');
+  const state = createInitialState(); Object.assign(state.player, { age: 30, money: 10_000_000, isAlive: true });
+  const body = document.getElementById('games-body'), dialog = document.getElementById('games-dialog');
+  const ui = initTienLen(state, { dialog, body, minAge: 18, playsLeft: () => 5,
+    usePlay() {}, onExit() { ui.stop(); body.replaceChildren(); }, renderMoney() {}, renderLogEntry() {} });
+  const initial = () => {
+    const game = createGame(Array.from({ length: 4 }, (_, seat) => Array.from({ length: 13 }, (_, index) => seat * 13 + index)), { starter: 0, requireThreeSpades: false });
+    Object.assign(game, { id: 'ui-fixture', stake: 50_000, pot: getTienLenPot(50_000), number: 1, over: false, paid: false, order: [...game.hands[0]] });
+    state.player.tienLen = { stake: 50_000, deals: 1, lastWinner: null, sortMode: 'rank', game };
+  };
+  ui.open(); assert(body.querySelectorAll('.tl-table-pick').length === 5, 'Five stake options');
+  initial(); ui.open(); ui.stop();
+  assert(body.querySelectorAll('.tl-hand button').length === 13, 'All player cards visible');
+  assert(body.querySelectorAll('.tl-seat').length === 3, 'Three opponents');
+  assert(body.querySelector('.tl-play').disabled, 'Play requires selection');
+  assert(body.querySelector('.tl-pass').disabled, 'Cannot pass when opening');
+  const card = body.querySelector('.tl-hand button'); card.focus(); card.click(); ui.stop();
+  assert(body.querySelectorAll('.tl-hand [aria-pressed=true]').length === 1, 'Card selection shown');
+  assert(!body.querySelector('.tl-play').disabled && body.querySelector('.tl-play').textContent.includes('1 lá'), 'Valid selection enables play');
+  assert(document.activeElement.getAttribute('aria-label') === card.getAttribute('aria-label'), 'Card keeps keyboard focus');
+  body.querySelector('.tl-clear').click(); ui.stop();
+  assert(body.querySelectorAll('.tl-hand [aria-pressed=true]').length === 0 && body.querySelector('.tl-clear').disabled, 'Clear selection');
+  body.querySelector('.tl-sort').click(); ui.stop();
+  assert(state.player.tienLen.sortMode === 'group' && body.querySelector('.tl-sort').getAttribute('aria-pressed') === 'true', 'Sort mode exposed');
+  body.querySelector('.tl-hint').click(); ui.stop();
+  assert(body.querySelectorAll('.tl-hand [aria-pressed=true]').length > 0, 'Hint selects a legal move');
+  assert(!body.querySelector('.tl-play').disabled, 'Hint can be played');
+  const before = state.player.tienLen.game.hands[0].length;
+  body.querySelector('.tl-play').click(); ui.stop();
+  assert(state.player.tienLen.game.hands[0].length < before, 'Play updates actual hand');
+  assert(body.querySelector('.tl-pile .tl-card'), 'Played cards visible in center');
+  assert(body.querySelector('.tl-play').disabled, 'Play disables during opponent turn');
+  body.querySelector('.tl-forfeit').click(); document.getElementById('shop-cancel').click();
+  assert(!state.player.tienLen.game.over, 'Cancel forfeit preserves game');
+  body.querySelector('.tl-forfeit').click(); document.getElementById('shop-confirm').click(); ui.stop();
+  assert(state.player.tienLen.game.forfeited && body.querySelector('.tl-result'), 'Forfeit result works');
+  initial(); ui.open(); ui.stop();
+  body.querySelector('.tl-hand button').click(); ui.stop();
+  window.tienLenTest = { state, ui };
+  result.textContent = 'PASS Tien len UI: stake options; full hand; selection; clear; keyboard focus; sort; hint; legal play; turn states; center pile; forfeit confirmation and result';
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+</script>

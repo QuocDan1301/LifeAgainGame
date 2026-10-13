@@ -16,12 +16,12 @@
     const { achievements } = await import("../js/achievements/achievements-data.js");
     assert(convenienceStores.map(s => s.name).join() === "Circle K,GS25,Mini Stop,FamilyMart,7-Eleven", "Five convenience stores");
     assert(shiftTypes["part-time"].salary < shiftTypes["full-time"].salary, "Part-time pays less than full-time");
-    assert(shiftTypes["part-time"].health === -5 && shiftTypes["full-time"].health === -10, "Health cost per year");
+    assert(shiftTypes["part-time"].health === -2 && shiftTypes["full-time"].health === -10, "Health cost per year");
     assert(achievements.some(a => a.id === "side-job-all-stores" && a.title === "Bán mình cho tư bản"), "Achievement exists");
     const sample = { money: 0, health: 50, sideJobs: [{ storeId: "gs25", shift: "part-time", startedAtAge: 20 },
       { storeId: "circle-k", shift: "part-time", startedAtAge: 21 }] };
     const year = collectSideJobYear(sample, 21);
-    assert(year.amount === 12_000_000 && sample.health === 45, "Only jobs started before this year pay and cost health");
+    assert(year.amount === 14_000_000 && sample.health === 48, "Only jobs started before this year pay and cost health");
     assert(getSideJobTitle(sample) === "Nhân viên GS25", "Title uses the first store");
     assert(getEducationStatus({ age: 20, sideJobs: sample.sideJobs }).text === "Nhân viên GS25", "No main job shows the store");
     assert(getEducationStatus({ age: 25, employmentStatus: "employed", job: "💻 Lập trình viên tập sự", sideJobs: sample.sideJobs }).text
@@ -64,6 +64,7 @@
     $("activities").click();
     $("activity-part-time").click();
     assert($("side-job-dialog").open && shiftButton("part-time") && !shiftButton("part-time").disabled, "Part-time and full-time buttons from 16");
+    assert(shiftButton("full-time").disabled && body().textContent.includes("chỉ nhận part-time"), "Students under 18 only take part-time");
 
     // Part-time ở nhiều cửa hàng.
     shiftButton("part-time").click();
@@ -77,6 +78,11 @@
     assert($("education-status").textContent === "Nhân viên GS25", "Status shows the first store");
     body().querySelector(".shop-back").click();
     assert(shiftButton("full-time").disabled, "Part-time blocks full-time");
+    shiftButton("part-time").click();
+    assert(applyButton("ministop").disabled && applyButton("ministop").textContent.includes("đi học"), "Students take at most two part-time stores");
+    body().querySelector(".shop-back").click();
+    // Thôi đi học (18 tuổi, không theo trường nào) thì làm được cả 5 cửa hàng.
+    state.player.age = 18;
 
     // Đủ 5 cửa hàng thì mở thành tựu.
     shiftButton("part-time").click();

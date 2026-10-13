@@ -88,7 +88,8 @@
     const silent = worker({ careerPath: { id: "acting" }, contractEndAge: 33, contractNoticeAge: null });
     silent.age = 32;
     completeLifeYear(silent, 33);
-    assert(silent.employmentStatus === "employed" && silent.contractEndAge === 34, "No contract ends without a notice");
+    assert(silent.employmentStatus === "employed" && silent.contractEndAge === 35, "No contract ends without a notice");
+    assert(J.createContractNoticeEvent(silent, 34, () => 0.99), "The postponed contract gets its notice on the next birthday");
 
     // 2. Tài chính: sàn sinh hoạt phí, giảm mức sống, dự báo trước khi tăng tuổi.
     assert(getLivingCost(30, 0) === 24_000_000 && getLivingCost(30, 0, "frugal") === 16_000_000, "Living cost floor even with no income");
@@ -180,6 +181,8 @@
     closeAll();
     // Vòng công việc: vấn đề → cảnh báo → đánh giá lại → giữ việc.
     state.player.money = 100_000_000;
+    // Keep this fixture focused on the warning chain; temptation has separate integration checks.
+    state.player.lastWorkTemptationAge = state.player.age;
     Math.random = () => 0;
     $("age-up").disabled = false;
     $("age-up").click();

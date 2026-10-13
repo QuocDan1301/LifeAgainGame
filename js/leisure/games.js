@@ -3,6 +3,7 @@ import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { describeAges } from "./shop.js";
 import { hasActiveTienLen, initTienLen } from "./tien-len.js";
+import { initAuction } from "./auction.js";
 
 // Trò chơi may rủi. Mọi hệ số là tổng tiền nhận về (đã gồm vốn): trừ tiền cược khi
 // bắt đầu, cộng tiền thưởng một lần khi kết thúc. Kết quả được quyết định và lưu
@@ -15,12 +16,11 @@ export const BET_MAX = 1_000_000_000;
 export const QUICK_BETS = [10_000, 100_000, 1_000_000];
 
 export const games = [
+  { id: "auction", icon: "🏺", name: "Đấu giá cổ vật", tagline: "Nhìn dấu vết, trả đúng giá" },
   { id: "coin", icon: "🪙", name: "Sấp ngửa", tagline: "Một lần tung, hai số phận" },
   { id: "dice", icon: "🎲", name: "Đoán xúc xắc", tagline: "Con số định mệnh" },
-  { id: "wheel", icon: "🎡", name: "Vòng quay tài lộc", tagline: "Quay một vòng, ví đổi tâm trạng" },
   { id: "box", icon: "🎁", name: "Hộp bí ẩn", tagline: "Mở hộp hay mở nỗi buồn?" },
   { id: "tower", icon: "🪜", name: "Leo tháp tài lộc", tagline: "Dừng đúng lúc" },
-  { id: "race", icon: "🏁", name: "Đua thú may mắn", tagline: "Cổ vũ bằng cả cái ví" },
   { id: "blackjack", icon: "🃏", name: "Xì dách", tagline: "Thêm lá nữa hay thôi?" },
   // Tiến lên miền Nam có giao diện riêng (tien-len.js), mỗi ván tính 1 lượt trong năm.
   { id: "tienlen", icon: "♠️", name: "Tiến lên miền Nam", tagline: "Ai hết bài trước, người đó ăn cả bàn!" },
@@ -28,14 +28,6 @@ export const games = [
 
 export const COIN_MULTIPLIER = 1.9;
 export const DICE_MULTIPLIERS = { parity: 1.9, number: 5.7 };
-export const wheelPrizes = [
-  { icon: "💨", label: "Trắng tay", chance: 0.4, multiplier: 0, color: "#c9d6df" },
-  { icon: "🪙", label: "Gỡ được một ít", chance: 0.3, multiplier: 0.5, color: "#ffe68b" },
-  { icon: "🤝", label: "Hòa vốn", chance: 0.15, multiplier: 1, color: "#9fe0b4" },
-  { icon: "💵", label: "Có lời", chance: 0.1, multiplier: 2, color: "#7cc8f8" },
-  { icon: "💰", label: "Trúng lớn", chance: 0.04, multiplier: 5, color: "#f7a35c" },
-  { icon: "👑", label: "Đại tài lộc", chance: 0.01, multiplier: 20, color: "#e05a8a" },
-];
 export const boxTypes = [
   { id: "normal", icon: "📦", name: "Hộp thường", price: 50_000 },
   { id: "fancy", icon: "🎀", name: "Hộp sang", price: 500_000 },
@@ -49,12 +41,6 @@ export const boxPrizes = [
   { icon: "💎", label: "Viên đá quý", chance: 0.02, multiplier: 15 },
 ];
 export const TOWER_MULTIPLIERS = [1.9, 3.8, 7.6, 15.2, 30.4];
-export const racers = [
-  { id: "rabbit", icon: "🐇", name: "Thỏ Tăng Tốc", trait: "Nhanh nhưng hay mất tập trung", chance: 0.4, multiplier: 2.3 },
-  { id: "dog", icon: "🐕", name: "Cún Bền Bỉ", trait: "Chạy đều, ít làm màu", chance: 0.3, multiplier: 3 },
-  { id: "cat", icon: "🐈", name: "Mèo Kiêu Kỳ", trait: "Thích chạy lúc nào thì chạy", chance: 0.2, multiplier: 4.5 },
-  { id: "turtle", icon: "🐢", name: "Rùa Bất Ngờ", trait: "Chậm nhưng đôi lúc gây sốc", chance: 0.1, multiplier: 9 },
-];
 export const BLACKJACK_PAYOUTS = { lose: 0, draw: 1, normal: 2, five: 2, blackjack: 2.5, doubleAce: 3 };
 
 const pickWeighted = (entries, random) => {
@@ -128,15 +114,9 @@ export function createRound(gameId, bet, choice, random = Math.random) {
       ? (round.roll % 2 === 0 ? "even" : "odd") === choice.value
       : round.roll === choice.value;
     round.payout = win ? payout(bet, DICE_MULTIPLIERS[choice.mode]) : 0;
-  } else if (gameId === "wheel") {
-    round.prize = pickWeighted(wheelPrizes, random);
-    round.payout = payout(bet, wheelPrizes[round.prize].multiplier);
   } else if (gameId === "box") {
     round.prize = pickWeighted(boxPrizes, random);
     round.payout = payout(bet, boxPrizes[round.prize].multiplier);
-  } else if (gameId === "race") {
-    round.winner = racers[pickWeighted(racers, random)].id;
-    round.payout = round.winner === choice ? payout(bet, racers.find((racer) => racer.id === choice).multiplier) : 0;
   } else if (gameId === "tower") {
     // Cửa an toàn của từng tầng được chọn sẵn: mỗi lần chọn có 50% đi tiếp.
     round.safeDoors = Array.from({ length: TOWER_MULTIPLIERS.length }, () => (random() < 0.5 ? 0 : 1));
@@ -188,6 +168,12 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       renderPicker();
       focusFirst();
     },
+  });
+
+  const auction = initAuction(state, {
+    body, minAge: GAMES_MIN_AGE, playsLeft, renderMoney, renderLogEntry,
+    usePlay: () => { state.player.gamePlays = { age: state.player.age, count: playsUsed() + 1 }; },
+    onExit: renderPicker,
   });
 
   // Ghi kết quả vào ví và nhật ký; giao diện chỉ cập nhật sau khi hoạt ảnh kết thúc.
@@ -242,9 +228,9 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     const list = element("div", "shop-groups");
     for (const game of games) {
       const choice = button("shop-group game-pick", `${game.icon} ${game.name}`,
-        () => (game.id === "tienlen" ? tienLen.open() : renderSetup(game.id)));
+        () => (game.id === "auction" ? auction.open() : game.id === "tienlen" ? tienLen.open() : renderSetup(game.id)));
       choice.dataset.game = game.id;
-      choice.disabled = Boolean(blocked);
+      choice.disabled = Boolean(blocked) && !(game.id === "auction" && state.player.auction && state.player.age >= GAMES_MIN_AGE);
       choice.append(element("span", "side-job-note", `“${game.tagline}”`));
       list.append(choice);
     }
@@ -307,10 +293,6 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
         }, mode), values);
       renderValues();
       maxMultiplier = () => (choice ? DICE_MULTIPLIERS[choice.mode] : 0);
-    } else if (gameId === "wheel") {
-      card.append(createWheel(0), wheelLegend());
-      maxMultiplier = () => Math.max(...wheelPrizes.map((prize) => prize.multiplier));
-      choice = "spin";
     } else if (gameId === "box") {
       card.append(element("p", "game-hint", "Chọn loại hộp:"),
         optionGroup(boxTypes.map((box) => ({ label: `${box.icon} ${box.name}`, value: box.id, note: formatMoney(box.price) })), (value) => { choice = value; }, choice),
@@ -326,11 +308,6 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       card.append(element("p", "game-hint", "Mỗi tầng có hai cánh cửa: một cửa đi tiếp, một cửa mất trắng. Qua mỗi tầng bạn có thể dừng để nhận tiền."), table);
       maxMultiplier = () => TOWER_MULTIPLIERS.at(-1);
       choice = "climb";
-    } else if (gameId === "race") {
-      card.append(element("p", "game-hint", "Chọn một linh vật:"),
-        optionGroup(racers.map((racer) => ({ label: `${racer.icon} ${racer.name}`, value: racer.id,
-          note: `${racer.trait} · ×${String(racer.multiplier).replace(".", ",")}` })), (value) => { choice = value; }, choice));
-      maxMultiplier = () => racers.find((racer) => racer.id === choice)?.multiplier ?? 0;
     } else if (gameId === "blackjack") {
       card.append(element("p", "game-hint",
         "Đấu với nhà cái. Dưới 16 điểm chưa được dừng; tối đa 5 lá. Thắng thường ×2 · Ngũ linh ×2 · Xì dách ×2,5 · Xì bàn ×3 · Hòa hoàn vốn."));
@@ -382,7 +359,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       const allInButton = body.querySelector(".game-all-in");
       if (allInButton) allInButton.disabled = allInBet() < BET_MIN;
       const most = payout(amount, maxMultiplier());
-      const partial = ["wheel", "box", "tower", "blackjack"].includes(gameId) ? "tối đa " : "";
+      const partial = ["box", "tower", "blackjack"].includes(gameId) ? "tối đa " : "";
       summary.textContent = !choice ? "Hãy chọn một lựa chọn để xem tiền có thể nhận."
         : amount > state.player.money ? `Không đủ tiền: cần ${formatMoney(amount)}.`
           : gameId !== "box" && (amount < BET_MIN || amount > BET_MAX)
@@ -433,20 +410,17 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     if (round.game === "box") storeBoxItem(round);
     if (instant) settle(round, round.game === "box" ? 0 : round.payout, describeInstant(round));
     body.replaceChildren(element("p", "shop-wallet", walletText(instant ? reveal?.payout ?? 0 : 0)), stage);
-    ({ coin: playCoin, dice: playDice, wheel: playWheel, box: playBox, race: playRace, tower: playTower, blackjack: playBlackjack })[round.game](stage, round);
+    ({ coin: playCoin, dice: playDice, box: playBox, tower: playTower, blackjack: playBlackjack })[round.game](stage, round);
   }
 
   function describeInstant(round) {
     if (round.game === "coin") return `chọn ${round.choice === "heads" ? "Ngửa" : "Sấp"}, ra ${round.result === "heads" ? "Ngửa" : "Sấp"}`;
     if (round.game === "dice") return `chọn ${round.choice.mode === "parity" ? (round.choice.value === "even" ? "Chẵn" : "Lẻ") : `số ${round.choice.value}`}, ra ${round.roll}`;
-    if (round.game === "wheel") return `quay trúng ${wheelPrizes[round.prize].icon} ${wheelPrizes[round.prize].label}`;
     if (round.game === "box") {
       const prize = boxPrizes[round.prize];
       return `${boxTypes.find((box) => box.id === round.choice).name} có ${prize.icon} ${prize.label} ` +
         `(trị giá ${formatMoneyAmount(round.payout)} VNĐ, đã cất vào Tài sản)`;
     }
-    const winner = racers.find((racer) => racer.id === round.winner);
-    return `chọn ${racers.find((racer) => racer.id === round.choice).name}, ${winner.icon} ${winner.name} về nhất`;
   }
 
   function playCoin(stage, round) {
@@ -487,41 +461,6 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     roll();
   }
 
-  function createWheel(rotation) {
-    const wrap = element("div", "game-wheel-wrap");
-    const wheel = element("div", "game-wheel");
-    let start = 0;
-    const stops = [];
-    for (const prize of wheelPrizes) {
-      const end = start + prize.chance * 360;
-      stops.push(`${prize.color} ${start}deg ${end}deg`);
-      // Chỉ ghi biểu tượng ở những ô đủ rộng; mọi ô có trong chú thích bên dưới.
-      if (prize.chance * 360 >= 20) {
-        const label = element("span", "game-wheel-label", `${prize.icon}\n×${String(prize.multiplier).replace(".", ",")}`);
-        label.style.transform = `rotate(${(start + end) / 2}deg)`;
-        wheel.append(label);
-      }
-      start = end;
-    }
-    wheel.style.background = `conic-gradient(${stops.join(", ")})`;
-    wheel.style.transform = `rotate(${rotation}deg)`;
-    wrap.append(element("div", "game-wheel-pointer", "▼"), wheel);
-    return wrap;
-  }
-  function wheelLegend() {
-    const list = element("ul", "dialog-entries game-table");
-    for (const prize of wheelPrizes) {
-      const row = element("li");
-      const swatch = element("span", "game-swatch");
-      swatch.style.background = prize.color;
-      const name = element("span", "", ` ${prize.icon} ${prize.label}`);
-      name.prepend(swatch);
-      row.append(name, element("strong", "", `×${String(prize.multiplier).replace(".", ",")}`));
-      list.append(row);
-    }
-    list.append(element("li", "game-note", "Ô càng lớn, khả năng dừng vào càng cao."));
-    return list;
-  }
   function prizeList(prizes) {
     const list = element("ul", "dialog-entries game-table");
     for (const prize of prizes) {
@@ -530,24 +469,6 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       list.append(row);
     }
     return list;
-  }
-
-  function playWheel(stage, round) {
-    const wrap = createWheel(0);
-    stage.append(wrap, element("p", "game-hint game-live", "Vòng quay đang chạy…"));
-    let start = 0;
-    for (let index = 0; index < round.prize; index += 1) start += wheelPrizes[index].chance * 360;
-    const span = wheelPrizes[round.prize].chance * 360;
-    // Dừng ở giữa ô trúng (lệch nhẹ ngẫu nhiên trong ô) dưới kim chỉ ở đỉnh.
-    const target = start + span / 2 + (Math.random() - 0.5) * span * 0.6;
-    const finalAngle = 360 * 6 + (360 - target);
-    wrap.querySelector(".game-wheel").animate([{ transform: "rotate(0deg)" }, { transform: `rotate(${finalAngle}deg)` }],
-      { duration: time(4200), easing: "cubic-bezier(0.12, 0.8, 0.2, 1)", fill: "forwards" }).finished.then(() => {
-      const prize = wheelPrizes[round.prize];
-      stage.querySelector(".game-live").textContent = `Dừng ở: ${prize.icon} ${prize.label}`;
-      showResult(stage, round, prize.multiplier > 1, `${prize.icon} ${prize.label}!`,
-        prize.multiplier >= 5 ? "Vòng quay hôm nay biết điều thật!" : prize.multiplier >= 1 ? "Không mất là thắng rồi!" : "Quay một vòng, ví quay về số không.");
-    });
   }
 
   function playBox(stage, round) {
@@ -570,56 +491,32 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     });
   }
 
-  function playRace(stage, round) {
-    const track = element("div", "game-track");
-    stage.append(track, element("p", "game-hint game-live", "Các linh vật đang tăng tốc…"));
-    const lanes = racers.map((racer) => {
-      const lane = element("div", `game-lane${racer.id === round.choice ? " is-picked" : ""}`);
-      const runner = element("span", "game-runner");
-      runner.append(element("span", "game-runner-icon", racer.icon));
-      lane.append(runner, element("span", "game-finish", "🏁"));
-      track.append(lane);
-      return { racer, lane, runner };
-    });
-    const base = 3600;
-    const finishes = lanes.map(({ racer, lane, runner }) => {
-      const distance = lane.clientWidth - runner.offsetWidth - 26;
-      const duration = racer.id === round.winner ? base : base * (1.08 + Math.random() * 0.3);
-      // Chạy theo từng đoạn tăng tốc, chậm lại cho sinh động nhưng luôn tiến về đích.
-      const frames = [{ transform: "translateX(0)" }];
-      let progress = 0;
-      for (let step = 1; step < 6; step += 1) {
-        progress = Math.min(0.95, progress + (1 - progress) * (0.15 + Math.random() * 0.25));
-        frames.push({ transform: `translateX(${progress * distance}px)`, offset: step / 6 });
-      }
-      frames.push({ transform: `translateX(${distance}px)` });
-      return runner.animate(frames, { duration: time(duration), easing: "linear", fill: "forwards" }).finished;
-    });
-    const winnerIndex = racers.findIndex((racer) => racer.id === round.winner);
-    finishes[winnerIndex].then(() => {
-      const winner = racers[winnerIndex];
-      lanes[winnerIndex].lane.classList.add("is-winner");
-      stage.querySelector(".game-live").textContent = `${winner.icon} ${winner.name} về nhất!`;
-      const win = round.payout > 0;
-      showResult(stage, round, win, win ? `🏆 ${winner.name} thắng!` : `😢 ${winner.name} về nhất`,
-        winner.id === "turtle" ? "Tôi chưa kịp hết nghi ngờ thì rùa đã nhận cúp."
-          : win ? "Cổ vũ bằng cả cái ví, và cái ví đã được đền đáp!" : "Tôi cổ vũ hết mình, linh vật của tôi thì cổ vũ… người khác.");
-    });
-  }
-
   // ---------- Leo tháp ----------
   function playTower(stage, round) {
-    const live = element("p", "game-hint game-live");
+    stage.classList.add("tower-stage");
+    const live = element("p", "game-hint game-live tower-status");
+    live.setAttribute("aria-live", "polite");
+    const summary = element("div", "tower-summary");
+    const total = element("strong", "tower-total");
+    const progress = element("span", "tower-progress");
+    summary.append(element("span", "tower-eyebrow", "Tiền có thể mang về"), total, progress);
     const floors = element("ol", "game-tower");
     TOWER_MULTIPLIERS.forEach((multiplier, index) => {
       const floor = element("li", "game-floor");
       floor.dataset.floor = String(index);
-      floor.append(element("span", "", `Tầng ${index + 1}`), element("strong", "", `×${String(multiplier).replace(".", ",")}`));
+      const name = element("span", "tower-floor-name", `${index === 4 ? "♛ " : ""}Tầng ${index + 1}`);
+      const value = element("span", "tower-floor-value");
+      value.append(element("strong", "", formatMoney(payout(round.bet, multiplier))), element("small", "", `×${String(multiplier).replace(".", ",")}`));
+      floor.append(name, value);
       floors.prepend(floor);
     });
     const doors = element("div", "game-doors");
     const actions = element("div", "license-actions");
-    stage.append(floors, live, doors, actions);
+    const arena = element("div", "tower-arena");
+    arena.append(floors, element("p", "tower-rule", "Hai cửa · Một cửa an toàn. Chọn cửa sập sẽ mất toàn bộ tiền cược."));
+    const controls = element("div", "tower-controls");
+    controls.append(live, doors, actions);
+    stage.append(summary, arena, controls);
 
     const finish = (floorsCleared, fell) => {
       const amount = fell ? 0 : payout(round.bet, TOWER_MULTIPLIERS[floorsCleared - 1]);
@@ -629,6 +526,9 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
         node.classList.toggle("is-fallen", fell && Number(node.dataset.floor) === floorsCleared);
       });
       live.textContent = fell ? `💥 Tầng ${floorsCleared + 1}: chọn trúng cửa sập!` : `Mang về ${formatMoney(amount)}.`;
+      total.textContent = formatMoney(amount);
+      progress.textContent = fell ? "Cuộc leo tháp kết thúc" : `Đã vượt ${floorsCleared}/5 tầng`;
+      stage.classList.toggle("tower-fell", fell);
       doors.replaceChildren();
       actions.replaceChildren();
       showResult(stage, round, !fell, fell ? "💥 Chọn nhầm cửa!" : floorsCleared === TOWER_MULTIPLIERS.length ? "👑 Chinh phục đỉnh tháp!" : "💰 Mang tiền về!",
@@ -642,15 +542,22 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       });
       doors.replaceChildren();
       actions.replaceChildren();
+      total.textContent = formatMoney(round.floor ? payout(round.bet, TOWER_MULTIPLIERS[round.floor - 1]) : 0);
+      progress.textContent = `Đã vượt ${round.floor}/5 tầng · Cược ${formatMoney(round.bet)}`;
       if (round.phase === "choose") {
         live.textContent = `Tầng ${round.floor + 1}: chọn một cánh cửa.`;
-        [0, 1].forEach((door) => doors.append(button("game-door", "🚪", () => open(door))));
+        [0, 1].forEach((door) => {
+          const choice = button("game-door", "", () => open(door));
+          choice.setAttribute("aria-label", door === 0 ? "Mở cửa trái" : "Mở cửa phải");
+          choice.append(element("span", "tower-door-number", door === 0 ? "I" : "II"), element("span", "tower-door-panel"), element("span", "tower-door-label", door === 0 ? "Cửa trái" : "Cửa phải"));
+          doors.append(choice);
+        });
       } else {
         const amount = payout(round.bet, TOWER_MULTIPLIERS[round.floor - 1]);
         live.textContent = `Đã vượt tầng ${round.floor}! Có thể nhận ${formatMoney(amount)}.`;
         actions.append(
-          button("shop-buy game-primary game-tower-stop", "Đủ rồi, mang tiền về!", () => finish(round.floor, false)),
-          button("license-answer game-tower-next", "Thêm một tầng nữa!", () => {
+          button("shop-buy game-primary game-tower-stop", `Nhận ${formatMoney(amount)} · Dừng lại`, () => finish(round.floor, false)),
+          button("license-answer game-tower-next", `Lên tầng ${round.floor + 1} · Nhắm ${formatMoney(payout(round.bet, TOWER_MULTIPLIERS[round.floor]))}`, () => {
             round.phase = "choose";
             save();
             draw();

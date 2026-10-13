@@ -1,6 +1,7 @@
 // Gom các giai đoạn. Thêm giai đoạn mới: import rồi nối vào lifeStoryCatalog.
 import { stage01To10 } from './stage-01-10.js';
 import { stage11To23 } from './stage-11-23.js';
+import { stage01To14Extra } from './stage-01-14-them.js';
 import { stage26To32 } from './stage-26-32.js';
 import { stage33To39 } from './stage-33-39.js';
 import { stage40To49 } from './stage-40-49.js';
@@ -15,6 +16,7 @@ export const lifeStoryCatalog = [
   ...studyAbroadStories,
   ...stage01To10,
   ...stage11To23,
+  ...stage01To14Extra,
   ...stage26To32,
   ...stage33To39,
   ...stage40To49,

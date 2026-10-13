@@ -131,9 +131,14 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
       `Phí giới thiệu: ${formatMoney(center.fee)}.\nTrung tâm sẽ giới thiệu một người ${gender === "female" ? "nữ" : "nam"} phù hợp với bạn.`,
       "Trả phí và gặp mặt",
       () => {
-        if (state.player.money < center.fee || !canStartRelationship(state.player)) return;
+        if (state.player.money < center.fee || !canStartRelationship(state.player) ||
+            state.player.age < DATING_MIN_AGE || state.player.isAlive === false) return;
         state.player.money -= center.fee;
         const person = createMatch(state.player, center, gender);
+        // Chốt luôn việc người ấy có nhận lời hay không và lưu hồ sơ cùng lúc trừ phí: đóng hộp thoại
+        // hoặc tải lại trang vẫn gặp đúng người đã trả tiền, không tung lại.
+        if (state.player.casualLife) person.casualRomanceAccepted = Math.random() < getRomanceChance(state.player);
+        state.player.pendingMatch = { centerId: center.id, gender, person, age: state.player.age };
         record(`💌 Trả phí cho ${center.name} để được giới thiệu người hẹn hò: Tiền -${formatMoneyAmount(center.fee)} VNĐ.`);
         renderProfile(center, gender, person);
       },
@@ -148,7 +153,8 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
     const actions = element("div", "license-actions");
     actions.append(
       button("shop-buy love-accept", state.player.casualLife ? "💞 Ngỏ lời tìm hiểu" : "💞 Đồng ý hẹn hò", () => {
-        if (!canStartRelationship(state.player)) return;
+        if (!canStartRelationship(state.player) || state.player.pendingMatch?.person.id !== person.id) return;
+        state.player.pendingMatch = null;
         if (!accepted) {
           const note = getCasualRomanceNote(state.player);
           record(`🤝 ${person.name} muốn làm bạn trước. ${note}`);
@@ -157,7 +163,7 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
           return;
         }
         const updates = getDatingUpdates(state.player, person, state.player.age);
-        if (!Object.keys(updates).length) return;
+        if (!Object.keys(updates).length) { save(); return; }
         Object.assign(state.player, updates);
         state.player.happiness = Math.min(100, state.player.happiness + 3);
         recordAchievementFlags(state, ["first-love"]);
@@ -171,7 +177,10 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
         focusFirst();
       }),
       button("license-answer love-another", `🔁 Gặp người khác · ${formatMoney(center.fee)}`, () => introduce(center, gender)),
-      button("shop-back", "🙅 Từ chối", () => { renderGender(center); }),
+      button("shop-back", "🙅 Từ chối", () => {
+        if (state.player.pendingMatch?.person.id === person.id) { state.player.pendingMatch = null; save(); }
+        renderGender(center);
+      }),
     );
     actions.querySelector(".love-another").disabled = state.player.money < center.fee;
     card.append(actions);
@@ -182,7 +191,12 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
   $("activity-love").addEventListener("click", () => {
     if (state.player.isAlive === false) return;
     $("activities-dialog").close();
-    renderCenters();
+    // Hồ sơ đã trả phí trong năm nay mà chưa trả lời: mở lại đúng hồ sơ ấy.
+    const pending = state.player.pendingMatch;
+    if (pending && pending.age !== state.player.age) { state.player.pendingMatch = null; save(); }
+    if (pending && pending.age === state.player.age && getCenter(pending.centerId) && canStartRelationship(state.player)) {
+      renderProfile(getCenter(pending.centerId), pending.gender, pending.person);
+    } else renderCenters();
     dialog.showModal();
     focusFirst();
   });

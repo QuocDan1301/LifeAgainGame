@@ -3,7 +3,7 @@
 // May rủi khi chọn: chỉ số mà lựa chọn hướng tới (chỉ số được cộng nhiều nhất) càng cao thì
 // càng dễ suôn sẻ. Suôn sẻ: phần được cộng thêm một nửa, cái giá giảm một nửa.
 // Không trọn vẹn: phần được cộng còn một nửa. Lựa chọn chỉ có mất mát thì không đổi.
-// Chỉ kết quả không trọn vẹn mới thêm một dòng giải thích vào lời kể.
+// Lời kể không thêm câu giải thích may rủi (LUCK_NOTES để trống có chủ ý); người chơi thấy qua điểm số.
 export const LUCK_NOTES = {
   poor: "",
 };

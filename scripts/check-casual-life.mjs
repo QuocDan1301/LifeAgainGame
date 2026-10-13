@@ -33,16 +33,19 @@ test('Men enlist immediately and return at twenty, including a saved service', (
   assert.equal(restored.casualService, null);
   assert.equal(startStreetJob(restored, 'motorbike-taxi'), true);
 });
-test('Both jobs require the right asset, and remain available for students', () => {
+test('Both jobs require the right asset, and wait until students leave school', () => {
   const p = player('female'); p.careerPath = { id: 'programming', school: { name: 'Test' } };
   assert.equal(startStreetJob(p, 'noodle-seller'), false);
   assert.equal(startStreetJob(p, 'motorbike-taxi'), false);
   p.purchases = [{ id: 'noodle-cart' }, { id: 'motorbike' }];
+  assert.match(getStreetJobBlocker(p, 'noodle-seller'), /đi học/, 'Students cannot stack street jobs on top of school');
+  assert.equal(startStreetJob(p, 'noodle-seller'), false);
+  p.age = 22;
   assert.equal(startStreetJob(p, 'noodle-seller'), true);
   assert.equal(startStreetJob(p, 'motorbike-taxi'), true);
   assert.equal(startStreetJob(p, 'motorbike-taxi'), false);
-  assert.equal(getStreetIncome(p, 18), 0);
-  assert.equal(getStreetIncome(p, 19), 132_000_000);
+  assert.equal(getStreetIncome(p, 22), 0);
+  assert.equal(getStreetIncome(p, 23), 132_000_000);
 });
 test('Income is paid once, assets give no passive noodle income, sale stops work', () => {
   const p = player('female'); p.purchases = [{ id: 'noodle-cart', boughtAtAge: 18 }];

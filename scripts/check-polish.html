@@ -51,7 +51,8 @@
     assert(getTrainingGain({ appearance: 90 }, spa, 3).gain === 2, "Applies to every stat");
     // Công khai tỉ lệ trước khi chọn.
     let rolls = [0, 0];
-    assert(createPromotionEvent(worker({ careerLevel: 1, age: 30 }), () => rolls.shift() ?? 0, 31).text.includes("khả năng được chọn khoảng"), "Promotion odds shown");
+    const promotion = createPromotionEvent(worker({ careerLevel: 1, age: 30 }), () => rolls.shift() ?? 0, 31);
+    assert(/khả năng được chọn/i.test(promotion.text) && promotion.choices.every(c => /≈\d+%/.test(c.label)), "Promotion odds shown");
     assert(A.createCastingEvent({ employmentStatus: "employed", careerPath: { id: "acting" }, employedSince: 25, money: 0, appearance: 50 }, 30, () => 0)
       .choices.every(c => /khả năng \d+%/.test(c.label)), "Casting odds shown on each option");
 

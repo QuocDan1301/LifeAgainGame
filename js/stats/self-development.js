@@ -6,7 +6,7 @@ import { MOOD_ACTIVITIES, getHappinessBand } from "./mood-rules.js";
 import { HIGH_INTELLECT_TRAINING_RATE, INTELLECT_ACTIVITIES, PROMOTION, getIntellectBand } from "./intellect-rules.js";
 import { APPEARANCE_ACTIVITIES, getAppearanceBand } from "./appearance-rules.js";
 import { getIllnessStage } from "./hospital.js";
-import { applyActivityGain, describeActivityRoom, previewActivityGain } from "../core/stat-budget.js";
+import { NO_SLOT_LABEL, applyActivityGain, describeActivityRoom, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
 // Phát triển bản thân: mỗi chỉ số có 2 hoạt động, mỗi hoạt động có 3 gói.
 // Trả càng nhiều tiền, chỉ số chính tăng càng nhiều. Mỗi hoạt động một lần mỗi năm.
@@ -123,7 +123,8 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
   function train(activity, tier, statId) {
     const player = state.player;
     const { fee, discount } = getTarotDiscountedFee(player, tier.price);
-    if (player.isAlive === false || player.money < fee || hasTrainedThisYear(player, activity.id)) return;
+    if (player.isAlive === false || player.money < fee || hasTrainedThisYear(player, activity.id) ||
+        !useActivitySlot(player)) return;
     const bonus = getTarotStatBonus(player);
     const { gain } = getTrainingGain(player, activity, tier.gain);
     player.money -= fee;
@@ -146,7 +147,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
   // Hồi phục miễn phí: mỗi hoạt động một lần mỗi năm.
   function recover(activity) {
     const player = state.player;
-    if (player.isAlive === false || hasTrainedThisYear(player, activity.id)) return;
+    if (player.isAlive === false || hasTrainedThisYear(player, activity.id) || !useActivitySlot(player)) return;
     const stat = activity.stat ?? "health";
     const gained = applyActivityGain(player, stat, getRecoveryGain(player, activity));
     player.developmentDone = { ...(player.developmentDone ?? {}), [activity.id]: player.age };
@@ -188,13 +189,14 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
       const info = element("div", "dev-package-info");
       info.append(element("strong", "", `${activity.icon} ${activity.name}`),
         element("span", "shop-figures", `${activity.description} · ${stat.icon} ${stat.name} +${previewActivityGain(player, statId, getRecoveryGain(player, activity))}`));
-      const action = button("shop-buy dev-recover", done ? "Đã làm năm nay" : "Thực hiện", () => recover(activity));
+      const free = getActivitySlotsLeft(player) > 0;
+      const action = button("shop-buy dev-recover", done ? "Đã làm năm nay" : free ? "Thực hiện" : NO_SLOT_LABEL, () => recover(activity));
       action.dataset.activity = activity.id;
       const needsJob = activity.needsJob && player.employmentStatus !== "employed";
       const learned = activity.once && player.styleSkill;
       if (needsJob) action.textContent = "Cần có việc chính";
       if (learned) action.textContent = "Đã có phong cách riêng";
-      action.disabled = done || needsJob || learned || player.isAlive === false || (player[statId] >= 100 && !activity.once);
+      action.disabled = done || !free || needsJob || learned || player.isAlive === false || (player[statId] >= 100 && !activity.once);
       row.append(info, action);
       list.append(row);
     }
@@ -255,11 +257,12 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
               : realGain(getTrainingGain(player, activity, tier.gain).gain + bonus) < getTrainingGain(player, activity, tier.gain).gain + bonus
                 ? " (đã gần đủ mức tăng năm nay)" : "")),
         );
-        const action = button("shop-buy dev-buy", done ? "Đã tham gia" : player.money < fee ? "Không đủ tiền" : "Đăng ký", () =>
+        const free = getActivitySlotsLeft(player) > 0;
+        const action = button("shop-buy dev-buy", done ? "Đã tham gia" : !free ? NO_SLOT_LABEL : player.money < fee ? "Không đủ tiền" : "Đăng ký", () =>
           train(activity, tier, statId));
         action.dataset.activity = activity.id;
         action.dataset.tier = tier.id;
-        action.disabled = done || player.money < fee || player.isAlive === false;
+        action.disabled = done || !free || player.money < fee || player.isAlive === false;
         row.append(info, action);
         list.append(row);
       });

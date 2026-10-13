@@ -11,10 +11,10 @@ import {
 // trừ cược và chia bài trong cùng một lần lưu, trả thưởng cùng lần lưu với nước đánh cuối,
 // nên tải lại trang chỉ tiếp tục đúng ván đang chơi, không hoàn tiền hay chia lại.
 export const TIEN_LEN_STAKES = [10_000, 50_000, 100_000, 500_000];
-// Bàn thu 10% tổng tiền góp và giới hạn mức góp như các trò khác: không có nhà cái thì người chơi
-// chỉ cần đánh nhỉnh hơn máy một chút (bấm gợi ý đã thắng ~28%) là ván nào cũng có lãi.
-export const TIEN_LEN_FEE_RATE = 0.1;
-export const TIEN_LEN_MAX_STAKE = 1_000_000_000;
+// Bàn thu 20% tổng tiền góp và giới hạn mức góp: bấm gợi ý thắng khoảng 28% nên kỳ vọng ~0,9;
+// người đánh giỏi (~35%) chỉ lãi nhẹ, và mức góp tối đa 100 triệu để không thành nguồn thu chính.
+export const TIEN_LEN_FEE_RATE = 0.2;
+export const TIEN_LEN_MAX_STAKE = 100_000_000;
 export const getTienLenPot = (stake) => Math.floor(stake * 4 * (1 - TIEN_LEN_FEE_RATE));
 export const TIEN_LEN_SEATS = [
   { name: "Bạn", icon: "🙂", place: "bottom" },
@@ -71,9 +71,10 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       onExit();
     });
     const card = element("section", "dialog-card");
-    card.append(element("h3", "", "🃏 Tiến lên miền Nam"),
+    card.classList.add("tl-lobby-intro");
+    card.append(element("p", "tl-eyebrow", "Bàn bài bốn người"), element("h3", "", "Tiến lên miền Nam"),
       element("p", "game-tagline", "“Ai hết bài trước, người đó ăn cả bàn!”"),
-      element("p", "side-job-intro", `Bạn và 3 đối thủ máy, mỗi người 13 lá. Mỗi người góp một mức cược; ai đánh hết bài đầu tiên nhận cả bàn sau khi trừ 10% phí bàn (gấp 3,6 lần mức góp). Người thua chỉ mất phần đã góp. Mức góp tối đa ${formatMoney(TIEN_LEN_MAX_STAKE)}.`));
+      element("p", "side-job-intro", `Bạn và 3 đối thủ máy, mỗi người 13 lá. Mỗi người góp một mức cược; ai đánh hết bài đầu tiên nhận cả bàn sau khi trừ ${Math.round(TIEN_LEN_FEE_RATE * 100)}% phí bàn (gấp ${String(4 * (1 - TIEN_LEN_FEE_RATE)).replace(".", ",")} lần mức góp). Người thua chỉ mất phần đã góp. Mức góp tối đa ${formatMoney(TIEN_LEN_MAX_STAKE)}.`));
     const tables = element("div", "shop-groups tl-tables");
     for (const stake of TIEN_LEN_STAKES) {
       const blocker = startBlocker(stake);
@@ -103,8 +104,10 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       "Không áp dụng tới trắng, phạt cóng, thối heo hay tiền chặt. Mỗi ván tính 1 lượt Trò chơi trong năm.",
     ]) list.append(element("li", "", text));
     rules.append(list);
-    body.replaceChildren(back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(state.player.money)} · Còn ${playsLeft()} lượt năm nay`),
+    const lobby = element("section", "tl-lobby");
+    lobby.append(back, element("p", "shop-wallet", `Ví hiện có: ${formatMoney(state.player.money)} · Còn ${playsLeft()} lượt năm nay`),
       ...(notice ? [element("p", "license-age-note", notice)] : []), card, tables, rules);
+    body.replaceChildren(lobby);
     (body.querySelector(".tl-table-pick:not(:disabled)") ?? back).focus({ preventScroll: true });
   }
   function sitDown(stake) {
@@ -295,9 +298,20 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
   }
 
   // ---------- Giao diện bàn ----------
+function appendCardDetails(node, card) {
+    const corner = element("span", "tl-corner");
+    corner.append(element("span", "tl-rank", RANKS[rankOf(card)]), element("span", "tl-suit", SUITS[suitOf(card)]));
+    const pip = element("span", "tl-pip", SUITS[suitOf(card)]);
+    pip.setAttribute("aria-hidden", "true");
+    const bottom = corner.cloneNode(true);
+    bottom.classList.add("tl-corner-bottom"); bottom.setAttribute("aria-hidden", "true");
+    node.append(corner, pip, bottom);
+  }
+
   function cardFace(card, className = "tl-card") {
     const node = element("span", `${className}${isRed(card) ? " is-red" : ""}`);
-    node.append(element("span", "tl-rank", RANKS[rankOf(card)]), element("span", "tl-suit", SUITS[suitOf(card)]));
+    appendCardDetails(node, card);
+    node.setAttribute("aria-label", spokenCard(card));
     return node;
   }
   function seatBox(round, seat) {
@@ -309,6 +323,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     const count = round.hands[seat].length;
     box.append(element("span", "tl-avatar", info.icon), element("span", "tl-name", info.name),
       element("span", "tl-count", `🂠 ${count} lá`));
+    if (count <= 3 && count > 0 && !round.over) box.append(element("span", "tl-danger", "Sắp hết bài"));
     if (round.passed[seat] && !round.over) box.append(element("span", "tl-badge", "Bỏ lượt"));
     if (round.turn === seat && !round.over) box.append(element("span", "tl-badge is-turn", "Đang đánh…"));
     box.setAttribute("aria-label", `${info.name}: còn ${count} lá${round.passed[seat] ? ", đã bỏ lượt" : ""}${round.turn === seat ? ", đang tới lượt" : ""}`);
@@ -316,6 +331,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
   }
   function centerPile(round) {
     const center = element("div", "tl-center");
+    center.append(element("span", "tl-table-mark", "TIẾN LÊN"), element("span", "tl-center-label", round.current ? "Bộ bài trên bàn" : "Sẵn sàng mở vòng"));
     if (round.current) {
       const pile = element("div", "tl-pile");
       for (const card of round.current.cards) pile.append(cardFace(card, "tl-card is-small"));
@@ -365,8 +381,16 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     if (!round) return renderLobby(notice);
     if (notice) status = notice;
     for (const card of [...selected]) if (!round.hands[0].includes(card)) selected.delete(card);
-    const info = element("p", "shop-wallet tl-info",
-      `Bàn ${formatMoney(round.stake)} · Thưởng ${formatMoney(round.pot)} · Ví ${formatMoney(state.player.money)}`);
+    const shell = element("section", "tl-shell");
+    const heading = element("header", "tl-heading");
+    const identity = element("div", "tl-heading-identity");
+    identity.append(element("span", "tl-eyebrow", `Ván ${round.number} · 4 người`), element("h3", "", "Tiến lên miền Nam"));
+    heading.append(identity, element("span", `tl-phase${round.turn === 0 && !round.over ? " is-your-turn" : ""}`, round.over ? "Đã kết thúc" : round.turn === 0 ? "Lượt của bạn" : "Đối thủ đang đánh"));
+    const info = element("div", "tl-info");
+    for (const [label, value] of [["Góp cược", round.stake], ["Thắng nhận", round.pot], ["Ví của bạn", state.player.money]]) {
+      const metric = element("div", "tl-metric");
+      metric.append(element("span", "", label), element("strong", "", formatMoney(value))); info.append(metric);
+    }
     const board = element("div", "tl-board");
     board.append(seatBox(round, 2), seatBox(round, 3), centerPile(round), seatBox(round, 1));
     const me = element("div", "tl-me");
@@ -384,7 +408,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
         else selected.add(card);
         renderTable();
       });
-      node.append(element("span", "tl-rank", RANKS[rankOf(card)]), element("span", "tl-suit", SUITS[suitOf(card)]));
+      appendCardDetails(node, card);
       node.setAttribute("aria-pressed", String(selected.has(card)));
       node.setAttribute("aria-label", spokenCard(card));
       node.dataset.focus = `card-${card}`;
@@ -395,13 +419,16 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       ? (round.current ? `Đánh ${describeCombo(round.current)} lớn hơn, chặt, hoặc Bỏ lượt.` : round.requireThreeSpades ? "Bộ đầu tiên phải có 3♠." : "Đánh bộ hợp lệ bất kỳ.")
       : ""));
     live.setAttribute("aria-live", "polite");
-    const nodes = [info, board, me, hand, live];
+    const selection = element("p", "tl-selection", selected.size ? `Đã chọn ${selected.size} lá · ${cardsText([...selected])}` : "Chạm lá bài để chọn · Chạm lần nữa để bỏ chọn");
+    const playerArea = element("section", "tl-player-area");
+    playerArea.append(me, hand, selection);
+    const nodes = [heading, info, board, playerArea, live];
     if (round.over) {
       nodes.push(resultPanel(round));
     } else {
       const check = selected.size ? checkPlay(round, 0, [...selected]) : { ok: false };
       const actions = element("div", "tl-actions");
-      const playButton = button("shop-buy game-primary tl-play", check.ok && check.chop ? "💥 Chặt" : "🃏 Đánh", playSelected);
+      const playButton = button("shop-buy game-primary tl-play", check.ok && check.chop ? `Chặt · ${selected.size} lá` : selected.size ? `Đánh · ${selected.size} lá` : "Chọn bài để đánh", playSelected);
       playButton.disabled = !check.ok;
       const passButton = button("shop-back tl-pass", "✋ Bỏ lượt", passTurn);
       passButton.disabled = !canPass(round, 0);
@@ -412,14 +439,18 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       for (const [node, key] of [[playButton, "play"], [passButton, "pass"], [sortButton, "sort"], [hintButton, "hint"], [forfeitButton, "forfeit"]]) {
         node.dataset.focus = key;
       }
-      actions.append(playButton, passButton, sortButton, hintButton);
+      const clearButton = button("shop-back tl-clear", "Bỏ chọn", () => { selected.clear(); renderTable(); });
+      clearButton.disabled = !selected.size; clearButton.dataset.focus = "clear";
+      sortButton.setAttribute("aria-pressed", String(table().sortMode === "group"));
+      actions.append(playButton, passButton, hintButton, sortButton, clearButton);
       if (selected.size && !check.ok && check.reason && round.turn === 0) live.textContent = check.reason;
       nodes.push(actions, forfeitButton);
     }
     // Vẽ lại sau mỗi nước: giữ focus ở lá bài / nút đang dùng (chỉ khi focus đang ở trong bàn).
     const active = document.activeElement;
     const focusKey = body.contains(active) ? active?.dataset?.focus ?? "" : null;
-    body.replaceChildren(...nodes);
+    shell.append(...nodes);
+    body.replaceChildren(shell);
     if (focusKey !== null) {
       const target = (focusKey && body.querySelector(`[data-focus="${focusKey}"]:not(:disabled)`)) ||
         body.querySelector(".tl-again:not(:disabled), .tl-play:not(:disabled), .tl-pass:not(:disabled), .tl-hint");

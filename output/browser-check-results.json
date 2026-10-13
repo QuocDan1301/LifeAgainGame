@@ -1,12 +1,12 @@
 [
   {
-    "result": "PASS: 7 games; payout tables 89–95%; outcomes fixed at start; blackjack rules; 18+; 5 plays/year; no probabilities shown; balance limit; tower stop; resume",
-    "pageErrors": [],
-    "test": "check-games.html"
-  },
-  {
-    "result": "PASS: prize tables; quick pick; age 18+; 30 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary",
-    "pageErrors": [],
-    "test": "check-lottery.html"
+    "result": "PASS life fuzz: {\"lives\":4,\"years\":91,\"deaths\":4,\"reloads\":13,\"events\":78,\"maxAge\":86,\"causes\":{\"old-age\":3,\"early-cancer\":1},\"clicks\":1174,\"unsaved\":{\"activities-dialog › 🕹️Game CenterChơi một ván cho vui, thắng thua khô :: player.arcade.progress\":3,\"page › 💳 Tài sản :: player.arcade\":2,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":1}}",
+    "pageErrors": [
+      "Tiến trình đã thay đổi ở tab khác. Hãy tải lại để tránh ghi đè bản lưu.",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')"
+    ],
+    "test": "check-life-fuzz.html?seed=88&lives=4&startAge=60&explore=1"
   }
 ]

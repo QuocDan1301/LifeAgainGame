@@ -1,6 +1,6 @@
 import { maleNames, femaleNames } from "../core/character-data.js";
 import { collectAssetIncome, getAssetYearProjection } from "../leisure/shop.js";
-import { collectSideJobYear } from "../career/side-jobs.js";
+import { collectSideJobYear, shiftTypes } from "../career/side-jobs.js";
 import { getStreetIncome } from "../career/street-work.js";
 import { applyEmergency, collectIllnessYear } from "../stats/hospital.js";
 import { collectLotteryYear } from "../leisure/lottery.js";
@@ -16,6 +16,7 @@ import { createSchoolEntryReward } from "../education/school-rewards.js";
 import { createGraduationNotice } from "../career/job-applications.js";
 import { getStudyAbroadTuition, getStudyAbroadCountry, getStudyAbroadLivingCost } from "../education/study-abroad.js";
 import { collectStatWearYear } from "../core/stat-budget.js";
+import { getLivingShare } from "../core/living-share.js";
 
 export const getChildAge = (child, age) => child.initialAge + Math.max(0, age - child.joinedAtAge);
 
@@ -99,7 +100,8 @@ export function getChildcareExpenses(player, age, updates = {}) {
 
 // Every birthday pays income, then childcare, whether or not a story appears.
 // Chi phí sinh hoạt: từ 23 tuổi (học xong, tự lo cho bản thân), mỗi năm trừ một phần
-// thu nhập từ công việc (lương chính + làm thêm), nhưng không thấp hơn mức tối thiểu
+// thu nhập thường xuyên (lương chính, làm thêm, cho thuê; phần trên 200 triệu chi tỷ lệ cao hơn,
+// xem core/living-share.js), nhưng không thấp hơn mức tối thiểu
 // để sống, kể cả khi không có thu nhập.
 export const LIVING_COST_MIN_AGE = 23;
 export const LIVING_COST_RATE = 0.3;
@@ -126,8 +128,7 @@ export const LIVING_MODES = {
 export function getLivingCost(age, income, mode = "normal") {
   if (!Number.isInteger(age) || age < LIVING_COST_MIN_AGE) return 0;
   const config = LIVING_MODES[mode] ?? LIVING_MODES.normal;
-  const share = income > 0 ? Math.round((income * config.rate) / 1000) * 1000 : 0;
-  return Math.max(config.floor, share);
+  return Math.max(config.floor, getLivingShare(income, config.rate));
 }
 // Sống tiết kiệm là cách xoay xở lúc khó khăn: mỗi năm bớt được tối đa 12 triệu so với mức bình thường,
 // để người thu nhập cao không thể cắt 1/3 sinh hoạt phí chỉ với Hạnh phúc -1.
@@ -192,7 +193,8 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     return { childcare: { amount: 0, charges: [], content: "" } };
   }
   // Năm thụ án (kể cả năm ra tù): không có lương, làm thêm hay học phí bên ngoài.
-  if (player.prison && player.prison.releaseAge > player.age) {
+  if ((player.prison && player.prison.releaseAge > player.age) ||
+      (updates.prison && updates.prison.releaseAge > age)) {
     const childcare = getChildcareExpenses(player, age, updates);
     const interest = getDebtInterest(age, player.money);
     Object.assign(player, updates, { age });
@@ -318,7 +320,7 @@ export function forecastNextYear(player) {
   const salary = forecastWorker.employmentStatus === "retired" || (forecastWorker.employmentStatus === "employed" && forecastWorker.layoffDue !== age && forecastWorker.contractEndAge !== age)
     ? getAnnualSalaryPayment(forecastWorker, age)?.amount ?? 0 : 0;
   const sideJobs = player.restYear === age ? 0 : (player.sideJobs ?? [])
-    .reduce((sum, job) => sum + (job.startedAtAge < age ? ({ "part-time": 12_000_000, "full-time": 72_000_000 })[job.shift] ?? 0 : 0), 0);
+    .reduce((sum, job) => sum + (job.startedAtAge < age ? shiftTypes[job.shift]?.salary ?? 0 : 0), 0);
   const assets = getAssetYearProjection(player, age);
   const repayments = (player.storyLoans ?? []).reduce((sum, loan) => {
     if (!loan.repaymentYears || loan.outstanding <= 0 || age <= loan.lastRepaidAge) return sum;

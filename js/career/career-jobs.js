@@ -1,7 +1,7 @@
 import { getCareerAnnualSalary, formatSalary, RETIREMENT_AGE } from "./career-salary.js";
 import { careerMilestones, hasCareerMilestone, getRankLock } from "./career-milestones.js";
 import { FOOTBALL_MIN_HEALTH, failsFootballFitness } from "../stats/health-rules.js";
-import { INTERVIEW, getPromotionChance } from "../stats/intellect-rules.js";
+import { INTERVIEW, PROMOTION, getPromotionChance } from "../stats/intellect-rules.js";
 import { hasInternationalDegreeForCareer, getStudyAbroadMajor, getOverseasProfile, getOverseasEmploymentContext, getOverseasJobBlocker, getStudyAbroadCountry, studyAbroadProfile } from "../education/study-abroad.js";
 
 const sticker = (code) =>
@@ -728,32 +728,70 @@ export function getPromotionUpdates(player, age, correct) {
   return { nextPromotionAge: level === 1 && finalAge <= lastAge ? finalAge : null };
 }
 
+// Mỗi tình huống có ba cách làm hợp lý, khác nhau ở cái giá phải trả: dốc sức thì dễ được chọn hơn
+// nhưng hao sức khỏe, tinh thần; giữ cân bằng thì an toàn cho bản thân nhưng ít cơ hội hơn.
+// bonus cộng vào khả năng được chọn; effects là cái giá (hoặc phần được) dù kết quả thế nào.
 const promotionScenarios = {
   1: [
     {
       title: "📋 Công việc sát hạn",
-      text: "Một nhiệm vụ trong ngành {field} gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn.",
-      answers: ["🧭 Xác định vấn đề, chia việc và phối hợp cả nhóm", "🔥 Ôm hết việc, khỏi cần hỏi ai", "🤫 Giấu trục trặc, mong mọi chuyện tự ổn"],
+      text: "Một nhiệm vụ trong ngành {field} gặp trục trặc ngay trước hạn. Đồng nghiệp chờ bạn đưa ra cách xử lý, còn cấp trên đang theo dõi năng lực của bạn. Bạn chọn cách nào để đưa nhiệm vụ về đích?",
+      approaches: [
+        { label: "🧭 Chia việc, phối hợp cả nhóm để kịp hạn", bonus: 0, effects: {},
+          done: "Bạn xác định đúng chỗ vướng, chia việc theo thế mạnh từng người và cả nhóm kịp hạn." },
+        { label: "🔥 Nhận phần khó nhất, thức nhiều đêm cho kịp", bonus: 0.15, effects: { health: -6, happiness: -2 },
+          done: "Bạn tự gánh phần khó nhất, thức nhiều đêm liền. Nhiệm vụ xong sớm, cấp trên thấy rõ dấu ấn của bạn, nhưng cơ thể đã rất mệt." },
+        { label: "🛑 Xin lùi hạn một tuần để làm cho chắc", bonus: -0.2, effects: { happiness: 2 },
+          done: "Bạn xin lùi hạn để làm kỹ. Kết quả chắc chắn, cả nhóm đỡ áp lực, nhưng hội đồng ghi nhận bạn chưa xoay xở được dưới sức ép." },
+      ],
     },
     {
       title: "🔎 Sai sót bất ngờ",
-      text: "Bạn phát hiện một sai sót trong công việc ngành {field}. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Cấp trên muốn biết bạn sẽ làm gì.",
-      answers: ["✅ Kiểm tra, báo người phụ trách và cùng sửa sai", "🙈 Bỏ qua vì chắc không ai nhận ra", "👉 Đổ lỗi cho đồng nghiệp trước đã"],
+      text: "Bạn phát hiện một sai sót trong công việc ngành {field}. Nếu bỏ qua, người khác có thể bị ảnh hưởng. Sửa lỗi nào cũng tốn thời gian và có người phải chịu trách nhiệm. Bạn xử lý thế nào?",
+      approaches: [
+        { label: "✅ Báo người phụ trách và cùng sửa ngay", bonus: 0, effects: {},
+          done: "Bạn báo người phụ trách, cả nhóm cùng sửa trong ngày. Mọi việc trở lại đúng hướng." },
+        { label: "📣 Báo cáo công khai, đề xuất quy trình kiểm tra mới", bonus: 0.15, effects: { happiness: -4 },
+          done: "Bạn trình bày sai sót trước cả phòng và đề xuất quy trình kiểm tra mới. Cấp trên đánh giá cao, nhưng vài đồng nghiệp phật lòng vì bị nêu tên." },
+        { label: "🌙 Lặng lẽ sửa trong đêm, không làm ai mất mặt", bonus: -0.15, effects: { health: -3, happiness: 1 },
+          done: "Bạn tự sửa trong đêm và không nhắc tên ai. Đồng nghiệp biết ơn, nhưng cấp trên gần như không biết bạn đã làm gì." },
+      ],
     },
   ],
   2: [
     {
       title: "🚀 Dẫn dắt nhiệm vụ lớn",
-      text: "Bạn được cân nhắc cho bậc cao nhất của ngành {field}. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại.",
-      answers: ["🤝 Lắng nghe, đối chiếu dữ kiện và thống nhất kế hoạch", "👑 Bắt mọi người làm theo ý mình", "🏃 Bỏ mặc cả nhóm tự giải quyết"],
+      text: "Bạn được cân nhắc cho bậc cao nhất của ngành {field}. Trong nhiệm vụ quyết định, cả nhóm bất đồng về cách làm và tiến độ đang chậm lại, đúng lúc gia đình cũng cần bạn hơn. Bạn dẫn dắt theo cách nào?",
+      approaches: [
+        { label: "🤝 Lắng nghe, đối chiếu dữ kiện và thống nhất kế hoạch", bonus: 0, effects: {},
+          done: "Bạn dành thời gian nghe từng người, đối chiếu dữ kiện và chốt một kế hoạch cả nhóm cùng đồng ý." },
+        { label: "👑 Tự quyết và chịu trách nhiệm, đẩy nhanh tiến độ", bonus: 0.15, effects: { health: -3, happiness: -4 },
+          done: "Bạn tự quyết hướng đi và đứng ra chịu trách nhiệm. Tiến độ tăng vọt, nhưng không khí trong nhóm căng thẳng và bạn hầu như không về nhà đúng giờ." },
+        { label: "🏡 Giao bớt cho phó nhóm, giữ thời gian cho gia đình", bonus: -0.2, effects: { happiness: 3, health: 2 },
+          done: "Bạn giao bớt việc cho phó nhóm để có mặt ở nhà. Nhiệm vụ vẫn xong, nhưng công lao được chia cho người khác." },
+      ],
     },
     {
       title: "⚖️ Quyết định quan trọng",
-      text: "Một kế hoạch lớn trong ngành {field} hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Bạn phải quyết định với tư cách người dẫn dắt.",
-      answers: ["🛡️ Đánh giá rủi ro, kiểm tra và chuẩn bị phương án dự phòng", "🎲 Triển khai ngay, thành công nhờ may mắn", "🤐 Giấu rủi ro để kế hoạch được duyệt"],
+      text: "Một kế hoạch lớn trong ngành {field} hứa hẹn thành công nhưng có rủi ro chưa được kiểm tra. Kiểm tra kỹ thì chậm, triển khai sớm thì phải gánh phần phát sinh. Bạn quyết định thế nào?",
+      approaches: [
+        { label: "🛡️ Kiểm tra rủi ro kỹ, chấp nhận chậm một quý", bonus: 0, effects: { intelligence: 1 },
+          done: "Bạn cho kiểm tra kỹ từng rủi ro và chuẩn bị phương án dự phòng. Kế hoạch chậm một quý nhưng chạy êm." },
+        { label: "🚀 Triển khai ngay, làm thêm giờ xử lý phát sinh", bonus: 0.15, effects: { health: -5, happiness: -2 },
+          done: "Bạn cho triển khai ngay và tự xử lý từng phát sinh ngoài giờ. Kết quả đến sớm, ai cũng thấy, nhưng bạn kiệt sức sau mấy tháng." },
+        { label: "🤲 Đề cử người giỏi hơn dẫn dắt, mình làm hậu thuẫn", bonus: -0.3, effects: { happiness: 2, intelligence: 2 },
+          done: "Bạn đề cử một đồng nghiệp hợp hơn dẫn dắt và hỗ trợ phía sau. Bạn học được nhiều, nhưng vai trò của bạn trong mắt hội đồng mờ đi." },
+      ],
     },
   ],
 };
+const describeCost = (effects) => Object.entries(effects)
+  .map(([stat, value]) => `${({ health: "Sức khỏe", happiness: "Hạnh phúc", intelligence: "Trí tuệ" })[stat]} ${value > 0 ? "+" : ""}${value}`)
+  .join(", ");
+const addEffects = (...list) => list.reduce((sum, effects) => {
+  for (const [stat, value] of Object.entries(effects)) sum[stat] = (sum[stat] ?? 0) + value;
+  return sum;
+}, {});
 
 function promotionRetryText(player, age) {
   const retryAge = getPromotionUpdates(player, age, false).nextPromotionAge;
@@ -826,59 +864,39 @@ export function createPromotionEvent(player, random = Math.random, age = player.
     ? milestone.finalScenario
     : Math.floor(random() * scenarios.length);
   const scenario = scenarios[scenarioIndex];
-  const options = [
-    {
-      label: scenario.answers[0],
-      correct: true,
+  // Kinh nghiệm, trí tuệ (theo nghề) và thành tích đặt khả năng cơ bản; cách làm cộng hoặc trừ thêm.
+  // Một lần tung khi sự kiện xuất hiện (tải lại không đổi); cách làm có khả năng cao hơn luôn đậu khi cách
+  // thấp hơn đậu. Không tăng lương chỉ vì chỉ số cao.
+  const chance = getPromotionChance(player, age);
+  const roll = random();
+  const options = scenario.approaches.map((approach) => {
+    const odds = Math.max(PROMOTION.min, Math.min(PROMOTION.max, chance + approach.bonus));
+    const cost = describeCost(approach.effects);
+    const label = `${approach.label} (≈${Math.round(odds * 100)}%${cost ? ` · ${cost}` : ""})`;
+    if (roll < odds) return {
+      label, correct: true,
       title: finalPromotion ? `🏆 Chạm tới bậc ${profile.ranks[2]}` : `📈 Tiến lên bậc ${profile.ranks[1]}`,
-      text: `Bạn xử lý tình huống bình tĩnh, giữ đúng trách nhiệm và giúp công việc đi đến kết quả tốt. Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.\nLương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel, career))}/năm, áp dụng từ năm tiếp theo.`,
-      effects: { intelligence: 4, happiness: 3 },
+      text: `${approach.done} Năng lực của bạn được công nhận; bạn được nâng lên bậc ${profile.ranks[targetLevel - 1]}.
+Lương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel, career))}/năm, áp dụng từ năm tiếp theo.`,
+      effects: addEffects({ intelligence: 4, happiness: 3 }, approach.effects),
       job: profile.ranks[targetLevel - 1],
       careerLevel: targetLevel,
       employmentStatus: "employed",
+      playerUpdates: { workMerit: 0 },
       achievementIds: finalPromotion && profile.achievement ? [profile.achievement] : [],
       confirmText: finalPromotion ? "Nhận thành tựu!" : "Tiếp tục cố gắng!",
       ...art(finalPromotion ? "1F3C6" : "1F4C5", "Thăng tiến trong công việc"),
-    },
-    {
-      label: scenario.answers[1],
-      correct: false,
-      title: "🥱 Có cố gắng, chưa đúng cách",
-      text: "Cách xử lý chưa phù hợp nên bạn chưa được nâng bậc. Bạn sẽ có cơ hội thử lại sau 2 năm, nếu còn trong giới hạn tuổi của lần nâng bậc này.",
-      effects: { intelligence: 1, health: -3, happiness: -1 },
-      achievementIds: [],
-      confirmText: "Lần sau làm tốt hơn!",
-      ...art("1F4DA", "Mệt mỏi vì ôm quá nhiều việc"),
-    },
-    {
-      label: scenario.answers[2],
-      correct: false,
-      title: "⚠️ Bài học về trách nhiệm",
-      text: "Quyết định của bạn chưa giải quyết được vấn đề. Bạn giữ nguyên bậc và sẽ được thử lại sau 2 năm, nếu còn trong giới hạn tuổi của lần nâng bậc này.",
-      effects: { happiness: -3 },
-      achievementIds: [],
-      confirmText: "Rút kinh nghiệm!",
-      ...art("26A1", "Công việc gặp cảnh báo"),
-    },
-  ];
-  for (const option of options) {
-    if (!option.correct) option.text = promotionRetryText(player, age);
-  }
-  // Xử lý đúng là điều kiện cần; được chọn hay không còn tùy kinh nghiệm, trí tuệ (theo nghề) và thành tích.
-  // Kết quả được quyết định khi sự kiện xuất hiện (tải lại không đổi). Không tăng lương chỉ vì chỉ số cao.
-  const chance = getPromotionChance(player, age);
-  if (random() < chance) {
-    options[0].playerUpdates = { workMerit: 0 };
-  } else {
-    options[0] = {
-      ...options[0], correct: false, job: undefined, careerLevel: undefined, employmentStatus: undefined, achievementIds: [],
-      title: "📋 Xử lý tốt, nhưng chưa đến lượt",
-      text: `Cách xử lý của bạn được đánh giá đúng hướng và có trách nhiệm. Lần này hội đồng chọn người có nhiều kinh nghiệm hơn. ${promotionRetryText(player, age)}`,
-      effects: { intelligence: 2 },
-      confirmText: "Lần sau sẽ đến lượt!",
-      ...art("1F4CB", "Xử lý tốt nhưng chưa được chọn"),
     };
-  }
+    return {
+      label, correct: false,
+      title: "📋 Lần này chưa đến lượt",
+      text: `${approach.done} Hội đồng chọn người khác ở lần xét này. ${promotionRetryText(player, age)}`,
+      effects: addEffects({ intelligence: 2 }, approach.effects),
+      achievementIds: [],
+      confirmText: "Lần sau sẽ đến lượt!",
+      ...art("1F4CB", "Chưa được chọn nâng bậc"),
+    };
+  });
   for (let index = options.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
     [options[index], options[swapIndex]] = [options[swapIndex], options[index]];
@@ -893,7 +911,7 @@ export function createPromotionEvent(player, random = Math.random, age = player.
       : scenario.text.replace("{field}", career.field)) +
       `
 
-📊 Nếu xử lý đúng, khả năng được chọn khoảng ${Math.round(chance * 100)}%.`,
+📊 Khả năng được chọn ghi cạnh từng cách làm (kinh nghiệm, trí tuệ và thành tích đặt mức cơ bản ${Math.round(chance * 100)}%). Dốc sức thì dễ được chọn hơn nhưng phải trả giá.`,
     ...art(level === 1 ? "1F4CA" : "1F3AF", "Cơ hội thăng tiến nghề nghiệp"),
     choices: options,
   };

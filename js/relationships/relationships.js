@@ -9,8 +9,15 @@ import { MOOD_EFFECTS, PARTNER_ACTIONS, addMoodEffect } from "../stats/mood-rule
 import { CONDITIONS, RELATIVE_ACTIONS, getRelativeActionConfig, ensureRelatives, getPartnerAge, getRelativeAge } from "./family-members.js";
 import { formatMoney } from "../core/money-format.js";
 import { applyActivityGain } from "../core/stat-budget.js";
+import { isInPrison } from "../events/crime.js";
 import { getRomanceChance } from "../stats/appearance-rules.js";
 import { getCasualRomanceNote } from "./casual-romance.js";
+
+// Đang thụ án: chỉ giữ liên lạc từ xa (gọi điện, trò chuyện khi được thăm, nhờ người khác chăm sóc),
+// không làm được việc cần có mặt bên ngoài.
+const PRISON_BLOCKED_RELATIVE = ["visit", "care"];
+const PRISON_BLOCKED_PARTNER = ["together", "care"];
+const PRISON_NOTE = "Đang thụ án: chưa thể làm việc này.";
 
 const pick = (items, random) => items[Math.floor(random() * items.length)];
 const integer = (min, max, random) => min + Math.floor(random() * (max - min + 1));
@@ -262,6 +269,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     const player = state.player;
     const partner = player.partner;
     if (!partner || player.isAlive === false) return;
+    if (isInPrison(player) && PRISON_BLOCKED_PARTNER.includes(type)) return;
     const done = player.partnerActions ?? {};
     if (done[type] === player.age) return;
     const promise = player.partnerPromise?.partnerId === partner.id ? player.partnerPromise : null;
@@ -315,9 +323,10 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       node.textContent = label;
       const small = document.createElement("span");
       small.className = "side-job-note";
-      small.textContent = note;
+      const jailed = isInPrison(player) && PRISON_BLOCKED_PARTNER.includes(type);
+      small.textContent = jailed ? PRISON_NOTE : note;
       node.append(small);
-      node.disabled = disabled;
+      node.disabled = disabled || jailed;
       node.addEventListener("click", () => act(type));
       actions.append(node);
     };
@@ -344,6 +353,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     const relative = (player.relatives ?? []).find((entry) => entry.id === id);
     const config = getRelativeActionConfig(player, type);
     if (!relative?.alive || !config || player.isAlive === false || relative.done?.[type] === player.age) return;
+    if (isInPrison(player) && PRISON_BLOCKED_RELATIVE.includes(type)) return;
     if (config.cost && player.money < config.cost) return;
     const next = { ...relative, done: { ...(relative.done ?? {}), [type]: player.age }, interactions: { ...(relative.interactions ?? {}) } };
     const who = `${relative.role.toLowerCase()} ${relative.name}`;
@@ -419,12 +429,13 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         button.textContent = config.label;
         const note = document.createElement("span");
         note.className = "side-job-note";
-        note.textContent = done ? "Đã làm năm nay." : short ? `Cần ${formatMoney(config.cost)}. Gọi điện vẫn miễn phí.`
+        const jailed = isInPrison(player) && PRISON_BLOCKED_RELATIVE.includes(type);
+        note.textContent = done ? "Đã làm năm nay." : jailed ? PRISON_NOTE : short ? `Cần ${formatMoney(config.cost)}. Gọi điện vẫn miễn phí.`
           : [config.cost ? formatMoney(config.cost) : "Miễn phí", config.bond ? `Gắn kết +${config.bond}` : "",
             type === "care" ? "Sức khỏe của bạn -2" : "", type === "postpone" ? "Không bị trừ nếu giữ lời hẹn" : "",
             config.needsCare ? "Giúp ích nhưng không bảo đảm khỏi bệnh" : ""].filter(Boolean).join(" · ");
         button.append(note);
-        button.disabled = done || short || player.isAlive === false;
+        button.disabled = done || short || jailed || player.isAlive === false;
         button.addEventListener("click", () => relativeAction(relative.id, type));
         actions.append(button);
       }

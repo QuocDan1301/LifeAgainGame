@@ -4,6 +4,7 @@ import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { getLicenseType, hasLicense } from "../career/licenses.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { applyActivityGain } from "../core/stat-budget.js";
+import { isInPrison } from "../events/crime.js";
 
 // Cửa hàng dùng chung cho "Mua vật nuôi" và "Mua sắm". Giá và lãi tính bằng VNĐ;
 // món có profit sinh lãi mỗi năm, mọi món đều bán lại được một nửa giá mua.
@@ -243,7 +244,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
     const player = state.player;
     const list = player.livestock ?? [];
     const current = list.find((entry) => entry.uid === owned.uid);
-    if (player.isAlive === false || !current || hasPettedThisYear(current, player.age)) return;
+    if (player.isAlive === false || !current || hasPettedThisYear(current, player.age) || isInPrison(player)) return;
     player.livestock = list.map((entry) => entry.uid === owned.uid ? { ...entry, pettedAtAge: player.age } : entry);
     const gain = applyActivityGain(player, "happiness", item.happiness);
     record(`🤲 Vuốt ve ${item.icon} ${item.name}${gain ? `: Hạnh phúc +${gain}` : ""}.`);
@@ -252,9 +253,10 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
 
   const petButton = (item, owned, rerender) => {
     const done = hasPettedThisYear(owned, state.player.age);
-    const button = element("button", "shop-pet", done ? "✅ Đã vuốt ve năm nay" : `🤲 Vuốt ve · Hạnh phúc +${item.happiness}`);
+    const jailed = isInPrison(state.player);
+    const button = element("button", "shop-pet", done ? "✅ Đã vuốt ve năm nay" : jailed ? "⛓️ Đang thụ án" : `🤲 Vuốt ve · Hạnh phúc +${item.happiness}`);
     button.type = "button";
-    button.disabled = done || state.player.isAlive === false;
+    button.disabled = done || jailed || state.player.isAlive === false;
     button.addEventListener("click", () => {
       pet(item, owned);
       rerender();

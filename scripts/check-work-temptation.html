@@ -1,0 +1,67 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Work temptation integration checks</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const originalRandom = Math.random;
+try {
+  const { state, createInitialState } = await import('../js/core/state.js');
+  const html = await (await fetch('../index.html')).text();
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  parsed.querySelectorAll('script').forEach(el => el.remove());
+  parsed.querySelectorAll('[src]').forEach(el => el.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  document.getElementById('game-screen').hidden = false;
+  document.getElementById('lobby-screen').hidden = true;
+  localStorage.setItem('lifeAgainAchievements', '{}'); localStorage.setItem('lifeAgainAchievementQueue', '[]');
+  const reset = (extra = {}) => {
+    Object.assign(state, createInitialState());
+    Object.assign(state.player, { age: 30, health: 80, happiness: 50, intelligence: 70, appearance: 70,
+      money: -10_000_000, studyBlock: 'A00', employmentStatus: 'employed', job: 'Lập trình viên',
+      careerPath: { id: 'programming', field: 'Công nghệ thông tin' }, careerLevel: 3, nextPromotionAge: null,
+      employedSince: 24, relatives: [], illnessPlan: [], ...extra });
+    document.querySelectorAll('dialog[open]').forEach(el => el.close());
+  };
+  reset(); await import('../js/main.js');
+  const $ = id => document.getElementById(id);
+  const choose = index => $('event-choices').querySelectorAll('button')[index].click();
+  Math.random = () => 0;
+  $('age-up').click();
+  assert(state.pendingEvent.kind === 'work-temptation', 'Working yearly event selects temptation');
+  assert($('event-choices').querySelectorAll('button').length === 4, 'Four dilemmas visible');
+  assert([...$('event-choices').querySelectorAll('button')].every(button => !button.disabled), 'Debt does not lock honest choices');
+  assert(state.player.age === 30 && !state.player.prison, 'Offer does not apply outcome');
+  const savedOffer = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
+  assert(savedOffer.choices[0].playerUpdates.prison, 'Offered consequence persists');
+  choose(0);
+  assert(state.pendingEvent.stage === 'result' && !state.player.prison, 'Choice stages result before confirmation');
+  const savedResult = JSON.parse(localStorage.getItem('lifeAgainSave'));
+  assert(savedResult.pendingEvent.updates.prison, 'Result saved before confirmation');
+  assert(!$('event-content').textContent.includes('Lương năm'), 'Arrest result never promises annual wage');
+  $('event-confirm').click();
+  assert(state.player.age === 31 && state.player.prison && state.player.employmentStatus === 'unemployed', 'Confirm applies arrest');
+  const money = state.player.money, count = state.player.criminalRecord.length;
+  $('event-confirm').click();
+  assert(state.player.money === money && state.player.criminalRecord.length === count, 'Confirm cannot fine twice');
+  assert(!state.logs.at(-1).content.includes('Lương năm'), 'Arrest year log has no wage');
+  $('age-up').click();
+  assert(state.pendingEvent.kind === 'prison', 'Next year is prison story');
+  choose(0); $('event-confirm').click();
+  reset(); $('age-up').click(); choose(1); $('event-confirm').click();
+  assert(!state.player.prison && state.player.employmentStatus === 'employed', 'Refusing keeps employment');
+  assert(state.player.lastWorkTemptationAge === 31 && state.player.workInvestigation === null, 'Refusal cooldown without prosecution');
+  const { createWorkTemptationEvent } = await import('../js/career/work-temptation.js');
+  let draw = 0; const rolls = [0, 0, 0.5, 0.99, 0, 0.99];
+  const offer = createWorkTemptationEvent({ ...state.player, lastWorkTemptationAge: null }, 32, () => rolls[draw++] ?? 0.99);
+  reset({ age: 33, money: 0, employmentStatus: 'unemployed', careerLevel: 0,
+    workInvestigation: offer.choices[0].playerUpdates.workInvestigation });
+  $('age-up').click();
+  assert(state.pendingEvent.kind === 'work-investigation', 'Due investigation beats ordinary employment story');
+  choose(0); $('event-confirm').click();
+  assert(state.player.money < 0 && state.player.workInvestigation === null && state.player.prison, 'Delayed arrest recovers spent money as debt');
+  result.textContent = 'PASS work temptation UI: real yearly event; four choices in debt; saved offer and result; arrest without wages; duplicate confirmation; prison year; refusal; delayed investigation after leaving job';
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+finally { Math.random = originalRandom; }
+</script>

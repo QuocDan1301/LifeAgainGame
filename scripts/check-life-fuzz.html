@@ -1,0 +1,204 @@
+<!doctype html><meta charset="utf-8"><title>Life fuzz checks</title>
+<pre id="fuzz-result">Running…</pre>
+<script>
+// Chạy nhiều cuộc đời trọn vẹn qua giao diện thật (bấm tăng tuổi, chọn ngẫu nhiên, xác nhận, đóng popup),
+// thỉnh thoảng tải lại bản lưu giữa chừng, và kiểm tra các bất biến sau mỗi bước.
+// Mỗi đời dùng một hạt giống ngẫu nhiên cố định để tái hiện được: thêm ?seed=<số>&lives=<số> vào URL.
+(async () => {
+  const result = document.getElementById('fuzz-result');
+  const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+  const previous = keys.map(key => localStorage.getItem(key));
+  const nativeRandom = Math.random;
+  const errors = [];
+  window.addEventListener('error', event => errors.push(String(event.error?.stack ?? event.message)));
+  window.addEventListener('unhandledrejection', event => errors.push(String(event.reason?.stack ?? event.reason)));
+  const params = new URLSearchParams(location.search);
+  const firstSeed = Number(params.get('seed') ?? 1);
+  const lives = Number(params.get('lives') ?? 3);
+  const mulberry = seed => () => {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+  let where = '';
+  const fail = message => { throw Error(`${message} [${where}]`); };
+  try {
+    const html = await (await fetch('../index.html')).text();
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    parsed.querySelectorAll('script').forEach(element => element.remove());
+    parsed.querySelectorAll('[src]').forEach(element => element.removeAttribute('src'));
+    document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+    const { state, createInitialState } = await import('../js/core/state.js');
+    const { readSavedGame } = await import('../js/core/ticket-store.js');
+    const { trackSavedGame } = await import('../js/core/save-store.js');
+    const { achievements } = await import('../js/achievements/achievements-data.js');
+    // Thành tựu đã mở hết để popup thành tựu không chen vào vòng lặp.
+    localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(achievements.map(item => [item.id, true]))));
+    localStorage.setItem('lifeAgainAchievementQueue', '[]');
+    document.getElementById('game-screen').hidden = false;
+    document.getElementById('lobby-screen').hidden = true;
+    const newLife = seed => {
+      Math.random = mulberry(seed);
+      Object.assign(state, createInitialState());
+      Object.assign(state.player, { name: 'Fuzz', province: 'Huế', gender: Math.random() < 0.5 ? 'male' : 'female',
+        health: 25 + Math.floor(Math.random() * 56), intelligence: 25 + Math.floor(Math.random() * 56),
+        happiness: 25 + Math.floor(Math.random() * 56), appearance: 25 + Math.floor(Math.random() * 56) });
+      state.logs.push({ age: 0, content: 'Bạn chào đời.' });
+      const startAge = Number(params.get('startAge') ?? 0);
+      if (startAge) Object.assign(state.player, { age: startAge, money: 5_000_000_000, studyBlock: 'A00', health: 90 });
+      localStorage.setItem('lifeAgainSave', JSON.stringify(state));
+      trackSavedGame();
+    };
+    newLife(firstSeed);
+    await import('../js/main.js');
+    const $ = id => document.getElementById(id);
+    const openDialogs = () => [...document.querySelectorAll('dialog[open]')];
+    const enabled = root => [...root.querySelectorAll('button')].filter(button => !button.disabled && !button.hidden && button.offsetParent !== null);
+    const check = () => {
+      const p = state.player;
+      for (const stat of ['health', 'happiness', 'intelligence', 'appearance']) {
+        if (!Number.isInteger(p[stat]) || p[stat] < 0 || p[stat] > 100) fail(`${stat} out of range: ${p[stat]}`);
+      }
+      if (!Number.isFinite(p.money)) fail(`money not finite: ${p.money}`);
+      if (!Number.isInteger(p.age) || p.age < 0 || p.age > 106) fail(`bad age ${p.age}`);
+      if (!readSavedGame()) fail('save no longer loads (readSavedGame returned null)');
+      if (JSON.parse(localStorage.getItem('lifeAgainSave')).player.age !== p.age) fail('save lags behind the visible age');
+      if (errors.length) fail('page error: ' + errors[0]);
+    };
+    const stats = { lives: 0, years: 0, deaths: 0, reloads: 0, events: 0, maxAge: 0, causes: {}, clicks: 0, unsaved: {} };
+    const explore = params.get('explore') !== '0';
+    const label = button => `${button.closest('dialog')?.id ?? 'page'} › ${(button.textContent || button.id).trim().replace(/\s+/g, ' ').slice(0, 50)}`;
+    // Sau mỗi thao tác người chơi, trạng thái trong bộ nhớ phải đã được lưu: nếu không, tải lại trang sẽ hoàn tác
+    // hoặc cho làm lại một việc đã làm.
+    const diffKeys = (a, b, path = '') => {
+      if (JSON.stringify(a) === JSON.stringify(b)) return [];
+      if (!a || !b || typeof a !== 'object' || typeof b !== 'object' || Array.isArray(a) || path.split('.').length > 2) return [path || '(root)'];
+      return [...new Set([...Object.keys(a), ...Object.keys(b)])].flatMap(key => diffKeys(a[key], b[key], path ? `${path}.${key}` : key));
+    };
+    const click = (button, confirmDialog = false) => {
+      const synced = JSON.stringify(state) === localStorage.getItem('lifeAgainSave');
+      button.click(); stats.clicks++;
+      if (!synced || confirmDialog || JSON.stringify(state) === localStorage.getItem('lifeAgainSave')) return;
+      const key = `${label(button)} :: ${diffKeys(JSON.parse(JSON.stringify(state)), JSON.parse(localStorage.getItem('lifeAgainSave'))).slice(0, 4).join(', ')}`;
+      stats.unsaved[key] = (stats.unsaved[key] ?? 0) + 1;
+    };
+    const entryPoints = ['activities', 'relationships', 'assets'];
+    const topDialog = () => openDialogs().at(-1);
+    // Một lượt khám phá: mở một bảng rồi bấm ngẫu nhiên vài nút bên trong (kể cả hộp xác nhận).
+    const wander = () => {
+      const entry = $(entryPoints[Math.floor(Math.random() * entryPoints.length)]);
+      if (!entry || entry.disabled) return;
+      click(entry);
+      if (entry.id === 'activities') {
+        const options = enabled($('activities-dialog')).filter(b => b.id !== 'close-activities');
+        if (!options.length) return;
+        const pick = options[Math.floor(Math.random() * options.length)];
+        click(pick); check();
+      }
+      for (let i = 0; i < 8; i++) {
+        const dialog = topDialog();
+        if (!dialog || dialog.id === 'event-dialog' || dialog.id === 'death-dialog') return;
+        let buttons = enabled(dialog).filter(b => !/^close-/.test(b.id) && !b.classList.contains('shop-back'));
+        if (dialog.id === 'shop-confirm-dialog') buttons = [Math.random() < 0.8 ? $('shop-confirm') : $('shop-cancel')];
+        if (!buttons.length) return;
+        const pick = buttons[Math.floor(Math.random() * buttons.length)];
+        click(pick, dialog.id === 'shop-confirm-dialog');
+        check();
+      }
+    };
+    for (let life = 0; life < lives; life++) {
+      const seed = firstSeed + life;
+      if (life) { newLife(seed); $('age-up').disabled = false; }
+      let lastAge = state.player.age, guard = 0;
+      while (state.player.isAlive !== false && guard++ < 4000) {
+        where = `seed ${seed}, age ${state.player.age}, step ${guard}`;
+        const dialogs = openDialogs();
+        const event = dialogs.find(d => d.id === 'event-dialog');
+        if (event) {
+          const pending = state.pendingEvent;
+          if (!pending) fail('event dialog open without a pending event');
+          if (pending.stage === 'choice') {
+            const buttons = enabled($('event-choices'));
+            if (!buttons.length) fail(`choice step without enabled choices: ${pending.title}`);
+            buttons[Math.floor(Math.random() * buttons.length)].click();
+            stats.events++;
+          } else {
+            // Bấm xác nhận hai lần liên tiếp: lần thứ hai không được làm gì thêm.
+            const before = JSON.stringify(state.player);
+            $('event-confirm').click();
+            const after = JSON.stringify(state.player);
+            $('event-confirm').click();
+            if (JSON.stringify(state.player) !== after && !state.pendingEvent) fail('second confirm changed the player');
+            if (before === after && !state.pendingEvent) fail('confirm did not apply anything');
+          }
+        } else if (dialogs.some(d => d.id === 'study-block-dialog')) {
+          const buttons = enabled($('study-block-dialog'));
+          buttons[Math.floor(Math.random() * buttons.length)].click();
+        } else if (dialogs.some(d => d.id === 'health-check-dialog')) {
+          const buttons = enabled($('health-check-dialog'));
+          buttons.at(-1).click();
+        } else if (dialogs.length) {
+          if (dialogs.some(d => d.id === 'death-dialog')) break;
+          for (const dialog of dialogs) dialog.close();
+        } else {
+          // Thỉnh thoảng mô phỏng tải lại trang: đọc lại bản lưu như lúc khởi động.
+          if (Math.random() < 0.05) {
+            const saved = readSavedGame();
+            const snapshot = JSON.stringify(saved);
+            Object.assign(state, createInitialState(), saved);
+            state.player = { ...createInitialState().player, ...saved.player };
+            if (JSON.stringify({ ...saved, player: { ...createInitialState().player, ...saved.player } }) !== JSON.stringify({ ...JSON.parse(snapshot), player: state.player })) fail('reload changed data');
+            stats.reloads++;
+          }
+          // Người chơi chăm lo sức khỏe: có bệnh và đủ tiền thì đi chữa (để phủ được tuổi già).
+          if ((state.player.illnesses ?? []).length && Math.random() < 0.8) {
+            $('activities').click(); $('activity-hospital').click();
+            const treat = document.querySelector('.hospital-illness .shop-buy:not(:disabled)');
+            if (treat) {
+              const before = state.player.illnesses.length;
+              click(treat); $('shop-confirm').click();
+              if (state.player.illnesses.length !== before - 1 && !document.querySelector('#crime-dialog[open]')) fail('treatment did not cure exactly one illness');
+            }
+            for (const dialog of openDialogs()) if (!['event-dialog', 'death-dialog', 'study-block-dialog', 'health-check-dialog'].includes(dialog.id)) dialog.close();
+          }
+          if (explore && Math.random() < 0.6) {
+            wander();
+            for (const dialog of openDialogs()) if (!['event-dialog', 'death-dialog', 'study-block-dialog', 'health-check-dialog'].includes(dialog.id)) dialog.close();
+            // Ván Tiến lên đang dở thì bỏ ván để sang năm.
+            const forfeit = document.querySelector('.tl-forfeit');
+            if (state.player.tienLen?.game && !state.player.tienLen.game.over && forfeit) { forfeit.click(); $('shop-confirm').click(); }
+            for (const dialog of openDialogs()) if (!['event-dialog', 'death-dialog', 'study-block-dialog', 'health-check-dialog'].includes(dialog.id)) dialog.close();
+            check();
+            continue;
+          }
+          $('age-up').click();
+        }
+        check();
+        if (state.player.age < lastAge) fail(`age went backwards ${lastAge} -> ${state.player.age}`);
+        if (state.player.age > lastAge) stats.years += state.player.age - lastAge;
+        lastAge = state.player.age;
+      }
+      if (guard >= 4000) fail('life did not finish within 4000 steps');
+      if (state.player.isAlive === false) {
+        stats.deaths++;
+        stats.causes[state.player.deathCause ?? 'unknown'] = (stats.causes[state.player.deathCause ?? 'unknown'] ?? 0) + 1;
+        if (!$('age-up').disabled) fail('age button still enabled after death');
+        const age = state.player.age;
+        $('age-up').click();
+        if (state.player.age !== age || state.pendingEvent) fail('a dead character aged further');
+      }
+      stats.maxAge = Math.max(stats.maxAge, state.player.age);
+      stats.lives++;
+      for (const dialog of openDialogs()) dialog.close();
+    }
+    result.textContent = `PASS life fuzz: ${JSON.stringify(stats)}`;
+    console.log('CHECK_TRACE ' + JSON.stringify(stats.unsaved));
+  } catch (error) {
+    result.textContent = `FAIL: ${error.message}\n${error.stack ?? ''}`;
+  } finally {
+    Math.random = nativeRandom;
+    keys.forEach((key, index) => previous[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, previous[index]));
+  }
+})();
+</script>

@@ -17,6 +17,7 @@ export function getStreetJobBlocker(player, id) {
   if (player.age >= RETIREMENT_AGE) return 'Đã đến tuổi nghỉ hưu.';
   if (isServing(player)) return 'Đang thực hiện nghĩa vụ quân sự.';
   if (player.prison && player.prison.releaseAge > player.age) return 'Đang thụ án.';
+  if (player.age <= 21 && player.careerPath?.school && player.careerPath.id !== 'casual') return 'Đang đi học: nhận nghề sau khi ra trường.';
   if (!owns(player, job.asset)) return `Cần sở hữu ${job.assetName} trong Mua sắm.`;
   if ((player.streetJobs ?? []).some(item => item.id === id)) return 'Đang làm nghề này.';
   const health = getJobHealthRule(player);

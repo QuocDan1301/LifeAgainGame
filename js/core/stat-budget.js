@@ -2,6 +2,8 @@
 // - Dưới 70: hoạt động (ăn uống, rèn luyện, du lịch, làm đẹp, vui chơi, trò chuyện) tăng chỉ số bình thường.
 // - Từ 70 trở lên: mỗi chỉ số chỉ tăng thêm tối đa ACTIVITY_GAIN_CAP điểm mỗi năm nhờ hoạt động.
 // - Từ 18 đến 74 tuổi: chỉ số trên 70 hao mòn mỗi năm (bận rộn, áp lực, thời gian), càng cao hao càng nhiều.
+// - Mỗi năm chỉ có ACTIVITY_SLOTS_PER_YEAR lượt thời gian rảnh cho ăn uống, rèn luyện, làm đẹp và du lịch
+//   (kể cả hoạt động miễn phí): không thể làm hết mọi thứ, phải chọn chăm chỉ số nào năm nay.
 // Kết quả sự kiện, nghỉ dưỡng và phần thưởng nhập học không bị giới hạn này.
 // Các con số là thông số gameplay.
 export const STAT_IDS = ["health", "intelligence", "happiness", "appearance"];
@@ -9,6 +11,20 @@ export const STAT_LABELS = { health: "Sức khỏe", intelligence: "Trí tuệ",
 export const ACTIVITY_CAP_FROM = 70;
 export const ACTIVITY_GAIN_CAP = 8;
 export const STAT_WEAR = { minAge: 18, maxAge: 74, from: 70, step: 10 };
+export const ACTIVITY_SLOTS_PER_YEAR = 6;
+
+const slotsUsed = (player) => (player.activitySlots?.age === player.age ? player.activitySlots.used ?? 0 : 0);
+export const getActivitySlotsLeft = (player) => Math.max(0, ACTIVITY_SLOTS_PER_YEAR - slotsUsed(player));
+// Dùng một lượt thời gian rảnh của năm; trả về false khi đã hết lượt.
+export function useActivitySlot(player) {
+  if (!getActivitySlotsLeft(player)) return false;
+  player.activitySlots = { age: player.age, used: slotsUsed(player) + 1 };
+  return true;
+}
+export const describeActivitySlots = (player) => getActivitySlotsLeft(player)
+  ? `⏳ Thời gian rảnh năm nay: còn ${getActivitySlotsLeft(player)}/${ACTIVITY_SLOTS_PER_YEAR} lượt (ăn uống, rèn luyện, làm đẹp, du lịch).`
+  : `⏳ Đã dùng hết ${ACTIVITY_SLOTS_PER_YEAR} lượt thời gian rảnh năm nay. Sang năm sẽ có lượt mới.`;
+export const NO_SLOT_LABEL = "⏳ Hết thời gian rảnh";
 
 const usageOf = (player) => (player.activityGains?.age === player.age ? player.activityGains : { age: player.age });
 const used = (player, stat) => usageOf(player)[stat] ?? 0;
@@ -51,7 +67,7 @@ export function describeActivityRoom(player, stats = STAT_IDS) {
   const full = stats.filter((stat) => (Number(player[stat]) || 0) >= 100);
   const parts = capped.map((stat) => `${STAT_LABELS[stat]} còn +${getActivityRoom(player, stat)}`);
   if (full.length) parts.push(`${full.map((stat) => STAT_LABELS[stat]).join(", ")} đã tối đa`);
-  return `Từ ${ACTIVITY_CAP_FROM} trở lên, mỗi chỉ số tăng tối đa ${ACTIVITY_GAIN_CAP} điểm/năm nhờ hoạt động` +
+  return `${describeActivitySlots(player)} Từ ${ACTIVITY_CAP_FROM} trở lên, mỗi chỉ số tăng tối đa ${ACTIVITY_GAIN_CAP} điểm/năm nhờ hoạt động` +
     (parts.length ? ` (năm nay: ${parts.join(" · ")}).` : ".");
 }
 

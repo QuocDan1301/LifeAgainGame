@@ -21,16 +21,15 @@
   try {
     const G = await import("../js/leisure/games.js");
     const card = (rank, suit = "♠") => ({ rank, suit });
-    assert(G.games.map(g => g.name).join() === "Sấp ngửa,Đoán xúc xắc,Vòng quay tài lộc,Hộp bí ẩn,Leo tháp tài lộc,Đua thú may mắn,Xì dách,Tiến lên miền Nam", "Eight games");
+    assert(G.games.map(g => g.name).join() === "Đấu giá cổ vật,Sấp ngửa,Đoán xúc xắc,Hộp bí ẩn,Leo tháp tài lộc,Xì dách,Tiến lên miền Nam", "Seven games");
 
     // Tỷ lệ hoàn trả của bảng thưởng (89–95%).
     const rtp = list => list.reduce((sum, item) => sum + item.chance * item.multiplier, 0);
-    for (const [name, value] of [["wheel", rtp(G.wheelPrizes)], ["box", rtp(G.boxPrizes)], ["coin", 0.5 * 1.9], ["dice parity", 0.5 * 1.9],
-      ["dice number", 5.7 / 6], ["tower 1", 0.5 * 1.9], ...G.racers.map(r => [r.name, r.chance * r.multiplier])]) {
+    for (const [name, value] of [["box", rtp(G.boxPrizes)], ["coin", 0.5 * 1.9], ["dice parity", 0.5 * 1.9],
+      ["dice number", 5.7 / 6], ["tower 1", 0.5 * 1.9]]) {
       assert(value >= 0.88 && value <= 0.951, `${name} returns ${value}`);
     }
-    assert(Math.abs(G.wheelPrizes.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9 && Math.abs(G.boxPrizes.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9 &&
-      Math.abs(G.racers.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9, "Probabilities add up to 100%");
+    assert(Math.abs(G.boxPrizes.reduce((s, p) => s + p.chance, 0) - 1) < 1e-9, "Probabilities add up to 100%");
 
     // Kết quả được quyết định khi tạo lượt.
     const fixed = value => () => value;
@@ -38,9 +37,7 @@
     assert(G.createRound("coin", 100_000, "tails", fixed(0.1)).payout === 0, "Coin loss");
     assert(G.createRound("dice", 100_000, { mode: "number", value: 1 }, fixed(0)).payout === 570_000, "Dice exact ×5,7");
     assert(G.createRound("dice", 100_000, { mode: "parity", value: "odd" }, fixed(0)).payout === 190_000, "Dice parity ×1,9");
-    assert(G.createRound("wheel", 100_000, "spin", fixed(0.999)).payout === 2_000_000, "Wheel jackpot ×20");
     assert(G.createRound("box", 5_000_000, "rich", fixed(0.995)).payout === 75_000_000, "Box gem ×15");
-    assert(G.createRound("race", 100_000, "turtle", fixed(0.95)).payout === 900_000, "Turtle ×9");
     const tower = G.createRound("tower", 100_000, "climb");
     assert(tower.safeDoors.length === 5 && tower.safeDoors.every(d => d === 0 || d === 1), "Tower doors decided at start");
     const bj = G.createRound("blackjack", 100_000, "deal");
@@ -165,8 +162,8 @@
     assert(!pick("coin").disabled, "Plays reset next year");
 
     // Các trò còn lại chạy đến kết quả.
-    for (const [game, select] of [["dice", () => { option("number").click(); option("4").click(); }], ["wheel", () => {}],
-      ["box", () => option("normal").click()], ["race", () => option("turtle").click()]]) {
+    for (const [game, select] of [["dice", () => { option("number").click(); option("4").click(); }],
+      ["box", () => option("normal").click()]]) {
       const plays = state.player.gamePlays?.age === state.player.age ? state.player.gamePlays.count : 0;
       open();
       pick(game).click();

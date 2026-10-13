@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm run test:account
+    buildCommand: npm run test:account && npm run test:auction && npm run test:work && npm run test:game-center
     startCommand: npm start
     healthCheckPath: /api/account/status
     envVars:

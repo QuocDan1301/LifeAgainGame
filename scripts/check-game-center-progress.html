@@ -1,0 +1,42 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/style.css"><title>Game Center progress checks</title><pre id="result">Running…</pre>
+<script type="module">
+const assert = (value, message) => { if (!value) throw new Error(message); };
+try {
+  const html = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  html.querySelectorAll('script').forEach(el => el.remove()); html.querySelectorAll('[src]').forEach(el => el.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', html.body.innerHTML);
+  const { createInitialState } = await import('../js/core/state.js');
+  const { createArcade } = await import('../js/leisure/game-center-data.js');
+  const { initGameCenter } = await import('../js/leisure/game-center.js');
+  const { progressOf, recordArcadeResult } = await import('../js/leisure/game-center-progress.js');
+  const state = createInitialState(); Object.assign(state.player, { age: 30, money: 10_000_000, arcade: createArcade() });
+  const data = state.player.arcade; data.coins = 50;
+  data.session = { id: 'saved-score', game: 'basketball', age: 30, score: 50, cost: 2, happiness: 0 };
+  initGameCenter(state, { renderMoney() {}, renderStats() {}, renderLogEntry() {} });
+  const open = () => { document.querySelectorAll('dialog[open]').forEach(el => el.close()); document.getElementById('activity-game-center').click(); };
+  const body = document.getElementById('game-center-body');
+  const click = text => { const button = [...body.querySelectorAll('button')].find(el => el.textContent.includes(text)); assert(button, text); button.click(); };
+  open(); assert(body.querySelector('.gc-result'), 'Interrupted game still settles base reward');
+  click('Về Game Center');
+  assert(body.querySelectorAll('.gc-challenge').length === 3, 'Three annual tasks');
+  assert(!progressOf(data, 30).records.basketball, 'Interrupted result cannot set record');
+  recordArcadeResult(data, 30, { id: 'valid-score', game: 'basketball', age: 30, score: 24 }, { tickets: 6, win: true });
+  open(); const before = data.tickets;
+  body.querySelector('[data-challenge=basket]').click();
+  assert(data.tickets === before + 6, 'Task reward claimed');
+  body.querySelector('[data-challenge=basket]').click(); assert(data.tickets === before + 6, 'No double task reward');
+  assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.arcade.progress.annual.claimed.includes('basket'), 'Claim is saved');
+  click('Kỷ lục cá nhân'); assert(body.textContent.includes('24 điểm'), 'Personal score is shown');
+  click('Về Game Center');
+  Object.assign(progressOf(data, 30).album, { teddy: true, bunny: true, kitty: true });
+  click('Album quà'); assert(body.querySelectorAll('.gc-album-item').length === 17, 'All gifts visible, including locked');
+  const albumBefore = data.tickets; body.querySelector('[data-milestone=starter]').click();
+  assert(data.tickets === albumBefore + 8 && body.querySelector('[data-milestone=starter]').disabled, 'Milestone claimed once');
+  state.player.age = 31; click('Về Game Center');
+  assert(body.textContent.includes('Thử thách tuổi 31') && !progressOf(data, 31).annual.claimed.length, 'New-age challenge reset');
+  assert(data.progress.records.basketball.best === 24 && data.progress.milestones.includes('starter'), 'Records and badges persist across years');
+  window.gameCenterProgressTest = { state, open };
+  document.getElementById('result').textContent = 'PASS Game Center UI: three annual challenges; interrupted-result handling; personal best; claim and save; repeat-claim protection; full album; badge reward; annual reset with lifetime records';
+} catch (error) { document.getElementById('result').textContent = 'FAIL: ' + error.stack; }
+</script>

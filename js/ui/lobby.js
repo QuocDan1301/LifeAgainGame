@@ -128,6 +128,20 @@ export function initLobby(enterGame) {
     get("character-options").hidden = false;
     error.textContent = "";
   });
+  // Chỉ số khởi đầu: mỗi chỉ số từ 25 đến 80, tổng luôn bằng 200, để nhân vật nào cũng có
+  // điểm mạnh, điểm yếu nhưng không ai khởi đầu quá thiệt thòi.
+  function rollStartingStats(random = Math.random) {
+    const keys = ["health", "intelligence", "happiness", "appearance"];
+    const stats = Object.fromEntries(keys.map((key) => [key, 25]));
+    for (let left = 100; left > 0; ) {
+      const open = keys.filter((key) => stats[key] < 80);
+      const key = open[Math.floor(random() * open.length)];
+      const step = Math.min(left, 80 - stats[key], 1 + Math.floor(random() * 10));
+      stats[key] += step;
+      left -= step;
+    }
+    return stats;
+  }
   async function commit(name, province, gender) {
     if (busy) return;
     const values = validateCharacter(name, province);
@@ -149,9 +163,7 @@ export function initLobby(enterGame) {
         province: values.province,
         gender: gender === "female" ? "female" : "male",
       });
-      for (const key of ["health", "intelligence", "happiness", "appearance"]) {
-        next.player[key] = Math.floor(Math.random() * 81) + 10;
-      }
+      Object.assign(next.player, rollStartingStats());
       next.logs.push({
         age: 0,
         content:
