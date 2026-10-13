@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản trị người chơi · Life Again</title>
+  <link rel="stylesheet" href="/css/admin.css">
+  <script type="module" src="/js/admin.js"></script>
+</head>
+<body>
+  <header><a href="/">Life Again</a><span>Quản trị người chơi</span></header>
+  <main>
+    <section class="heading"><p class="eyebrow">QUẢN LÝ CỘNG ĐỒNG</p><h1>Những người chơi<br>và hành trình của họ.</h1><p id="identity">Đang kiểm tra quyền truy cập…</p></section>
+    <p id="message" role="status" aria-live="polite"></p>
+    <section id="login" hidden>
+      <h2>Đăng nhập quản trị</h2><p>Dùng tài khoản game được chủ dự án cấp quyền.</p>
+      <form id="login-form"><label>Tên đăng nhập<input name="username" autocomplete="username" required maxlength="24"></label><label>Mật khẩu<input name="password" type="password" autocomplete="current-password" required minlength="8" maxlength="128"></label><button>Đăng nhập</button></form>
+      <a href="/?account=register">Tạo tài khoản trong game</a>
+    </section>
+    <section id="dashboard" hidden>
+      <div id="stats" class="stats"></div>
+      <div class="toolbar"><form id="search-form"><label for="search">Tìm người chơi</label><div class="search"><input id="search" type="search" placeholder="Tên đăng nhập hoặc biệt danh" maxlength="100"><button>Tìm kiếm</button></div></form><button id="refresh" class="secondary">Làm mới</button><button id="logout" class="secondary">Đăng xuất</button></div>
+      <div class="table-wrap"><table><caption>Danh sách tài khoản</caption><thead><tr><th scope="col">Người chơi</th><th scope="col">Ngày tạo</th><th scope="col">Cuộc đời</th><th scope="col">Điểm cao nhất</th><th scope="col">Trạng thái</th><th scope="col">Thao tác</th></tr></thead><tbody id="accounts"></tbody></table></div>
+      <div class="pagination"><button id="previous" class="secondary">Trang trước</button><span id="page"></span><button id="next" class="secondary">Trang sau</button></div>
+    </section>
+    <dialog id="runs-dialog" aria-labelledby="runs-title"><div class="dialog-heading"><h2 id="runs-title">Kết quả người chơi</h2><button id="close-runs" class="secondary">Đóng</button></div><p id="run-message" role="status"></p><div id="runs"></div></dialog>
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title"><h2 id="confirm-title">Xác nhận thay đổi</h2><p id="confirm-description"></p><div class="actions"><button id="cancel-change" class="secondary">Hủy</button><button id="confirm-change">Xác nhận</button></div></dialog>
+  </main>
+</body>
+</html>
