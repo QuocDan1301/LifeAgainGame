@@ -116,14 +116,10 @@ import { getAgeEvents, isPriorityEvent } from "./events/events.js";
 import { pickWeightedStory, fillStoryText } from "./events/life-stories.js";
 import { careerEvent } from "./career/career-event.js";
 import { academyLogos, createSchoolEvent } from "./career/career-schools.js";
-import { createDiamondSpecialStep } from "./special-events/special-event-20.js";
-import { createEarthAuctionSpecialStep } from "./special-events/special-event-30.js";
-import { createSaveLifeSpecialStep } from "./special-events/special-event-35.js";
-import { createOldHouseSpecialStep } from "./special-events/special-event-40.js";
-import { createLastTrainSpecialStep } from "./special-events/special-event-45.js";
-import { createTheaterSpecialStep } from "./special-events/special-event-50.js";
-import { createLuggageSpecialStep } from "./special-events/special-event-55.js";
-import { createLaterSpecialStep } from "./special-events/special-later-life.js";
+import {
+  applySpecialInventory,
+  createSpecialStep,
+} from "./special-events/special-chain.js";
 import { reviewPendingMedia } from "./media/semantic-event-media.js";
 import { initLifeProfile, renderLifeSummary } from "./core/life-profile.js";
 import { initShop } from "./leisure/shop.js";
@@ -153,7 +149,6 @@ import { initGameCenter } from "./leisure/game-center.js";
 import { initTarot } from "./leisure/tarot.js";
 import { playEventSound, playOutcomeSound } from "./ui/music.js";
 import { initSelfDevelopment } from "./stats/self-development.js";
-import { createLostChildSpecialStep } from "./special-events/special-event-10.js";
 import {
   createOrientationEvent,
   getOrientationLabel,
@@ -1216,8 +1211,15 @@ function showPendingEvent() {
       ]) {
         pending[key] = current[key];
         if (pending.stage === "choice") {
+          // Ghép theo chỉ số tác giả (sourceIndex), không theo vị trí: lựa chọn chuỗi đặc biệt đã được xáo.
+          // Bản lưu cũ chưa có sourceIndex vẫn ở thứ tự tác giả, nên vị trí chính là chỉ số tác giả.
           pending.choices?.forEach((branch, index) => {
-            branch[key] = current.choices[index]?.[key] ?? branch[key];
+            const source = branch.sourceIndex ?? index;
+            const match = current.choices.find(
+              (candidate, position) =>
+                (candidate.sourceIndex ?? position) === source,
+            );
+            branch[key] = match?.[key] ?? branch[key];
           });
         }
       }
@@ -1599,6 +1601,25 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
+  // Tuổi 16: ngành người chơi chọn trong 3 ngành được mời mở bước 1 của chuỗi khám phá.
+  if (pending.kind === "career-spark-pick" && choice.careerSparkId) {
+    const firstStep = createCareerSparkStep(
+      choice.careerSparkId,
+      1,
+      Math.random,
+      state.player,
+    );
+    if (!firstStep) return;
+    state.pendingEvent = {
+      ...firstStep,
+      stage: "choice",
+      age: pending.age,
+      logPrefix: `${pending.text}\nBạn chọn: ${choice.label}\n`,
+    };
+    saveEventProgress();
+    showPendingEvent();
+    return;
+  }
   // Chuỗi khám phá ngành tuổi 16 và chuỗi thay thế nâng bậc lần đầu.
   if (
     (pending.kind === "career-spark" || pending.kind === "career-promotion") &&
@@ -1629,7 +1650,7 @@ function chooseEventAction(index) {
     return;
   }
   if (pending.kind === "lost-child-chain" && choice.nextStep) {
-    const nextStep = createLostChildSpecialStep(choice.nextStep);
+    const nextStep = createSpecialStep(pending.kind, pending.specialId, choice.nextStep, {}, state.player);
     if (!nextStep) return;
     state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
@@ -1643,28 +1664,15 @@ function chooseEventAction(index) {
     return;
   }
   if (pending.kind === "special-chain" && choice.nextStep) {
-    const inventory = { ...(pending.specialInventory ?? {}) };
-    if (choice.grants) inventory[choice.grants] = true;
-    Object.assign(inventory, choice.inventoryChanges ?? {});
-    const nextStep = pending.specialId?.startsWith("later-")
-      ? createLaterSpecialStep(
-          Number(pending.specialId.slice(6)),
-          choice.nextStep,
-          inventory,
-        )
-      : pending.specialId === "earth-auction"
-        ? createEarthAuctionSpecialStep(choice.nextStep)
-        : pending.specialId === "save-life"
-          ? createSaveLifeSpecialStep(choice.nextStep, state.player)
-          : pending.specialId === "old-house"
-            ? createOldHouseSpecialStep(choice.nextStep)
-            : pending.specialId === "last-train"
-              ? createLastTrainSpecialStep(choice.nextStep, inventory)
-              : pending.specialId === "theater"
-                ? createTheaterSpecialStep(choice.nextStep)
-                : pending.specialId === "luggage"
-                  ? createLuggageSpecialStep(choice.nextStep)
-                  : createDiamondSpecialStep(choice.nextStep, inventory);
+    const inventory = applySpecialInventory(pending.specialInventory, choice);
+    // Bước mới được xáo thứ tự theo đời chơi; bước đang lưu giữ nguyên choices đã lưu.
+    const nextStep = createSpecialStep(
+      pending.kind,
+      pending.specialId,
+      choice.nextStep,
+      inventory,
+      state.player,
+    );
     if (!nextStep) return;
     state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
@@ -2085,7 +2093,7 @@ ageButton.addEventListener("click", () => {
 
   const schoolYearEvent =
     nextAge === 11 && state.player.lostChildSchoolYearDueAge === 11
-      ? createLostChildSpecialStep(5)
+      ? createSpecialStep("lost-child-chain", "lost-child-school", 5, {}, state.player)
       : null;
   const orientationEvent =
     nextAge === 24 ? createOrientationEvent(state.player) : null;
@@ -2107,12 +2115,8 @@ ageButton.addEventListener("click", () => {
     orientationEvent ??
     createWorkInvestigationEvent(state.player, nextAge) ??
     (nextAge === 16
-      ? (() => {
-          const sparks = ageStories.filter(
-            (event) => event.kind === "career-spark",
-          );
-          return sparks[Math.floor(Math.random() * sparks.length)] ?? null;
-        })()
+      ? (ageStories.find((event) => event.kind === "career-spark-pick") ??
+        null)
       : null) ??
     (nextAge === 100
       ? ageStories.find((event) => event.id === "centennial-memorial")

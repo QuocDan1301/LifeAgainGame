@@ -66,9 +66,12 @@ export function createLaterSpecialStep(age, stepNumber = 1, inventory = {}) {
   if (age === 100 && inventory.spouseName) {
     text = `${inventory.spouseName} vẫn là người bạn đời bên cạnh tôi.\n\n${text.replaceAll("người bạn đời", inventory.spouseName)}`;
   }
+  // choiceIndex là chỉ số tác giả viết (đường đúng luôn ở 0). Thứ tự hiển thị được xáo sau đó
+  // trong special-chain.js, nên paths, inventoryChanges, unlockActivity và kết thúc "cold"
+  // đều tính ở đây theo chỉ số tác giả và được giữ lại trong sourceIndex.
   const choices = scene.choices.map((original, choiceIndex) => {
     const destination = paths[age][stepNumber - 1][choiceIndex];
-    const branch = { label: original.label };
+    const branch = { label: original.label, sourceIndex: choiceIndex };
     if (typeof destination === "number") {
       branch.nextStep = destination;
       branch.transitionText = stripDirections(original.text) + "\n\n";

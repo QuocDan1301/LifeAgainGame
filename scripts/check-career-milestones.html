@@ -12,7 +12,7 @@
   try {
     const { getAgeEvents } = await import("../js/events/events.js");
     const { createInitialState, state } = await import("../js/core/state.js");
-    const { careerMilestones } = await import("../js/career/career-milestones.js");
+    const { careerMilestones, createCareerSparkPickEvent } = await import("../js/career/career-milestones.js");
     const { careerAnnualSalaries } = await import("../js/career/career-salary.js");
     const { careerEvent } = await import("../js/career/career-event.js");
     const { createEmploymentEvent, getCareerProfile } = await import("../js/career/career-jobs.js");
@@ -24,17 +24,24 @@
       assert(data.spark.reward >= 0 && [0, 1].includes(data.finalScenario), `Reward and final scenario for ${id}`);
     }
     const sixteen = getAgeEvents(16);
-    assert(sixteen.length === ids.length && sixteen.every(event => event.kind === "career-spark" && !event.addedEveryday),
-      "Age 16 only offers the career discovery chain");
+    assert(sixteen.length === 1 && sixteen[0].kind === "career-spark-pick" && !sixteen[0].addedEveryday &&
+      sixteen[0].choices.length === 3 && sixteen[0].choices.every(choice => careerMilestones[choice.careerSparkId] && choice.nextStep === 1),
+      "Age 16 only offers a pick of 3 careers before the discovery chain");
     const { canChooseCareer } = await import("../js/education/study-blocks.js");
     const free = ["military", "esports", "tiktok", "youtube"];
     assert(free.every(id => canChooseCareer(id, "TD") && !["A00", "A01", "B00", "C00", "D01"].some(block => canChooseCareer(id, block))),
       "The four free careers belong only to Khối Tự do");
     for (const block of ["A00", "A01", "B00", "C00", "D01", "TD"]) {
-      const offered = getAgeEvents(16, null, { studyBlock: block }).map(event => event.careerSparkId);
-      assert(offered.length && offered.every(id => canChooseCareer(id, block)) &&
-        ids.filter(id => canChooseCareer(id, block)).every(id => offered.includes(id)),
-        `Age 16 offers exactly the careers allowed by block ${block}`);
+      // Mỗi đời mời 3 ngành của khối; qua nhiều đời thì mọi ngành của khối đều được mời.
+      const allowed = ids.filter(id => canChooseCareer(id, block));
+      const seen = new Set();
+      for (let lifeSeed = 1; lifeSeed <= 200; lifeSeed++) {
+        const offered = getAgeEvents(16, null, { studyBlock: block, lifeSeed })[0].choices.map(choice => choice.careerSparkId);
+        assert(offered.length === Math.min(3, allowed.length) && new Set(offered).size === offered.length &&
+          offered.every(id => canChooseCareer(id, block)), `Age 16 offers 3 careers allowed by block ${block}`);
+        offered.forEach(id => seen.add(id));
+      }
+      assert(allowed.every(id => seen.has(id)), `Every career of block ${block} can be offered`);
     }
 
     const html = await (await fetch("../index.html")).text();
@@ -47,18 +54,23 @@
     localStorage.setItem("lifeAgainAchievementQueue", "[]");
     document.getElementById("game-screen").hidden = false;
     document.getElementById("lobby-screen").hidden = true;
-    const reset = extra => {
+    let reset = extra => {
       Object.assign(state, createInitialState());
       Object.assign(state.player, { name: "Test", gender: "male", age: 15, health: 80, happiness: 50,
         intelligence: 50, appearance: 50, money: 0, studyBlock: "A00", datingActivitiesOnly: true }, extra);
       document.getElementById("event-dialog")?.close();
       document.getElementById("age-up").disabled = false;
     };
+    // Một đời khối A00 được mời cả Lập trình lẫn Marketing (ba ngành bốc theo hạt giống đời chơi).
+    const lifeSeed = Array.from({ length: 5000 }, (_, index) => index + 1).find(seed => {
+      const offered = createCareerSparkPickEvent("A00", { lifeSeed: seed }).choices.map(choice => choice.careerSparkId);
+      return offered.includes("programming") && offered.includes("marketing");
+    });
+    const resetStudent = reset;
+    reset = extra => resetStudent({ lifeSeed, ...extra });
     reset();
-    // Danh sách tuổi 16 của khối A00: Du học đứng đầu, Lập trình thứ hai. Một số ngẫu nhiên cố định
-    // rơi vào ô thứ hai và thấp hơn khả năng thành công (60%).
-    const sparkCount = getAgeEvents(16, null, state.player).length;
-    Math.random = () => 1.5 / sparkCount;
+    // Số ngẫu nhiên cố định thấp hơn khả năng thành công (60%).
+    Math.random = () => 0.3;
     await import("../js/main.js");
     const birthday = document.getElementById("age-up");
     const confirm = document.getElementById("event-confirm");
@@ -66,9 +78,19 @@
     const pick = predicate => buttons()[state.pendingEvent.choices.findIndex(predicate)].click();
     const proceed = () => { pick(choice => choice.nextStep); confirm.click(); };
 
+    const chooseCareer = careerId => {
+      assert(state.pendingEvent?.kind === "career-spark-pick" && state.pendingEvent.choices.length === 3, "Age 16 opens the pick of 3 careers");
+      const offered = state.pendingEvent.choices.map(choice => choice.careerSparkId);
+      state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
+      assert(state.pendingEvent.choices.map(choice => choice.careerSparkId).join() === offered.join(), "Reload keeps the same 3 careers");
+      pick(choice => choice.careerSparkId === careerId);
+    };
     // Thành công: chọn Lập trình và ra kết quả thành công (< 60%).
     birthday.click();
-    assert(state.pendingEvent?.kind === "career-spark" && state.pendingEvent.careerSparkId === "programming", "Age 16 always opens the chain");
+    chooseCareer("programming");
+    assert(state.pendingEvent?.kind === "career-spark" && state.pendingEvent.careerSparkId === "programming" &&
+      state.pendingEvent.specialStep === 1 && state.pendingEvent.text.includes("📊 Vòng quyết định: khả năng thành công khoảng"),
+      "Chosen career opens the chain with its published chance");
     proceed(); proceed(); proceed();
     assert(state.pendingEvent.specialStep === 4 && state.pendingEvent.choices.length === 1, "Fourth situation reveals the random result");
     buttons()[0].click();
@@ -80,7 +102,8 @@
     reset();
     Math.random = () => 0.99;
     birthday.click();
-    assert(state.pendingEvent.careerSparkId === "marketing", "Random career selection within block A00");
+    chooseCareer("marketing");
+    assert(state.pendingEvent.careerSparkId === "marketing", "Player picks the career within block A00");
     proceed(); proceed(); proceed();
     buttons()[0].click();
     confirm.click();
@@ -89,6 +112,7 @@
     // Từ chối giữa chuỗi.
     reset();
     birthday.click();
+    chooseCareer("marketing");
     proceed();
     pick(choice => !choice.nextStep);
     confirm.click();

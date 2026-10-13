@@ -19,7 +19,7 @@ export function getEventCategory(event) {
   if (['work-pressure', 'project-bug', 'job-warning', 'job-review', 'layoff-notice', 'contract-notice'].includes(event.kind)) return 'career';
   if (event.kind === 'relative-death') return 'family';
   if (['exam-prep'].includes(event.kind)) return 'education';
-  if (['job-interview', 'job-interview-retry', 'career-promotion', 'career-spark', 'enlistment-failure'].includes(event.kind)) return 'career';
+  if (['job-interview', 'job-interview-retry', 'career-promotion', 'career-spark', 'career-spark-pick', 'enlistment-failure'].includes(event.kind)) return 'career';
   if (event.kind === 'career-test' || event.testedCareer) return 'education';
   // Older saves and ordinary stories do not always carry a structured kind.
   const title = event.mediaSceneTitle ?? event.title ?? '';

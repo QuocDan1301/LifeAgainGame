@@ -41,7 +41,9 @@
     localStorage.setItem('lifeAgainAchievementQueue','[]');
     await import('../js/main.js');
     const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
-    const choose=i=>{document.querySelectorAll('#event-choices button')[i].click();
+    // Chỉ số trong check là chỉ số tác giả viết; lựa chọn chuỗi đặc biệt hiển thị đã được xáo theo đời chơi.
+    const shownIndex=i=>{const at=state.pendingEvent?.choices?.findIndex(c=>c.sourceIndex===i)??-1;return at>=0?at:i;};
+    const choose=i=>{document.querySelectorAll('#event-choices button')[shownIndex(i)].click();
       // Bước giữa chuỗi có màn "Kết quả lựa chọn" trước tình huống tiếp theo.
       if(state.pendingEvent?.mediaTransition)document.getElementById('event-confirm').click();};
     const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};

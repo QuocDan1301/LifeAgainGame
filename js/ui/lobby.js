@@ -162,6 +162,8 @@ export function initLobby(enterGame) {
         name: values.name,
         province: values.province,
         gender: gender === "female" ? "female" : "male",
+        // Hạt giống riêng của đời này: cố định thứ tự lựa chọn chuỗi đặc biệt khi tải lại.
+        lifeSeed: Math.floor(Math.random() * 2 ** 32),
       });
       Object.assign(next.player, rollStartingStats());
       next.logs.push({

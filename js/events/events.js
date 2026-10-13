@@ -10,7 +10,8 @@ import { luggageSpecialEvent } from "../special-events/special-event-55.js";
 import { createCentennialMemorial, createLaterSpecialEvent } from "../special-events/special-later-life.js";
 import { reviewEventMedia } from "../media/semantic-event-media.js";
 import { createLifeStoryEvents } from "./life-stories.js";
-import { createCareerSparkEvents } from "../career/career-milestones.js";
+import { createCareerSparkPickEvent } from "../career/career-milestones.js";
+import { isOrderedSpecialChain, orderSpecialChoices } from "../special-events/special-chain.js";
 
 // Sự kiện đặc biệt gắn cố định với một tuổi. Sự kiện đời thường nằm ở js/life-stories.
 export const ageEvents = {
@@ -28,14 +29,20 @@ export function isPriorityEvent(event) {
   if (event?.priority === false) return false;
   return Boolean(event?.priority || event?.specialId ||
     event?.kind === "special-chain" || event?.kind === "lost-child-chain" ||
-    event?.kind === "career-promotion" || event?.kind === "career-spark" || event?.kind === "orientation-chain" ||
+    event?.kind === "career-promotion" || event?.kind === "career-spark" || event?.kind === "career-spark-pick" || event?.kind === "orientation-chain" ||
     event?.kind === "job-interview" || event?.kind === "job-interview-retry");
 }
 
 // Chỉ trả về sự kiện đặc biệt của tuổi đó (không gồm sự kiện đời thường).
+// Bước đầu của chuỗi đặc biệt được xáo thứ tự lựa chọn theo đời chơi (special-chain.js).
 export function getBaseAgeEvents(age, careerPath, player = {}) {
-  // Tuổi 16 chỉ có chuỗi khám phá một ngành, thay cho mọi sự kiện đời thường.
-  if (age === 16) return createCareerSparkEvents(player.studyBlock, Math.random, player);
+  return createBaseAgeEvents(age, careerPath, player)
+    .map(event => isOrderedSpecialChain(event) ? orderSpecialChoices(event, player) : event);
+}
+
+function createBaseAgeEvents(age, careerPath, player) {
+  // Tuổi 16 chỉ có lượt chọn 1 trong 3 ngành rồi vào chuỗi khám phá, thay cho mọi sự kiện đời thường.
+  if (age === 16) return [createCareerSparkPickEvent(player.studyBlock, player)].filter(Boolean);
   if (age === 105) return [createLaterSpecialEvent(age, player)];
   if (age === 45) return [createLastTrainSpecialEvent(player)];
   const memorial = age === 100 ? createCentennialMemorial(player) : null;

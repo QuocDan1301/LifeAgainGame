@@ -3,6 +3,7 @@ import { openMojiArt } from "../media/event-art.js";
 import { formatMoney } from "../core/money-format.js";
 import { canChooseCareer } from "../education/study-blocks.js";
 import { careerMilestones, CAREER_SPARK_SUCCESS_RATE } from "./career-milestones-data.js";
+import { lifeRandom } from "../core/life-seed.js";
 
 export { careerMilestones };
 
@@ -142,10 +143,28 @@ export function createCareerSparkStep(careerId, step = 1, random = Math.random, 
   };
 }
 
-// Tuổi 16 chỉ có duy nhất sự kiện khám phá một ngành ngẫu nhiên, trong số
-// các ngành phù hợp khối học đã chọn ở tuổi 15 (chưa có khối thì dùng mọi ngành).
-export function createCareerSparkEvents(studyBlock, random = Math.random, player = null) {
-  return Object.keys(careerMilestones)
-    .filter(careerId => !studyBlock || canChooseCareer(careerId, studyBlock))
-    .map(careerId => createCareerSparkStep(careerId, 1, random, player));
+// Tuổi 16: người chơi chọn 1 trong 3 ngành ngẫu nhiên phù hợp khối học đã chọn ở tuổi 15
+// (chưa có khối thì dùng mọi ngành), rồi mới vào chuỗi 4 bước.
+// Ba ngành bốc theo hạt giống của đời chơi nên tải lại trang vẫn là ba ngành đó.
+export const CAREER_SPARK_OFFER_COUNT = 3;
+export function createCareerSparkPickEvent(studyBlock, player = null, random = lifeRandom(player, `career-spark|${studyBlock ?? ""}`)) {
+  const pool = Object.keys(careerMilestones).filter(careerId => !studyBlock || canChooseCareer(careerId, studyBlock));
+  if (!pool.length) return null;
+  const offered = shuffle([...pool], random).slice(0, CAREER_SPARK_OFFER_COUNT);
+  return {
+    id: "career-spark-pick",
+    kind: "career-spark-pick",
+    title: "🧭 Mùa hè năm 16 tuổi",
+    text: `Mùa hè này có ${offered.length} cơ hội trải nghiệm nghề mở cho học sinh khối của tôi, nhưng thời gian chỉ đủ cho một. Ngành nào hoàn thành chuỗi khám phá và được chọn đúng ở tuổi 18 mới mở được bậc nghề cao nhất.`,
+    ...openMojiArt("1F9ED", "Chọn một ngành để khám phá"),
+    choices: offered.map(careerId => {
+      const data = careerMilestones[careerId];
+      const info = getSparkChance(careerId, player);
+      return {
+        label: `${data.spark.title}: ngành ${data.field} (khả năng thành công khoảng ${Math.round(info.chance * 100)}%, dựa trên ${info.statName} ${info.value}%)`,
+        careerSparkId: careerId,
+        nextStep: 1,
+      };
+    }),
+  };
 }
