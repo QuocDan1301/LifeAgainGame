@@ -613,7 +613,7 @@ body::before {
   .action-button {
     --icon-size: 3rem;
     --icon-edge: 0.4rem;
-    font-size: 1.4rem;
+    font-size: 1.7rem;
   }
   .action-icon {
     font-size: 2.1rem;
@@ -623,7 +623,7 @@ body::before {
   .action-button {
     --icon-size: 2.6rem;
     --icon-edge: 0.3rem;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
   .action-icon {
     font-size: 1.9rem;
