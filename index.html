@@ -102,6 +102,7 @@
       href="./img/Icon/favicon-16x16.png"
     />
     <link rel="manifest" href="./manifest.json" />
+    <meta name="copyright" content="© 2026 QuocDan. Mọi quyền được bảo lưu." />
     <!-- Màn hình tải: CSS nhúng sẵn để hiện ngay, trước khi các file CSS khác tải xong -->
     <style>
       #app-loader {
@@ -395,6 +396,10 @@
         </div>
         <p class="lobby-ticket-count">
           🎟️ Vé còn lại: <strong id="ticket-count" aria-live="polite">0</strong>
+        </p>
+        <p class="lobby-links">
+          <button type="button" id="open-transfer">📲 Chuyển thiết bị</button>
+          <a href="./gioi-thieu#cai-dat" id="install-link">⬇️ Cài game vào máy</a>
         </p>
         <p id="lobby-message" role="status"></p>
       </div>
@@ -972,6 +977,50 @@
         <button type="button" id="close-life-archive" aria-label="Đóng sổ các cuộc đời">✕</button>
       </div>
       <div id="life-archive-body"></div>
+    </dialog>
+    <dialog id="transfer-dialog" class="lobby-dialog" aria-labelledby="transfer-title">
+      <div class="lobby-dialog-heading">
+        <h2 id="transfer-title">📲 Chuyển thiết bị</h2>
+        <button type="button" id="close-transfer" class="dialog-close" aria-label="Đóng chuyển thiết bị">✕</button>
+      </div>
+      <div class="transfer-tabs" id="transfer-tabs" role="tablist" aria-label="Chiều chuyển dữ liệu">
+        <button type="button" role="tab" id="transfer-tab-send" aria-controls="transfer-send" aria-selected="true">Gửi đi</button>
+        <button type="button" role="tab" id="transfer-tab-receive" aria-controls="transfer-receive" aria-selected="false" tabindex="-1">Nhận về</button>
+      </div>
+      <section id="transfer-send" role="tabpanel" aria-labelledby="transfer-tab-send">
+        <p>Mang cuộc đời đang chơi, sổ các cuộc đời, vé và thành tựu sang máy khác.</p>
+        <button type="button" id="transfer-create" class="lobby-primary">Tạo mã chuyển</button>
+        <div id="transfer-code-box" class="transfer-code-box" hidden>
+          <p>Trên máy mới, mở Life Again → Chuyển thiết bị → Nhận về, rồi nhập mã:</p>
+          <p id="transfer-code" class="transfer-code" aria-live="polite"></p>
+          <p id="transfer-expiry" class="transfer-note"></p>
+        </div>
+        <p class="transfer-divider">Không có mạng thì dùng tệp</p>
+        <button type="button" id="transfer-download" class="lobby-secondary">Lưu tệp sao lưu</button>
+        <p id="transfer-send-status" class="transfer-status" role="status"></p>
+      </section>
+      <section id="transfer-receive" role="tabpanel" aria-labelledby="transfer-tab-receive" hidden>
+        <form id="transfer-claim-form" novalidate>
+          <label for="transfer-code-input">Mã 6 ký tự từ máy cũ</label>
+          <input id="transfer-code-input" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ví dụ: K7M2QX" />
+          <button type="submit" class="lobby-primary">Nhận dữ liệu</button>
+        </form>
+        <div id="transfer-file-choice">
+          <p class="transfer-divider">Hoặc mở tệp sao lưu</p>
+          <label id="transfer-file-label" class="lobby-secondary transfer-file">
+            Mở tệp sao lưu
+            <input type="file" id="transfer-file" accept=".json,application/json" />
+          </label>
+        </div>
+        <div id="transfer-confirm" class="transfer-confirm" hidden>
+          <p><strong>Sẵn sàng nhận:</strong> <span id="transfer-summary"></span></p>
+          <p id="transfer-overwrite-note" class="transfer-warning">Dữ liệu game đang có trên máy này sẽ được thay bằng dữ liệu nhận về.</p>
+          <p id="transfer-source-note" hidden></p>
+          <button type="button" id="transfer-apply" class="lobby-primary">Nhận và mở lại game</button>
+          <button type="button" id="transfer-cancel" class="lobby-secondary">Hủy</button>
+        </div>
+        <p id="transfer-receive-status" class="transfer-status" role="status"></p>
+      </section>
     </dialog>
     <dialog
       id="tickets-dialog"
@@ -2124,12 +2173,12 @@
           )
         )
           return;
-        import("./js/module-refresh.js").then(function (refresh) {
+        import("./js/core/module-refresh.js").then(function (refresh) {
           if (!refresh.canRetryModuleLoad()) return;
           if (window.appLoader)
             window.appLoader.show("Đang cập nhật phiên bản mới");
           return refresh
-            .refreshModuleCache(["./boot.js", "./main.js"])
+            .refreshModuleCache(["../boot.js", "../main.js"])
             .then(function () {
               location.reload();
             });

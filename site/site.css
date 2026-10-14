@@ -1,0 +1,605 @@
+/* Trang giới thiệu Life Again: cùng màu và phông với game (xanh trời, vàng bơ, xanh chanh, chữ xanh than).
+   Điểm nhấn duy nhất là tuyến xe cuộc đời ở đầu trang; phần còn lại giữ yên và dễ đọc. */
+:root {
+  --ink: #16364c;
+  --ink-soft: #4b6878;
+  --sky: #46cbfc;
+  --sky-deep: #4f6cff;
+  --sky-pale: #e3f8ff;
+  --butter: #ffdd6e;
+  --butter-edge: #b69945;
+  --lime: #a8e23a;
+  --lime-edge: #6f9e14;
+  --paper: #fffaea;
+  --mint: #e2f5ea;
+  --rule: #e3d3a6;
+  --up: #2f8a3a;
+  --down: #c2412f;
+  --gutter: clamp(16px, 5vw, 48px);
+  /* Lề hai bên: tối thiểu --gutter, màn rộng thì nội dung nằm giữa trong khung 1120px. */
+  --inline: max(var(--gutter), calc((100% - 1120px) / 2));
+  color-scheme: light;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 16px;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font: 20px/1.5 "Patrick Hand", cursive;
+  -webkit-text-size-adjust: 100%;
+}
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+h2 {
+  font-size: clamp(30px, 5vw, 42px);
+}
+h3 {
+  font-size: 24px;
+}
+p {
+  margin: 0;
+}
+a {
+  color: var(--sky-deep);
+}
+:focus-visible {
+  outline: 3px solid var(--sky-deep);
+  outline-offset: 3px;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 5;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ----- Nút: khối nổi, ấn xuống khi chạm, giống nút trong game ----- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  padding: 12px 24px;
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  color: var(--ink);
+  font: 400 21px/1.2 "Sriracha", cursive;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.button-play {
+  background: var(--butter);
+  box-shadow: 0 5px 0 var(--butter-edge);
+}
+.button-quiet {
+  background: #fff;
+  box-shadow: 0 5px 0 #9fb8c4;
+}
+.button:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--butter-edge);
+}
+.button-quiet:active {
+  box-shadow: 0 2px 0 #9fb8c4;
+}
+
+/* ----- Đầu trang ----- */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: max(12px, env(safe-area-inset-top)) var(--inline) 0;
+  background: #bfefff;
+}
+.site-logo img {
+  display: block;
+  width: 84px;
+  height: auto;
+}
+.site-header nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 3vw, 28px);
+}
+.site-header nav a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.site-header nav a:hover {
+  text-decoration: underline;
+}
+.site-header .nav-play {
+  padding: 6px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+}
+@media (max-width: 560px) {
+  .site-header nav a:not(.nav-play) { display: none; }
+}
+
+/* ----- Mở đầu: lời giới thiệu và tuyến xe cuộc đời ----- */
+.hero {
+  padding: clamp(24px, 6vw, 64px) var(--inline) clamp(40px, 7vw, 72px);
+  background: linear-gradient(180deg, #bfefff 0%, var(--sky-pale) 62%, var(--paper) 100%);
+}
+.hero-copy {
+  max-width: 720px;
+}
+.hero h1 {
+  font-size: clamp(38px, 7.4vw, 72px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+.hero-lead {
+  max-width: 34em;
+  margin-top: 18px;
+  color: var(--ink-soft);
+  font-size: clamp(20px, 2.6vw, 23px);
+}
+.age-chip {
+  display: inline-block;
+  padding: 0 10px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: var(--lime);
+  color: var(--ink);
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+.hero-note {
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font-size: 18px;
+}
+
+.route {
+  margin: clamp(36px, 6vw, 56px) 0 0;
+}
+.route figcaption {
+  margin-bottom: 14px;
+  color: var(--ink-soft);
+  font-size: 18px;
+}
+.route-stops {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Con đường: dải nhựa xanh than có vạch kẻ vàng ở giữa, chạy qua tâm các trạm. */
+.route-stops::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--stop) / 2 - 7px);
+  height: 14px;
+  border-radius: 7px;
+  background:
+    repeating-linear-gradient(90deg, var(--butter) 0 18px, transparent 18px 34px) center / 100% 3px no-repeat,
+    var(--ink);
+}
+.route-stops {
+  --stop: clamp(52px, 13vw, 112px);
+}
+.route-stops li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+.route-stops img {
+  width: var(--stop);
+  height: var(--stop);
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: #fff;
+  object-fit: cover;
+}
+.route-stops span {
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--butter);
+  font: 400 clamp(13px, 2.6vw, 18px)/1.5 "Sriracha", cursive;
+  white-space: nowrap;
+}
+/* Một chuyển động duy nhất: các trạm hiện lần lượt dọc con đường khi mở trang. */
+@media (prefers-reduced-motion: no-preference) {
+  .route-stops li {
+    animation: stop-in 420ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 150ms);
+  }
+  .route-stops li:nth-child(2) { --i: 1; }
+  .route-stops li:nth-child(3) { --i: 2; }
+  .route-stops li:nth-child(4) { --i: 3; }
+  .route-stops li:nth-child(5) { --i: 4; }
+  .route-stops li:nth-child(6) { --i: 5; }
+  @keyframes stop-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.85); }
+  }
+}
+
+/* ----- Các phần nội dung ----- */
+.band {
+  padding: clamp(48px, 8vw, 88px) var(--inline);
+}
+.band > h2,
+.band > .section-lead,
+.band > details,
+.band > .life-end,
+.band > .transfer-file-note {
+  max-width: 760px;
+}
+.section-lead {
+  margin-top: 14px;
+  color: var(--ink-soft);
+}
+
+.band-diary {
+  background: var(--paper);
+}
+.diary-layout {
+  display: grid;
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+@media (min-width: 800px) {
+  .diary-layout { grid-template-columns: minmax(300px, 520px) minmax(0, 1fr); }
+}
+.phone {
+  justify-self: center;
+  width: min(100%, 300px);
+  margin: 0;
+  padding: 8px;
+  border: 3px solid var(--ink);
+  border-radius: clamp(20px, 5vw, 34px);
+  background: var(--ink);
+}
+.phone img {
+  display: block;
+  width: 100%;
+  border-radius: clamp(14px, 4vw, 26px);
+}
+/* Hai màn hình cạnh nhau: nhật ký và một lựa chọn; màn thứ hai lệch xuống như đang xếp chồng. */
+.phones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(10px, 3vw, 22px);
+  align-items: start;
+  justify-self: center;
+  width: min(100%, 560px);
+}
+.phones .phone {
+  width: 100%;
+}
+.phones .phone:nth-child(2) {
+  margin-top: 12%;
+}
+.diary-copy {
+  display: grid;
+  gap: 16px;
+  max-width: 600px;
+}
+.diary-lines {
+  display: grid;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.diary-lines li {
+  padding: 12px 16px;
+  border: 2px solid #f0dfa8;
+  border-radius: 16px;
+  background: #fff;
+}
+.age-pill {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #fde9a6;
+  font: 400 17px/1.6 "Sriracha", cursive;
+}
+.up { color: var(--up); }
+.down { color: var(--down); }
+
+.life-areas {
+  display: grid;
+  gap: 0 48px;
+  max-width: 1040px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 760px) {
+  .life-areas { grid-template-columns: 1fr 1fr; }
+}
+.life-areas li {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 4px 16px;
+  padding: 20px 0;
+  border-bottom: 2px dashed var(--rule);
+}
+.area-icon {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--sky) 55%, var(--sky-deep) 100%);
+  font-size: 28px;
+}
+.life-areas p {
+  color: var(--ink-soft);
+}
+.life-end {
+  margin-top: 24px;
+}
+
+/* ----- Cài đặt ----- */
+.band-install {
+  background: var(--mint);
+}
+.install-ready,
+.install-done,
+.install-quick {
+  max-width: 760px;
+  margin-top: 20px;
+  padding: 14px 18px;
+  border: 2px solid var(--lime-edge);
+  border-radius: 16px;
+  background: #f4ffe0;
+}
+.install-quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+}
+.install-quick[hidden],
+.install-ready[hidden],
+.install-done[hidden] {
+  display: none;
+}
+.device-picker {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 4px;
+  max-width: 100%;
+  margin-top: 28px;
+  padding: 4px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: #fff;
+}
+.device-picker [role="tab"] {
+  min-height: 44px;
+  padding: 6px clamp(10px, 3vw, 22px);
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--ink);
+  font: 400 clamp(16px, 3.6vw, 19px) "Sriracha", cursive;
+  cursor: pointer;
+}
+.device-picker [aria-selected="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+.device-panel {
+  max-width: 760px;
+  margin-top: 24px;
+}
+.steps {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.steps li {
+  position: relative;
+  padding-left: 50px;
+  counter-increment: step;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--lime);
+  font: 400 18px/1 "Sriracha", cursive;
+}
+.key {
+  display: inline-block;
+  min-width: 30px;
+  padding: 0 8px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+}
+.key-icon {
+  width: 30px;
+  height: 30px;
+  padding: 3px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: #fff;
+  vertical-align: middle;
+  fill: none;
+  stroke: var(--sky-deep);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.device-note {
+  margin-top: 16px;
+  color: var(--ink-soft);
+  font-size: 18px;
+}
+
+/* ----- Offline: dải tối như chuyến xe đêm ----- */
+.band-offline {
+  background: var(--ink);
+  color: #f4f8fb;
+}
+.band-offline h2 {
+  color: var(--butter);
+}
+.offline-layout {
+  display: grid;
+  gap: 28px 64px;
+  max-width: 1080px;
+}
+@media (min-width: 860px) {
+  .offline-layout { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); }
+}
+.offline-layout > div p {
+  margin-top: 14px;
+  color: #c9dbe6;
+}
+.offline-list {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.offline-list li {
+  padding-left: 18px;
+  border-left: 4px solid var(--sky);
+}
+.offline-list b {
+  color: #fff;
+}
+
+/* ----- Chuyển máy ----- */
+.transfer-flow {
+  display: grid;
+  gap: 20px;
+  max-width: 1000px;
+  margin-top: 28px;
+}
+@media (min-width: 760px) {
+  .transfer-flow { grid-template-columns: 1fr 1fr; }
+}
+.transfer-side {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 22px;
+  border: 2px solid var(--ink);
+  border-radius: 22px;
+  background: var(--paper);
+}
+.transfer-side:nth-child(2) {
+  background: var(--sky-pale);
+}
+.code-sample {
+  padding: 8px;
+  border: 2px dashed #edbd51;
+  border-radius: 14px;
+  background: #fff;
+  font: 400 clamp(34px, 8vw, 44px)/1.15 "Sriracha", cursive;
+  letter-spacing: 0.18em;
+  text-align: center;
+}
+.transfer-side .device-note {
+  margin-top: 0;
+}
+.transfer-file-note {
+  margin-top: 24px;
+}
+
+/* ----- Câu hỏi thường gặp ----- */
+.band-faq {
+  background: var(--paper);
+}
+.band-faq h2 {
+  margin-bottom: 16px;
+}
+details {
+  border-bottom: 2px dashed var(--rule);
+}
+summary {
+  padding: 14px 0;
+  font: 400 21px/1.35 "Sriracha", cursive;
+  cursor: pointer;
+}
+details p {
+  padding-bottom: 16px;
+  color: var(--ink-soft);
+}
+
+/* ----- Cuối trang ----- */
+.site-footer {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding: 48px var(--inline) max(40px, env(safe-area-inset-bottom));
+  background: #bfefff;
+  text-align: center;
+}
+.site-footer p {
+  max-width: 40em;
+  color: var(--ink-soft);
+  font-size: 17px;
+}

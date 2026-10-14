@@ -3,3 +3,5 @@
 .env.*
 !.env.example
 .tmp/life-archive-python/
+node_modules/
+dist/

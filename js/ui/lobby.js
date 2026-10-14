@@ -1,6 +1,7 @@
 import { beginSaveSession, endSaveSession, trackSavedGame } from "../core/save-store.js";
 import { createInitialState } from "../core/state.js";
 import { initLifeArchive } from "./life-archive.js";
+import { initTransfer } from "./transfer-ui.js";
 import { archiveLife } from "../core/life-archive.js";
 import {
   maleNames,
@@ -22,6 +23,7 @@ import {
 
 export function initLobby(enterGame) {
   initLifeArchive();
+  initTransfer();
   const get = (id) => document.getElementById(id);
   const home = get("lobby-screen");
   const newButton = get("new-life-button");

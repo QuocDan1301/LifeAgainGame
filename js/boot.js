@@ -5,10 +5,13 @@ import { initLobby } from "./ui/lobby.js";
 import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCache } from "./core/module-refresh.js";
 import { initMusic } from "./ui/music.js";
 import { moveCloseButtonsOutside } from "./ui/dialog-close.js";
+import { initOffline } from "./core/offline.js";
 
 // Nút ✕ của mọi popup nằm ngoài khung, ở góc trên bên phải.
 moveCloseButtonsOutside();
 initMusic();
+// Chơi không cần mạng; chỉ đổi sang bản mới khi đang ở bến xe và không mở popup nào.
+initOffline(() => !document.getElementById("lobby-screen").hidden && !document.querySelector("dialog[open]"));
 
 // Khi bến xe đã hiện, tải sẵn phần chơi vào bộ nhớ đệm lúc máy rảnh để bấm vào game nhanh hơn.
 const warmGame = () => warmModuleCache([new URL("./main.js", import.meta.url).href]);

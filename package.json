@@ -2,10 +2,15 @@
   "name": "life-again-game",
   "version": "1.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "type": "module",
-  "engines": { "node": "24.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env server/game-server.mjs",
+    "build": "node --env-file-if-exists=.env scripts/build.mjs",
+    "preview": "npm run build && node --env-file-if-exists=.env server/game-server.mjs --dist",
     "test:game-center": "node scripts/check-game-center-progress.mjs",
     "test:work": "node scripts/check-work-temptation.mjs && node scripts/check-crime.mjs",
     "test:auction": "node scripts/check-auction.mjs",
@@ -13,5 +18,8 @@
     "test:garden": "node scripts/check-garden.mjs",
     "test:server": "node scripts/check-server.mjs",
     "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
   }
 }

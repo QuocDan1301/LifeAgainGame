@@ -724,3 +724,126 @@
 .life-archive-entry summary { cursor: pointer; font-weight: 700; }
 .life-archive-entry p { margin: 10px 0; }
 #open-life-archive { white-space: normal; }
+
+/* ----- Chuyển thiết bị và cài game: hai nút nhỏ dưới số vé, popup hai tab Gửi đi / Nhận về ----- */
+.lobby-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 0;
+}
+#lobby-screen #open-transfer,
+#lobby-screen #install-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 6px 13px;
+  border: 2px solid #17394b;
+  border-radius: 999px;
+  background: #fffdf3;
+  color: #16364c;
+  font: 400 16px "Sriracha", cursive;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* Đã mở từ biểu tượng trên màn hình chính thì không cần nút cài. */
+@media (display-mode: standalone) {
+  #lobby-screen #install-link { display: none; }
+}
+#transfer-dialog [hidden] { display: none !important; }
+#transfer-dialog p { margin: 0; }
+.transfer-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 16px 0;
+  padding: 4px;
+  border-radius: 14px;
+  background: #f1e5c5;
+}
+.transfer-tabs [role="tab"] {
+  padding: 9px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.transfer-tabs [aria-selected="true"] {
+  background: #fff;
+  box-shadow: 0 2px 0 #d6b651;
+}
+#transfer-send,
+#transfer-receive,
+#transfer-claim-form,
+#transfer-file-choice,
+.transfer-confirm,
+.transfer-code-box {
+  display: grid;
+  gap: 12px;
+}
+.transfer-code {
+  padding: 10px;
+  border: 2px dashed #edbd51;
+  border-radius: 14px;
+  background: #fff;
+  font: 400 44px/1.1 "Sriracha", cursive;
+  letter-spacing: 0.18em;
+  text-align: center;
+  user-select: all;
+}
+.transfer-note {
+  color: #547071;
+  font-size: 17px;
+  text-align: center;
+}
+.transfer-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px !important;
+  color: #7c6a3d;
+  font-size: 17px;
+}
+.transfer-divider::before,
+.transfer-divider::after {
+  content: "";
+  flex: 1;
+  border-top: 1px solid #e3d3a6;
+}
+.transfer-file {
+  position: relative;
+  box-sizing: border-box;
+  text-align: center;
+  cursor: pointer;
+}
+.transfer-file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.transfer-file:focus-within {
+  outline: 3px solid #4f6cff;
+  outline-offset: 2px;
+}
+#transfer-code-input {
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.transfer-warning {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fdebd9;
+  color: #8b4132;
+}
+.transfer-status {
+  color: #2f6b4f;
+  font-size: 18px;
+}
+.transfer-status.is-error { color: #b52626; }
+.transfer-status:empty { display: none; }
