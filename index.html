@@ -386,20 +386,29 @@
         <span data-music-icon aria-hidden="true">🔊</span>
       </button>
       <div class="lobby-center">
+        <div id="move-home" class="move-home" hidden>
+          <p><b>Life Again đã chuyển sang địa chỉ mới.</b> Bấm nút dưới đây để mang theo cuộc đời đang chơi, vé, sổ các cuộc đời và thành tựu.</p>
+          <button type="button" id="move-home-button" class="lobby-primary">Chuyển sang nhà mới</button>
+          <p id="move-home-status" class="transfer-status" role="status"></p>
+        </div>
         <p class="lobby-eyebrow">BẾN XE KHỞI ĐẦU</p>
         <h1 id="lobby-title">Bạn sẽ đi về đâu<br />trong cuộc đời này?</h1>
         <p class="lobby-intro">Một tấm vé. Một khởi đầu. Vô vàn lựa chọn.</p>
         <div class="lobby-actions">
           <button type="button" id="new-life-button">Chuyến Xe Cuộc Đời</button>
           <button type="button" id="continue-button" hidden>Chơi tiếp</button>
-          <button type="button" id="open-life-archive">📖 Sổ các cuộc đời</button>
+          <button type="button" id="open-life-archive">
+            📖 Sổ các cuộc đời
+          </button>
         </div>
         <p class="lobby-ticket-count">
           🎟️ Vé còn lại: <strong id="ticket-count" aria-live="polite">0</strong>
         </p>
         <p class="lobby-links">
           <button type="button" id="open-transfer">📲 Chuyển thiết bị</button>
-          <a href="./gioi-thieu#cai-dat" id="install-link">⬇️ Cài game vào máy</a>
+          <a href="./gioi-thieu.html#cai-dat" id="install-link"
+            >⬇️ Cài game vào máy</a
+          >
         </p>
         <p id="lobby-message" role="status"></p>
       </div>
@@ -971,55 +980,140 @@
         </p>
       </footer>
     </section>
-    <dialog id="life-archive-dialog" class="lobby-dialog" aria-labelledby="life-archive-title">
+    <dialog
+      id="life-archive-dialog"
+      class="lobby-dialog"
+      aria-labelledby="life-archive-title"
+    >
       <div class="lobby-dialog-heading">
         <h2 id="life-archive-title">📖 Sổ các cuộc đời</h2>
-        <button type="button" id="close-life-archive" aria-label="Đóng sổ các cuộc đời">✕</button>
+        <button
+          type="button"
+          id="close-life-archive"
+          aria-label="Đóng sổ các cuộc đời"
+        >
+          ✕
+        </button>
       </div>
       <div id="life-archive-body"></div>
     </dialog>
-    <dialog id="transfer-dialog" class="lobby-dialog" aria-labelledby="transfer-title">
+    <dialog
+      id="transfer-dialog"
+      class="lobby-dialog"
+      aria-labelledby="transfer-title"
+    >
       <div class="lobby-dialog-heading">
         <h2 id="transfer-title">📲 Chuyển thiết bị</h2>
-        <button type="button" id="close-transfer" class="dialog-close" aria-label="Đóng chuyển thiết bị">✕</button>
+        <button
+          type="button"
+          id="close-transfer"
+          class="dialog-close"
+          aria-label="Đóng chuyển thiết bị"
+        >
+          ✕
+        </button>
       </div>
-      <div class="transfer-tabs" id="transfer-tabs" role="tablist" aria-label="Chiều chuyển dữ liệu">
-        <button type="button" role="tab" id="transfer-tab-send" aria-controls="transfer-send" aria-selected="true">Gửi đi</button>
-        <button type="button" role="tab" id="transfer-tab-receive" aria-controls="transfer-receive" aria-selected="false" tabindex="-1">Nhận về</button>
+      <div
+        class="transfer-tabs"
+        id="transfer-tabs"
+        role="tablist"
+        aria-label="Chiều chuyển dữ liệu"
+      >
+        <button
+          type="button"
+          role="tab"
+          id="transfer-tab-send"
+          aria-controls="transfer-send"
+          aria-selected="true"
+        >
+          Gửi đi
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="transfer-tab-receive"
+          aria-controls="transfer-receive"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Nhận về
+        </button>
       </div>
-      <section id="transfer-send" role="tabpanel" aria-labelledby="transfer-tab-send">
-        <p>Mang cuộc đời đang chơi, sổ các cuộc đời, vé và thành tựu sang máy khác.</p>
-        <button type="button" id="transfer-create" class="lobby-primary">Tạo mã chuyển</button>
+      <section
+        id="transfer-send"
+        role="tabpanel"
+        aria-labelledby="transfer-tab-send"
+      >
+        <p>
+          Mang cuộc đời đang chơi, sổ các cuộc đời, vé và thành tựu sang máy
+          khác.
+        </p>
+        <button type="button" id="transfer-create" class="lobby-primary">
+          Tạo mã chuyển
+        </button>
         <div id="transfer-code-box" class="transfer-code-box" hidden>
-          <p>Trên máy mới, mở Life Again → Chuyển thiết bị → Nhận về, rồi nhập mã:</p>
+          <p>
+            Trên máy mới, mở Life Again → Chuyển thiết bị → Nhận về, rồi nhập
+            mã:
+          </p>
           <p id="transfer-code" class="transfer-code" aria-live="polite"></p>
           <p id="transfer-expiry" class="transfer-note"></p>
         </div>
         <p class="transfer-divider">Không có mạng thì dùng tệp</p>
-        <button type="button" id="transfer-download" class="lobby-secondary">Lưu tệp sao lưu</button>
+        <button type="button" id="transfer-download" class="lobby-secondary">
+          Lưu tệp sao lưu
+        </button>
         <p id="transfer-send-status" class="transfer-status" role="status"></p>
       </section>
-      <section id="transfer-receive" role="tabpanel" aria-labelledby="transfer-tab-receive" hidden>
+      <section
+        id="transfer-receive"
+        role="tabpanel"
+        aria-labelledby="transfer-tab-receive"
+        hidden
+      >
         <form id="transfer-claim-form" novalidate>
           <label for="transfer-code-input">Mã 6 ký tự từ máy cũ</label>
-          <input id="transfer-code-input" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Ví dụ: K7M2QX" />
+          <input
+            id="transfer-code-input"
+            maxlength="9"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            placeholder="Ví dụ: K7M2QX"
+          />
           <button type="submit" class="lobby-primary">Nhận dữ liệu</button>
         </form>
         <div id="transfer-file-choice">
           <p class="transfer-divider">Hoặc mở tệp sao lưu</p>
           <label id="transfer-file-label" class="lobby-secondary transfer-file">
             Mở tệp sao lưu
-            <input type="file" id="transfer-file" accept=".json,application/json" />
+            <input
+              type="file"
+              id="transfer-file"
+              accept=".json,application/json"
+            />
           </label>
         </div>
         <div id="transfer-confirm" class="transfer-confirm" hidden>
-          <p><strong>Sẵn sàng nhận:</strong> <span id="transfer-summary"></span></p>
-          <p id="transfer-overwrite-note" class="transfer-warning">Dữ liệu game đang có trên máy này sẽ được thay bằng dữ liệu nhận về.</p>
+          <p>
+            <strong>Sẵn sàng nhận:</strong> <span id="transfer-summary"></span>
+          </p>
+          <p id="transfer-overwrite-note" class="transfer-warning">
+            Dữ liệu game đang có trên máy này sẽ được thay bằng dữ liệu nhận về.
+          </p>
           <p id="transfer-source-note" hidden></p>
-          <button type="button" id="transfer-apply" class="lobby-primary">Nhận và mở lại game</button>
-          <button type="button" id="transfer-cancel" class="lobby-secondary">Hủy</button>
+          <button type="button" id="transfer-apply" class="lobby-primary">
+            Nhận và mở lại game
+          </button>
+          <button type="button" id="transfer-cancel" class="lobby-secondary">
+            Hủy
+          </button>
         </div>
-        <p id="transfer-receive-status" class="transfer-status" role="status"></p>
+        <p
+          id="transfer-receive-status"
+          class="transfer-status"
+          role="status"
+        ></p>
       </section>
     </dialog>
     <dialog
@@ -1306,7 +1400,13 @@
             class="avatar"
             aria-label="Chân dung em bé, nhấn để chào"
           >
-            <img id="avt" src="./img/Nam/nam_0-3.webp" alt="" width="384" height="384" />
+            <img
+              id="avt"
+              src="./img/Nam/nam_0-3.webp"
+              alt=""
+              width="384"
+              height="384"
+            />
           </button>
           <h2 id="player-name"></h2>
           <p id="player-gender" class="character-gender"></p>

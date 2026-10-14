@@ -112,8 +112,8 @@ async function buildServiceWorker() {
   for (const file of files) hash.update(file).update(fs.readFileSync(path.join(DIST, file)));
   const template = fs.readFileSync(path.join(ROOT, 'scripts', 'sw-template.js'), 'utf8');
   hash.update(template);
-  // Trang mở bằng địa chỉ gọn (/, /gioi-thieu) nên lưu đúng địa chỉ đó thay cho tên tệp .html.
-  const urls = files.map(file => file === 'index.html' ? './' : file === 'gioi-thieu.html' ? './gioi-thieu' : './' + file);
+  // Game mở bằng địa chỉ gốc (/) nên lưu trang chính dưới địa chỉ đó thay cho index.html.
+  const urls = files.map(file => file === 'index.html' ? './' : './' + file);
   const source = template
     .replace('__VERSION__', JSON.stringify(hash.digest('hex').slice(0, 12)))
     .replace('__PRECACHE__', JSON.stringify(urls))

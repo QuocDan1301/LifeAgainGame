@@ -2,6 +2,11 @@
 // để mang sang máy khác bằng mã 6 ký tự (qua máy chủ, 10 phút) hoặc bằng tệp sao lưu.
 import { withSaveLock } from "./save-store.js";
 
+// Nhà mới của game. Bản cũ trên GitHub Pages không có máy chủ nên tạo mã qua đây.
+export const HOME_URL = "https://life-again-game.onrender.com/";
+export const isOldHome = () => location.hostname.endsWith("github.io");
+const apiUrl = path => (isOldHome() ? HOME_URL : "./") + path;
+
 const KEY_PATTERN = /^lifeAgain[A-Za-z]+$/;
 const SKIPPED_KEYS = new Set(["lifeAgainModuleRefresh"]);
 const isGameKey = key => KEY_PATTERN.test(key) && !SKIPPED_KEYS.has(key);
@@ -88,16 +93,18 @@ async function postJson(url, body) {
     throw new Error("Không kết nối được máy chủ. Hãy kiểm tra mạng rồi thử lại, hoặc dùng tệp sao lưu.");
   }
   const result = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(result?.error ?? "Máy chủ đang gặp sự cố. Hãy thử lại sau ít phút.");
+  // Máy chủ tĩnh (GitHub Pages, Live Server…) không có API mã chuyển: trả về trang lỗi thay vì JSON.
+  if (!result) throw new Error("Bản game ở địa chỉ này không có máy chủ tạo mã chuyển. Hãy dùng tệp sao lưu: bấm Lưu tệp sao lưu, gửi tệp sang máy mới rồi mở ở tab Nhận về.");
+  if (!response.ok) throw new Error(result.error ?? "Máy chủ đang gặp sự cố. Hãy thử lại sau ít phút.");
   return result;
 }
 
 export function uploadTransferPackage(pack) {
-  return postJson("./api/transfer", pack);
+  return postJson(apiUrl("api/transfer"), pack);
 }
 
 export async function claimTransferPackage(code) {
-  return parseTransferPackage(await postJson("./api/transfer/claim", { code }));
+  return parseTransferPackage(await postJson(apiUrl("api/transfer/claim"), { code }));
 }
 
 export function backupFileName(date = new Date()) {

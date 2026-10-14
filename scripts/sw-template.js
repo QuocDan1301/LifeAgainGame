@@ -63,7 +63,9 @@ self.addEventListener("fetch", event => {
 // Trang luôn lấy từ bản đã lưu để khớp với code cùng phiên bản; không có thì hỏi mạng, mất mạng thì mở game.
 async function openPage(request) {
   const cache = await caches.open(SHELL_CACHE);
-  const cached = await cache.match(request, { ignoreSearch: true });
+  // Địa chỉ gọn /gioi-thieu dùng chung bản đã lưu của gioi-thieu.html.
+  const cached = await cache.match(request, { ignoreSearch: true }) ??
+    await cache.match(new URL(request.url).pathname + ".html");
   if (cached) return cached;
   try {
     return await fetch(request);

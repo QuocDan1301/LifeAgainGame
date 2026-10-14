@@ -748,6 +748,7 @@
   cursor: pointer;
 }
 /* Đã mở từ biểu tượng trên màn hình chính thì không cần nút cài. */
+#lobby-screen #install-link[hidden] { display: none; }
 @media (display-mode: standalone) {
   #lobby-screen #install-link { display: none; }
 }
@@ -847,3 +848,22 @@
 }
 .transfer-status.is-error { color: #b52626; }
 .transfer-status:empty { display: none; }
+
+/* Bản cũ trên GitHub Pages: mời chuyển sang nhà mới. */
+.move-home {
+  display: grid;
+  gap: 10px;
+  max-width: 480px;
+  margin: 0 auto 22px;
+  padding: 14px 16px;
+  border: 2px solid #edbd51;
+  border-radius: 16px;
+  background: #fff9e6;
+  font-size: 19px;
+  line-height: 1.45;
+}
+.move-home[hidden] { display: none; }
+.move-home p { margin: 0; }
+.move-home .transfer-status { font-size: 17px; }
+.move-home .transfer-status.is-error { color: #b52626; }
+.move-home .transfer-status:empty { display: none; }

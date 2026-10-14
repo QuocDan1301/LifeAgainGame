@@ -39,8 +39,14 @@ try {
   assert.equal((await post('/api/transfer', { app: 'life-again', v: 1, data: { evil: 'x' } })).status, 400, 'khóa lạ bị từ chối');
   assert.equal((await post('/api/transfer', { app: 'other', v: 1, data: pack.data })).status, 400);
   assert.equal((await fetch(base + '/api/transfer')).status, 405);
+  // Bản cũ trên GitHub Pages được gọi sang tạo mã chuyển nhà; trang lạ thì không.
+  const preflight = await fetch(base + '/api/transfer', { method: 'OPTIONS', headers: { Origin: 'https://quocdan1301.github.io', 'Access-Control-Request-Method': 'POST' } });
+  assert.equal(preflight.status, 204);
+  assert.equal(preflight.headers.get('access-control-allow-origin'), 'https://quocdan1301.github.io');
+  const foreign = await fetch(base + '/api/transfer', { method: 'POST', headers: { Origin: 'https://evil.example', 'Content-Type': 'application/json' }, body: JSON.stringify(pack) });
+  assert.equal(foreign.headers.get('access-control-allow-origin'), null);
   const huge = await fetch(base + '/api/transfer', { method: 'POST', body: 'x'.repeat(4 * 1024 * 1024 + 10) }).catch(() => null);
-  assert.ok(!huge || huge.status === 413, 'gói quá lớn bị chặn');  console.log('PASS server: game assets and health; intro page; transfer codes (one-time, validated); login/admin removed; private files blocked.');
+  assert.ok(!huge || huge.status === 413, 'gói quá lớn bị chặn');  console.log('PASS server: game assets and health; intro page; transfer codes (one-time, validated, CORS for old home); login/admin removed; private files blocked.');
 } finally {
   await new Promise(resolve => server.close(resolve));
 }
@@ -58,7 +64,7 @@ if (fs.existsSync(new URL('index.html', dist))) {
     assert.equal((await fetch(distBase + '/js/img/events/openmoji-catalog.json')).status, 404);
     const sw = await (await fetch(distBase + '/sw.js')).text();
     assert.match(sw, /"\.\/js\/main\.js"/);
-    assert.match(sw, /"\.\/gioi-thieu"/);
+    assert.match(sw, /"\.\/gioi-thieu\.html"/);
     assert.doesNotMatch(sw, /__PRECACHE__|openmoji\/color/);
     console.log('PASS dist: JS đã nén, có bản quyền, không lộ chú thích; service worker tải sẵn game.');
   } finally {

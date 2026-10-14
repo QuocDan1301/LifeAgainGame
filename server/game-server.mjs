@@ -1,6 +1,7 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createRateLimiter, createTransferStore, isTransferPackage, MAX_TRANSFER_BYTES, normalizeTransferCode, TRANSFER_TTL_MS } from './transfer-store.mjs';
 
@@ -10,7 +11,10 @@ const DIST_ROOT = path.join(SOURCE_ROOT, 'dist');
 // Trên Render (hoặc khi chạy với --dist) chỉ phục vụ bản đã nén trong dist/, không bao giờ phục vụ code gốc.
 function defaultRoot() {
   if (!process.env.RENDER && !process.argv.includes('--dist')) return SOURCE_ROOT;
-  if (!fs.existsSync(path.join(DIST_ROOT, 'index.html'))) throw new Error('Chưa có dist/: chạy npm run build trước.');
+  const built = () => fs.existsSync(path.join(DIST_ROOT, 'index.html'));
+  // Lệnh build trong dashboard Render có thể khác render.yaml: thiếu dist/ thì tự build một lần lúc khởi động.
+  if (!built() && process.env.RENDER) execFileSync(process.execPath, ['scripts/build.mjs'], { cwd: SOURCE_ROOT, stdio: 'inherit' });
+  if (!built()) throw new Error('Chưa có dist/: chạy npm run build trước.');
   return DIST_ROOT;
 }
 
@@ -44,11 +48,23 @@ function clientIp(req) {
 }
 
 // Chuyển thiết bị: máy cũ gửi gói dữ liệu, nhận mã 6 ký tự; máy mới nhập mã để lấy về (một lần, trong 10 phút).
+// Bản cũ trên GitHub Pages gọi sang đây để tạo mã chuyển nhà; thêm địa chỉ khác qua TRANSFER_ORIGINS.
+const CORS_ORIGINS = new Set((process.env.TRANSFER_ORIGINS ?? 'https://quocdan1301.github.io').split(',').map(origin => origin.trim()).filter(Boolean));
+
 function createTransferApi() {
   const store = createTransferStore();
   const canCreate = createRateLimiter(10, 10 * 60 * 1000);
   const canClaim = createRateLimiter(30, 10 * 60 * 1000);
   return async (req, res, pathname) => {
+    const origin = req.headers.origin;
+    if (origin && CORS_ORIGINS.has(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Vary', 'Origin');
+    }
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204, { 'Access-Control-Allow-Methods': 'POST', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Max-Age': '600' });
+      return res.end();
+    }
     if (req.method !== 'POST') { res.writeHead(405, { Allow: 'POST' }); return res.end(); }
     const ip = clientIp(req);
     try {

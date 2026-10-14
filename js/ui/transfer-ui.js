@@ -141,4 +141,15 @@ export function initTransfer() {
     receiveStatus.textContent = "Đã nhận dữ liệu. Đang mở lại game…";
     location.reload();
   }));
+
+  // Đến từ nút Chuyển sang nhà mới ở bản cũ: mở sẵn tab Nhận về và lấy dữ liệu bằng mã trong địa chỉ.
+  const incoming = new URLSearchParams(location.search).get("nhan");
+  if (incoming) {
+    history.replaceState(null, "", location.pathname + location.hash);
+    reset();
+    selectTab(tabs[1]);
+    dialog.showModal();
+    get("transfer-code-input").value = incoming;
+    get("transfer-claim-form").requestSubmit();
+  }
 }

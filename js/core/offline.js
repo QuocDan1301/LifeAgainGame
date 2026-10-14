@@ -24,6 +24,8 @@ export function initOffline(isIdle) {
     } catch {
       return;
     }
+    // Trình duyệt chặn service worker (chế độ riêng tư, chính sách công ty) thì bỏ qua.
+    if (!registration) return;
     activate(registration.waiting);
     registration.addEventListener("updatefound", () => {
       const worker = registration.installing;
