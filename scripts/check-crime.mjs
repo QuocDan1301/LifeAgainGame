@@ -1,3 +1,10 @@
+import { getRecordPenalty, getConvictionSocialUpdates, collectReformationYear, getReformationUpdates, describeCrimeEnding } from '../js/events/crime-consequences.js';
+import { getInterviewChance, rollInterview } from '../js/stats/intellect-rules.js';
+import { getJobApplicationBlocker } from '../js/career/job-applications.js';
+import { createLifeStoryEvents, isLifeStoryEligible } from '../js/events/life-stories.js';
+import { afterPrisonStories } from '../js/events/life-stories/after-prison.js';
+import { prepareStoryChoice } from '../js/core/story-transactions.js';
+import { createWorkTemptationEvent } from '../js/career/work-temptation.js';
 import assert from 'node:assert/strict';
 import { createInitialState } from '../js/core/state.js';
 import { CRIMES, commitCrime, crimeRisk, createPrisonEvent, isInPrison } from '../js/events/crime.js';
@@ -82,5 +89,82 @@ test('Study abroad blocks crimes while studying, then unlocks after graduation',
   assert.equal(commitCrime(p, 'theft', () => 0), null);
   p.abroadProgress.phase = 'graduated';
   assert.ok(commitCrime(p, 'theft', () => 0.99));
+});
+test('Conviction affects living family, friends and all partners without forcing a breakup', () => {
+  const p = { ...player(), partner: { id: 'p', relationship: 80 }, otherPartners: [{ id: 'q', relationship: 60 }],
+    relatives: [{ id: 'father', alive: true, bond: 70 }, { id: 'mother', alive: false, bond: 70 }],
+    friends: [{ id: 'f', bond: 50 }] };
+  commitCrime(p, 'theft', () => 0);
+  assert.equal(p.partner.relationship, 68); assert.equal(p.otherPartners[0].relationship, 48);
+  assert.equal(p.relatives[0].bond, 62); assert.equal(p.relatives[1].bond, 70); assert.equal(p.friends[0].bond, 45);
+  assert.match(getJobApplicationBlocker({ ...p, careerPath: { id: 'programming' } }), /thụ án/);
+});
+
+test('Record penalties apply to actual interviews, with partial and full rehabilitation', () => {
+  const p = { ...player(), intelligence: 50, careerPath: { id: 'programming' } };
+  const clean = getInterviewChance(p, 'good').chance;
+  p.criminalRecord = [{ age: 18, years: 2 }]; p.lifePath = 'dark';
+  assert.ok(Math.abs(getInterviewChance(p, 'good').chance - (clean - 0.2)) < 1e-9);
+  assert.match(rollInterview(p, 'good', () => clean - 0.15).note, /Tiền án/);
+  assert.equal(rollInterview(p, 'good', () => clean - 0.15).passed, false);
+  p.lifePath = 'reformed';
+  // Cải tạo tốt trong trại chưa giảm trở ngại: chỉ tính sau khi ra tù.
+  assert.equal(getRecordPenalty({ ...p, prison: { enteredAge: 18, releaseAge: 20 } }), 0.2);
+  assert.equal(getRecordPenalty(p), 0.1);
+  assert.equal(rollInterview(p, 'good', () => clean - 0.15).passed, true);
+  p.reformedYears = 3; Object.assign(p, getReformationUpdates(p));
+  assert.equal(getRecordPenalty(p), 0);
+  assert.equal(p.criminalRecord.length, 1);
+  assert.match(describeCrimeEnding(p), /Những năm làm lại/);
+});
+
+test('Reformation needs full outside years, survives reload and resets on reoffending', () => {
+  let p = { ...player(), age: 26, criminalRecord: [{ age: 24, years: 2 }], lifePath: 'reformed', releasedAtAge: 26 };
+  collectReformationYear(p, 26); assert.equal(p.reformedYears, 0);
+  for (const age of [27, 28, 29]) {
+    p = JSON.parse(JSON.stringify(p)); collectReformationYear(p, age); collectReformationYear(p, age);
+  }
+  assert.equal(p.reformedYears, 3);
+  Object.assign(p, getReformationUpdates(p)); assert.equal(getRecordPenalty(p), 0);
+  p.age = 29; commitCrime(p, 'theft', () => 0.99);
+  assert.equal(p.reformationRecognized, false); assert.equal(p.reformedYears, 0); assert.equal(getRecordPenalty(p), 0.2);
+  p.lifePath = 'reformed'; collectReformationYear(p, 30); assert.equal(p.reformedYears, 0);
+  collectReformationYear(p, 31); assert.equal(p.reformedYears, 1);
+  p.workInvestigation = {}; collectReformationYear(p, 32); assert.equal(p.reformedYears, 0);
+});
+
+test('After-prison story is gated, follows flags and grants the letter only when ready', () => {
+  const p = { ...player(), age: 30, storyFlags: [], criminalRecord: [{ age: 24, years: 2 }], lifePath: 'reformed', reformedYears: 3 };
+  const root = afterPrisonStories[0], end = afterPrisonStories.at(-1);
+  assert.equal(isLifeStoryEligible(root, 30, { ...p, criminalRecord: [] }), false);
+  assert.equal(isLifeStoryEligible(root, 30, { ...p, prison: { releaseAge: 40 } }), false);
+  assert.equal(isLifeStoryEligible(end, 30, p), false);
+  for (const id of ['ls-tro-ve-ho-so', 'ls-tro-ve-nguoi-xac-nhan', 'ls-tro-ve-cuoc-hen', 'ls-tro-ve-thu-gioi-thieu']) {
+    const raw = afterPrisonStories.find(s => s.id === id);
+    assert.equal(isLifeStoryEligible(raw, p.age, p), true, id);
+    // Search deterministic pools across names; no bypass of the real event adapter.
+    let event;
+    for (let i = 0; i < 200 && !event; i++) event = createLifeStoryEvents(p.age, { ...p, name: 'Test' + i }).find(e => e.id === id);
+    assert.ok(event, id);
+    const choice = event.choices.find(c => raw.choices[0].flags.every(f => c.playerUpdates.storyFlags.includes(f)));
+    assert.ok(choice); Object.assign(p, choice.playerUpdates);
+    assert.equal(isLifeStoryEligible(raw, p.age, p), false, 'Seen stories never repeat');
+    p.age++;
+  }
+  assert.equal(p.reformationRecognized, true); assert.equal(getRecordPenalty(p), 0);
+  assert.equal(isLifeStoryEligible(end, p.age, { ...p, reformationRecognized: false, reformedYears: 0, storyFlags: ['tro_ve_giu_hen'] }), false);
+  assert.deepEqual(getReformationUpdates({ ...p, lifePath: 'dark' }), {});
+});
+
+test('Workplace conviction uses the same social consequences and ending', () => {
+  const p = { ...player(), age: 30, careerPath: { id: 'programming' }, careerLevel: 2, employmentStatus: 'employed',
+    partner: { relationship: 70 }, reformationRecognized: true, reformedYears: 5 };
+  const event = createWorkTemptationEvent(p, 31, () => 0);
+  assert.ok(event);
+  const convicted = event.choices.find(c => c.playerUpdates?.prison);
+  assert.ok(convicted);
+  assert.equal(convicted.playerUpdates.partner.relationship, 58);
+  assert.equal(convicted.playerUpdates.reformationRecognized, false);
+  assert.match(describeCrimeEnding({ ...p, ...convicted.playerUpdates }), /cánh cổng/);
 });
 console.log(`PASS ${count} crime and prison checks`);

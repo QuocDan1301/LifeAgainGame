@@ -48,8 +48,10 @@ try {
   assert(body.querySelector('.tl-play').disabled, 'Play disables during opponent turn');
   body.querySelector('.tl-forfeit').click(); document.getElementById('shop-cancel').click();
   assert(!state.player.tienLen.game.over, 'Cancel forfeit preserves game');
+  assert(!state.player.gamblingLosses, 'Canceled forfeit does not record a loss');
   body.querySelector('.tl-forfeit').click(); document.getElementById('shop-confirm').click(); ui.stop();
   assert(state.player.tienLen.game.forfeited && body.querySelector('.tl-result'), 'Forfeit result works');
+  assert(state.player.gamblingLosses === 50_000 && state.player.tienLen.game.gamblingLossRecorded, 'Forfeit records exactly the lost stake');
   initial(); ui.open(); ui.stop();
   body.querySelector('.tl-hand button').click(); ui.stop();
   window.tienLenTest = { state, ui };

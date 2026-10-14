@@ -1,0 +1,39 @@
+{
+  "total": 79,
+  "missingSources": [],
+  "verifiedCareerBranches": {
+    "career-study-abroad": "study-abroad",
+    "career-actor": "acting",
+    "career-military": "military",
+    "career-singer": "singing",
+    "career-painter": "painting",
+    "career-doctor": "medicine",
+    "career-programmer": "programming",
+    "career-accountant": "accounting",
+    "career-law": "law",
+    "career-principal": "teaching",
+    "career-football": "football",
+    "career-psychologist": "psychology",
+    "career-gamer": "esports",
+    "career-tiktok": "tiktok",
+    "career-youtube": "youtube",
+    "career-business": "business",
+    "career-finance": "finance",
+    "career-mechanical": "mechanical",
+    "career-architect": "architecture",
+    "career-fashion": "fashion",
+    "career-marketing": "marketing",
+    "career-tourism": "tourism",
+    "career-chef": "culinary"
+  },
+  "verifiedTarot": [
+    "tarot-first",
+    "tarot-major",
+    "tarot-suits",
+    "tarot-all"
+  ],
+  "lotteryAchievementUnlocked": true,
+  "lotteryPrize": 2000000000,
+  "adultCanTakeAllStores": true,
+  "limits": "Career fixtures assume eligible characters and favorable random outcomes; source presence alone does not prove a complete life playthrough."
+}

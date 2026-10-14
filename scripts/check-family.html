@@ -57,8 +57,8 @@
     assert(legacy.money===-7_000_000 && legacyResult.money===-7_500_000,'Reload does not subtract old costs twice');
     Object.assign(poor,{employmentStatus:'employed',careerLevel:1,careerPath:{id:'programming'},lastSalaryAge:35});
     completeLifeYear(poor,36);
-    // Lương 120 triệu − nuôi con 14 triệu − sinh hoạt 30% (36 triệu) − lãi 6% trên khoản nợ 31 triệu mang sang.
-    assert(poor.money===-31_000_000+120_000_000-14_000_000-36_000_000-1_860_000 && poor.childcareDebt===0,'Next salary covers current costs, living costs and the unpaid balance');
+    // Lương 120 triệu − nuôi con 14 triệu − sinh hoạt 40% (48 triệu) − lãi 6% trên khoản nợ 31 triệu mang sang.
+    assert(poor.money===-31_000_000+120_000_000-14_000_000-48_000_000-1_860_000 && poor.childcareDebt===0,'Next salary covers current costs, living costs and the unpaid balance');
     const parent = {...married(),children:birth.children};
     Object.assign(parent,getBreakupUpdates(parent));
     assert(parent.children.length===1 && canStartRelationship(parent), 'Breakup preserves children and makes the player single');
@@ -90,10 +90,10 @@
     assert(state.player.children.length===0 && state.player.money===0,'Preview does not add children or deduct money');
     state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     confirm.click();
-    assert(state.player.children.length===1 && state.player.money===72_000_000 && state.player.achievementFlags['first-child'],'Confirm saved birth credits salary, charges newborn costs and unlocks achievement');
-    assert(document.getElementById('money-value').textContent==='72 triệu','Wallet shows the net balance');
+    assert(state.player.children.length===1 && state.player.money===60_000_000 && state.player.achievementFlags['first-child'],'Confirm saved birth credits salary, charges newborn costs and unlocks achievement');
+    assert(document.getElementById('money-value').textContent==='60 triệu','Wallet shows the net balance');
     birthday.click();
-    assert(state.player.age===36 && state.player.money===142_000_000,'Year without a story still pays childcare after salary');
+    assert(state.player.age===36 && state.player.money===118_000_000,'Year without a story still pays childcare after salary');
     document.getElementById('relationships').click();
     assert(!document.getElementById('breakup-relationship').hidden && document.getElementById('relationship-children').textContent.includes('1 tuổi'),'Relationships show breakup action and child age');
     document.getElementById('breakup-relationship').click();
@@ -105,7 +105,7 @@
     assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.partner===null,'Breakup persists');
     document.getElementById('close-relationships').click();
     birthday.click();
-    assert(state.player.age===37 && state.player.money===210_000_000,'Childcare continues after breakup');
+    assert(state.player.age===37 && state.player.money===174_000_000,'Childcare continues after breakup');
     Object.assign(state.player,{partner:person,marriedAtAge:null,relationshipStartedAtAge:37,nextMarriageProposalAge:42});
     document.getElementById('relationships').click();
     document.getElementById('breakup-relationship').click();

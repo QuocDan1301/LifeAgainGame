@@ -1,0 +1,9 @@
+[
+  {
+    "result": "PASS life fuzz: {\"lives\":8,\"years\":223,\"deaths\":8,\"reloads\":30,\"events\":187,\"maxAge\":103,\"causes\":{\"old-age\":8},\"clicks\":2735,\"unsaved\":{\"activities-dialog › 🕹️Game CenterChơi một ván cho vui, thắng thua khô :: player.arcade.progress\":11,\"page › Quan hệ 👥 :: player.arcade\":3,\"page › 💳 Tài sản :: player.arcade\":3,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":1}}",
+    "pageErrors": [
+      "Error: Tiến trình đã thay đổi ở tab khác. Hãy tải lại để tránh ghi đè bản lưu.\n    at saveGame (http://127.0.0.1:50079/js/core/save-store.js:118:13)\n    at save (http://127.0.0.1:50079/js/leisure/games.js:158:22)\n    at settle (http://127.0.0.1:50079/js/leisure/games.js:193:5)\n    at finish (http://127.0.0.1:50079/js/leisure/games.js:526:7)\n    at http://127.0.0.1:50079/js/leisure/games.js:584:27"
+    ],
+    "test": "check-life-fuzz.html?seed=500&lives=8&startAge=60"
+  }
+]

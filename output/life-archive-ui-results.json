@@ -1,0 +1,56 @@
+[
+  {
+    "width": 320,
+    "mode": "event",
+    "result": "PASS:  death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 320,
+    "mode": "oldage",
+    "result": "PASS: oldage death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 320,
+    "mode": "annual",
+    "result": "PASS: annual death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 390,
+    "mode": "event",
+    "result": "PASS:  death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 390,
+    "mode": "oldage",
+    "result": "PASS: oldage death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 390,
+    "mode": "annual",
+    "result": "PASS: annual death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "mode": "event",
+    "result": "PASS:  death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "mode": "oldage",
+    "result": "PASS: oldage death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  },
+  {
+    "width": 1280,
+    "mode": "annual",
+    "result": "PASS: annual death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "errors": []
+  }
+]

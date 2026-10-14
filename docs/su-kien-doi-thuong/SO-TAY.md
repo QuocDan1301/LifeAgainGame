@@ -1,6 +1,6 @@
 # Sổ tay sự kiện đời thường
 
-Toàn bộ sự kiện đời thường của game nằm ở `js/events/life-stories/` (674 sự kiện, tuổi 1–104). Mỗi lần sửa hay viết thêm, kể cả khi nhờ AI, đều phải theo sổ tay này.
+Toàn bộ sự kiện đời thường của game nằm ở `js/events/life-stories/` (680 sự kiện, tuổi 1–104). Mỗi lần sửa hay viết thêm, kể cả khi nhờ AI, đều phải theo sổ tay này.
 
 | File | Tuổi |
 |---|---|
@@ -15,6 +15,7 @@ Toàn bộ sự kiện đời thường của game nằm ở `js/events/life-sto
 | `stage-70-79.js` | 70–79 |
 | `stage-80-89.js` | 80–89 |
 | `stage-90-104.js` | 90–104 |
+| `after-prison.js` | 19–104, chuỗi sau tiền án |
 
 ## 1. Cách game chọn sự kiện
 
@@ -149,11 +150,18 @@ Còn rất nhiều dấu đã gieo nhưng chưa có sự kiện nối: xem [SO-D
 | Con | `children`, `noChildren` (kết hợp với `childAge`) |
 | Việc làm | `employed`, `notEmployed` (dưới 62 tuổi), `retired` (từ 62), `student`, `notStudent` (18–21) |
 | Khác | `vehicle`, `mobile` (sức khỏe từ 30), `frail` (sức khỏe dưới 30) |
+| Tiền án | `criminalRecord` (có tiền án), `outsidePrison` (không còn bản án đang chấp hành), `reformationReady` (đang hoàn lương, ít nhất 3 năm giữ mình ngoài trại, không có điều tra đang chờ, chưa nhận thư) |
 
 - Viết theo **cặp bổ sung nhau** để không ai bị thiếu sự kiện: `partner` đi với `single`, `employed` đi với `notEmployed`, `student` đi với `notStudent`.
 - Câu viết “ba mẹ” thì cần cả `father` và `mother`, đừng dùng `anyParent`.
 - Đặt id: `ls<tuổi>-<tên>` cho sự kiện cố định, `ls-<tuyến>-<tên>` cho sự kiện chuỗi.
 - Đặt tên dấu: chữ thường không dấu, nối bằng `_`, mô tả việc đã xảy ra (`nhan_thay_phong`, không đặt `flag1`). Dấu không bao giờ bị xóa.
+
+### Tuyến trở về sau tiền án
+
+`after-prison.js` nối hồ sơ → người xác nhận → cuộc hẹn → thư giới thiệu, cùng nhánh trò chuyện với bạn đời và cơ hội nhận lại việc chung sau khi bỏ hẹn. Các cờ lưu chuyện đã xảy ra; `needs` đọc tình trạng hiện tại, không dùng cờ để giả định người chơi vẫn hoàn lương.
+
+`rehabilitation: true` chỉ dùng ở đoạn nhận thư: hệ thống kiểm tra lại điều kiện rồi khôi phục cơ hội phỏng vấn và +4 gắn kết cha mẹ/bạn đời đang có. Không xóa tiền án, không tự cấp việc làm. Kỷ vật là lá thư giới thiệu. Tái phạm làm mất hiệu lực thư; nếu đã nhận thư thì phải giữ mình năm năm mới được khôi phục, không nhận lại thưởng quan hệ. Tổng kết cuộc đời đọc `lifePath`, bản án và quá trình hoàn lương để kể kết cục riêng.
 
 ## 8. Sửa hoặc viết thêm
 

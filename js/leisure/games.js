@@ -1,3 +1,4 @@
+import { recordGamblingLoss } from '../achievements/achievement-progress.js';
 import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
@@ -33,12 +34,34 @@ export const boxTypes = [
   { id: "fancy", icon: "🎀", name: "Hộp sang", price: 500_000 },
   { id: "rich", icon: "💎", name: "Hộp đại gia", price: 5_000_000 },
 ];
+// Bậc độ hiếm theo hệ số giá trị (giá trị vật phẩm = giá hộp × hệ số).
+export const boxTiers = [
+  { multiplier: 0, id: "miss", name: "Hụt" },
+  { multiplier: 0.5, id: "common", name: "Thường" },
+  { multiplier: 1, id: "fair", name: "Khá" },
+  { multiplier: 3, id: "rare", name: "Hiếm" },
+  { multiplier: 15, id: "epic", name: "Quý hiếm" },
+  { multiplier: 25, id: "legend", name: "Huyền thoại" },
+];
+export const getBoxTier = (multiplier) => boxTiers.find((tier) => tier.multiplier === multiplier) ?? boxTiers[0];
+// Tổng xác suất 100%; tỷ lệ hoàn trả = Σ xác suất × hệ số ≈ 89,8%. Món hiếm nhất đứng cuối bảng.
 export const boxPrizes = [
-  { icon: "🧦", label: "Đôi tất lạc chiếc", chance: 0.4, multiplier: 0 },
-  { icon: "🪙", label: "Phong bì nhỏ", chance: 0.3, multiplier: 0.5 },
-  { icon: "💵", label: "Phong bì vừa", chance: 0.2, multiplier: 1 },
-  { icon: "💰", label: "Túi tiền", chance: 0.08, multiplier: 3 },
-  { icon: "💎", label: "Viên đá quý", chance: 0.02, multiplier: 15 },
+  { icon: "🧦", label: "Đôi tất lạc chiếc", chance: 0.14, multiplier: 0 },
+  { icon: "🔑", label: "Chìa khóa không biết mở gì", chance: 0.1, multiplier: 0 },
+  { icon: "🧸", label: "Gấu bông sứt chỉ", chance: 0.08, multiplier: 0 },
+  { icon: "🪀", label: "Con quay đứt dây", chance: 0.08, multiplier: 0 },
+  { icon: "🪙", label: "Phong bì nhỏ", chance: 0.14, multiplier: 0.5 },
+  { icon: "🕯️", label: "Nến thơm làm tay", chance: 0.08, multiplier: 0.5 },
+  { icon: "☕", label: "Cốc sứ in hình mèo", chance: 0.08, multiplier: 0.5 },
+  { icon: "💵", label: "Phong bì vừa", chance: 0.08, multiplier: 1 },
+  { icon: "🎧", label: "Tai nghe còn nguyên hộp", chance: 0.06, multiplier: 1 },
+  { icon: "⌚", label: "Đồng hồ đeo tay cổ điển", chance: 0.06, multiplier: 1 },
+  { icon: "💰", label: "Túi tiền", chance: 0.04, multiplier: 3 },
+  { icon: "🏺", label: "Bình gốm trang trí", chance: 0.021, multiplier: 3 },
+  { icon: "🎻", label: "Cây vĩ cầm mini", chance: 0.02, multiplier: 3 },
+  { icon: "💎", label: "Viên đá quý", chance: 0.012, multiplier: 15 },
+  { icon: "👑", label: "Vương miện mạ vàng", chance: 0.005, multiplier: 15 },
+  { icon: "🌟", label: "Ngôi sao may mắn", chance: 0.002, multiplier: 25 },
 ];
 export const TOWER_MULTIPLIERS = [1.9, 3.8, 7.6, 15.2, 30.4];
 export const BLACKJACK_PAYOUTS = { lose: 0, draw: 1, normal: 2, five: 2, blackjack: 2.5, doubleAce: 3 };
@@ -134,7 +157,7 @@ export function createRound(gameId, bet, choice, random = Math.random) {
 }
 
 // ---------- Giao diện ----------
-export function initGames(state, { renderMoney, renderLogEntry }) {
+export function initGames(state, { renderMoney, renderLogEntry, checkAchievements = () => {} }) {
   const $ = (id) => document.getElementById(id);
   const dialog = $("games-dialog");
   const body = $("games-body");
@@ -154,6 +177,14 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     node.addEventListener("click", onClick);
     return node;
   };
+  // Mặt đồng xu: Ngửa khắc mặt trời, Sấp khắc trăng khuyết (vẽ bằng CSS, không dùng emoji mặt cười).
+  const COIN_FACES = { heads: { symbol: "☀\uFE0E", label: "NGỬA", name: "Ngửa" }, tails: { symbol: "☾\uFE0E", label: "SẤP", name: "Sấp" } };
+  const coinFace = (side, className) => {
+    const face = element("span", `${className} is-${side}`);
+    face.setAttribute("aria-hidden", "true");
+    face.append(element("span", "coin-symbol", COIN_FACES[side].symbol), element("span", "coin-label", COIN_FACES[side].label));
+    return face;
+  };
   const save = () => saveGame(state);
   const gameOf = (id) => games.find((game) => game.id === id);
   const playsUsed = () => (state.player.gamePlays?.age === state.player.age ? state.player.gamePlays.count : 0);
@@ -162,7 +193,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     ?? body.querySelector("button:not(:disabled)"))?.focus({ preventScroll: true });
   const walletText = (offset = 0) => `Ví hiện có: ${formatMoney(state.player.money - offset)} · Còn ${playsLeft()}/${GAMES_PER_YEAR} lượt năm nay`;
   const tienLen = initTienLen(state, {
-    dialog, body, minAge: GAMES_MIN_AGE, playsLeft, renderMoney, renderLogEntry,
+    dialog, body, minAge: GAMES_MIN_AGE, playsLeft, renderMoney, renderLogEntry, checkAchievements,
     usePlay: () => { state.player.gamePlays = { age: state.player.age, count: playsUsed() + 1 }; },
     onExit: () => {
       renderPicker();
@@ -178,11 +209,15 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
 
   // Ghi kết quả vào ví và nhật ký; giao diện chỉ cập nhật sau khi hoạt ảnh kết thúc.
   function settle(round, payoutAmount, detail) {
-    if (isSavePaused()) return;
+    if (isSavePaused() || state.player.isAlive === false || round.settled ||
+        !Number.isFinite(payoutAmount) || payoutAmount < 0) return false;
+    if (['tower', 'blackjack'].includes(round.game) && state.player.gameRound !== round) return false;
+    round.settled = true;
     const game = gameOf(round.game);
     state.player.money += payoutAmount;
     state.player.gameRound = null;
     round.finalPayout = payoutAmount;
+    recordGamblingLoss(state.player, round, round.bet, payoutAmount);
     const net = payoutAmount - round.bet;
     const content = `${game.icon} ${game.name}: ${detail}. Cược ${formatMoneyAmount(round.bet)} VNĐ, nhận về ${formatMoneyAmount(payoutAmount)} VNĐ. ` +
       `Tiền ${net >= 0 ? "+" : "-"}${formatMoneyAmount(Math.abs(net))} VNĐ.`;
@@ -190,6 +225,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     state.logs.push(log);
     save();
     reveal = { log, payout: payoutAmount };
+    return true;
   }
   function flushReveal() {
     if (!reveal) return;
@@ -197,6 +233,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     reveal = null;
     renderMoney();
     renderLogEntry(log);
+    checkAchievements();
   }
 
   function startRound(gameId, bet, choice) {
@@ -242,6 +279,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     flushReveal();
     const game = gameOf(gameId);
     const card = element("section", "dialog-card game-setup");
+    card.dataset.game = gameId;
     card.append(element("h3", "", `${game.icon} ${game.name}`), element("p", "game-tagline", `“${game.tagline}”`));
     let choice = previous.choice ?? null;
     let bet = previous.bet ?? QUICK_BETS[0];
@@ -271,32 +309,60 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     // Tiền có thể nhận (tổng gồm vốn) cho lựa chọn hiện tại.
     let maxMultiplier = () => 0;
     if (gameId === "coin") {
-      card.append(element("p", "game-hint", "Chọn mặt đồng xu:"),
-        optionGroup([{ label: "🙂 Ngửa", value: "heads" }, { label: "🌀 Sấp", value: "tails" }], (value) => { choice = value; }, choice));
+      card.classList.add("game-setup-coin");
+      const faces = optionGroup([{ label: "Ngửa", value: "heads" }, { label: "Sấp", value: "tails" }], (value) => { choice = value; }, choice);
+      faces.classList.add("coin-faces");
+      faces.querySelectorAll(".game-option").forEach((option) => {
+        option.classList.add("coin-pick");
+        option.prepend(coinFace(option.dataset.value, "coin-mini"));
+      });
+      card.append(element("p", "game-hint", `Chọn mặt đồng xu. Đoán đúng nhận về ×${String(COIN_MULTIPLIER).replace(".", ",")} tiền cược.`), faces);
       maxMultiplier = () => COIN_MULTIPLIER;
     } else if (gameId === "dice") {
+      card.classList.add("game-setup-dice");
       let mode = choice?.mode ?? null;
       const values = element("div", "game-dice-values");
       const renderValues = () => {
-        values.replaceChildren(mode === "parity"
-          ? optionGroup([{ label: "Chẵn (2, 4, 6)", value: "even" }, { label: "Lẻ (1, 3, 5)", value: "odd" }], (value) => { choice = { mode, value }; }, choice?.value)
-          : mode === "number"
-            ? optionGroup([1, 2, 3, 4, 5, 6].map((value) => ({ label: diceFaces[value], value })), (value) => { choice = { mode, value }; }, choice?.value)
-            : element("p", "game-hint", "Chọn một chế độ ở trên."));
+        if (mode === "parity") {
+          const group = optionGroup([{ label: "Chẵn", value: "even" }, { label: "Lẻ", value: "odd" }], (value) => { choice = { mode, value }; }, choice?.value);
+          group.classList.add("dice-parity");
+          group.querySelectorAll(".game-option").forEach((option) => {
+            const faces = element("span", "dice-parity-faces");
+            faces.append(...(option.dataset.value === "even" ? [2, 4, 6] : [1, 3, 5]).map((value) => dieFace(value, "die-mini")));
+            option.prepend(faces);
+            option.setAttribute("aria-label", option.dataset.value === "even" ? "Chẵn: 2, 4, 6" : "Lẻ: 1, 3, 5");
+          });
+          values.replaceChildren(group);
+        } else if (mode === "number") {
+          const group = optionGroup([1, 2, 3, 4, 5, 6].map((value) => ({ label: String(value), value })), (value) => { choice = { mode, value }; }, choice?.value);
+          group.classList.add("dice-numbers");
+          group.querySelectorAll(".game-option").forEach((option) => {
+            option.prepend(dieFace(Number(option.dataset.value), "die-mini"));
+            option.setAttribute("aria-label", `Số ${option.dataset.value}`);
+          });
+          values.replaceChildren(group);
+        } else values.replaceChildren(element("p", "game-hint", "Chọn một chế độ ở trên."));
       };
-      card.append(element("p", "game-hint", "Chọn chế độ (mỗi lượt chỉ một lựa chọn):"),
-        optionGroup([{ label: "Chẵn hoặc lẻ", value: "parity", note: `×${DICE_MULTIPLIERS.parity}` },
-          { label: "Đúng một số", value: "number", note: `×${DICE_MULTIPLIERS.number}` }], (value) => {
-          mode = value;
-          choice = null;
-          renderValues();
-        }, mode), values);
+      const modes = optionGroup([{ label: "Chẵn hoặc lẻ", value: "parity", note: `Đoán đúng nhận về ${formatMultiplier(DICE_MULTIPLIERS.parity)}` },
+        { label: "Đúng một số", value: "number", note: `Đoán đúng nhận về ${formatMultiplier(DICE_MULTIPLIERS.number)}` }], (value) => {
+        mode = value;
+        choice = null;
+        renderValues();
+      }, mode);
+      modes.classList.add("dice-modes");
+      card.append(element("p", "game-hint", "Chọn chế độ (mỗi lượt chỉ một lựa chọn):"), modes, values);
       renderValues();
       maxMultiplier = () => (choice ? DICE_MULTIPLIERS[choice.mode] : 0);
     } else if (gameId === "box") {
-      card.append(element("p", "game-hint", "Chọn loại hộp:"),
-        optionGroup(boxTypes.map((box) => ({ label: `${box.icon} ${box.name}`, value: box.id, note: formatMoney(box.price) })), (value) => { choice = value; }, choice),
-        prizeList(boxPrizes));
+      card.classList.add("game-setup-box");
+      const boxes = optionGroup(boxTypes.map((box) => ({ label: box.name, value: box.id, note: formatMoney(box.price) })), (value) => { choice = value; }, choice);
+      boxes.classList.add("box-picks");
+      boxes.querySelectorAll(".game-option").forEach((option) => {
+        option.classList.add("box-pick");
+        option.prepend(element("span", "box-pick-icon", boxTypes.find((box) => box.id === option.dataset.value).icon));
+      });
+      card.append(element("p", "game-hint", "Chọn loại hộp. Giá trị vật phẩm tính theo giá hộp:"), boxes,
+        element("p", "game-hint", "Bên trong có thể là:"), prizeList(boxPrizes));
       maxMultiplier = () => Math.max(...boxPrizes.map((prize) => prize.multiplier));
     } else if (gameId === "tower") {
       const table = element("ul", "dialog-entries game-table");
@@ -382,7 +448,11 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
     const summary = round.game === "box"
       ? `Giá hộp ${formatMoney(round.bet)} · Vật phẩm trị giá ${formatMoney(round.payout)} · Đã cất vào Tài sản, có thể bán bất cứ lúc nào.`
       : `Cược ${formatMoney(round.bet)} · Nhận về ${formatMoney(amount)} (${net >= 0 ? "+" : "-"}${formatMoney(Math.abs(net))})`;
-    card.append(element("h3", "", title), element("p", "game-quote", `“${quote}”`), element("p", "game-summary", summary));
+    card.append(element("h3", "", title));
+    if (round.game !== "box") {
+      card.append(element("p", `game-net ${net >= 0 ? "is-gain" : "is-loss"}`, `${net >= 0 ? "+" : "−"}${formatMoney(Math.abs(net))}`));
+    }
+    card.append(element("p", "game-quote", `“${quote}”`), element("p", "game-summary", summary));
     const actions = element("div", "license-actions");
     const again = button("shop-buy game-primary", "🔁 Chơi lại", () => renderSetup(round.game, { choice: round.choice, bet: round.bet }));
     again.disabled = !playsLeft();
@@ -400,7 +470,20 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
   };
 
   // ---------- Hoạt ảnh từng trò ----------
-  const diceFaces = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
+  // Vị trí chấm trên lưới 3×3 (hàng, cột) của từng mặt.
+  const PIPS = { 1: [[2, 2]], 2: [[1, 1], [3, 3]], 3: [[1, 1], [2, 2], [3, 3]], 4: [[1, 1], [1, 3], [3, 1], [3, 3]],
+    5: [[1, 1], [1, 3], [2, 2], [3, 1], [3, 3]], 6: [[1, 1], [2, 1], [3, 1], [1, 3], [2, 3], [3, 3]] };
+  const dieFace = (value, className = "die-face") => {
+    const face = element("span", `${className} is-${value}`);
+    face.setAttribute("aria-hidden", "true");
+    for (const [row, column] of PIPS[value]) {
+      const pip = element("span", "die-pip");
+      pip.style.gridArea = `${row} / ${column}`;
+      face.append(pip);
+    }
+    return face;
+  };
+  const formatMultiplier = (value) => `×${String(value).replace(".", ",")}`;
 
   function renderPlay(round) {
     const game = gameOf(round.game);
@@ -424,69 +507,133 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
   }
 
   function playCoin(stage, round) {
+    const table = element("div", "coin-table");
+    const pickChip = element("p", "coin-pick-chip", `Bạn chọn ${COIN_FACES[round.choice].name} · Cược ${formatMoney(round.bet)}`);
+    const wrap = element("div", "game-coin-wrap");
     const coin = element("div", "game-coin");
-    coin.append(element("div", "game-coin-face is-heads", "🙂\nNGỬA"), element("div", "game-coin-face is-tails", "🌀\nSẤP"));
-    stage.append(element("div", "game-coin-wrap"), element("p", "game-hint game-live", "Đồng xu đang xoay…"));
-    stage.querySelector(".game-coin-wrap").append(coin);
+    coin.append(coinFace("heads", "game-coin-face"), coinFace("tails", "game-coin-face"));
+    const shadow = element("div", "coin-shadow");
+    wrap.append(coin, shadow);
+    const live = element("p", "game-hint game-live", "Đồng xu đang xoay…");
+    table.append(pickChip, wrap, live);
+    stage.append(table);
     const turns = 6 + (round.result === "tails" ? 0.5 : 0);
+    const timing = { duration: time(1700), easing: "cubic-bezier(0.3, 0.7, 0.4, 1)", fill: "forwards" };
+    shadow.animate([
+      { transform: "scale(1)", opacity: 0.55 },
+      { transform: "scale(0.45)", opacity: 0.2, offset: 0.5 },
+      { transform: "scale(1)", opacity: 0.55 },
+    ], timing);
     coin.animate([
       { transform: "translateY(0) rotateY(0deg)" },
       { transform: `translateY(-90px) rotateY(${turns * 180}deg)`, offset: 0.5 },
       { transform: `translateY(0) rotateY(${turns * 360}deg)` },
-    ], { duration: time(1700), easing: "cubic-bezier(0.3, 0.7, 0.4, 1)", fill: "forwards" }).finished.then(() => {
+    ], timing).finished.then(() => {
       const win = round.payout > 0;
-      stage.querySelector(".game-live").textContent = `Kết quả: ${round.result === "heads" ? "Ngửa" : "Sấp"}`;
+      table.classList.add("is-landed", win ? "is-win" : "is-lose");
+      live.textContent = `Kết quả: ${COIN_FACES[round.result].name}${win ? " · Đoán đúng!" : " · Đoán sai"}`;
       showResult(stage, round, win, win ? "🎉 Đoán đúng!" : "😢 Đoán sai",
         win ? "Đồng xu đứng về phía tôi. Mong tháng này hóa đơn cũng vậy!"
           : `Tôi chọn ${round.choice === "heads" ? "ngửa" : "sấp"}. Ví tôi chọn ${round.choice === "heads" ? "sấp" : "ngửa"}.`);
     });
   }
 
+  // Góc quay khối lập phương để mặt kết quả hướng về người chơi (mặt 1 trước, 6 sau, 3 phải, 4 trái, 2 trên, 5 dưới).
+  const DIE_ORIENTATION = { 1: [0, 0], 2: [-90, 0], 3: [0, -90], 4: [0, 90], 5: [90, 0], 6: [0, 180] };
   function playDice(stage, round) {
-    const die = element("div", "game-die", diceFaces[1]);
-    stage.append(die, element("p", "game-hint game-live", "Xúc xắc đang lăn…"));
-    let ticks = 0;
-    const total = reducedMotion.matches ? 1 : 14;
-    const roll = () => {
-      ticks += 1;
-      die.textContent = ticks >= total ? diceFaces[round.roll] : diceFaces[1 + Math.floor(Math.random() * 6)];
-      die.animate([{ transform: "rotate(-18deg) scale(0.9)" }, { transform: "rotate(14deg) scale(1.05)" }, { transform: "none" }],
-        { duration: time(110) });
-      if (ticks < total) return setTimeout(roll, time(40 + ticks * 10));
+    const table = element("div", "dice-table");
+    const pick = round.choice.mode === "parity" ? (round.choice.value === "even" ? "Chẵn" : "Lẻ") : `Số ${round.choice.value}`;
+    const scene = element("div", "dice-scene");
+    const bounce = element("div", "dice-bounce");
+    const cube = element("div", "dice-cube");
+    for (const value of [1, 2, 3, 4, 5, 6]) cube.append(dieFace(value, `die-face dice-side side-${value}`));
+    const tilt = element("div", "dice-tilt");
+    tilt.append(cube);
+    bounce.append(tilt);
+    const shadow = element("div", "dice-shadow");
+    scene.append(bounce, shadow);
+    const live = element("p", "game-hint game-live", "Xúc xắc đang lăn…");
+    table.append(element("p", "dice-pick-chip", `Bạn chọn ${pick} · Cược ${formatMoney(round.bet)}`), scene, live);
+    stage.append(table);
+    const [x, y] = DIE_ORIENTATION[round.roll];
+    const duration = time(1600);
+    bounce.animate([
+      { transform: "translateY(0)" }, { transform: "translateY(-78px)", offset: 0.3 }, { transform: "translateY(0)", offset: 0.62 },
+      { transform: "translateY(-22px)", offset: 0.8 }, { transform: "translateY(0)" },
+    ], { duration, easing: "ease-in-out", fill: "forwards" });
+    shadow.animate([
+      { transform: "scale(1)", opacity: 0.5 }, { transform: "scale(0.5)", opacity: 0.2, offset: 0.3 }, { transform: "scale(1)", opacity: 0.5, offset: 0.62 },
+      { transform: "scale(0.85)", opacity: 0.4, offset: 0.8 }, { transform: "scale(1)", opacity: 0.5 },
+    ], { duration, easing: "ease-in-out", fill: "forwards" });
+    cube.animate([
+      { transform: "rotateX(0deg) rotateY(0deg)" },
+      { transform: `rotateX(${x + 720}deg) rotateY(${y + 720}deg)` },
+    ], { duration, easing: "cubic-bezier(0.2, 0.7, 0.3, 1)", fill: "forwards" }).finished.then(() => {
       const win = round.payout > 0;
-      stage.querySelector(".game-live").textContent = `Ra mặt ${round.roll} (${round.roll % 2 ? "lẻ" : "chẵn"})`;
+      table.classList.add("is-landed", win ? "is-win" : "is-lose");
+      live.textContent = `Ra mặt ${round.roll} (${round.roll % 2 ? "lẻ" : "chẵn"})${win ? " · Trúng!" : ""}`;
       showResult(stage, round, win, win ? "🎉 Trúng rồi!" : "😢 Trượt rồi",
         win ? "Con số định mệnh hôm nay mỉm cười với tôi!" : "Tôi nhìn xúc xắc rất lâu. Nó vẫn không có ý định thương lượng.");
-    };
-    roll();
+    });
   }
 
+  // Phần thưởng gom theo bậc độ hiếm (không hiện xác suất).
   function prizeList(prizes) {
-    const list = element("ul", "dialog-entries game-table");
-    for (const prize of prizes) {
-      const row = element("li");
-      row.append(element("span", "", `${prize.icon} ${prize.label}`), element("strong", "", `×${String(prize.multiplier).replace(".", ",")}`));
+    const list = element("ul", "box-tier-list");
+    for (const tier of boxTiers) {
+      const items = prizes.filter((prize) => prize.multiplier === tier.multiplier);
+      if (!items.length) continue;
+      const row = element("li", `box-tier is-${tier.id}`);
+      const icons = element("span", "box-tier-items");
+      for (const prize of items) {
+        const icon = element("span", "box-tier-item", prize.icon);
+        icon.title = prize.label;
+        icon.setAttribute("aria-label", prize.label);
+        icons.append(icon);
+      }
+      row.append(element("span", "box-tier-name", tier.name), icons,
+        element("strong", "box-tier-value", `×${String(tier.multiplier).replace(".", ",")}`));
       list.append(row);
     }
     return list;
   }
 
+  const BOX_QUOTES = {
+    miss: "Chiếc hộp trông rất giàu. Tiếc là bên trong không đồng ý.",
+    common: "Không lỗ hết, coi như mua một chút niềm vui.",
+    fair: "Hòa vốn. Ít ra chiếc hộp cũng không lừa tôi.",
+    rare: "Chiếc hộp hôm nay giàu thật sự!",
+    epic: "Tôi phải mở đi mở lại để chắc mình không mơ.",
+    legend: "Huyền thoại có thật, và nó đang nằm trong tay tôi!",
+  };
   function playBox(stage, round) {
     const box = boxTypes.find((entry) => entry.id === round.choice);
     const prize = boxPrizes[round.prize];
+    const tier = getBoxTier(prize.multiplier);
+    stage.classList.add("box-stage");
+    const scene = element("div", "box-scene");
     const view = element("div", "game-box", box.icon);
-    stage.append(view, element("p", "game-hint game-live", "Đang mở hộp…"));
+    scene.append(element("span", "box-rays"), view, element("span", "box-pedestal"));
+    const live = element("p", "game-hint game-live", "Đang mở hộp…");
+    const theater = element("div", "box-theater");
+    theater.append(element("p", "box-pick-chip", `${box.icon} ${box.name} · ${formatMoney(box.price)}`), scene, live);
+    stage.append(theater);
     view.animate([
       { transform: "rotate(0)" }, { transform: "rotate(-12deg)" }, { transform: "rotate(12deg)" },
       { transform: "rotate(-8deg)" }, { transform: "rotate(8deg)" }, { transform: "rotate(0) scale(1.15)" },
     ], { duration: time(1300), easing: "ease-in-out" }).finished.then(() => {
       view.textContent = prize.icon;
       view.classList.add("is-open");
+      theater.classList.add("is-open", `is-${tier.id}`);
       view.animate([{ transform: "scale(0.3)", opacity: 0 }, { transform: "scale(1.25)", opacity: 1 }, { transform: "scale(1)" }],
         { duration: time(500), easing: "cubic-bezier(0.2, 1.4, 0.4, 1)" }).finished.then(() => {
-        stage.querySelector(".game-live").textContent = `Bên trong là: ${prize.icon} ${prize.label}`;
-        showResult(stage, round, prize.multiplier > 1, `${prize.icon} ${prize.label}`,
-          prize.multiplier > 1 ? "Chiếc hộp hôm nay giàu thật sự!" : "Chiếc hộp trông rất giàu. Tiếc là bên trong không đồng ý.");
+        live.textContent = prize.multiplier > 1 ? "🎉 Hộp đã mở!" : "Hộp đã mở…";
+        const reveal = element("div", `box-reveal is-${tier.id}`);
+        reveal.setAttribute("role", "status");
+        reveal.append(element("span", "box-reveal-tier", tier.name), element("strong", "box-reveal-name", prize.label),
+          element("span", "box-reveal-value", round.payout ? `Trị giá ${formatMoney(round.payout)}` : "Không bán được tiền"));
+        live.after(reveal);
+        showResult(stage, round, prize.multiplier > 1, `${prize.icon} ${prize.label}`, BOX_QUOTES[tier.id]);
       });
     });
   }
@@ -520,7 +667,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
 
     const finish = (floorsCleared, fell) => {
       const amount = fell ? 0 : payout(round.bet, TOWER_MULTIPLIERS[floorsCleared - 1]);
-      settle(round, amount, fell ? `rơi ở tầng ${floorsCleared + 1}` : `dừng sau khi vượt ${floorsCleared} tầng`);
+      if (!settle(round, amount, fell ? `rơi ở tầng ${floorsCleared + 1}` : `dừng sau khi vượt ${floorsCleared} tầng`)) return;
       floors.querySelectorAll(".game-floor").forEach((node) => {
         node.classList.remove("is-current");
         node.classList.toggle("is-fallen", fell && Number(node.dataset.floor) === floorsCleared);
@@ -552,7 +699,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
           choice.append(element("span", "tower-door-number", door === 0 ? "I" : "II"), element("span", "tower-door-panel"), element("span", "tower-door-label", door === 0 ? "Cửa trái" : "Cửa phải"));
           doors.append(choice);
         });
-      } else {
+      } else if (round.phase === 'decide') {
         const amount = payout(round.bet, TOWER_MULTIPLIERS[round.floor - 1]);
         live.textContent = `Đã vượt tầng ${round.floor}! Có thể nhận ${formatMoney(amount)}.`;
         actions.append(
@@ -567,8 +714,16 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       }
       focusFirst();
     };
-    function open(door) {
-      const safe = round.safeDoors[round.floor] === door;
+    function open(door, resume = false) {
+      if (isSavePaused() || state.player.isAlive === false || state.player.gameRound !== round || round.settled) return;
+      if (resume ? round.phase !== 'reveal' : round.phase !== 'choose') return;
+      const selectedFloor = round.floor;
+      if (!resume) {
+        round.selectedDoor = door;
+        round.phase = 'reveal';
+        save(); // Persist the chosen door before its animation; reopening cannot pick again.
+      }
+      const safe = round.safeDoors[selectedFloor] === door;
       doors.querySelectorAll(".game-door").forEach((node, index) => {
         node.disabled = true;
         if (index === door) {
@@ -577,7 +732,8 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
         }
       });
       setTimeout(() => {
-        if (isSavePaused()) return;
+        if (isSavePaused() || state.player.isAlive === false || state.player.gameRound !== round ||
+            round.settled || round.phase !== 'reveal' || round.floor !== selectedFloor || round.selectedDoor !== door) return;
         if (!safe) return finish(round.floor, true);
         round.floor += 1;
         if (round.floor === TOWER_MULTIPLIERS.length) return finish(round.floor, false);
@@ -587,6 +743,10 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
       }, time(650));
     }
     draw();
+    if (round.phase === 'reveal') {
+      live.textContent = `Đang mở cửa ở tầng ${round.floor + 1}…`;
+      open(round.selectedDoor, true);
+    }
   }
 
   // ---------- Xì dách ----------
@@ -716,7 +876,7 @@ export function initGames(state, { renderMoney, renderLogEntry }) {
           : ["😢 Nhà cái thắng", "Nhà cái cười, tôi cũng cười… nhưng là cười trừ."],
       };
       const [title, quote] = texts[outcome];
-      settle(round, payout(round.bet, multiplier), `${title.replace(/^\S+\s/u, "")} (bạn ${handPoints(round.player)} điểm, nhà cái ${handPoints(round.dealer)} điểm)`);
+      if (!settle(round, payout(round.bet, multiplier), `${title.replace(/^\S+\s/u, "")} (bạn ${handPoints(round.player)} điểm, nhà cái ${handPoints(round.dealer)} điểm)`)) return;
       // Chip trượt về phía người thắng sau khi lá cuối đã nằm yên.
       setTimeout(() => felt.classList.add(multiplier > 1 ? "is-win" : multiplier === 1 ? "is-draw" : "is-lose"), time(wait));
       setTimeout(() => showResult(stage, round, multiplier > 1, title, quote), time(wait + 700));

@@ -61,7 +61,7 @@
       choose(finalChoice);resume();
       assert(state.player.money===0&&!state.player.achievementFlags['story-reincarnation'],'Reward applies only on confirmation');
       confirm.click();
-      const money=84000000+(finalChoice===0?100000000:50000000);
+      const money=72000000+(finalChoice===0?100000000:50000000);
       assert(state.player.age===40&&state.player.isAlive&&state.player.money===money&&state.player.happiness===(finalChoice===0?65:70),'Exact final reward and one annual salary');
       assert(state.player.achievementFlags['story-reincarnation']&&state.logs.at(-1).content.includes('nụ cười của bà bên khung cửa'),'Achievement and supplied diary saved');
       assert(document.getElementById('money-value').textContent===`${money/1000000} triệu`,'Wallet shows reward');
@@ -70,7 +70,7 @@
     for(let exitStep=1;exitStep<=6;exitStep++){
       start();for(let i=1;i<exitStep;i++)choose(0);
       choose(1);resume();confirm.click();
-      assert(state.player.age===40&&state.player.isAlive&&state.player.money===84000000&&state.player.happiness===50&&!state.player.achievementFlags['story-reincarnation'],'All six early exits end safely, pay salary only and grant no achievement');
+      assert(state.player.age===40&&state.player.isAlive&&state.player.money===72000000&&state.player.happiness===50&&!state.player.achievementFlags['story-reincarnation'],'All six early exits end safely, pay salary only and grant no achievement');
     }
     result.textContent='PASS: 7 scenes, 6 early exits, 2 rewards, illustrations, saved progress, salary once, wallet, achievement and diary.';
   }catch(error){result.textContent='FAIL: '+error.stack;}

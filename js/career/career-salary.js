@@ -1,3 +1,4 @@
+import { collectCreatorAudienceYear } from '../achievements/achievement-progress.js';
 import { getStudyAbroadCountry } from "../education/study-abroad.js";
 import { formatMoney } from "../core/money-format.js";
 
@@ -78,7 +79,7 @@ export function getAnnualSalaryPayment(player, age, updates = {}) {
       content: `🌅 ${farewell}Nhận lương hưu ${yearsText}: +${formatSalary(amount)}.` };
   }
   const amount = annualAmount * years;
-  return { age, amount, annualAmount, years, rank,
+  return { age, amount, annualAmount, years, rank, careerId: worker.careerPath?.id, careerLevel: worker.careerLevel,
     content: `💰 Nhận lương ${yearsText} ở bậc ${rank}: +${formatSalary(amount)}.` +
       (ATHLETE_CAREERS.includes(worker.careerPath?.id) && age > ATHLETE_PEAK_END
         ? ` Đã qua tuổi thi đấu đỉnh cao, bạn chuyển sang huấn luyện và bình luận (${Math.round(ATHLETE_LATE_RATE * 100)}% lương bậc).` : "") };
@@ -93,6 +94,8 @@ export function completeCareerYear(player, age, updates = {}) {
   if (payment) {
     player.money += payment.amount;
     player.lastSalaryAge = age;
+    const audience = collectCreatorAudienceYear(player, age, payment);
+    if (audience) payment.content += `\n${audience.content}`;
   }
   return payment;
 }

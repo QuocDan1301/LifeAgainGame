@@ -197,8 +197,16 @@
   } catch (error) {
     result.textContent = `FAIL: ${error.message}\n${error.stack ?? ''}`;
   } finally {
+    const outcome = result.textContent;
+    result.textContent = 'Finishing pending callbacks…';
+    // Let close events and reveal callbacks settle before restoring the fixture's
+    // storage. Restoring first manufactures a stale-tab conflict for pending saves.
+    for (const dialog of document.querySelectorAll('dialog[open]')) dialog.close();
+    await new Promise(resolve => setTimeout(resolve, 750));
+    const finalOutcome = errors.length && outcome.startsWith('PASS') ? `FAIL: late callback: ${errors[0]}` : outcome;
     Math.random = nativeRandom;
     keys.forEach((key, index) => previous[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, previous[index]));
+    result.textContent = finalOutcome;
   }
 })();
 </script>

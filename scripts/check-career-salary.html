@@ -75,8 +75,8 @@
     const mainSource = await (await fetch("../js/main.js")).text();
     const ageStep = Number(mainSource.match(/const nextAge = state\.player\.age \+ (\d+)/)?.[1] ?? 1);
     birthday.click();
-    // Lương mỗi năm trừ 30% chi phí sinh hoạt.
-    assert(state.player.age === 30 + ageStep && state.player.money === 120_000_000 + 84_000_000 * ageStep, "A birthday must pay salary (minus living costs) for every elapsed year");
+    // Lương 120 triệu/năm trừ 40% chi phí sinh hoạt (48 triệu).
+    assert(state.player.age === 30 + ageStep && state.player.money === 120_000_000 + 72_000_000 * ageStep, "A birthday must pay salary (minus living costs) for every elapsed year");
     assert(state.logs.at(-1).content.includes("Chi phí sinh hoạt"), "Diary records living costs");
     assert(document.getElementById("money-value").textContent === formatMoneyAmount(state.player.money), "Wallet refreshes immediately");
     assert(state.logs.at(-1).content.includes("Nhận lương"), "Diary records salary");
@@ -95,12 +95,12 @@
     assert(document.getElementById("event-content").textContent.includes(`+${formatMoney(120_000_000 * ageStep)}`), "Preview announces salary for the elapsed years");
     state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
     document.getElementById("event-confirm").click();
-    assert(state.player.money === 84_000_000 * ageStep && state.player.careerLevel === 2, "Confirming a saved promotion pays once at the old rank (minus living costs)");
+    assert(state.player.money === 72_000_000 * ageStep && state.player.careerLevel === 2, "Confirming a saved promotion pays once at the old rank (minus living costs)");
     assert(document.getElementById("money-value").textContent === formatMoneyAmount(state.player.money), "Wallet shows the credited balance after promotion");
     birthday.click();
-    assert(state.player.age === 27 + ageStep && state.player.money === 244_000_000 * ageStep, "The following years pay the promoted salary (minus progressive living costs)");
+    assert(state.player.age === 27 + ageStep && state.player.money === 210_000_000 * ageStep, "The following years pay the promoted salary (minus progressive living costs)");
     const persisted = JSON.parse(localStorage.getItem("lifeAgainSave"));
-    assert(persisted.player.lastSalaryAge === 27 + ageStep && persisted.player.money === 244_000_000 * ageStep, "Payment and age persist together");
+    assert(persisted.player.lastSalaryAge === 27 + ageStep && persisted.player.money === 210_000_000 * ageStep, "Payment and age persist together");
     result.textContent = "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;

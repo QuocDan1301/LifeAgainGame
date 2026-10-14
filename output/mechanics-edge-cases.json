@@ -1,0 +1,40 @@
+[
+  {
+    "id": "abroad-cost-copy",
+    "severity": "medium",
+    "confirmed": false,
+    "status": "fixed",
+    "description": "Du học mô tả 30% / 50% nhưng thực tế thu 30% / 55% / 70%. Ngân sách chung lại mô tả 40% / 55% / 70% cho mọi nơi.",
+    "income": 600000000,
+    "actualCost": 280000000,
+    "describedCost": 280000000
+  },
+  {
+    "id": "child-relationship-field",
+    "severity": "medium",
+    "confirmed": false,
+    "status": "fixed",
+    "description": "Gói học cho con ghi gắn kết vào child.bond, nhưng điều kiện người thân ở đoạn kết đọc child.relationship. Chi phí được thu nhưng hiệu ứng không được đoạn kết dùng.",
+    "annualCost": 60000000,
+    "actualRelationship": 52,
+    "endingRelationshipBefore": 50,
+    "endingRelationshipAfter": 52
+  },
+  {
+    "id": "discovery-lost-at-51",
+    "severity": "medium",
+    "confirmed": false,
+    "status": "fixed",
+    "description": "Bảng đã khám phá được tính từ 50 đời gần nhất. Khi đời cũ bị đẩy khỏi sổ, chuỗi, danh hiệu và ngành đã khám phá chỉ ở đời đó cũng biến mất.",
+    "archiveLength": 50,
+    "completedAfterEviction": [
+      "diamond-mine"
+    ]
+  },
+  {
+    "id": "one-child-per-marriage",
+    "severity": "design-note",
+    "confirmed": true,
+    "description": "Mỗi hôn nhân dừng đề nghị con cái sau người con đầu tiên. Có thêm con bằng hôn nhân mới; danh hiệu đại gia đình không mở theo lộ trình một hôn nhân thông thường."
+  }
+]

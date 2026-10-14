@@ -1,4 +1,4 @@
-import { getLivingShare } from '../core/living-share.js';
+import { getLivingShare, describeLivingShare } from '../core/living-share.js';
 import { formatMoney } from '../core/money-format.js';
 import { openMojiArt } from '../media/event-art.js';
 
@@ -174,7 +174,7 @@ export function createStudyAbroadYearEvent(player, age) {
       title: `Tốt nghiệp ${major.name} tại ${country.name}`,
       text: `Tấm bằng đã nằm trong tay. Tôi sẽ ở lại ${country.name} tìm việc hay mang những điều học được về Việt Nam? Học phí đã kết thúc; xin việc vẫn cần vượt qua phỏng vấn.`,
       choices: [
-        { label: `Ở lại ${country.name} xin việc`, title: 'Bắt đầu hành trình làm việc ở nước ngoài', text: `Bạn ở lại ${country.name}. Lương ba bậc nghề: ${country.salaries.map(formatMoney).join(' / ')}/năm. Sinh hoạt tối thiểu ${formatMoney(country.living)}/năm hoặc 30% thu nhập thường xuyên (50% phần trên 200 triệu) nếu cao hơn, bắt đầu từ năm này. Vào Hoạt động → Xin việc để ứng tuyển ngành ${major.name}; nếu trượt có thể thử lại năm sau. Ngoại ngữ và kết quả học tập tốt giúp bạn chuẩn bị hồ sơ.`,
+        { label: `Ở lại ${country.name} xin việc`, title: 'Bắt đầu hành trình làm việc ở nước ngoài', text: `Bạn ở lại ${country.name}. Lương ba bậc nghề: ${country.salaries.map(formatMoney).join(' / ')}/năm. Sinh hoạt tối thiểu ${formatMoney(country.living)}/năm hoặc ${describeLivingShare(0.3)} trên thu nhập thường xuyên nếu cao hơn, bắt đầu từ năm này. Vào Hoạt động → Xin việc để ứng tuyển ngành ${major.name}; nếu trượt có thể thử lại năm sau. Ngoại ngữ và kết quả học tập tốt giúp bạn chuẩn bị hồ sơ.`,
           playerUpdates: { ...common, abroadDestination: 'stay' }, employmentStatus: 'unemployed', job: 'Thất nghiệp', careerLevel: 0 },
         { label: 'Về Việt Nam làm việc', title: 'Trở về với một hành trang mới', text: `Bạn về Việt Nam với bằng ${major.name} từ ${country.name}. Vào Hoạt động → Xin việc để nộp hồ sơ trong nước.`,
           careerPath: { id: major.domesticCareer, field: major.name, school: { ...player.careerPath.school }, status: `Tốt nghiệp ${major.name}`, switchedFrom: 'study-abroad' },
@@ -196,7 +196,7 @@ export function createStudyAbroadSchoolEvent(path, player) {
         label: `${country.icon} ${country.name} · Học phí ${formatMoney(country.tuition)} + sinh hoạt ${formatMoney(country.living)}/năm${country.minIntellect ? ` · Trí tuệ từ ${country.minIntellect}` : ''}`,
         minIntelligence: country.minIntellect,
         title: `✈️ Lên đường đến ${country.name}`,
-        text: `Bạn chọn du học tại ${country.name}. Chi phí năm đầu: học phí ${formatMoney(tuition)}${scholarship ? ' (đã giảm học bổng 50%)' : ''}, sinh hoạt ${formatMoney(country.living)}; tổng ${formatMoney(tuition + country.living)}.\nBốn năm theo giá gốc: ${formatMoney(4 * (country.tuition + country.living))}. Học bổng được xét lại mỗi năm. Bạn sẽ học ngoại ngữ, làm dự án và chuẩn bị hồ sơ xin việc tại ${country.name} sau tốt nghiệp. Lương ba bậc tại đây: ${country.salaries.map(formatMoney).join(' / ')}/năm; sinh hoạt sau học tối thiểu ${formatMoney(country.living)}/năm hoặc 30% thu nhập thường xuyên (50% phần trên 200 triệu) nếu cao hơn.`,
+        text: `Bạn chọn du học tại ${country.name}. Chi phí năm đầu: học phí ${formatMoney(tuition)}${scholarship ? ' (đã giảm học bổng 50%)' : ''}, sinh hoạt ${formatMoney(country.living)}; tổng ${formatMoney(tuition + country.living)}.\nBốn năm theo giá gốc: ${formatMoney(4 * (country.tuition + country.living))}. Học bổng được xét lại mỗi năm. Bạn sẽ học ngoại ngữ, làm dự án và chuẩn bị hồ sơ xin việc tại ${country.name} sau tốt nghiệp. Lương ba bậc tại đây: ${country.salaries.map(formatMoney).join(' / ')}/năm; sinh hoạt sau học tối thiểu ${formatMoney(country.living)}/năm hoặc ${describeLivingShare(0.3)} trên thu nhập thường xuyên nếu cao hơn.`,
         careerPath: { ...path, school: { id: `abroad-${country.id}`, type: 'international',
           countryId: country.id, countryName: country.name,
           name: `Chương trình cử nhân quốc tế tại ${country.name}`,

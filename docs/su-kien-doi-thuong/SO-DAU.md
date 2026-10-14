@@ -334,6 +334,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `hien_mau` | ls20-hien-mau (20) | **chưa nối** |
 | `hoa_nhap_tre` | ls43-nhan-viec-tre-hon (43) | **chưa nối** |
 | `hoan_chuyen_di` | ls30-ban-cu-cuoi (30) | **chưa nối** |
+| `hoan_luong_nhan_thu` | ls-tro-ve-thu-gioi-thieu (26) | **chưa nối** |
 | `hoc_boi_cung_con` | ls-con-hoc-boi (33) | **chưa nối** |
 | `hoc_bong_ten_minh` | ls74-nhan-hoi-ung-ho (74) | **chưa nối** |
 | `hoc_buoi_toi` | ls27-khoa-hoc-toi (27) | **chưa nối** |
@@ -691,6 +692,16 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `tre_trong_phong` | ls93-tieng-cuoi-tre (93) | **chưa nối** |
 | `trien_lam_tuoi_gia` | ls68-mot-minh-hoc-ve (68) | **chưa nối** |
 | `tro_cap_tuoi_gia` | ls60-chua-co-luong-huu (60) | **chưa nối** |
+| `tro_ve_chua_san_sang` | ls-tro-ve-buoi-sang (23) | ls-tro-ve-goi-lai (từ 25) |
+| `tro_ve_chuan_bi` | ls-tro-ve-nguoi-xac-nhan (20) | ls-tro-ve-cuoc-hen (từ 21) |
+| `tro_ve_gap_cu` | ls-tro-ve-cuoc-hen (21) | ls-tro-ve-ban-an (từ 23), ls-tro-ve-buoi-sang (từ 23) |
+| `tro_ve_giu_hen` | ls-tro-ve-cuoc-hen (21), ls-tro-ve-buoi-sang (23), ls-tro-ve-goi-lai (25) | ls-tro-ve-ban-an (từ 23), ls-tro-ve-thu-gioi-thieu (từ 26) |
+| `tro_ve_giu_rieng` | ls-tro-ve-ban-an (23) | **chưa nối** |
+| `tro_ve_hen_rieng` | ls-tro-ve-ho-so (19) | ls-tro-ve-nguoi-xac-nhan (từ 20) |
+| `tro_ve_ke_chuyen` | ls-tro-ve-ho-so (19) | ls-tro-ve-nguoi-xac-nhan (từ 20) |
+| `tro_ve_nho_xac_nhan` | ls-tro-ve-nguoi-xac-nhan (20) | ls-tro-ve-cuoc-hen (từ 21) |
+| `tro_ve_noi_voi_ban_doi` | ls-tro-ve-ban-an (23) | **chưa nối** |
+| `tro_ve_tu_lo` | ls-tro-ve-goi-lai (25) | **chưa nối** |
 | `trong_cay_cho_doi_sau` | ls83-mua-xuan (83) | **chưa nối** |
 | `trong_chau` | ls57-chau-noi-ngoai (57) | **chưa nối** |
 | `trong_tiem_sach` | ls58-viec-dan-sach (58) | **chưa nối** |

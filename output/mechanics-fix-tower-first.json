@@ -1,0 +1,27 @@
+[
+  {
+    "result": "PASS tower UI: five milestones; named doors; reveal lock; current floor; accurate cash-out and next-floor amounts; saved door, reload, stale-timer rejection and single settlement",
+    "pageErrors": [],
+    "test": "check-tower-ui.html"
+  },
+  {
+    "result": "PASS: 7 games; payout tables 89–95%; outcomes fixed at start; blackjack rules; 18+; 5 plays/year; no probabilities shown; balance limit; tower stop; resume",
+    "pageErrors": [],
+    "test": "check-games.html"
+  },
+  {
+    "result": "PASS: close/reopen/finish during Tarot flip produces no stale callback or duplicate fee",
+    "pageErrors": [],
+    "test": "check-tarot-animation.html"
+  },
+  {
+    "result": "FAIL: money not finite: NaN [seed 504, age 72, step 68]\nError: money not finite: NaN [seed 504, age 72, step 68]\n    at fail (http://127.0.0.1:59160/scripts/check-life-fuzz.html?seed=500&lives=8&startAge=60:25:35)\n    at check (http://127.0.0.1:59160/scripts/check-life-fuzz.html?seed=500&lives=8&startAge=60:63:38)\n    at wander (http://127.0.0.1:59160/scripts/check-life-fuzz.html?seed=500&lives=8&startAge=60:107:9)\n    at http://127.0.0.1:59160/scripts/check-life-fuzz.html?seed=500&lives=8&startAge=60:166:13",
+    "pageErrors": [],
+    "test": "check-life-fuzz.html?seed=500&lives=8&startAge=60"
+  },
+  {
+    "result": "PASS life fuzz: {\"lives\":12,\"years\":463,\"deaths\":12,\"reloads\":65,\"events\":497,\"maxAge\":50,\"causes\":{\"event\":3,\"diabetes\":1,\"gastritis\":1,\"exhaustion\":4,\"kidney-stones\":1,\"pneumonia\":2},\"clicks\":4685,\"unsaved\":{\"page › 💳 Tài sản :: player.arcade\":7,\"activities-dialog › 🕹️Game CenterChơi một ván cho vui, thắng thua khô :: player.arcade.progress\":13,\"page › Phiên mới · Còn 4 lượt :: player.auction\":3,\"page › Phiên mới · Còn 5 lượt :: player.auction\":1,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":3,\"page › Quan hệ 👥 :: player.arcade\":3,\"page › Phiên mới · Còn 3 lượt :: player.auction\":1}}",
+    "pageErrors": [],
+    "test": "check-life-fuzz.html?seed=100&lives=12"
+  }
+]

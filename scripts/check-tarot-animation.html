@@ -1,0 +1,45 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tarot animation lifetime check</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const errors = [];
+const onRejection = event => { errors.push(String(event.reason?.stack ?? event.reason)); event.preventDefault(); };
+window.addEventListener('unhandledrejection', onRejection);
+const keys = ['lifeAgainSave', 'lifeAgainTarotCollection'];
+const previous = keys.map(key => localStorage.getItem(key));
+try {
+  const html = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  html.querySelectorAll('script').forEach(e => e.remove());
+  html.querySelectorAll('[src]').forEach(e => e.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', html.body.innerHTML);
+  const { createInitialState } = await import('../js/core/state.js');
+  const { initTarot } = await import('../js/leisure/tarot.js');
+  const state = createInitialState();
+  Object.assign(state.player, { age: 30, money: 3_000_000, health: 70,
+    happiness: 70, intelligence: 70, appearance: 70 });
+  initTarot(state, { renderMoney() {}, renderStats() {}, renderLogEntry() {}, checkAchievements() {} });
+  const open = () => document.getElementById('activity-tarot').click();
+  open();
+  document.querySelector('#tarot-body .tarot-topic').click();
+  document.querySelector('#tarot-body .tarot-confirm').click();
+  document.querySelector('#tarot-body .tarot-back-card').click();
+  const picked = state.player.tarotReading.picked;
+  assert(picked, 'Card pick commits before flip animation finishes');
+  document.getElementById('close-tarot').click();
+  open();
+  assert(state.player.tarotReading.picked === picked, 'Reopening keeps picked card');
+  document.querySelector('#tarot-body .tarot-done').click();
+  assert(state.player.tarotReading === null, 'Done clears the completed reading');
+  await new Promise(resolve => setTimeout(resolve, 650));
+  assert(errors.length === 0, `Stale flip animation must not read a cleared reading: ${errors.join('\n')}`);
+  assert(state.player.money === 2_500_000, 'Fee charged exactly once');
+  result.textContent = 'PASS: close/reopen/finish during Tarot flip produces no stale callback or duplicate fee';
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+finally {
+  window.removeEventListener('unhandledrejection', onRejection);
+  keys.forEach((key, i) => previous[i] === null ? localStorage.removeItem(key) : localStorage.setItem(key, previous[i]));
+}
+</script>

@@ -79,7 +79,7 @@
     $("activities").click();
     $("activity-pets").click();
     assert($("shop-dialog").open && $("shop-title").textContent.includes("vật nuôi"), "Pets button opens the pet shop");
-    assert(document.querySelectorAll(".shop-group").length === 3 && !document.querySelector(".shop-buy"), "Pet shop starts with three groups");
+    assert(document.querySelectorAll("#shop-dialog .shop-group").length === 3 && !document.querySelector("#shop-dialog .shop-buy"), "Pet shop starts with three groups");
     openGroup("poultry");
     buyButton("poultry", "chicken").click();
     assert($("shop-confirm-dialog").open && state.player.money === 80_000_000, "Buying asks for confirmation first");
@@ -101,7 +101,7 @@
     // Mua sắm
     $("activities").click();
     $("activity-shopping").click();
-    const groups = [...document.querySelectorAll(".shop-group")];
+    const groups = [...document.querySelectorAll("#shop-dialog .shop-group")];
     assert(groups.map(b => b.dataset.group).join() === "items,vehicles,realestate,business", "Shopping shows items, vehicles, real estate, business");
     assert(groups[0].disabled, "Items are coming soon");
     document.querySelector(".shop-back").click();

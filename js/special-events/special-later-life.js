@@ -43,7 +43,9 @@ const illustrations = {
 const stripDirections = text => text.replace(/(?:Sang|sang) (?:sự kiện|tình huống) \d+\.?/g, "").trim();
 
 export function getPartnerRelationship(partner) {
-  return Number.isFinite(partner?.relationship) ? partner.relationship : 80;
+  // Legacy education support stored children's relationship under bond.
+  return Number.isFinite(partner?.relationship) ? partner.relationship
+    : Number.isFinite(partner?.bond) ? Math.max(0, Math.min(100, partner.bond)) : 80;
 }
 export function hasLivingSpouse(player) {
   return Boolean(player.partner && player.marriedAtAge != null && player.partner.isAlive !== false &&

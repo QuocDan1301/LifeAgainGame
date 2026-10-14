@@ -1,5 +1,7 @@
 import { beginSaveSession, endSaveSession, trackSavedGame } from "../core/save-store.js";
 import { createInitialState } from "../core/state.js";
+import { initLifeArchive } from "./life-archive.js";
+import { archiveLife } from "../core/life-archive.js";
 import {
   maleNames,
   femaleNames,
@@ -19,6 +21,7 @@ import {
 } from "../core/ticket-store.js";
 
 export function initLobby(enterGame) {
+  initLifeArchive();
   const get = (id) => document.getElementById(id);
   const home = get("lobby-screen");
   const newButton = get("new-life-button");
@@ -46,6 +49,11 @@ export function initLobby(enterGame) {
         }
       } catch {
         showError("Bản lưu cũ không đọc được. Bạn có thể tạo cuộc đời mới.");
+      }
+      // Recover an ended save if the page closed before its summary was shown.
+      if (saved?.player?.isAlive === false) {
+        const { describeDeathCause } = await import('../core/life-profile.js');
+        archiveLife(saved, undefined, describeDeathCause(saved.player));
       }
       continueButton.hidden = !canContinue(saved);
       storageReady = true;
@@ -164,6 +172,8 @@ export function initLobby(enterGame) {
         gender: gender === "female" ? "female" : "male",
         // Hạt giống riêng của đời này: cố định thứ tự lựa chọn chuỗi đặc biệt khi tải lại.
         lifeSeed: Math.floor(Math.random() * 2 ** 32),
+        lifeId: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        lifeUnlockedAchievementIds: [],
       });
       Object.assign(next.player, rollStartingStats());
       next.logs.push({

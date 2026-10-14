@@ -1,29 +1,19 @@
 // Nhạc nền và hiệu ứng âm thanh tự soạn, phát bằng Web Audio API: không cần file, không vướng bản quyền.
-// Nhạc nền: giai điệu hộp nhạc nhẹ nhàng trên vòng hợp âm C – G – Am – F, có hợp âm nền và bass ấm.
-// Hiệu ứng: mỗi loại sự kiện có một âm thanh riêng khi popup bật lên.
+// Nhạc nền: mỗi bối cảnh một bản (bến xe/cuộc đời, Trò chơi, từng trò, Game Center…), dữ liệu ở music-themes.js;
+// vào màn nào thì tự chuyển sang bản hợp với màn đó, ra lại thì về bản chính.
+// Hiệu ứng: mỗi loại sự kiện có một âm thanh riêng khi popup bật lên; mỗi lần bấm, chọn, mở/đóng popup có tiếng tương tác.
 // Trình duyệt chỉ cho phát âm thanh sau lần chạm/bấm đầu tiên nên âm thanh bắt đầu từ lúc đó.
+
+import { MUSIC_THEMES, THEME_RULES } from "./music-themes.js";
 
 const STORAGE_KEY = "lifeAgainMusic";
 const SFX_STORAGE_KEY = "lifeAgainSfx";
-const TEMPO = 76; // nhịp mỗi phút
-const EIGHTH = 60 / TEMPO / 2; // độ dài một móc đơn (giây)
 const VOLUME = 0.22;
 const PAD_LEVEL = 0.06; // âm lượng hợp âm nền
 const SFX_VOLUME = 0.5; // âm lượng hiệu ứng sự kiện
 const LOOKAHEAD = 0.35; // lên lịch trước bao nhiêu giây
 const TICK_MS = 90;
 
-// 8 ô nhịp; mỗi ô: hợp âm nền, nốt bass, 8 nốt móc đơn của giai điệu (null = nghỉ).
-const BARS = [
-  { pad: [60, 64, 67], bass: 36, melody: [76, null, 79, null, 84, null, 79, null] },
-  { pad: [59, 62, 67], bass: 43, melody: [74, null, 79, null, 83, null, 81, 79] },
-  { pad: [57, 60, 64], bass: 45, melody: [72, null, 76, null, 81, null, 79, 76] },
-  { pad: [57, 60, 65], bass: 41, melody: [77, null, 81, null, 84, null, null, null] },
-  { pad: [60, 64, 67], bass: 36, melody: [79, null, 76, 79, 84, null, 86, null] },
-  { pad: [59, 62, 67], bass: 43, melody: [83, null, 79, null, 74, null, 79, null] },
-  { pad: [57, 60, 65], bass: 41, melody: [81, null, 84, null, 77, null, 81, 79] },
-  { pad: [55, 62, 65], bass: 43, melody: [74, null, null, null, 71, null, null, null] },
-];
 
 const frequency = (midi) => 440 * 2 ** ((midi - 69) / 12);
 
@@ -35,9 +25,13 @@ let reverb = null;
 let sfxBus = null; // đường hiệu ứng, bật/tắt riêng với nhạc nền
 let sfxReverb = null;
 let timer = null;
-let nextTime = 0;
-let step = 0; // vị trí móc đơn trong cả vòng nhạc
-let loop = 0;
+let themeName = "home";
+// Mỗi bản đang phát là một giọng có đường âm lượng riêng; lúc đổi bản, giọng cũ nhỏ dần trong khi giọng mới to dần.
+let voices = [];
+let activeVoice = null;
+// Đường âm thanh của giọng đang được lên lịch (route() đưa nốt nhạc nền vào đây thay vì thẳng vào master).
+let musicBus = null;
+let musicSend = null;
 const listeners = new Set();
 
 function readPreference(key) {
@@ -102,10 +96,10 @@ function setupAudio() {
 function route(node, dry = 1, wet = 1, sfx = false) {
   const dryGain = context.createGain();
   dryGain.gain.value = dry;
-  node.connect(dryGain).connect(sfx ? sfxBus : master);
+  node.connect(dryGain).connect(sfx ? sfxBus : (musicBus ?? master));
   const wetGain = context.createGain();
   wetGain.gain.value = wet;
-  node.connect(wetGain).connect(sfx ? sfxReverb : reverb);
+  node.connect(wetGain).connect(sfx ? sfxReverb : (musicSend ?? reverb));
 }
 
 // ---------- Nhạc nền ----------
@@ -130,11 +124,11 @@ function playBell(midi, time, level = 0.16) {
 }
 
 // Hợp âm nền: hai sóng tam giác lệch nhẹ, lọc mềm, vào ra chậm.
-function playPad(notes, time, duration) {
+function playPad(notes, time, duration, level = PAD_LEVEL) {
   const envelope = context.createGain();
   envelope.gain.setValueAtTime(0.0001, time);
-  envelope.gain.linearRampToValueAtTime(PAD_LEVEL, time + 0.8);
-  envelope.gain.setValueAtTime(PAD_LEVEL, time + duration - 0.3);
+  envelope.gain.linearRampToValueAtTime(level, time + 0.8);
+  envelope.gain.setValueAtTime(level, time + duration - 0.3);
   envelope.gain.linearRampToValueAtTime(0.0001, time + duration + 1);
   const filter = context.createBiquadFilter();
   filter.type = "lowpass";
@@ -168,32 +162,277 @@ function playBass(midi, time, duration) {
   route(envelope, 1, 0.2);
 }
 
-function scheduleStep(time) {
-  const barIndex = Math.floor(step / 8) % BARS.length;
-  const beat = step % 8;
-  const bar = BARS[barIndex];
-  if (beat === 0) playPad(bar.pad, time, EIGHTH * 8);
-  if (beat === 0 || beat === 4) playBass(bar.bass, time, EIGHTH * 3.6);
+// Một nốt tổng hợp của nhạc nền (đi đường nhạc nền, khác sfxNote đi đường hiệu ứng).
+function musicNote(midi, time, {
+  type = "sine", level = 0.12, attack = 0.01, decay = 0.6, harmonics = [[1, 1]], cutoff = 0,
+  bend = 0, tremolo = 0, hold = 0, dry = 0.85, wet = 0.5,
+} = {}) {
+  const envelope = context.createGain();
+  envelope.gain.setValueAtTime(0.0001, time);
+  envelope.gain.exponentialRampToValueAtTime(level, time + attack);
+  if (hold) envelope.gain.setValueAtTime(level, time + attack + hold);
+  envelope.gain.exponentialRampToValueAtTime(0.0001, time + attack + hold + decay);
+  let input = envelope;
+  if (cutoff) {
+    const filter = context.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(cutoff, time);
+    filter.frequency.exponentialRampToValueAtTime(Math.max(300, cutoff * 0.35), time + attack + hold + decay);
+    filter.connect(envelope);
+    input = filter;
+  }
+  const end = time + attack + hold + decay + 0.05;
+  let lfo = null;
+  if (tremolo) {
+    // Rung âm lượng (vibraphone): điều biến một tầng khuếch đại riêng.
+    const shaker = context.createGain();
+    shaker.gain.value = 1;
+    lfo = context.createOscillator();
+    lfo.frequency.value = 5.2;
+    const depth = context.createGain();
+    depth.gain.value = tremolo;
+    lfo.connect(depth).connect(shaker.gain);
+    shaker.connect(input);
+    input = shaker;
+    lfo.start(time);
+    lfo.stop(end);
+  }
+  for (const [ratio, amount] of harmonics) {
+    const osc = context.createOscillator();
+    osc.type = type;
+    osc.frequency.value = frequency(midi) * ratio;
+    // Luyến (đàn tranh): nốt vào thấp hơn một chút rồi trượt lên đúng cao độ.
+    if (bend) {
+      osc.detune.setValueAtTime(-bend, time);
+      osc.detune.exponentialRampToValueAtTime(-1, time + 0.12);
+    }
+    const gain = context.createGain();
+    gain.gain.value = amount;
+    osc.connect(gain).connect(input);
+    osc.start(time);
+    osc.stop(end);
+  }
+  route(envelope, dry, wet);
+}
+
+// Nhạc cụ giai điệu (giá trị đã cân âm lượng để các bản nghe to tương đương nhau).
+const LEADS = {
+  bell: (midi, time, level = 0.16) => playBell(midi, time, level),
+  epiano: (midi, time) => musicNote(midi, time, { harmonics: [[1, 1], [2, 0.18], [3, 0.05]], level: 0.13, decay: 1.1, wet: 0.45 }),
+  vibes: (midi, time) => musicNote(midi, time, { harmonics: [[1, 1], [4, 0.12]], level: 0.12, decay: 0.9, tremolo: 0.35, wet: 0.5 }),
+  harp: (midi, time) => musicNote(midi, time, { type: "triangle", harmonics: [[1, 1], [2, 0.2]], level: 0.13, decay: 1.2, wet: 0.6 }),
+  harpsichord: (midi, time) => musicNote(midi, time, { type: "sawtooth", level: 0.05, decay: 0.45, cutoff: 3600, wet: 0.35 }),
+  zither: (midi, time) => musicNote(midi, time, { type: "triangle", harmonics: [[1, 1], [2, 0.3], [3, 0.08]], level: 0.13, decay: 1.3, bend: 60, wet: 0.55 }),
+  chip: (midi, time) => musicNote(midi, time, { type: "square", level: 0.035, decay: 0.16, hold: 0.04, dry: 1, wet: 0.12 }),
+  chipThin: (midi, time) => musicNote(midi, time, { type: "square", level: 0.03, decay: 0.09, dry: 1, wet: 0.08 }),
+  banjo: (midi, time) => musicNote(midi, time, { type: "sawtooth", harmonics: [[1, 1], [2, 0.3]], level: 0.04, decay: 0.32, cutoff: 3000, wet: 0.2 }),
+  marimba: (midi, time) => musicNote(midi, time, { harmonics: [[1, 1], [4, 0.25], [9.2, 0.05]], level: 0.15, decay: 0.38, wet: 0.35 }),
+  brass: (midi, time) => musicNote(midi, time, { type: "sawtooth", level: 0.05, attack: 0.02, hold: 0.06, decay: 0.22, cutoff: 2600, wet: 0.25 }),
+};
+
+// Âm nền theo kiểu của từng bản.
+function playThemePad(theme, chord, time, eighth) {
+  const level = theme.padLevel ?? PAD_LEVEL;
+  if (theme.pad === "warm") playPad(chord, time, eighth * 8, level);
+  else if (theme.pad === "organ") chord.forEach((midi) => musicNote(midi, time, { harmonics: [[1, 1], [2, 0.4], [4, 0.1]], level: level * 0.6, attack: 0.25, hold: eighth * 6, decay: 0.8, wet: 0.7 }));
+  else if (theme.pad === "drone") chord.forEach((midi) => musicNote(midi, time, { type: "triangle", level, attack: 0.6, hold: eighth * 6, decay: 1.2, wet: 0.8 }));
+}
+// Bass theo kiểu của từng bản; bass là một nốt hoặc 8 ô.
+function playThemeBass(theme, bar, beat, time, eighth) {
+  const note = Array.isArray(bar.bass) ? bar.bass[beat] : (beat === 0 || beat === 4 ? bar.bass : null);
+  switch (theme.bassVoice) {
+    case "walk":
+      if (note != null) musicNote(note, time, { type: "triangle", level: 0.16, decay: eighth * 1.8, wet: 0.15 });
+      break;
+    case "pluck":
+      if (note != null) musicNote(note, time, { type: "triangle", level: 0.15, decay: eighth * 1.4, wet: 0.15 });
+      break;
+    case "pedal":
+      // Bass harpsichord: nốt gốc rồi quãng tám xen kẽ mỗi phách.
+      if (beat % 2 === 0) musicNote(bar.bass + (beat % 4 === 2 ? 12 : 0), time, { type: "sawtooth", level: 0.035, decay: eighth * 1.6, cutoff: 1400, wet: 0.25 });
+      break;
+    case "boomchick":
+      // Bùm (nốt gốc) – chách (hợp âm ngắn) – bùm (quãng năm) – chách.
+      if (beat === 0 || beat === 4) musicNote(bar.bass + (beat === 4 ? 7 : 0), time, { type: "triangle", level: 0.17, decay: eighth * 1.5, wet: 0.1 });
+      if (theme.pad === "strum" && (beat === 2 || beat === 6)) bar.chord.forEach((midi, i) => musicNote(midi + 12, time + i * 0.012, { type: "sawtooth", level: (theme.padLevel ?? 0.05) * 0.5, decay: 0.16, cutoff: 2200, wet: 0.2 }));
+      break;
+    case "octaves":
+      // Bass 8-bit: nốt gốc và quãng tám nảy liên tục mỗi móc đơn.
+      musicNote(bar.bass + (beat % 2 ? 12 : 0), time, { type: "square", level: 0.03, decay: eighth * 0.8, dry: 1, wet: 0.05 });
+      break;
+    case "slap":
+      if (note != null) musicNote(note, time, { type: "sawtooth", level: 0.07, decay: eighth * 0.9, cutoff: 1100, wet: 0.08 });
+      break;
+    default:
+      if (note != null) playBass(note, time, eighth * 3.6);
+  }
+}
+
+// Trống tổng hợp: trống cái (sin trượt), trống con và chũm chọe (nhiễu lọc), mõ gỗ.
+let noiseBuffer = null;
+function noise(time, { level, decay, type, frequency: cutoff }) {
+  if (!noiseBuffer) {
+    noiseBuffer = context.createBuffer(1, Math.floor(context.sampleRate * 0.5), context.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < data.length; i += 1) data[i] = Math.random() * 2 - 1;
+  }
+  const source = context.createBufferSource();
+  source.buffer = noiseBuffer;
+  const filter = context.createBiquadFilter();
+  filter.type = type;
+  filter.frequency.value = cutoff;
+  const envelope = context.createGain();
+  envelope.gain.setValueAtTime(level, time);
+  envelope.gain.exponentialRampToValueAtTime(0.0001, time + decay);
+  source.connect(filter).connect(envelope);
+  source.start(time);
+  source.stop(time + decay + 0.02);
+  route(envelope, 1, 0.12);
+}
+const DRUMS = {
+  k(time) {
+    const envelope = context.createGain();
+    envelope.gain.setValueAtTime(0.3, time);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, time + 0.22);
+    const osc = context.createOscillator();
+    osc.frequency.setValueAtTime(140, time);
+    osc.frequency.exponentialRampToValueAtTime(42, time + 0.18);
+    osc.connect(envelope);
+    osc.start(time);
+    osc.stop(time + 0.24);
+    route(envelope, 1, 0.05);
+  },
+  s: (time) => noise(time, { level: 0.09, decay: 0.13, type: "bandpass", frequency: 1800 }),
+  h: (time) => noise(time, { level: 0.035, decay: 0.04, type: "highpass", frequency: 7000 }),
+  w: (time) => musicNote(79, time, { harmonics: [[1, 1], [2.7, 0.4]], level: 0.07, decay: 0.07, dry: 1, wet: 0.2 }),
+};
+
+const eighthOf = (current) => 60 / current.tempo / 2;
+const CROSSFADE_OUT = 0.35; // hằng số thời gian nhỏ dần của bản cũ (≈ 1,2 giây tới lặng)
+const CROSSFADE_IN = 0.45; // hằng số thời gian to dần của bản mới
+const SWITCH_SETTLE_MS = 300; // chuyển màn liên tiếp: đợi màn ổn định rồi mới đổi nhạc
+
+function createVoice(name, at, level) {
+  const bus = context.createGain();
+  const send = context.createGain();
+  bus.gain.setValueAtTime(level, context.currentTime);
+  send.gain.setValueAtTime(level, context.currentTime);
+  bus.connect(master);
+  send.connect(reverb);
+  return { name, theme: MUSIC_THEMES[name] ?? MUSIC_THEMES.home, bus, send, step: 0, loop: 0, nextTime: at, endAt: Infinity };
+}
+
+function scheduleStep(voice, time) {
+  const current = voice.theme;
+  const eighth = eighthOf(current);
+  const barIndex = Math.floor(voice.step / 8) % current.bars.length;
+  const beat = voice.step % 8;
+  const bar = current.bars[barIndex];
+  // Swing: móc đơn lẻ đến trễ một chút cho cảm giác nhún nhảy.
+  const at = time + (beat % 2 ? (current.swing ?? 0) * eighth : 0);
+  if (beat === 0) playThemePad(current, bar.chord, time, eighth);
+  playThemeBass(current, bar, beat, at, eighth);
+  const hit = current.drums?.[beat];
+  if (hit && DRUMS[hit]) DRUMS[hit](at);
   const note = bar.melody[beat];
-  // Vòng chẵn: giai điệu thưa hơn và thấp một quãng tám để nghe không nhàm.
-  const sparse = loop % 2 === 1;
-  if (note !== null && (!sparse || beat % 4 === 0)) playBell(sparse ? note - 12 : note, time, sparse ? 0.13 : 0.16);
-  step += 1;
-  if (step % (BARS.length * 8) === 0) loop += 1;
+  // Bản chính: vòng chẵn giai điệu thưa hơn và thấp một quãng tám để nghe không nhàm.
+  const sparse = current.alternate && voice.loop % 2 === 1;
+  if (note !== null && (!sparse || beat % 4 === 0)) {
+    if (current.lead === "bell") playBell(sparse ? note - 12 : note, at, sparse ? 0.13 : 0.16);
+    else LEADS[current.lead]?.(note, at);
+  }
+  voice.step += 1;
+  if (voice.step % (current.bars.length * 8) === 0) voice.loop += 1;
 }
 
 function scheduler() {
-  while (nextTime < context.currentTime + LOOKAHEAD) {
-    scheduleStep(nextTime);
-    nextTime += EIGHTH;
+  const now = context.currentTime;
+  if (!activeVoice) {
+    activeVoice = createVoice(themeName, now + 0.1, 1);
+    voices.push(activeVoice);
   }
+  for (const voice of voices) {
+    musicBus = voice.bus;
+    musicSend = voice.send;
+    // Giọng đang nhỏ dần vẫn chơi tiếp cho tới khi gần lặng hẳn, để không bị cắt giữa câu nhạc.
+    while (voice.nextTime < now + LOOKAHEAD && voice.nextTime < voice.endAt) {
+      scheduleStep(voice, voice.nextTime);
+      voice.nextTime += eighthOf(voice.theme);
+    }
+  }
+  musicBus = null;
+  musicSend = null;
+  // Gỡ giọng cũ sau khi tiếng vang đã tắt.
+  voices = voices.filter((voice) => {
+    if (voice === activeVoice || now < voice.endAt + 3) return true;
+    voice.bus.disconnect();
+    voice.send.disconnect();
+    return false;
+  });
+}
+
+// Đổi bản: bản cũ nhỏ dần trong khi bản mới vào từ ô nhịp đầu và to dần (hòa trộn chéo, không khoảng lặng).
+function crossfadeTo(name) {
+  themeName = name;
+  if (!context || !timer || !activeVoice) {
+    // Nhạc đang tắt: lần bật sau sẽ bắt đầu thẳng bằng bản mới.
+    for (const voice of voices) { voice.bus.disconnect(); voice.send.disconnect(); }
+    voices = [];
+    activeVoice = null;
+    return;
+  }
+  const now = context.currentTime;
+  const old = activeVoice;
+  for (const node of [old.bus.gain, old.send.gain]) {
+    node.cancelScheduledValues(now);
+    node.setValueAtTime(node.value, now);
+    node.setTargetAtTime(0.0001, now, CROSSFADE_OUT);
+  }
+  old.endAt = now + CROSSFADE_OUT * 4;
+  activeVoice = createVoice(name, now + 0.12, 0.0001);
+  for (const node of [activeVoice.bus.gain, activeVoice.send.gain]) node.setTargetAtTime(1, now + 0.12, CROSSFADE_IN);
+  voices.push(activeVoice);
+}
+
+let pendingTheme = null;
+let settleTimer = 0;
+export function setMusicTheme(name, { immediate = false } = {}) {
+  const next = MUSIC_THEMES[name] ? name : "home";
+  pendingTheme = next;
+  clearTimeout(settleTimer);
+  const apply = () => {
+    if (pendingTheme !== themeName || (activeVoice && activeVoice.name !== pendingTheme)) crossfadeTo(pendingTheme);
+  };
+  if (immediate) apply();
+  else settleTimer = setTimeout(apply, SWITCH_SETTLE_MS);
+}
+export const getMusicTheme = () => themeName;
+
+// Bối cảnh hiện tại theo THEME_RULES (màn đang mở trong Trò chơi / Game Center).
+function detectTheme() {
+  return THEME_RULES.find(([selector]) => document.querySelector(selector))?.[1] ?? "home";
+}
+let themeCheck = 0;
+function initThemeTracking() {
+  const scheduleCheck = () => {
+    cancelAnimationFrame(themeCheck);
+    themeCheck = requestAnimationFrame(() => setMusicTheme(detectTheme()));
+  };
+  // Chỉ theo dõi hai cửa sổ có nhạc riêng: mở/đóng và đổi màn bên trong.
+  for (const id of ["games-dialog", "game-center-dialog"]) {
+    const dialog = document.getElementById(id);
+    if (dialog) new MutationObserver(scheduleCheck).observe(dialog, { attributes: true, attributeFilter: ["open"], childList: true, subtree: true });
+  }
+  setMusicTheme(detectTheme(), { immediate: true });
 }
 
 function start() {
   if (!enabled || document.hidden || !setupAudio()) return;
   context.resume?.();
   if (!timer) {
-    nextTime = context.currentTime + 0.1;
+    for (const voice of voices) { voice.bus.disconnect(); voice.send.disconnect(); }
+    voices = [];
+    activeVoice = null;
     timer = setInterval(scheduler, TICK_MS);
   }
   master.gain.cancelScheduledValues(context.currentTime);
@@ -438,6 +677,127 @@ export function playEventSound(category) {
   sound(context.currentTime + 0.03);
 }
 
+// ---------- Âm thanh tương tác: bấm nút, chọn/bỏ chọn, xác nhận, quay lại, mở/đóng popup ----------
+// Rất ngắn và nhỏ để bấm liên tục không mệt tai; đi chung đường hiệu ứng nên tắt "Hiệu ứng âm thanh" là tắt luôn.
+
+const UI_SOUNDS = {
+  // Bấm thường: tiếng "tách" gỗ nhỏ.
+  tap(t) {
+    sfxNote(86, t, { harmonics: wood, level: 0.07, decay: 0.07, wet: 0.05 });
+  },
+  // Chọn một lựa chọn: nốt gỗ đi lên.
+  select(t) {
+    sfxNote(81, t, { harmonics: wood, level: 0.08, decay: 0.08, wet: 0.08 });
+    sfxNote(88, t + 0.045, { harmonics: wood, level: 0.07, decay: 0.12, wet: 0.1 });
+  },
+  // Bỏ chọn: nốt gỗ đi xuống.
+  deselect(t) {
+    sfxNote(84, t, { harmonics: wood, level: 0.06, decay: 0.07, wet: 0.05 });
+    sfxNote(79, t + 0.04, { harmonics: wood, level: 0.05, decay: 0.09, wet: 0.05 });
+  },
+  // Xác nhận (Mua, Chơi, Tiếp tục…): hai nốt chuông sáng.
+  confirm(t) {
+    sfxNote(79, t, { harmonics: bell, level: 0.07, decay: 0.18, wet: 0.2 });
+    sfxNote(86, t + 0.07, { harmonics: bell, level: 0.07, decay: 0.3, wet: 0.3 });
+  },
+  // Quay lại: tiếng gỗ trầm hơn.
+  back(t) {
+    sfxNote(76, t, { harmonics: wood, level: 0.07, decay: 0.08, wet: 0.05 });
+    sfxNote(72, t + 0.05, { harmonics: wood, level: 0.06, decay: 0.1, wet: 0.05 });
+  },
+  // Mở popup: tiếng "bóp" nhẹ đi lên kèm chuông nhỏ.
+  open(t) {
+    sfxSweep(480, 1150, t, 0.11, { level: 0.06, wet: 0.15 });
+    sfxNote(91, t + 0.06, { harmonics: bell, level: 0.04, decay: 0.35, wet: 0.45 });
+  },
+  // Đóng popup: tiếng "bóp" đi xuống.
+  close(t) {
+    sfxSweep(950, 430, t, 0.1, { level: 0.05, wet: 0.1 });
+  },
+  // Chạm lá bài: tiếng "sột" của giấy.
+  card(t) {
+    sfxSweep(2600, 900, t, 0.035, { type: "triangle", level: 0.05, wet: 0.02 });
+    sfxNote(74, t, { harmonics: wood, level: 0.04, decay: 0.05, wet: 0.02 });
+  },
+  // Sang tuổi mới (năm bình lặng, không có popup): tiếng lật trang và chuông nhỏ.
+  age(t) {
+    sfxSweep(300, 1400, t, 0.16, { type: "triangle", level: 0.045, wet: 0.2 });
+    sfxNote(84, t + 0.1, { harmonics: bell, level: 0.07, decay: 0.45, wet: 0.5 });
+    sfxNote(91, t + 0.17, { harmonics: bell, level: 0.05, decay: 0.6, wet: 0.6 });
+  },
+};
+
+// Đo bằng đồng hồ của trang: đồng hồ của AudioContext đứng yên khi âm thanh chưa được mở khóa.
+let lastUiSoundAt = -Infinity;
+const lastSoundOfKind = {};
+export function playUiSound(kind) {
+  if (!sfxEnabled || document.hidden || !setupAudio() || !UI_SOUNDS[kind]) return;
+  // Cùng một tiếng bị bấm dồn dập (nhấn đúp, giữ phím) chỉ phát một lần; tiếng khác loại vẫn phát.
+  const now = performance.now();
+  if (now - (lastSoundOfKind[kind] ?? -Infinity) < 40) return;
+  lastSoundOfKind[kind] = now;
+  lastUiSoundAt = now;
+  context.resume?.();
+  UI_SOUNDS[kind](context.currentTime + 0.005);
+}
+
+// Popup đã có âm thanh riêng (sự kiện, thành tựu, qua đời) thì không phát thêm tiếng mở.
+const DIALOGS_WITH_OWN_SOUND = new Set(["event-dialog", "achievement-unlock-dialog", "death-dialog"]);
+let lastDialogOpenAt = 0;
+
+// Phân loại phần tử vừa bấm thành loại âm thanh. wasPressed: trạng thái aria-pressed trước khi bấm.
+function interactionKind(element, wasPressed) {
+  if (element.id === "age-up") return "age";
+  if (element.matches(".tl-hand .tl-card")) return "card";
+  if (wasPressed !== null) return wasPressed === "true" ? "deselect" : "select";
+  if (element.matches("input[type=checkbox], input[type=radio]")) return element.checked ? "deselect" : "select";
+  const label = `${element.getAttribute("aria-label") ?? ""} ${element.id}`;
+  if (/^Đóng|(^|\s)close/u.test(label.trim()) || element.matches("[class*=close]")) return "close";
+  if (element.matches(".shop-back") && /^\s*←/u.test(element.textContent)) return "back";
+  if (element.matches(".event-choice, .game-option")) return "select";
+  if (element.matches("#event-confirm, .game-primary, .shop-buy, .lobby-primary, [type=submit]")) return "confirm";
+  return "tap";
+}
+
+function initInteractionSounds() {
+  // Popup mở: ghi lại thời điểm để tiếng bấm của nút mở popup không chồng lên tiếng mở.
+  // Popup đóng (bằng nút X, Esc hay bấm ra ngoài): tiếng đóng, trừ khi vừa có tiếng khác
+  // (nút xác nhận đóng popup) hoặc đang chuyển sang popup khác (chỉ nghe tiếng mở).
+  new MutationObserver((records) => {
+    for (const record of records) {
+      const dialog = record.target;
+      if (dialog.tagName !== "DIALOG") continue;
+      if (dialog.open && record.oldValue === null) {
+        lastDialogOpenAt = performance.now();
+        if (!DIALOGS_WITH_OWN_SOUND.has(dialog.id)) playUiSound("open");
+      } else if (!dialog.open && record.oldValue !== null) {
+        const closedAt = performance.now();
+        setTimeout(() => {
+          if (lastDialogOpenAt >= closedAt || performance.now() - lastUiSoundAt < 80) return;
+          playUiSound("close");
+        }, 0);
+      }
+    }
+  }).observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["open"], attributeOldValue: true });
+
+  // Bắt ở pha capture để đọc trạng thái trước khi nút tự đổi (aria-pressed, checkbox).
+  document.addEventListener("click", (event) => {
+    const element = event.target.closest?.("button, summary, [role=button], input[type=checkbox], input[type=radio], a[href]");
+    if (!element || element.disabled || element.getAttribute("aria-disabled") === "true") return;
+    // Nút bật/tắt âm thanh tự phát tiếng thử; phần tử có data-silent thì im lặng.
+    if (element.closest("[data-music-toggle], [data-sfx-toggle], [data-silent]")) return;
+    const kind = interactionKind(element, element.getAttribute("aria-pressed"));
+    const clickedAt = performance.now();
+    // Đợi xử lý của nút chạy xong: nếu vừa mở popup thì để tiếng popup (hoặc tiếng sự kiện) thay cho tiếng bấm.
+    // Nút đóng để bộ theo dõi popup phát tiếng đóng, tránh hai tiếng chồng nhau.
+    if (kind === "close") return;
+    setTimeout(() => {
+      if (lastDialogOpenAt >= clickedAt) return;
+      playUiSound(kind);
+    }, 0);
+  }, true);
+}
+
 // ---------- Nút bật/tắt ----------
 
 function notify() {
@@ -497,6 +857,8 @@ export function initMusic() {
     if (event.target.closest?.("[data-sfx-toggle]")) setSfxEnabled(!sfxEnabled);
   });
   notify();
+  initInteractionSounds();
+  initThemeTracking();
   // Lần chạm/bấm đầu tiên mở khóa âm thanh của trình duyệt.
   const unlock = () => {
     if (enabled) start();

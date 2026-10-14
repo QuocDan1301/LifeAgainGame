@@ -1,3 +1,4 @@
+import { recordAchievementFlags } from '../achievements/achievements-data.js';
 import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 
@@ -164,6 +165,7 @@ export function collectLotteryYear(player, age, random = Math.random) {
     }
   }
   player.money += total;
+  if (total > 0) recordAchievementFlags({ player }, ['first-lottery-win']);
   player.lotteryTickets = (player.lotteryTickets ?? []).filter((ticket) => ticket.age >= age);
   player.lotteryDraws = Object.fromEntries(Object.entries(player.lotteryDraws ?? {}).filter(([key]) => Number(key) >= age));
   const pot = advanceVietlottPot(player, age, jackpotWon, random);

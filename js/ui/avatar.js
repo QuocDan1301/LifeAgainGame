@@ -18,7 +18,7 @@ export function getAvatarSource(player) {
   const isFemale = player.gender === "female";
   const age = Number.isFinite(player.age) ? Math.max(0, player.age) : 0;
   const stage = avatarStages.find(item => age <= item.maxAge);
-  return new URL(`../../img/${isFemale ? "Nu" : "Nam"}/${isFemale ? "nu" : "nam"}_${stage.file}.png`, import.meta.url).href;
+  return new URL(`../../img/${isFemale ? "Nu" : "Nam"}/${isFemale ? "nu" : "nam"}_${stage.file}.webp`, import.meta.url).href;
 }
 
 export function renderAvatar(player) {

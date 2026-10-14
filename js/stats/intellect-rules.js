@@ -1,3 +1,4 @@
+import { getRecordPenalty } from '../events/crime-consequences.js';
 import { openMojiArt } from "../media/event-art.js";
 import { formatMoney } from "../core/money-format.js";
 import { hasInternationalDegreeForCareer } from "../education/study-abroad.js";
@@ -42,12 +43,13 @@ export function getInterviewChance(player, quality, careerId = player.careerPath
   const looks = getAppearanceImpression(player, careerId);
   const abroad = (careerId === "study-abroad" || hasInternationalDegreeForCareer(player, careerId)) && player.abroadProgress
     ? clamp(((player.abroadProgress.language ?? 50) - 50) * 0.002 + ((player.abroadProgress.academic ?? 50) - 50) * 0.001 + ((player.abroadProgress.integration ?? 50) - 50) * 0.001, -0.2, 0.2) : 0;
-  return { base, intellect, prep, looks, abroad, chance: clamp(base + intellect + prep + looks + abroad, INTERVIEW.min, INTERVIEW.max) };
+  const recordPenalty = getRecordPenalty(player);
+  return { base, intellect, prep, looks, abroad, recordPenalty, chance: clamp(base + intellect + prep + looks + abroad - recordPenalty, INTERVIEW.min, INTERVIEW.max) };
 }
 export function describeInterviewChance(info, quality) {
   const sign = (value) => `${value >= 0 ? "+" : "−"}${Math.abs(Math.round(value * 100))}`;
   return `Câu trả lời: ${INTERVIEW.qualityLabel[quality]} (${formatPercent(info.base)}) · Trí tuệ ${sign(info.intellect)} · Chuẩn bị ${sign(info.prep)}` +
-    `${info.looks ? ` · Ấn tượng ngoại hình ${sign(info.looks)}` : ""}${info.abroad ? ` · Ngoại ngữ, học tập và hòa nhập ${sign(info.abroad)}` : ""} → khả năng đỗ ${formatPercent(info.chance)}`;
+    `${info.looks ? ` · Ấn tượng ngoại hình ${sign(info.looks)}` : ""}${info.abroad ? ` · Ngoại ngữ, học tập và hòa nhập ${sign(info.abroad)}` : ""}${info.recordPenalty ? ` · Tiền án −${Math.round(info.recordPenalty * 100)} điểm %` : ""} → khả năng đỗ ${formatPercent(info.chance)}`;
 }
 // Tung kết quả phỏng vấn một lần (kết quả được lưu ngay nên tải lại không đổi).
 export function rollInterview(player, quality, random = Math.random, careerId) {

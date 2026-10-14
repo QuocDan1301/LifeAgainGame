@@ -1,0 +1,34 @@
+[
+  {
+    "result": "PASS: close/reopen/finish during Tarot flip produces no stale callback or duplicate fee",
+    "pageErrors": [],
+    "test": "check-tarot-animation.html"
+  },
+  {
+    "result": "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 4 Tarot achievements",
+    "pageErrors": [],
+    "test": "check-tarot.html"
+  },
+  {
+    "result": "PASS: event death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "pageErrors": [],
+    "test": "check-life-archive.html"
+  },
+  {
+    "result": "PASS (stay abroad): admission, majors, fees, reload, language, work, dialogue, graduation, job listing, interview, salary and saved country",
+    "pageErrors": [],
+    "test": "check-study-abroad.html"
+  },
+  {
+    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
+    "pageErrors": [],
+    "test": "check-family.html"
+  },
+  {
+    "result": "PASS life fuzz: {\"lives\":8,\"years\":223,\"deaths\":8,\"reloads\":30,\"events\":187,\"maxAge\":103,\"causes\":{\"old-age\":8},\"clicks\":2735,\"unsaved\":{\"activities-dialog › 🕹️Game CenterChơi một ván cho vui, thắng thua khô :: player.arcade.progress\":11,\"page › Quan hệ 👥 :: player.arcade\":3,\"page › 💳 Tài sản :: player.arcade\":3,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":1}}",
+    "pageErrors": [
+      "Tiến trình đã thay đổi ở tab khác. Hãy tải lại để tránh ghi đè bản lưu."
+    ],
+    "test": "check-life-fuzz.html?seed=500&lives=8&startAge=60"
+  }
+]

@@ -4,19 +4,9 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm run test:account && npm run test:auction && npm run test:work && npm run test:game-center
+    buildCommand: npm run test:server && npm run test:auction && npm run test:work && npm run test:game-center
     startCommand: npm start
-    healthCheckPath: /api/account/status
+    healthCheckPath: /health
     envVars:
       - key: NODE_VERSION
         value: 24
-      - key: ACCOUNT_STORAGE
-        value: supabase
-      - key: SUPABASE_URL
-        value: https://qjxwgvcedzbdzsktyyof.supabase.co
-      - key: SUPABASE_SECRET_KEY
-        sync: false
-      - key: COOKIE_SECURE
-        value: 'true'
-      - key: ADMIN_ACCOUNT_IDS
-        sync: false

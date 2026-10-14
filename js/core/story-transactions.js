@@ -1,3 +1,4 @@
+import { getReformationUpdates } from '../events/crime-consequences.js';
 import { getPlayerAnnualSalary } from '../career/career-salary.js';
 import { getJobLossUpdates } from '../career/job-loss.js';
 import { formatMoney } from './money-format.js';
@@ -12,7 +13,7 @@ export function prepareStoryChoice(choice, player, age) {
   const prepared = { ...choice };
   const flags = choice.flags ?? [];
   if (choice.salaryMonths) prepared.money = -Math.round((getPlayerAnnualSalary(player) || 60_000_000) * choice.salaryMonths / 12);
-  prepared.playerUpdates = { ...(choice.playerUpdates ?? {}) };
+  prepared.playerUpdates = { ...(choice.playerUpdates ?? {}), ...(choice.rehabilitation ? getReformationUpdates(player) : {}) };
   if (flags.includes('tu_nguyen_nghi')) Object.assign(prepared.playerUpdates, getJobLossUpdates(player, age, 'quit'));
   if (choice.lend) prepared.playerUpdates.storyLoans = [...(player.storyLoans ?? []), {
     id: choice.lend, principal: -prepared.money, outstanding: -prepared.money, lentAtAge: age,

@@ -1,3 +1,4 @@
+import { collectReformationYear } from '../js/events/crime-consequences.js';
 // Kiểm tra bộ sự kiện đời thường mới và sinh sổ dấu.
 //   node scripts/check-life-stories.mjs              → kiểm tra + mô phỏng
 //   node scripts/check-life-stories.mjs --registry   → ghi docs/su-kien-doi-thuong/SO-DAU.md
@@ -138,7 +139,12 @@ for (let run = 0; run < runs; run++) {
     // Hoàn cảnh ngẫu nhiên theo tuổi (gia đình, tiền, việc làm), giữ nguyên dấu đã có.
     const options = profilesFor(age);
     const { storyFlags, name, ...circumstance } = options[Math.floor(Math.random() * options.length)];
-    Object.assign(player, circumstance);
+    Object.assign(player, circumstance, { age: age - 1 });
+    if (age === 23 && run % 4 === 0) Object.assign(player, {
+      criminalRecord: [{ age: 18, years: 2, crime: 'Trộm cắp' }],
+      releasedAtAge: 20, lifePath: run % 8 === 0 ? 'reformed' : 'dark',
+    });
+    collectReformationYear(player, age);
     const pool = createLifeStoryEvents(age, player);
     check(pool.length >= 2, `Tuổi ${age}: chỉ còn ${pool.length} sự kiện trong một lần mô phỏng`);
     if (Math.random() >= 0.8 || !pool.length) continue; // 20% năm không có sự kiện, như main.js

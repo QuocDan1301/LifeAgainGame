@@ -1,3 +1,8 @@
+import { describeYearLivingCost } from './relationships/family.js';
+import { educationEntryAchievementIds } from './achievements/achievement-progress.js';
+import { archiveLife, observeLifeProgress, getLifeId } from './core/life-archive.js';
+import { describeDeathCause } from './core/life-profile.js';
+import { renderFamilyBudgetControls } from './relationships/family-budget.js';
 import { saveGame } from "./core/save-store.js";
 import {
   createStudyAbroadMajorEvent,
@@ -70,7 +75,7 @@ import { eventCategories, getEventCategory } from "./events/event-category.js";
 import { getSpecialDialogue } from "./events/special-dialogue.js";
 import { state } from "./core/state.js";
 import { createCasualStartChoice, createCasualServiceEvent, isServing } from "./career/street-work.js";
-import { addEventEmotions, addChoiceIcon } from "./events/event-emotions.js";
+import { addEventEmotions, addChoiceIcon, addChoiceIcons } from "./events/event-emotions.js";
 import { createPrisonEvent, initCrime, isInPrison } from "./events/crime.js";
 import { createWorkTemptationEvent, createWorkInvestigationEvent } from "./career/work-temptation.js";
 import { initEducation } from "./education/education.js";
@@ -242,7 +247,11 @@ confirmRestart.addEventListener("click", () => {
   saveEventProgress();
   window.location.reload();
 });
-ensureRelatives(state.player);
+if (!Array.isArray(state.player.relatives)) {
+  ensureRelatives(state.player);
+  // Cha mẹ được tạo ngẫu nhiên một lần: lưu ngay để tải lại trang không tạo ra người khác.
+  saveGame(state);
+}
 let hospitalUi = null;
 function renderStats() {
   // Sức khỏe
@@ -465,6 +474,7 @@ function showFinanceCheck() {
         (forecast.childcare
           ? ` · Nuôi con: ${formatMoney(forecast.childcare)}`
           : "") +
+        (forecast.familyBudget ? ` · Học cho con và hỗ trợ cha mẹ: ${formatMoney(forecast.familyBudget)}` : "") +
         (forecast.tuition
           ? ` · Học phí: ${formatMoney(forecast.tuition)}`
           : "") +
@@ -484,6 +494,28 @@ function showFinanceCheck() {
       `👛 Ví hiện có ${formatMoney(player.money)} → sau sinh nhật khoảng ${formatMoney(forecast.after)}`,
     ),
   );
+  const budgetControls = node("div", "shop-groups finance-budget");
+  budgetControls.append(node("p", "side-job-intro", "Các lựa chọn áp dụng từ sinh nhật tới và giữ đến khi bạn đổi. Học cơ bản đã nằm trong phí nuôi con; các gói dưới đây là chi thêm. Con 6–22 tuổi không có gói học thêm hay hỗ trợ đại học thì gắn kết giảm dần. Hỗ trợ cha mẹ từ 65 tuổi hoặc khi yếu/bệnh nặng. Có thể giảm hoặc dừng trước năm kế tiếp; khoản đã cam kết vẫn trừ khi ở tù. Tiền thiếu trở thành nợ."));
+  const livingLabel = node("label", "side-job-intro", "Mức sống: ");
+  const livingSelect = node("select");
+  livingSelect.id = "budget-living-mode";
+  for (const [id, config] of Object.entries(LIVING_MODES)) {
+    const option = node("option", "", config.label + (config.extra ? ` · thêm ${formatMoney(config.extra)}/năm · Hạnh phúc +${config.happiness} khi không nợ` : id === "frugal" ? " · bớt tối đa 12 triệu/năm · Hạnh phúc −1" : ` · ${describeYearLivingCost(player.careerPath, forecast.age)}`));
+    option.value = id; livingSelect.append(option);
+  }
+  livingSelect.value = player.livingMode ?? "normal";
+  livingSelect.disabled = player.age < 23 || player.isAlive === false || isInPrison(player);
+  // Đổi lựa chọn chỉ lưu và vẽ lại dự báo; nhật ký ghi khoản chi thật lúc sang tuổi.
+  livingSelect.addEventListener("change", () => {
+    player.livingMode = livingSelect.value;
+    saveEventProgress();
+    showFinanceCheck();
+  });
+  livingLabel.append(livingSelect); budgetControls.append(livingLabel);
+  renderFamilyBudgetControls(budgetControls, player, () => {
+    saveEventProgress();
+    showFinanceCheck();
+  });
   const choices = node("div", "shop-groups");
   if (player.livingMode !== "frugal") {
     choices.append(
@@ -559,6 +591,7 @@ function showFinanceCheck() {
         : "Chi phí và thu nhập dự kiến cho năm tới.",
     ),
     list,
+    budgetControls,
     node(
       "p",
       "health-check-note",
@@ -1083,6 +1116,8 @@ motionPreference.addEventListener("change", () => {
 });
 // Lưu toàn bộ tiến trình, gồm cả bước sự kiện đang mở
 function saveEventProgress() {
+  state.player.lifeId ??= getLifeId(state);
+  observeLifeProgress(state.player, state.pendingEvent);
   saveGame(state);
 }
 // Thời điểm nút lựa chọn/xác nhận vừa hiện: chạm thật trong khoảng này được coi là nhấn đúp và bỏ qua.
@@ -1337,11 +1372,15 @@ function showPendingEvent() {
       eventContent.append(notes);
     }
     eventConfirm.hidden = true;
+    // Gắn icon cho cả nhóm một lượt để các nút trong cùng sự kiện không trùng icon.
+    const choiceLabels = addChoiceIcons(
+      pending.choices.map((choice) => formatMoneyText(choice.label)),
+    );
     pending.choices.forEach((choice, index) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "event-choice";
-      button.textContent = addChoiceIcon(formatMoneyText(choice.label));
+      button.textContent = choiceLabels[index];
       const blocker = getChoiceBlocker(choice);
       button.disabled = Boolean(blocker);
       if (blocker) button.textContent += ` · ${blocker}`;
@@ -2015,6 +2054,8 @@ function chooseEventAction(index) {
   // Chuyển sang bước kết quả và giữ lại hành động đã chọn
   state.pendingEvent = {
     stage: "result",
+    specialId: pending.specialId,
+    specialStep: pending.specialStep,
     category: pending.category,
     outcome: getChoiceOutcome(pending, choice),
     nonFatal: choice.nonFatal === true,
@@ -2437,7 +2478,11 @@ eventConfirm.addEventListener("click", (event) => {
     pending.updates,
     pending.schoolReward,
   );
-  recordAchievementFlags(state, pending.achievementIds ?? []);
+  observeLifeProgress(state.player, pending, true);
+  recordAchievementFlags(state, [
+    ...(pending.achievementIds ?? []),
+    ...educationEntryAchievementIds(pending.updates?.careerPath, pending.age),
+  ]);
   const log = {
     age: pending.age,
     content: pending.logContent ?? pending.content,
@@ -2536,6 +2581,16 @@ if (state.pendingEvent) {
 }
 initAchievements(state);
 initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements });
+const budgetButton = document.createElement("button");
+budgetButton.type = "button";
+budgetButton.id = "open-family-budget";
+budgetButton.className = "shop-group";
+budgetButton.textContent = "🏠 Ngân sách năm tới";
+budgetButton.addEventListener("click", () => {
+  document.getElementById("life-profile-dialog").close();
+  showFinanceCheck();
+});
+document.getElementById("life-tabs").before(budgetButton);
 initCrime(state, {
   save: saveEventProgress,
   renderMoney,
@@ -2579,7 +2634,7 @@ initMatchmaking(state, {
   renderLogEntry,
   checkAchievements,
 });
-const gamesUi = initGames(state, { renderMoney, renderLogEntry });
+const gamesUi = initGames(state, { renderMoney, renderLogEntry, checkAchievements });
 initFood(state, { renderMoney, renderStats, renderLogEntry });
 initBeauty(state, { renderMoney, renderStats, renderLogEntry });
 const lotteryUi = initLottery(state, {
@@ -2654,7 +2709,15 @@ closeFortuneButton.addEventListener("click", () => {
 const deathDialog = document.getElementById("death-dialog");
 // Mở trang tổng kết cuộc đời kèm nhạc buồn (nhạc nền lặng dần).
 function showLifeSummary() {
+  checkAchievements();
+  const archived = archiveLife(state, undefined, describeDeathCause(state.player));
+  if (archived.status === 'saved' || archived.status === 'duplicate') saveEventProgress();
   renderLifeSummary(state);
+  if (archived.status === 'error') {
+    const note = document.createElement('p');
+    note.textContent = 'Chưa ghi được Sổ các cuộc đời trên thiết bị. Bản lưu cuộc đời vẫn được giữ để thử lại.';
+    document.getElementById('death-summary').append(note);
+  }
   deathDialog.showModal();
   deathDialog.scrollTop = 0;
   playOutcomeSound("death");

@@ -571,7 +571,8 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     for (const child of state.player.children ?? []) {
       const item = document.createElement("li");
       const age = getChildAge(child, state.player.age);
-      item.textContent = `${child.name} · ${child.adopted ? "Con nuôi" : "Con ruột"} · ${age} tuổi · ${age <= 18 ? `Chi phí: ${formatSalary(getAnnualChildcareCost(age))}/năm` : "Đã hết thời gian tính phí nuôi con"}`;
+      const bond = Number.isFinite(child.relationship) ? child.relationship : Number.isFinite(child.bond) ? child.bond : 80;
+      item.textContent = `${child.name} · ${child.adopted ? "Con nuôi" : "Con ruột"} · ${age} tuổi · Gắn kết ${Math.max(0, Math.min(100, bond))}% · ${age <= 18 ? `Chi phí: ${formatSalary(getAnnualChildcareCost(age))}/năm` : "Đã hết thời gian tính phí nuôi con"}`;
       children.append(item);
     }
     for (const entry of state.player.relationshipHistory ?? []) {

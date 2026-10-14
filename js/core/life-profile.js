@@ -1,3 +1,5 @@
+import { deriveLifeTitles, describeCriminalRecord } from './life-archive.js';
+import { describeCrimeEnding } from '../events/crime-consequences.js';
 import { saveGame } from "./save-store.js";
 import { getDatingPartners } from '../relationships/concurrent-dating.js';
 import { formatMoney, formatMoneyText } from "./money-format.js";
@@ -20,7 +22,7 @@ const node = (tag, text) => {
 
 // Trang tổng kết khi nhân vật qua đời: chân dung, nguyên nhân, chỉ số cuối đời,
 // sự nghiệp, tài sản để lại, gia đình và những dấu ấn trong đời.
-function describeDeathCause(player) {
+export function describeDeathCause(player) {
   const disease = getDisease(player.deathCause);
   if (disease) return `🩺 Ra đi vì ${disease.name} chuyển nặng đến mức nguy kịch khi chưa được điều trị.`;
   if (player.deathCause === "old-age") {
@@ -80,6 +82,9 @@ export function renderLifeSummary(state) {
   identity.append(node("p", player.name), node("p", [player.gender === "female" ? "♀ Nữ" : "♂ Nam", player.province].filter(Boolean).join(" · ")), lifespan);
   identity.children[0].className = "death-name";
   identity.children[1].className = "death-origin";
+  const titles = deriveLifeTitles(player);
+  identity.append(node("strong", titles.main.label));
+  if (titles.secondary.length) identity.append(node("p", titles.secondary.map(title => title.label).join(" · ")));
   hero.append(portrait, identity);
 
   // Chỉ số cuối đời.
@@ -117,6 +122,9 @@ export function renderLifeSummary(state) {
     ["Đã từng làm", pastJobs.join(", ")],
     ["Học vấn", [player.careerPath?.school?.name, player.careerPath?.field && `Ngành ${player.careerPath.field}`].filter(Boolean).join(" · ")],
     ["Bằng lái", licenses.join(", ")],
+    ["Tiền án", describeCriminalRecord(player)],
+    ["Người theo dõi TikTok", player.tiktokFollowers ? player.tiktokFollowers.toLocaleString("vi-VN") : ""],
+    ["Người đăng ký YouTube", player.youtubeSubscribers ? player.youtubeSubscribers.toLocaleString("vi-VN") : ""],
   ]);
 
   // Tài sản để lại (giá trị tính theo giá mua).
@@ -177,6 +185,8 @@ export function renderLifeSummary(state) {
     summarySection("💰", "Tài sản để lại", assets),
     summarySection("👨‍👩‍👧", "Gia đình", family),
     summarySection("✨", "Dấu ấn cuộc đời", marks));
+  const crimeEnding = describeCrimeEnding(player);
+  if (crimeEnding) container.append(summarySection("📜", "Những năm sau bản án", node("p", crimeEnding)));
   container.scrollTop = 0;
   dialog.scrollTop = 0;
 }

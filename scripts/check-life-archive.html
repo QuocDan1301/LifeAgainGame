@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life archive browser checks</title>
+<link rel="stylesheet" href="../css/lobby.css">
+<link rel="stylesheet" href="../css/polish.css">
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const keys = ['lifeAgainSave', 'lifeAgainLifeArchive', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+const previous = keys.map(key => localStorage.getItem(key));
+try {
+  const html = await (await fetch('../index.html')).text();
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  parsed.querySelectorAll('script').forEach(e => e.remove());
+  parsed.querySelectorAll('[src]').forEach(e => e.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', parsed.body.innerHTML);
+  const { state, createInitialState } = await import('../js/core/state.js');
+  const { readLifeArchive, archiveLife } = await import('../js/core/life-archive.js');
+  const { initLifeArchive } = await import('../js/ui/life-archive.js');
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { lifeId: 'browser-life', name: '<img src=x onerror=alert(1)>', province: 'Huế',
+    age: 45, health: 70, happiness: 70, intelligence: 70, appearance: 70, money: 5e8, studyBlock: 'A00',
+    employmentStatus: 'declined', lifePath: 'reformed', criminalRecord: [{ crime: 'Trộm cắp', age: 25, years: 3 }] });
+  localStorage.setItem('lifeAgainLifeArchive', '[]');
+  const { achievements } = await import('../js/achievements/achievements-data.js');
+  localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(achievements.map(a => [a.id, { unlockedAt: 'test' }]))));
+  localStorage.setItem('lifeAgainAchievementQueue', '[]');
+  const mode = new URLSearchParams(location.search).get('mode');
+  if (!mode) state.pendingEvent = { stage: 'result', age: 46, title: 'Biến cố',
+    content: 'Hành trình khép lại.', updates: { age: 46, isAlive: false, health: 0 },
+    specialId: 'old-house', specialStep: 7, achievementIds: [] };
+  else if (mode === 'oldage') Object.assign(state.player, { age: 90, healthCheckAge: 90 });
+  else Object.assign(state.player, { health: 1, healthCheckAge: 45, illnessPlan: [],
+    illnesses: ['pneumonia', 'early-cancer', 'coronary', 'diabetes'].map(id => ({ id, since: 20 })) });
+  document.getElementById('lobby-screen').hidden = true;
+  document.getElementById('game-screen').hidden = false;
+  await import('../js/main.js');
+  if (mode) {
+    const random = Math.random; Math.random = () => mode === 'oldage' ? 0 : 0.99;
+    try { document.getElementById('age-up').click(); } finally { Math.random = random; }
+  } else document.getElementById('event-confirm').click();
+  assert(state.player.isAlive === false, 'Death branch completed');
+  assert(readLifeArchive().length === 1, 'Real death flow writes one record');
+  assert(document.getElementById('death-dialog').open, 'Summary opens');
+  assert(document.getElementById('death-summary').textContent.includes('Người hoàn lương'), 'Title before 105');
+  assert(document.getElementById('death-summary').textContent.includes('Tiền án'), 'Career summary contains convictions');
+  if (!mode) assert(readLifeArchive()[0].specialCompleted.includes('old-house'), 'Final special scene retained');
+  assert(archiveLife(JSON.parse(JSON.stringify(state))).status === 'duplicate', 'Reload does not duplicate');
+  document.getElementById('death-dialog').close();
+  document.querySelectorAll('dialog[open]').forEach(e => e.close());
+  initLifeArchive();
+  document.getElementById('game-screen').hidden = true;
+  document.getElementById('lobby-screen').hidden = false;
+  document.getElementById('open-life-archive').click();
+  const dialog = document.getElementById('life-archive-dialog');
+  assert(dialog.open, 'Archive opens from lobby');
+  assert(dialog.textContent.includes('Đời sau thử'), 'Discovery and replay hints shown');
+  document.querySelector('.life-archive-entry').open = true;
+  assert(!document.querySelector('.life-archive-entry img'), 'Archived names render as text');
+  assert(dialog.scrollWidth <= dialog.clientWidth + 1, 'Archive has no horizontal overflow');
+  document.getElementById('close-life-archive').click();
+  assert(!dialog.open, 'Archive closes');
+  document.getElementById('open-life-archive').click();
+  document.querySelector('.life-archive-entry').open = true;
+  result.textContent = `PASS: ${mode ?? 'event'} death archives once; titles, convictions, special progress, lobby dialog and safe text rendering`;
+} catch (error) { result.textContent = `FAIL: ${error.stack}`; }
+finally { keys.forEach((key, i) => previous[i] === null ? localStorage.removeItem(key) : localStorage.setItem(key, previous[i])); }
+</script>

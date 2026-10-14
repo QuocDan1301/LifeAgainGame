@@ -219,12 +219,16 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
       if (other !== node) other.animate([{ opacity: 1 }, { opacity: 0.25, transform: "scale(0.92)" }], { duration: time(300), fill: "forwards" });
     });
     node.animate([{ transform: "rotateY(0)" }, { transform: "rotateY(90deg) scale(1.08)" }], { duration: time(280), fill: "forwards" })
-      .finished.then(() => renderResult(true));
+      .finished.then(() => {
+        // Closing/reopening can finish this reading before the old flip ends.
+        if (dialog.open && state.player.tarotReading === reading && body.contains(node)) renderResult(true);
+      }).catch(error => { if (error?.name !== 'AbortError') throw error; });
   }
 
   // ---------- Kết quả ----------
   function renderResult(animate = false) {
     const reading = state.player.tarotReading;
+    if (!reading?.picked) return;
     const card = getTarotCard(reading.picked);
     const topic = topicOf(reading.topic);
     const view = element("div", "tarot-card tarot-revealed");

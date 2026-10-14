@@ -70,7 +70,8 @@
   flex-wrap: wrap;
 }
 #new-life-button,
-#continue-button {
+#continue-button,
+#open-life-archive {
   min-height: 58px;
   padding: 14px 22px;
   border: 2px solid #17394b;
@@ -82,7 +83,8 @@
   background: #ffdd6e;
   box-shadow: 0 5px 0 #b69945;
 }
-#continue-button {
+#continue-button,
+#open-life-archive {
   background: #d4f1e3;
   box-shadow: 0 5px 0 #83b8a2;
 }
@@ -712,3 +714,13 @@
     font-size: 19px;
   }
 }
+
+/* Reuse the lobby dialog, with wrapping details for small screens. */
+#life-archive-dialog { max-height: 85dvh; overflow-y: auto; }
+#life-archive-body { overflow-wrap: anywhere; }
+#life-archive-body h3 { margin-top: 24px; }
+#life-archive-body li { margin-bottom: 8px; }
+.life-archive-entry { border-top: 1px solid #c8d4c2; padding: 14px 0; }
+.life-archive-entry summary { cursor: pointer; font-weight: 700; }
+.life-archive-entry p { margin: 10px 0; }
+#open-life-archive { white-space: normal; }

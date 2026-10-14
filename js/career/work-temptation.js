@@ -1,3 +1,4 @@
+import { getConvictionSocialUpdates } from '../events/crime-consequences.js';
 import { formatMoney } from '../core/money-format.js';
 import { getPlayerAnnualSalary, RETIREMENT_AGE } from './career-salary.js';
 import { getJobLossUpdates } from './job-loss.js';
@@ -41,7 +42,7 @@ function pressure(player) {
 function conviction(player, age, offense, recovered = 0) {
   const years = offense.years + ((player.criminalRecord ?? []).length ? 1 : 0);
   const payment = offense.fine + recovered;
-  return { ...getJobLossUpdates(player, age, 'fired'), money: player.money - payment,
+  return { ...getJobLossUpdates(player, age, 'fired'), ...getConvictionSocialUpdates(player), releasedAtAge: null, money: player.money - payment,
     prison: { enteredAge: age, releaseAge: age + years, crime: offense.crime, years },
     criminalRecord: [...(player.criminalRecord ?? []), { crime: offense.crime, age, years }],
     sideJobs: [], streetJobs: [], crimeActionAge: age, lifePath: 'dark',
@@ -68,10 +69,10 @@ export function createWorkTemptationEvent(player, age, random = Math.random) {
     ? { title: '🚔 Khoản tiền chưa kịp nhận', text: `Việc làm sai bị phát hiện ngay. Tôi không nhận được tiền, mất việc và chịu án ${offense.years + (player.criminalRecord?.length ? 1 : 0)} năm tù. Phạt và bồi thường ${formatMoney(offense.fine)}; ví thiếu thì thành nợ.`,
       effects: { happiness: -12 }, playerUpdates: { ...conviction(player, age, offense), ...lastOffer } }
     : { title: '🌑 Có tiền, chưa có bình yên', text: `Tôi nhận ${formatMoney(reward)} và tạm thời chưa bị phát hiện. ${offense.harm} Tôi vẫn có thể bị điều tra lại trong hai năm tới; khoản tiền đã nhận có thể bị thu hồi.`,
-      money: reward, effects: { happiness: -5 }, playerUpdates: { ...lastOffer, crimeActionAge: age, lifePath: 'dark', crimeHeat: Math.min(30, (player.crimeHeat ?? 0) + 5),
+      money: reward, effects: { happiness: -5 }, playerUpdates: { ...lastOffer, crimeActionAge: age, lifePath: 'dark', reformedYears: 0, reformationRecognized: false, crimeHeat: Math.min(30, (player.crimeHeat ?? 0) + 5),
         workInvestigation: { dueAge: age + 2, caught: investigated, offense, receivedAtAge: age } } };
   return { id: `work-temptation-${template.id}-${age}`, kind: 'work-temptation', category: 'career', ...art,
-    title: `🌑 ${template.title}`, text: `Trong công việc ${player.job ?? 'hiện tại'}, tôi gặp một lời đề nghị khó xử. ${template.text}\n\n${pressure(player)}\n\nKhoản tiền được hứa: ${formatMoney(reward)} (khoảng ${Math.round(reward / salary * 12)} tháng lương). ${template.harm}\nNguy cơ bị phát hiện ngay: ${Math.round(risk * 100)}%. Nếu tạm thoát, nguy cơ bị điều tra lại sau hai năm: ${Math.round(laterRisk * 100)}%. Nếu bị bắt: mất việc, án ${offense.years + (player.criminalRecord?.length ? 1 : 0)} năm, bồi thường ${formatMoney(offense.fine)}; khoản tiền đã nhận còn bị thu hồi. Các mức này là quy tắc của game.`,
+    title: `🌑 ${template.title}`, text: `Trong công việc ${player.job ?? 'hiện tại'}, tôi gặp một lời đề nghị khó xử. ${template.text}\n\n${pressure(player)}\n\nKhoản tiền được hứa: ${formatMoney(reward)} (khoảng ${Math.round(reward / salary * 12)} tháng lương). ${template.harm}\nNguy cơ bị phát hiện ngay: ${Math.round(risk * 100)}%. Nếu tạm thoát, nguy cơ bị điều tra lại sau hai năm: ${Math.round(laterRisk * 100)}%. Nếu bị bắt: mất việc, án ${offense.years + (player.criminalRecord?.length ? 1 : 0)} năm, bồi thường ${formatMoney(offense.fine)}; khoản tiền đã nhận còn bị thu hồi. Khi có tiền án: gắn kết cha mẹ -8, bạn bè -5, quan hệ bạn đời -12 (nếu có), cơ hội xin việc giảm 20 điểm %. Các mức này là quy tắc của game.`,
     choices: [
       { label: `Nhận lời · Được hứa ${formatMoney(reward)}, chấp nhận rủi ro`, ...accepted },
       { label: `Từ chối, giữ việc · Bị cắt ${formatMoney(withheld)} phụ cấp${canAdvance ? ', hoãn nâng bậc ít nhất 2 năm' : ''}`, title: 'Một lời từ chối có giá',

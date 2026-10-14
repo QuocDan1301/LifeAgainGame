@@ -1,3 +1,4 @@
+import { getConvictionSocialUpdates } from './crime-consequences.js';
 import { formatMoney } from "../core/money-format.js";
 import { addChoiceIcon } from "./event-emotions.js";
 import { isServing } from "../career/street-work.js";
@@ -22,6 +23,8 @@ export function commitCrime(player, id, random = Math.random) {
   const risk = crimeRisk(player, crime);
   player.crimeActionAge = player.age;
   player.lifePath = "dark";
+  player.reformedYears = 0;
+  player.reformationRecognized = false;
   player.crimeHeat = Math.min(30, (player.crimeHeat ?? 0) + 5);
   player.happiness = Math.max(0, player.happiness - 5);
   if (random() >= risk) {
@@ -32,13 +35,14 @@ export function commitCrime(player, id, random = Math.random) {
   player.money -= crime.fine;
   player.prison = { enteredAge: player.age, releaseAge: player.age + years, crime: crime.name, years };
   player.criminalRecord = [...(player.criminalRecord ?? []), { crime: crime.name, age: player.age, years }];
+  Object.assign(player, getConvictionSocialUpdates(player), { releasedAtAge: null });
   player.job = null;
   player.employmentStatus = "unemployed";
   player.careerLevel = 0;
   player.sideJobs = [];
   player.streetJobs = [];
   for (const key of ["layoffDue", "contractEndAge", "contractNoticeAge", "contractEnding", "jobWarning", "employedSince"]) delete player[key];
-  return `🚔 Tôi bị bắt vì ${crime.name.toLowerCase()}, chịu án ${years} năm tù và bồi thường ${formatMoney(crime.fine)}. Mất việc, dừng làm thêm. Dự kiến ra tù ở tuổi ${player.prison.releaseAge}. Hạnh phúc -5.`;
+  return `🚔 Tôi bị bắt vì ${crime.name.toLowerCase()}, chịu án ${years} năm tù và bồi thường ${formatMoney(crime.fine)}. Mất việc, dừng làm thêm. Gắn kết cha mẹ -8, bạn bè -5, quan hệ bạn đời -12 (nếu có); hồ sơ xin việc sau này bị giảm cơ hội 20 điểm %. Dự kiến ra tù ở tuổi ${player.prison.releaseAge}. Hạnh phúc -5.`;
 }
 
 export function createPrisonEvent(player, age) {
@@ -46,8 +50,8 @@ export function createPrisonEvent(player, age) {
   if (age >= player.prison.releaseAge) return {
     id: "prison-release", kind: "prison", title: "Ngày trở về", text: "Cánh cổng trại giam mở ra. Tôi đã chấp hành xong án, nhưng tiền án và những lựa chọn cũ vẫn là một phần cuộc đời.",
     choices: [
-      { label: "Làm lại cuộc đời", text: "Tôi quyết định sống lương thiện và tìm việc mới.", effects: { happiness: 10 }, playerUpdates: { prison: null, lifePath: "reformed", crimeHeat: 0 } },
-      { label: "Vẫn chọn con đường xấu", text: "Tôi vẫn muốn kiếm tiền bằng con đường cũ. Tái phạm sẽ dễ bị bắt và chịu án dài hơn.", effects: { happiness: -5 }, playerUpdates: { prison: null, lifePath: "dark" } },
+      { label: "Làm lại cuộc đời", text: "Tôi bắt đầu làm lại. Trở ngại xin việc do tiền án giảm từ 20 xuống 10 điểm %. Sau ít nhất ba năm không phạm pháp bên ngoài và hoàn thành những cuộc hẹn trong chuỗi trở về, tôi có thể nhận thư giới thiệu, khôi phục cơ hội xin việc và một phần gắn kết.", effects: { happiness: 10 }, playerUpdates: { prison: null, lifePath: "reformed", crimeHeat: 0, releasedAtAge: age, reformedYears: 0, reformationRecognized: false } },
+      { label: "Vẫn chọn con đường xấu", text: "Tôi vẫn muốn kiếm tiền bằng con đường cũ. Tái phạm sẽ dễ bị bắt và chịu án dài hơn.", effects: { happiness: -5 }, playerUpdates: { prison: null, lifePath: "dark", releasedAtAge: age, reformedYears: 0, reformationRecognized: false } },
     ],
   };
   return {

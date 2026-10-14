@@ -22,10 +22,10 @@ def worker(url):
         page = browser.new_page()
         errors = []
         page.on('console', lambda message: print(message.text, file=sys.stderr, flush=True) if message.text.startswith('CHECK_TRACE') else None)
-        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.on('pageerror', lambda error: errors.append(getattr(error, 'stack', str(error))))
         try:
             page.goto(url, wait_until='domcontentloaded', timeout=12000)
-            page.wait_for_function("[...document.querySelectorAll('pre')].some(p => /^(PASS|FAIL)/.test(p.textContent))", timeout=20000)
+            page.wait_for_function("[...document.querySelectorAll('pre')].some(p => /^(PASS|FAIL)/.test(p.textContent))", timeout=120000 if "check-life-fuzz.html" in url else 20000)
             result = page.locator('pre').first.text_content()
         except Exception as error:
             result = 'INCOMPLETE: ' + str(error).splitlines()[0]
@@ -52,7 +52,7 @@ def main(cases):
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8',
                 env={**os.environ, 'PYTHONIOENCODING': 'utf-8'})
             try:
-                output, errors = process.communicate(timeout=35)
+                output, errors = process.communicate(timeout=135 if "check-life-fuzz.html" in case else 35)
                 try:
                     row = json.loads(output.strip().splitlines()[-1])
                 except (ValueError, IndexError):

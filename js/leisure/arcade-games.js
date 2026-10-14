@@ -112,6 +112,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   const status = liveText("Chạm vào một con bò để chọn mục tiêu.");
   const pullInfo = element("div", "gc-pull-info");
   const timer = element("span", "gc-pull-timer", "💪 Đang giằng co…");
+  const percent = element("span", "gc-pull-percent", "0%");
   const bar = element("div", "gc-pull-bar");
   const fill = element("div", "gc-pull-fill");
   bar.setAttribute("role", "progressbar");
@@ -119,13 +120,21 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   bar.setAttribute("aria-valuemin", "0");
   bar.setAttribute("aria-valuemax", "100");
   bar.append(fill);
-  pullInfo.append(timer, bar);
+  const pullHead = element("div", "gc-pull-head");
+  pullHead.append(timer, percent);
+  pullInfo.append(pullHead, bar);
   const pullButton = button("gc-pull-button", "", () => {});
   pullButton.append(element("span", "gc-pull-hand", "✊"), element("span", "gc-pull-label", "Nhấn để kéo cùng!"));
   const throwButton = button("shop-buy game-primary gc-action", "🪢 Thả dây · −1 xu", throwLasso);
   const leave = button("shop-back gc-leave", "🏁 Rời sân", () => exit());
   const legend = element("ul", "gc-legend");
-  for (const type of cowTypes) legend.append(element("li", "", `${type.crown ? "👑" : ""}${type.icon} ${type.payout} xu · bắt ${formatPercent(type.catchChance)}`));
+  for (const type of cowTypes) {
+    const item = element("li", `gc-legend-cow is-${type.id}`);
+    item.append(element("span", "gc-legend-icon", `${type.crown ? "👑" : ""}${type.icon}`),
+      element("strong", "", `${type.payout} xu`), element("small", "", `bắt ${formatPercent(type.catchChance)}`));
+    item.title = type.name;
+    legend.append(item);
+  }
   stage.append(canvas, status, pullInfo, pullButton, throwButton, leave, legend);
 
   // Ba làn có phối cảnh: làn xa nhỏ và chậm hơn.
@@ -257,6 +266,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       session.cow = target.type.id;
       progress(session, 0, true);
       dust(target.x, target.y + target.width * 0.35, 6);
+      timer.textContent = `${target.type.icon} ${target.type.name} · +${target.type.payout} xu`;
       status.textContent = `Trúng ${target.type.name}! Bò đang giằng co, nhấn ✊ để kéo cùng!`;
       updateButtons();
       updatePullUi();
@@ -268,6 +278,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       phase = "miss";
       phaseTime = 0;
       dust(lasso.to.x, lasso.to.y + 16, 5);
+      banner = { text: "Trượt rồi!", t: 0, color: "#6b7a86" };
       status.textContent = "Trượt rồi! Mất 1 xu. Chọn bò rồi thử lại nhé.";
       updateButtons();
     }
@@ -288,6 +299,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   function updatePullUi() {
     const value = Math.round(pull.progress);
     fill.style.width = `${pull.progress}%`;
+    percent.textContent = `${value}%`;
     bar.setAttribute("aria-valuenow", String(value));
   }
   function stepPull(dt) {
@@ -345,6 +357,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     phaseTime = 0;
     cow.fleeing = true;
     dust(cow.x, cow.y + cow.width * 0.4, 8);
+    banner = { text: "Đứt dây! 💨", t: 0, color: "#c0392b" };
     status.textContent = `Ôi! ${cow.type.name} giãy đứt dây chạy mất.`;
     updateButtons();
   }
@@ -408,6 +421,9 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     ctx.beginPath();
     ctx.ellipse(260, 114, 140, 34, 0, Math.PI, 0);
     ctx.fill();
+    drawBarn(232, 84);
+    drawEmoji(ctx, "🌳", 34, 82, 30);
+    drawEmoji(ctx, "🌳", 66, 88, 22);
     const grass = ctx.createLinearGradient(0, 104, 0, H);
     grass.addColorStop(0, "#b2e68a");
     grass.addColorStop(1, "#68bb4c");
@@ -418,6 +434,13 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     strokeLine(ctx, 0, 108, W, 108);
     strokeLine(ctx, 0, 116, W, 116);
     for (let x = 6; x < W; x += 22) strokeLine(ctx, x, 102, x, 120);
+    ctx.strokeStyle = "rgb(60 130 40 / 55%)";
+    ctx.lineWidth = 1.5;
+    for (const flower of flowers) {
+      // Bụi cỏ nhỏ cạnh mỗi bông hoa cho đồng cỏ có chiều sâu.
+      strokeLine(ctx, flower.x + 5, flower.y + 3, flower.x + 3, flower.y - 3);
+      strokeLine(ctx, flower.x + 7, flower.y + 3, flower.x + 8, flower.y - 4);
+    }
     for (const flower of flowers) {
       ctx.fillStyle = flower.color;
       ctx.beginPath();
@@ -430,6 +453,24 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       ctx.ellipse(W / 2, lane.y + 24 * lane.scale, W * 0.62, 7 * lane.scale, 0, 0, Math.PI * 2);
       ctx.fill();
     }
+  }
+  // Chuồng bò: thân đỏ, mái tối, cửa chéo trắng.
+  function drawBarn(x, y) {
+    ctx.fillStyle = "#c0392b";
+    ctx.fillRect(x - 18, y - 6, 36, 22);
+    ctx.fillStyle = "#7b241c";
+    ctx.beginPath();
+    ctx.moveTo(x - 22, y - 4);
+    ctx.lineTo(x, y - 20);
+    ctx.lineTo(x + 22, y - 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#f6e7c8";
+    ctx.fillRect(x - 7, y + 2, 14, 14);
+    ctx.strokeStyle = "#c0392b";
+    ctx.lineWidth = 1.5;
+    strokeLine(ctx, x - 7, y + 2, x + 7, y + 16);
+    strokeLine(ctx, x + 7, y + 2, x - 7, y + 16);
   }
   function drawCoinTag(cow, x, y) {
     const text = String(cow.type.payout);
@@ -505,8 +546,11 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   function draw() {
     drawScenery();
     const pulled = pull?.cow;
+    const focus = pulled && !pulled.fleeing && (phase === "pull" || phase === "caught");
     for (const cow of [...cows].sort((a, b) => a.y - b.y)) {
       if (cow === pulled && !cow.fleeing) continue;
+      ctx.save();
+      if (focus) ctx.globalAlpha = 0.35;
       if (cow === selected) {
         ctx.save();
         ctx.setLineDash([5, 4]);
@@ -518,6 +562,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
         ctx.restore();
       }
       drawCow(cow, { y: cow.y + (cow.fleeing ? 0 : Math.sin(clock * 9 + cow.bob) * 1.2) });
+      ctx.restore();
     }
     // Mũi tên nhún nhảy trên con bò đang chọn.
     if (selected && phase === "aim") {
@@ -531,7 +576,10 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       if (phase === "caught") ctx.globalAlpha = Math.max(0, 1 - phaseTime / 1.4);
       drawCow(pulled, { x: pulled.x + shake, scale });
       ctx.restore();
-      if (phase === "pull") drawRope({ x: HAND.x, y: HAND.y - pull.lean * 3 }, { x: pulled.x + shake, y: pulled.y - 4 }, pull.tension);
+      if (phase === "pull") {
+        drawRope({ x: HAND.x, y: HAND.y - pull.lean * 3 }, { x: pulled.x + shake, y: pulled.y - 4 }, pull.tension);
+        drawLoop(pulled.x + shake, pulled.y - 4);
+      }
     }
     if (lasso && phase === "throw") {
       const k = Math.min(1, phaseTime / LASSO_FLIGHT);
@@ -572,7 +620,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       ctx.textAlign = "center";
       ctx.lineWidth = 5;
       ctx.strokeStyle = "#ffffff";
-      ctx.fillStyle = "#e08a00";
+      ctx.fillStyle = banner.color ?? "#e08a00";
       const y = 200 - banner.t * 40;
       ctx.strokeText(banner.text, W / 2, y);
       ctx.fillText(banner.text, W / 2, y);

@@ -12,8 +12,11 @@ import { stage80To89 } from './stage-80-89.js';
 import { stage90To104 } from './stage-90-104.js';
 
 import { studyAbroadStories } from './study-abroad.js';
+import { afterPrisonStories } from './after-prison.js';
 export const lifeStoryCatalog = [
   ...studyAbroadStories,
+  // Sau chuỗi du học: chỉ lấy 2 chuỗi đầu danh mục mỗi năm, chuyện ở tù không nên chiếm chỗ của du học.
+  ...afterPrisonStories,
   ...stage01To10,
   ...stage11To23,
   ...stage01To14Extra,

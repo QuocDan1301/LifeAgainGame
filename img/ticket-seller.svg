@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300" role="img" aria-labelledby="seller-title">
+  <title id="seller-title">Nhân viên phát vé ở bến xe đang vẫy tay chào</title>
+  <!-- Phong cách phẳng như ảnh nhân vật trong game: khối màu mềm, không viền, mắt chấm, má hồng nhạt. -->
+  <ellipse cx="100" cy="292" rx="54" ry="6" fill="#000" opacity="0.12"/>
+  <!-- Chân và giày -->
+  <rect x="73" y="198" width="25" height="82" rx="10" fill="#34507c"/>
+  <rect x="102" y="198" width="25" height="82" rx="10" fill="#2e4870"/>
+  <rect x="64" y="272" width="37" height="15" rx="7.5" fill="#3a3a4a"/>
+  <rect x="99" y="272" width="37" height="15" rx="7.5" fill="#3a3a4a"/>
+  <!-- Tay trái (bên phải ảnh) vẫy chào -->
+  <path d="M136 140 L152 118" stroke="#8cc5e8" stroke-width="22" stroke-linecap="round"/>
+  <path d="M152 118 L158 92" stroke="#f7d0a8" stroke-width="15" stroke-linecap="round"/>
+  <g fill="#f7d0a8">
+    <ellipse cx="159" cy="84" rx="12" ry="13"/>
+    <rect x="147" y="64" width="6" height="16" rx="3" transform="rotate(-14 150 72)"/>
+    <rect x="154" y="61" width="6" height="18" rx="3" transform="rotate(-5 157 70)"/>
+    <rect x="161" y="62" width="6" height="18" rx="3" transform="rotate(5 164 71)"/>
+    <rect x="167" y="66" width="6" height="15" rx="3" transform="rotate(16 170 73)"/>
+  </g>
+  <!-- Thân áo -->
+  <rect x="60" y="126" width="80" height="84" rx="24" fill="#8cc5e8"/>
+  <path d="M100 128 L100 200" stroke="#7ab6dc" stroke-width="2.5"/>
+  <circle cx="100" cy="150" r="2.4" fill="#5d93bd"/>
+  <circle cx="100" cy="166" r="2.4" fill="#5d93bd"/>
+  <circle cx="100" cy="182" r="2.4" fill="#5d93bd"/>
+  <rect x="73" y="150" width="17" height="13" rx="3" fill="#7ab6dc"/>
+  <rect x="110" y="150" width="17" height="13" rx="3" fill="#7ab6dc"/>
+  <rect x="62" y="128" width="20" height="8" rx="4" fill="#2f4f7f"/>
+  <rect x="118" y="128" width="20" height="8" rx="4" fill="#2f4f7f"/>
+  <rect x="62" y="194" width="76" height="11" rx="5" fill="#2b3a55"/>
+  <rect x="93" y="194" width="14" height="11" rx="3" fill="#f2c14e"/>
+  <!-- Cổ và cổ áo -->
+  <rect x="89" y="114" width="22" height="18" rx="6" fill="#efbf98"/>
+  <path d="M86 126 L100 141 L92 146 Z" fill="#b9def5"/>
+  <path d="M114 126 L100 141 L108 146 Z" fill="#b9def5"/>
+  <!-- Túi đeo chéo -->
+  <path d="M74 132 L128 190" stroke="#8a5a3c" stroke-width="5" stroke-linecap="round"/>
+  <rect x="116" y="182" width="32" height="25" rx="7" fill="#a06a44"/>
+  <path d="M116 188 Q132 196 148 188 L148 189 Q148 182 141 182 L123 182 Q116 182 116 189 Z" fill="#8a5a3c"/>
+  <circle cx="132" cy="193" r="2.6" fill="#f2c14e"/>
+  <!-- Tay phải (bên trái ảnh) cầm xấp vé vàng -->
+  <path d="M64 140 L52 170" stroke="#8cc5e8" stroke-width="22" stroke-linecap="round"/>
+  <path d="M52 170 L56 190" stroke="#f7d0a8" stroke-width="15" stroke-linecap="round"/>
+  <g transform="translate(52 182)">
+    <g transform="rotate(-28)"><rect x="-12" y="-36" width="22" height="34" rx="3" fill="#f2b33a"/></g>
+    <g transform="rotate(-10)"><rect x="-11" y="-38" width="22" height="34" rx="3" fill="#f6c445"/></g>
+    <g transform="rotate(10)"><rect x="-9" y="-37" width="22" height="34" rx="3" fill="#ffd45e"/>
+      <circle cx="-9" cy="-20" r="3.2" fill="#ffe9a8"/><circle cx="13" cy="-20" r="3.2" fill="#ffe9a8"/>
+      <rect x="-3" y="-31" width="10" height="2.4" rx="1.2" fill="#e3a52b"/>
+      <rect x="-3" y="-12" width="10" height="2.4" rx="1.2" fill="#e3a52b"/></g>
+  </g>
+  <ellipse cx="57" cy="194" rx="11" ry="10" fill="#f7d0a8"/>
+  <!-- Đầu -->
+  <ellipse cx="62" cy="88" rx="8" ry="10" fill="#efbf98"/>
+  <ellipse cx="138" cy="88" rx="8" ry="10" fill="#efbf98"/>
+  <ellipse cx="100" cy="84" rx="38" ry="40" fill="#f7d0a8"/>
+  <!-- Tóc lộ dưới mũ -->
+  <path d="M63 74 Q64 58 80 54 L120 54 Q136 58 137 74 Q131 68 124 69 L76 69 Q69 68 63 74 Z" fill="#6b4430"/>
+  <path d="M63 72 Q61 86 66 96 Q67 82 70 74 Z" fill="#6b4430"/>
+  <path d="M137 72 Q139 86 134 96 Q133 82 130 74 Z" fill="#6b4430"/>
+  <!-- Mũ nhân viên -->
+  <ellipse cx="100" cy="46" rx="45" ry="17" fill="#2f4f7f"/>
+  <rect x="64" y="46" width="72" height="17" rx="6" fill="#24406a"/>
+  <rect x="64" y="52" width="72" height="3" fill="#f2c14e"/>
+  <path d="M60 64 Q100 80 140 64 Q140 70 100 76 Q60 70 60 64 Z" fill="#1f3557"/>
+  <circle cx="100" cy="45" r="7.5" fill="#f2c14e"/>
+  <circle cx="100" cy="45" r="3.4" fill="#e3a52b"/>
+  <!-- Mặt: mày, mắt chấm, má hồng, miệng cười -->
+  <path d="M80 80 Q86 76 92 79" stroke="#6b4430" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M108 79 Q114 76 120 80" stroke="#6b4430" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <ellipse cx="86" cy="90" rx="4.4" ry="5" fill="#3b2416"/>
+  <ellipse cx="114" cy="90" rx="4.4" ry="5" fill="#3b2416"/>
+  <circle cx="87.4" cy="88.4" r="1.3" fill="#fff"/>
+  <circle cx="115.4" cy="88.4" r="1.3" fill="#fff"/>
+  <ellipse cx="77" cy="101" rx="7" ry="4" fill="#f4a3a0" opacity="0.55"/>
+  <ellipse cx="123" cy="101" rx="7" ry="4" fill="#f4a3a0" opacity="0.55"/>
+  <path d="M91 104 Q100 113 109 104" stroke="#b5523f" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>

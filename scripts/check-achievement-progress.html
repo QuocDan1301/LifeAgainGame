@@ -1,0 +1,48 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Achievement entry checks</title>
+<pre id="result">Running…</pre>
+<script type="module">
+const result = document.getElementById('result');
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
+const old = keys.map(key => localStorage.getItem(key));
+const random = Math.random;
+try {
+  const html = new DOMParser().parseFromString(await (await fetch('../index.html')).text(), 'text/html');
+  html.querySelectorAll('script').forEach(e => e.remove());
+  html.querySelectorAll('[src]').forEach(e => e.removeAttribute('src'));
+  document.body.insertAdjacentHTML('beforeend', html.body.innerHTML);
+  const { state, createInitialState } = await import('../js/core/state.js');
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { name: 'Test', age: 17, health: 90, happiness: 90, intelligence: 90,
+    appearance: 90, money: 1e9, studyBlock: 'A00', illnessPlan: [], relatives: [], employmentStatus: 'declined' });
+  const { createSchoolEvent } = await import('../js/career/career-schools.js');
+  const college = createSchoolEvent({ id: 'teaching', field: 'Sư phạm' }, state.player).choices[0].careerPath;
+  state.pendingEvent = { stage: 'result', age: 18, title: 'Nhập học', content: 'Bắt đầu học.',
+    updates: { age: 18, careerPath: college } };
+  localStorage.setItem('lifeAgainAchievements', '{}');
+  localStorage.setItem('lifeAgainAchievementQueue', '[]');
+  document.getElementById('game-screen').hidden = false;
+  document.getElementById('lobby-screen').hidden = true;
+  Math.random = () => 0.99;
+  await import('../js/main.js');
+  assert(!state.player.achievementFlags['university-18'], 'Unconfirmed result does not unlock university');
+  document.getElementById('event-confirm').click();
+  assert(state.player.achievementFlags['university-18'], 'Confirmed school entry unlocks university');
+  assert(JSON.parse(localStorage.getItem('lifeAgainAchievements'))['university-18'], 'University unlock persists');
+  document.querySelectorAll('dialog[open]').forEach(e => e.close());
+  state.pendingEvent = { stage: 'result', age: 19, title: 'Nhập ngũ', content: 'Bắt đầu huấn luyện.',
+    updates: { age: 19, careerPath: { id: 'military', field: 'Nhập ngũ', school: null } } };
+  assert(!state.player.achievementFlags['voluntary-enlistment'], 'Unconfirmed enlistment does not unlock');
+  document.getElementById('event-confirm').click();
+  assert(state.player.achievementFlags['voluntary-enlistment'], 'Confirmed enlistment unlocks');
+  assert(JSON.parse(localStorage.getItem('lifeAgainAchievements'))['voluntary-enlistment'], 'Military unlock persists');
+  assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.achievementFlags['voluntary-enlistment'], 'Save includes the flag');
+  result.textContent = 'PASS: university and military unlock only on confirmation, persist to achievements and game save';
+} catch (error) { result.textContent = 'FAIL: ' + error.stack; }
+finally {
+  Math.random = random;
+  keys.forEach((key, i) => old[i] === null ? localStorage.removeItem(key) : localStorage.setItem(key, old[i]));
+}
+</script>

@@ -117,6 +117,7 @@
     const yearLog = state.logs.find(log => log.age === 19 && log.content.includes("Xổ số kiến thiết mở thưởng"));
     assert(yearLog && yearLog.content.includes(`Vé ${first} trùng 4 số cuối`) && yearLog.content.includes("01 02 03 10 11 12 trùng 3 số"), "Age-up draws and records results");
     assert(!state.player.lotteryTickets.length && !Object.keys(state.player.lotteryDraws).length, "Tickets cleared after the draw");
+    assert(state.player.achievementFlags["first-lottery-win"] && JSON.parse(localStorage.getItem("lifeAgainAchievements"))["first-lottery-win"], "Real yearly lottery win unlocks achievement");
     assert($("life-log").textContent.includes("Xổ số kiến thiết mở thưởng"), "Result shown in the diary");
     result.textContent = "PASS: prize tables; quick pick; age 18+; 30 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary";
   } catch (error) {

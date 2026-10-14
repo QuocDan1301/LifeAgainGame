@@ -23,7 +23,10 @@ try {
     await page.locator('#games-dialog').evaluate(el => { el.scrollTop = 0; });
     await page.locator('#games-dialog').screenshot({ path: `output/tower-${name}.png` });
   }
-  await page.evaluate(() => { document.querySelector('.game-tower-next').click(); });
+  await page.evaluate(async () => {
+    (await import('/js/core/save-store.js')).trackSavedGame();
+    document.querySelector('.game-tower-next').click();
+  });
   await page.waitForTimeout(250);
   await page.locator('#games-dialog').screenshot({ path: 'output/tower-doors.png' });
   console.log(result + '; mobile and desktop fit');

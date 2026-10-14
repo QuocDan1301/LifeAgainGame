@@ -1,0 +1,128 @@
+[
+  {
+    "test": "check-achievement-progress.mjs",
+    "exitCode": 0,
+    "stdout": "PASS University entry at 18 unlocks, academies and later schooling do not\nPASS Both direct and fallback voluntary enlistment unlock military achievement\nPASS Winning either lottery unlocks; losing and recollecting do not\nPASS Creators can reach ten million through actual salary years before retirement\nPASS Full annual accounting grows once, forecast stays pure, pension and prison do not grow\nPASS Promotions use the paid rank for audience, rather than next year’s rank\nPASS Net losing stakes accumulate, wins do not offset them, reload does not count twice\n7 achievement progression groups passed.\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-admin.mjs",
+    "exitCode": 0,
+    "stdout": "PASS admin: authorization; secret redaction; cross-origin protection; search; protect owner; lock/unlock; revoke sessions; durable state\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-auction.mjs",
+    "exitCode": 0,
+    "stdout": "PASS auction core: all 12 items have all authenticity outcomes; budgets; appraisal fee and duplication; affordability; six-round limit; deterministic reload; ambiguous clues; win; withdrawal; final-state guards\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-audit-fixes.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Zero and missing scores cannot grant a new diploma or hire\nPASS Remediation is priced, charged once per year and eventually permits graduation\nPASS Country wages, living costs, forecast and pension use the same configuration\nPASS Integration affects recruitment and promotion without rewarding the wrong degree\nPASS Every returning graduate can advance in their actual major without invented age-16 history\nPASS Overseas promotion mentions age 16 only when that encounter actually happened\nPASS Memorial appears for both legacy deceased spouse and real widowed history\nPASS Old saves preserve money, education and scores without retroactive charges\n8 audit fix groups passed\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-background-save.mjs",
+    "exitCode": 0,
+    "stdout": "PASS locked ticket recovery, stale journal, pending-ticket protection, pause notification, queued AI and arcade frame\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-casual-life.mjs",
+    "exitCode": 0,
+    "stdout": "PASS No-school choice is available and has no tuition or graduation\nPASS Men enlist immediately and return at twenty, including a saved service\nPASS Both jobs require the right asset, and wait until students leave school\nPASS Income is paid once, assets give no passive noodle income, sale stops work\nPASS Forecast and annual accounting agree for a working student\nPASS Own stories span working ages, end at retirement and support both jobs\nPASS 6 casual life groups\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-casual-romance.mjs",
+    "exitCode": 0,
+    "stdout": "PASS: chance by current work; recovery after two years; no wealth penalty; social contexts; rejection and acceptance; persisted result; service; single and couple stories\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-concurrent-dating.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Legacy one-person saves retain identity and permit a second person\nPASS Reject duplicate, third, married and deceased-player dating\nPASS Switching preserves each person’s actions, promise and wedding schedule across reload\nPASS Breakup removes only the selected person and preserves children\nPASS Marriage finds the due person regardless of UI selection, and defers only that person\nPASS Postponing and twice declining marriage retain the unrelated relationship\nPASS Wedding with the second person closes the first relationship and uses the right co-parent\nPASS Discovery probability, preview purity, reload, choosing either person and ending both\nPASS Both partners age, receive health progression and cannot evade a broken promise by switching\nPASS Death of either partner preserves the surviving relationship and its schedule\nPASS Natural acquaintance can add a second romance while a full pair gets friendship choices\nPASS Actual game choice handler resolves discovery exactly once after reload\nPASS Drama branches: denial, blame, trying to keep both and weak trust can lose both partners\n13 concurrent-dating regression groups passed.\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-crime.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Age, death and invalid actions cannot mutate the character\nPASS Successful crime pays once per year and survives reload\nPASS Arrest removes employment, fines the player and records the sentence\nPASS Prison yearly story replaces outside life and keeps a saved sentence\nPASS Release happens at the promised age and a clean path preserves the record\nPASS Repeat offenses raise risk and extend the sentence\nPASS Compensation can create debt without allowing crimes in prison\nPASS Study abroad blocks crimes while studying, then unlocks after graduation\nPASS Conviction affects living family, friends and all partners without forcing a breakup\nPASS Record penalties apply to actual interviews, with partial and full rehabilitation\nPASS Reformation needs full outside years, survives reload and resets on reoffending\nPASS After-prison story is gated, follows flags and grants the letter only when ready\nPASS Workplace conviction uses the same social consequences and ending\nPASS 13 crime and prison checks\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-economy-balance.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Investment yields and quantity limits constrain compounding\nPASS Forecast includes rentals, businesses, livestock, pet upkeep and the loan bill\nPASS One-time rewards do not increase recurring living costs\nPASS Loan principal repayments increase wallet but not living costs\nPASS Existing assets above the new cap remain owned and are paid only for future years\nPASS Employment severance is not overwritten by an event money snapshot\nPASS New story reward amounts match the surrounding prose\nSIMULATION {\"regular\":{\"30\":898252000,\"40\":2912840000,\"62\":10893180000},\"rewarded\":{\"30\":1033943000,\"40\":3095295000,\"62\":11201635000}}\nPASS A 100-million windfall remains an advantage without replacing a career\nPASS Debt carried into a working-age year costs interest, shown in the forecast\nPASS Frugal living helps when poor but saves at most 12 million for high earners\nPASS Activity gains are capped per stat per year from 70, and high stats wear down\nPASS Tien len charges a table fee and caps the stake\nPASS Study abroad admission requires intelligence by country, with one open option\nPASS Vietlott jackpot accumulates yearly, resets when anyone wins and pays the accumulated amount\nPASS Each year has a limited number of free-time activity slots\nPASS Top salaries stay within about twice of each other; athletes earn less after their peak\nPASS Students only take part-time shifts in at most two stores; part-time is a lighter, fair option\nPASS Poor health and overwork raise the yearly risk of lifestyle illness; checkups halve it\nPASS Convenience-store shifts end at retirement and are not forecast afterwards\nPASS Prison years skip rent and pet costs, pause the mortgage without a lump sum, and match the forecast\nPASS Progressive living costs preserve low-income savings and charge only marginal bands\nPASS Family plans respect ages, living parents, opt-in, reload and one collection per year\nPASS Family commitments and comfort match forecasts, including prison and changing plans\nPASS Housing deposit and annual mortgage are real expenses, not an extra living charge\nBUDGET_SIMULATION [{\"style\":\"single\",\"lives\":24,\"medianCashAt80Before\":11637000000,\"medianCashAt80After\":10144000000,\"billionaireBefore\":24,\"billionaireAfter\":24,\"medianFirstBillionBefore\":31,\"medianFirstBillionAfter\":32.5},{\"style\":\"comfort\",\"lives\":24,\"medianCashAt80Before\":11637000000,\"medianCashAt80After\":8056000000,\"billionaireBefore\":24,\"billionaireAfter\":24,\"medianFirstBillionBefore\":31,\"medianFirstBillionAfter\":36},{\"style\":\"family\",\"lives\":24,\"medianCashAt80Before\":9519000000,\"medianCashAt80After\":7194000000,\"billionaireBefore\":24,\"billionaireAfter\":24,\"medianFirstBillionBefore\":32,\"medianFirstBillionAfter\":33},{\"style\":\"entry\",\"lives\":24,\"medianCashAt80Before\":3643200000,\"medianCashAt80After\":3268800000,\"billionaireBefore\":24,\"billionaireAfter\":24,\"medianFirstBillionBefore\":35,\"medianFirstBillionAfter\":37}]\nPASS 96 controlled lives compare B against the previous costs, including childfree and entry-level lives\n25 economy balance groups passed.\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-game-center-progress.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Game Center progress: legacy gifts; gifted album retention; annual rotation; best scores; complete-only progress; duplicate and reload guards; yearly reset; old-year session; unique album milestones; bonus-ticket isolation\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-life-archive.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Titles work before 105, have deterministic priority and do not mutate the player\nPASS Family, solitude, wealth, dark path and legacy title boundaries\nPASS One record per life survives reload and a lost save marker\nPASS Latest 50 lives retained; an evicted life with a saved marker is not reinserted\nPASS Unavailable storage, quota errors and invalid JSON never interrupt the game; retry succeeds\nPASS Summary preserves requested facts without full player or diary data\nPASS Special progress, rank 3 and discovery hints persist without double counting\n7 life archive groups passed.\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-life-stories.mjs",
+    "exitCode": 0,
+    "stdout": "PASS: 680 sự kiện (67 chuỗi), tuổi đã viết: 1–104 (98 tuổi).\nMô phỏng 4000 đời: sự kiện chuỗi được bốc ở 53% số năm có chuỗi sẵn sàng.\nDấu đã gieo: 775, đã có sự kiện nối: 86, đang chờ nối: 689.\n",
+    "stderr": "",
+    "initialAttempt": {
+      "exitCode": null,
+      "error": "spawnSync C:\\Program Files\\nodejs\\node.exe ETIMEDOUT",
+      "timeoutMs": 60000
+    },
+    "rerunCommand": "node scripts/check-life-stories.mjs"
+  },
+  {
+    "test": "check-save-store.mjs",
+    "exitCode": 0,
+    "stdout": "PASS nested validation, resumed events, failed-entry cleanup, unsupported-browser protection, stale-tab protection, write retry, ticket recovery and exclusive lock\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-special-order.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Thứ tự tác giả (trước khi sửa): luôn chọn ô đầu thắng 19/19 chuỗi có thưởng\n  ô đầu thắng trung bình 1.57/19 chuỗi mỗi đời, nhiều nhất 7\n  số đời (trên 240) ô đầu thắng: age-10=29, age-20=11, age-30=2, age-40=5, age-50=2, age-55=33, age-35 khỏe=18, age-35 yếu=18, age-45 chưa gặp bà cụ=11, age-45 đã đoàn tụ=11, later-60=33, later-65=18, later-70=8, later-75=18, later-80=35, later-85=14, later-90=46, later-95=16, later-100=49\nPASS (a) Sau khi xáo, \"luôn chọn ô đầu\" không thắng mọi chuỗi ở cả 240 hạt giống\nPASS (b) Cùng hạt giống thì cùng thứ tự; bản lưu giữ nguyên thứ tự; khác đời thì khác thứ tự\nPASS (c) Mọi phần thưởng và kết thúc vẫn đạt được; logic theo chỉ số tác giả không đổi theo thứ tự hiển thị\nPASS Tuổi 16: chọn 1 trong 3 ngành của khối, cố định theo đời chơi, giữ dòng công khai tỉ lệ\n5 nhóm kiểm tra thứ tự chuỗi đặc biệt đều đạt.\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-story-state.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Quit immediately stops salary and preserves job search\nPASS Retirement retains pension and suppresses all work discipline\nPASS Explicit prices, two months salary and affordability\nPASS Mortgage owns a real asset and finishes exactly 15 payments\nPASS Loans persist and repayments cannot invent legacy credit\nPASS Adopted age, selected child, elapsed time and names\nPASS Actual handler: insufficient funds, log, reload and double click\nPASS Scheduled repayments and stale retirement results\n8 regression groups passed.\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-study-abroad.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Every study block supports admission and the age-16 discovery\nPASS All seven countries have explicit cost previews and saved country data\nPASS Every country charges precisely four years, forecast matches, debt is preserved\nPASS Scholarship discounts tuition only and is reevaluated annually\nPASS Graduation opens paid work, promotions use international ranks and achievements\nPASS Foreign student stories require the actual country program and study age\nPASS Existing saves get no invented country or retroactive foreign costs\nPASS International workers lose salary on quitting and receive only pension at retirement\nPASS Four separate majors persist; student progress changes recruitment chances\nPASS Student work earns once on settling the result and drama has meaningful replies\nPASS Graduation separates staying and returning without duplicate fees or rewards\n11 study-abroad groups passed\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-supabase-storage.mjs",
+    "exitCode": 0,
+    "stdout": "PASS Supabase adapter: server-only secret; concurrent requests; durable sessions after restart; failed-write rollback; revision conflicts; safe errors; HTTPS cookies\n",
+    "stderr": ""
+  },
+  {
+    "test": "check-work-temptation.mjs",
+    "exitCode": 0,
+    "stdout": "PASS work temptation: nine career dilemmas; employment and age gates; frequency; all options available in debt; refusal cost; reporting risk; resignation; saved outcomes; delayed recovery; arrest year without wages; prison continuation; repeat-offense penalties\n",
+    "stderr": ""
+  },
+  {
+    "test": "audit-achievement-sources.mjs",
+    "exitCode": 0,
+    "stdout": "{\n  \"total\": 79,\n  \"missingSources\": [],\n  \"verifiedCareerBranches\": {\n    \"career-study-abroad\": \"study-abroad\",\n    \"career-actor\": \"acting\",\n    \"career-military\": \"military\",\n    \"career-singer\": \"singing\",\n    \"career-painter\": \"painting\",\n    \"career-doctor\": \"medicine\",\n    \"career-programmer\": \"programming\",\n    \"career-accountant\": \"accounting\",\n    \"career-law\": \"law\",\n    \"career-principal\": \"teaching\",\n    \"career-football\": \"football\",\n    \"career-psychologist\": \"psychology\",\n    \"career-gamer\": \"esports\",\n    \"career-tiktok\": \"tiktok\",\n    \"career-youtube\": \"youtube\",\n    \"career-business\": \"business\",\n    \"career-finance\": \"finance\",\n    \"career-mechanical\": \"mechanical\",\n    \"career-architect\": \"architecture\",\n    \"career-fashion\": \"fashion\",\n    \"career-marketing\": \"marketing\",\n    \"career-tourism\": \"tourism\",\n    \"career-chef\": \"culinary\"\n  },\n  \"verifiedTarot\": [\n    \"tarot-first\",\n    \"tarot-major\",\n    \"tarot-suits\",\n    \"tarot-all\"\n  ],\n  \"lotteryAchievementUnlocked\": true,\n  \"lotteryPrize\": 2000000000,\n  \"adultCanTakeAllStores\": true,\n  \"limits\": \"Career fixtures assume eligible characters and favorable random outcomes; source presence alone does not prove a complete life playthrough.\"\n}\n",
+    "stderr": ""
+  }
+]

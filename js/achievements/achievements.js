@@ -148,11 +148,14 @@ export function checkAchievements() {
       !meetsAchievement(achievement, gameState.player)
     )
       continue;
+    gameState.player.lifeUnlockedAchievementIds = [...new Set([
+      ...(gameState.player.lifeUnlockedAchievementIds ?? []), achievement.id,
+    ])];
     unlocked[achievement.id] = { unlockedAt: new Date().toISOString() };
     queue.push(achievement.id);
     changed = true;
   }
-  if (lifeIds.size !== previousCount) {
+  if (lifeIds.size !== previousCount || changed) {
     gameState.player.lifeAchievementIds = [...lifeIds];
     saveGame(gameState);
   }

@@ -5,11 +5,11 @@
   "type": "module",
   "engines": { "node": "24.x" },
   "scripts": {
-    "start": "node --env-file-if-exists=.env server/account-server.mjs",
+    "start": "node --env-file-if-exists=.env server/game-server.mjs",
     "test:game-center": "node scripts/check-game-center-progress.mjs",
     "test:work": "node scripts/check-work-temptation.mjs && node scripts/check-crime.mjs",
     "test:auction": "node scripts/check-auction.mjs",
-    "test:account": "node scripts/check-account.mjs && node scripts/check-supabase-storage.mjs && node scripts/check-admin.mjs",
+    "test:server": "node scripts/check-server.mjs",
     "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
   }
 }

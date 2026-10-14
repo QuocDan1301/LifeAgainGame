@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fff1ad" />
     <title>Life Again</title>
-    <!-- Biểu tượng -->
+    <!-- Biểu tượng: chỉ dùng ở màn chơi (dấu + và túi tiền), nên tải không chặn hiển thị bến xe. -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
+      media="print"
+      onload="this.media = 'all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
+      />
+    </noscript>
     <!-- Font chữ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,7 +32,6 @@
     <link rel="stylesheet" href="./css/buttons.css" />
     <link rel="stylesheet" href="./css/polish.css" />
     <link rel="stylesheet" href="./css/dating-dialogue.css" />
-    <link rel="stylesheet" href="./css/account.css" />
     <link
       rel="apple-touch-icon"
       sizes="57x57"
@@ -384,6 +391,7 @@
         <div class="lobby-actions">
           <button type="button" id="new-life-button">Chuyến Xe Cuộc Đời</button>
           <button type="button" id="continue-button" hidden>Chơi tiếp</button>
+          <button type="button" id="open-life-archive">📖 Sổ các cuộc đời</button>
         </div>
         <p class="lobby-ticket-count">
           🎟️ Vé còn lại: <strong id="ticket-count" aria-live="polite">0</strong>
@@ -947,8 +955,8 @@
         >
           <span class="seller-speech">Ở đây có phát vé</span>
           <img
-            src="./img/ticket-seller.webp"
-            alt="Nhân viên bán vé đang mỉm cười"
+            src="./img/ticket-seller.svg"
+            alt="Nhân viên phát vé ở bến xe đang mỉm cười vẫy tay"
           />
         </button>
         <p>
@@ -958,6 +966,13 @@
         </p>
       </footer>
     </section>
+    <dialog id="life-archive-dialog" class="lobby-dialog" aria-labelledby="life-archive-title">
+      <div class="lobby-dialog-heading">
+        <h2 id="life-archive-title">📖 Sổ các cuộc đời</h2>
+        <button type="button" id="close-life-archive" aria-label="Đóng sổ các cuộc đời">✕</button>
+      </div>
+      <div id="life-archive-body"></div>
+    </dialog>
     <dialog
       id="tickets-dialog"
       class="lobby-dialog"
@@ -1242,7 +1257,7 @@
             class="avatar"
             aria-label="Chân dung em bé, nhấn để chào"
           >
-            <img id="avt" src="./img/Nam/nam_0-3.png" alt="" />
+            <img id="avt" src="./img/Nam/nam_0-3.webp" alt="" width="384" height="384" />
           </button>
           <h2 id="player-name"></h2>
           <p id="player-gender" class="character-gender"></p>
@@ -1459,84 +1474,12 @@
             ></span
           >
         </button>
-        <button type="button" id="activity-games">
-          <span class="activity-icon" aria-hidden="true">🎮</span
-          ><span class="activity-text"
-            ><span class="activity-title">Trò chơi</span
-            ><span class="activity-note"
-              >May thì giàu, còn chắc chắn thì không!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-love">
-          <span class="activity-icon" aria-hidden="true">💘</span
-          ><span class="activity-text"
-            ><span class="activity-title">Tình yêu</span
-            ><span class="activity-note"
-              >Tim có thể rung động, còn duyên thì phải thử mới biết!</span
-            ></span
-          >
-        </button>
         <button type="button" id="activity-hospital">
           <span class="activity-icon" aria-hidden="true">🏥</span
           ><span class="activity-text"
             ><span class="activity-title">Bệnh viện</span
             ><span class="activity-note"
               >Chăm sức khỏe hôm nay, còn sức tận hưởng ngày mai!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-jobs">
-          <span class="activity-icon" aria-hidden="true">💼</span
-          ><span class="activity-text"
-            ><span class="activity-title">Xin việc</span
-            ><span class="activity-note"
-              >Hồ sơ gọn gàng, trả lời vững vàng, việc tốt sẽ tới!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-part-time">
-          <span class="activity-icon" aria-hidden="true">🧰</span
-          ><span class="activity-text"
-            ><span class="activity-title">Làm thêm</span
-            ><span class="activity-note"
-              >Ví dày thêm một chút, mồ hôi cũng thêm một chút!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-degrees">
-          <span class="activity-icon" aria-hidden="true">🪪</span
-          ><span class="activity-text"
-            ><span class="activity-title">Học bằng lái</span
-            ><span class="activity-note"
-              >Vững tay lái, tự tin trên mọi nẻo đường!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-tarot">
-          <span class="activity-icon" aria-hidden="true">🔮</span
-          ><span class="activity-text"
-            ><span class="activity-title">Xem tarot</span
-            ><span class="activity-note"
-              >Lật một lá bài, biết đâu tìm được chút gợi ý!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-travel">
-          <span class="activity-icon" aria-hidden="true">✈️</span
-          ><span class="activity-text"
-            ><span class="activity-title">Du lịch</span
-            ><span class="activity-note"
-              >Đi một chuyến, mang về cả trời kỷ niệm!</span
-            ></span
-          >
-        </button>
-        <button type="button" id="activity-game-center">
-          <span class="activity-icon" aria-hidden="true">🕹️</span
-          ><span class="activity-text"
-            ><span class="activity-title">Game Center</span
-            ><span class="activity-note"
-              >Chơi một ván cho vui, thắng thua không quan trọng!</span
             ></span
           >
         </button>
@@ -1558,12 +1501,48 @@
             ></span
           >
         </button>
-        <button type="button" id="activity-lottery">
-          <span class="activity-icon" aria-hidden="true">🎟️</span
+        <button type="button" id="activity-love">
+          <span class="activity-icon" aria-hidden="true">💘</span
           ><span class="activity-text"
-            ><span class="activity-title">Mua vé số</span
+            ><span class="activity-title">Tình yêu</span
             ><span class="activity-note"
-              >Mười nghìn một tấm vé, gửi trọn một giấc mơ!</span
+              >Tim có thể rung động, còn duyên thì phải thử mới biết!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-degrees">
+          <span class="activity-icon" aria-hidden="true">🪪</span
+          ><span class="activity-text"
+            ><span class="activity-title">Học bằng lái</span
+            ><span class="activity-note"
+              >Vững tay lái, tự tin trên mọi nẻo đường!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-jobs">
+          <span class="activity-icon" aria-hidden="true">💼</span
+          ><span class="activity-text"
+            ><span class="activity-title">Xin việc</span
+            ><span class="activity-note"
+              >Hồ sơ gọn gàng, trả lời vững vàng, việc tốt sẽ tới!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-part-time">
+          <span class="activity-icon" aria-hidden="true">🧰</span
+          ><span class="activity-text"
+            ><span class="activity-title">Làm thêm</span
+            ><span class="activity-note"
+              >Ví dày thêm một chút, mồ hôi cũng thêm một chút!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-repair-lessons" hidden>
+          <span class="activity-icon" aria-hidden="true">🛠️</span
+          ><span class="activity-text"
+            ><span class="activity-title">Dạy sửa đồ miễn phí</span
+            ><span class="activity-note"
+              >Mỗi năm một buổi cho hàng xóm: Trí tuệ +1, Hạnh phúc +1.</span
             ></span
           >
         </button>
@@ -1585,12 +1564,48 @@
             ></span
           >
         </button>
-        <button type="button" id="activity-repair-lessons" hidden>
-          <span class="activity-icon" aria-hidden="true">🛠️</span
+        <button type="button" id="activity-travel">
+          <span class="activity-icon" aria-hidden="true">✈️</span
           ><span class="activity-text"
-            ><span class="activity-title">Dạy sửa đồ miễn phí</span
+            ><span class="activity-title">Du lịch</span
             ><span class="activity-note"
-              >Mỗi năm một buổi cho hàng xóm: Trí tuệ +1, Hạnh phúc +1.</span
+              >Đi một chuyến, mang về cả trời kỷ niệm!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-game-center">
+          <span class="activity-icon" aria-hidden="true">🕹️</span
+          ><span class="activity-text"
+            ><span class="activity-title">Game Center</span
+            ><span class="activity-note"
+              >Chơi một ván cho vui, thắng thua không quan trọng!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-games">
+          <span class="activity-icon" aria-hidden="true">🎮</span
+          ><span class="activity-text"
+            ><span class="activity-title">Trò chơi</span
+            ><span class="activity-note"
+              >May thì giàu, còn chắc chắn thì không!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-tarot">
+          <span class="activity-icon" aria-hidden="true">🔮</span
+          ><span class="activity-text"
+            ><span class="activity-title">Xem tarot</span
+            ><span class="activity-note"
+              >Lật một lá bài, biết đâu tìm được chút gợi ý!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-lottery">
+          <span class="activity-icon" aria-hidden="true">🎟️</span
+          ><span class="activity-text"
+            ><span class="activity-title">Mua vé số</span
+            ><span class="activity-note"
+              >Mười nghìn một tấm vé, gửi trọn một giấc mơ!</span
             ></span
           >
         </button>

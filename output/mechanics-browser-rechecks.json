@@ -1,0 +1,47 @@
+[
+  {
+    "result": "PASS: 44 everyday stories; five-year proposals; priority and consecutive-special deferrals; migration; reload; marriage; breakup; salary; promotions",
+    "pageErrors": [],
+    "test": "check-adult-life.html"
+  },
+  {
+    "result": "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI",
+    "pageErrors": [],
+    "test": "check-career-salary.html"
+  },
+  {
+    "result": "FAIL: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:53345/js/main.js",
+    "pageErrors": [],
+    "test": "check-earth-auction.html"
+  },
+  {
+    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
+    "pageErrors": [],
+    "test": "check-family.html"
+  },
+  {
+    "result": "PASS: 4 scenes, both age-40 histories, photo clues, per-life reward gating, all deaths, safe exit, saves, salary, wallet and achievement.",
+    "pageErrors": [],
+    "test": "check-last-train.html"
+  },
+  {
+    "result": "PASS: 7 scenes, 6 early exits, 2 rewards, illustrations, saved progress, salary once, wallet, achievement and diary.",
+    "pageErrors": [],
+    "test": "check-old-house.html"
+  },
+  {
+    "result": "PASS: pet shop; petting companions; grouped assets; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price",
+    "pageErrors": [],
+    "test": "check-shop.html"
+  },
+  {
+    "result": "PASS: both chains, all early exits, both reward choices, certificate, reloads, salary and all injury branches at 100/80/40/20/1 health.",
+    "pageErrors": [],
+    "test": "check-theater-luggage.html"
+  },
+  {
+    "result": "FAIL: Error: Stale flip animation must not read a cleared reading: TypeError: Cannot read properties of null (reading 'picked')\n    at renderResult (http://127.0.0.1:53345/js/leisure/tarot.js:228:39)\n    at http://127.0.0.1:53345/js/leisure/tarot.js:222:28\n    at assert (http://127.0.0.1:53345/scripts/check-tarot-animation.html:7:56)\n    at http://127.0.0.1:53345/scripts/check-tarot-animation.html:37:3",
+    "pageErrors": [],
+    "test": "check-tarot-animation.html"
+  }
+]

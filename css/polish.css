@@ -276,3 +276,159 @@ dialog::backdrop {
   #event-dialog .event-choice,
   .character .avatar img { transition: none; }
 }
+
+/* ----- Popup sự kiện: lời kể dài thì cuộn, các lựa chọn luôn nằm trong tầm nhìn ----- */
+#event-dialog { --event-pad: 22px; }
+@media (max-width: 480px) {
+  #event-dialog { --event-pad: 14px; }
+}
+/* Tối đa 4 lựa chọn: dính ở đáy popup, lớp nền mờ dần để chữ trôi bên dưới. Nhiều hơn thì cuộn như thường. */
+#event-choices:not(:has(> :nth-child(5))) {
+  position: sticky;
+  bottom: calc(-1 * var(--event-pad));
+  z-index: 1;
+  margin: 0 calc(-1 * var(--event-pad)) calc(-1 * var(--event-pad));
+  padding: 16px var(--event-pad) var(--event-pad);
+  background: linear-gradient(to bottom, rgb(255 248 220 / 0%), #fff8dc 16px);
+}
+/* Màn hình máy tính thấp: hình minh họa nhỏ lại để lời kể và lựa chọn vừa một màn. */
+@media (min-width: 481px) and (max-height: 860px) {
+  #event-image { max-height: 140px; margin-bottom: 10px; }
+  #event-image[src*="/events/openmoji/"] { width: 130px; height: 130px; margin-bottom: 10px; }
+  #event-content { margin-bottom: 12px; font-size: 20px; line-height: 1.5; }
+}
+
+/* ----- Thẻ cảnh báo đầu nhật ký: dính sát mép trên, che phần đệm phía trên và làm mờ mép dưới,
+   để dòng nhật ký cuộn qua không bị lộ nửa chữ ----- */
+.journal { --journal-pad-top: 1.6rem; }
+@media (max-width: 480px) {
+  .journal { --journal-pad-top: 1.2rem; }
+}
+.health-alert {
+  top: calc(-1 * var(--journal-pad-top));
+  box-shadow: 0 calc(-1 * var(--journal-pad-top)) 0 var(--diary-paper);
+}
+/* Dải mờ dưới thẻ chỉ hiện khi nhật ký đã cuộn, để lúc đứng yên không đè lên thẻ năm đầu tiên. */
+@supports (animation-timeline: scroll()) {
+  .health-alert::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: -1px;
+    right: -1px;
+    height: 26px;
+    background: linear-gradient(var(--diary-paper) 35%, rgb(255 250 234 / 0%));
+    pointer-events: none;
+    animation: health-alert-fade linear both;
+    animation-timeline: scroll(nearest block);
+    animation-range: 0 40px;
+  }
+  @keyframes health-alert-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+/* ----- Đồng bộ phông: bảng Thành tựu, popup thành tựu mới và nhãn loại sự kiện dùng cùng bộ phông
+   với phần còn lại của game (Sriracha cho tiêu đề, Patrick Hand cho nội dung) ----- */
+#achievements-dialog,
+#achievement-unlock-dialog {
+  font-family: "Patrick Hand", cursive;
+}
+#achievements-list .achievement-group-heading,
+#achievements-list .achievement-card h4,
+#unlock-heading,
+#unlock-title,
+#achievement-unlock-confirm,
+.event-category {
+  font-family: "Sriracha", cursive;
+  font-weight: 400;
+}
+#achievements-dialog .achievements-summary { font-size: 19px; }
+#achievements-list .achievement-group-count { font-size: 16px; }
+#achievements-list .achievement-subgroup-title { font-size: 17px; }
+#achievements-list .achievement-card p { font-size: 16px; }
+#achievements-list .achievement-status { font-size: 14px; }
+#unlock-description { font-size: 19px; }
+
+/* ===== Tối ưu điện thoại ===== */
+/* Vùng chạm tối thiểu ~40px cho các dòng mở/thu gọn. */
+.health-alert { padding-top: 0; padding-bottom: 0; }
+.health-alert-summary { padding: 10px 0; }
+#life-archive-body summary { padding: 9px 0; }
+/* Chữ phụ không nhỏ hơn 12px để đọc được trên điện thoại. */
+.gc-personal-record,
+.gc-progress-note { font-size: 12px; }
+.tower-eyebrow { font-size: 12px; }
+.tower-floor-value small,
+.tower-rule,
+.gc-claim,
+.gc-album-claim { font-size: 12px; }
+
+/* Màn hình dọc thấp (iPhone SE, Android nhỏ): thu gọn thẻ nhân vật để nhật ký có thêm chỗ.
+   Giới tính và quê quán vẫn xem được ở Tài sản; ô "Chỉ số" chỉ là nhãn trang trí. */
+@media (orientation: portrait) and (max-height: 700px) {
+  .stats { padding-top: 0; }
+  .stats-title { display: none; }
+  #player-gender,
+  #player-province { display: none; }
+}
+@media (orientation: portrait) and (max-height: 700px) and (max-width: 480px) {
+  #event-image { max-height: 100px; }
+  #event-image[src*="/events/openmoji/"] { width: 100px; height: 100px; }
+}
+/* Màn hình dọc rất thấp vẫn cuộn cả trang, nhưng nhật ký giữ khung cuộn riêng
+   để các nút và nút tăng tuổi không bị đẩy xa xuống dưới. */
+@media (orientation: portrait) and (max-height: 480px) {
+  .game { grid-template-rows: auto minmax(24rem, 60dvh) auto auto; }
+}
+
+/* Điện thoại xoay ngang: hai cột. Nhật ký bên trái cuộn riêng; tiêu đề, các nút và chỉ số bên phải. */
+@media (orientation: landscape) and (max-height: 480px) {
+  body {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    align-items: stretch;
+  }
+  .game {
+    max-width: 96rem;
+    height: 100dvh;
+    min-height: 0;
+    max-height: none;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas:
+      "journal header"
+      "journal actions"
+      "journal character";
+  }
+  .game-header { grid-area: header; min-height: 4.6rem; padding-top: 0.2rem; padding-bottom: 0.2rem; }
+  .journal { grid-area: journal; height: auto; min-height: 0; }
+  .game-actions { grid-area: actions; }
+  .character { grid-area: character; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+  .stats { padding-top: 0; }
+  .stats-title { display: none; }
+  #player-gender,
+  #player-province { display: none; }
+  /* Cột phải chỉ rộng như điện thoại dọc: chữ và biểu tượng nút theo cỡ điện thoại. */
+  .action-button { --icon-size: 3rem; --icon-edge: 0.4rem; font-size: 1.5rem; }
+  .action-icon { font-size: 2.1rem; }
+  /* Như điện thoại hẹp ≤380px trong lobby.css: cột phải chỉ rộng khoảng 320px. */
+  #game-screen .character { grid-template-columns: 96px minmax(0, 1fr); padding: 7px; gap: 7px; }
+  #game-screen .stat-row { grid-template-columns: 84px minmax(0, 1fr) 36px; gap: 4px; font-size: 13px; }
+
+  /* Popup sự kiện: rộng hơn, hình nhỏ, lựa chọn chia hai cột và cuộn cùng lời kể
+     (dính ở đáy thì sẽ che hết chữ trên màn hình thấp). */
+  #event-dialog { width: min(94vw, 680px); max-width: none; max-height: calc(100dvh - 16px); padding: 14px; }
+  #event-image { max-height: 72px; margin-bottom: 6px; }
+  #event-image[src*="/events/openmoji/"] { width: 72px; height: 72px; margin-bottom: 6px; }
+  #event-content { margin-bottom: 10px; font-size: 18px; line-height: 1.45; }
+  #event-choices:not(:has(> :nth-child(5))) {
+    position: static;
+    margin: 0;
+    padding: 0;
+    background: none;
+  }
+  #event-choices:has(> :nth-child(2)) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

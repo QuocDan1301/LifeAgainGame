@@ -1,3 +1,4 @@
+import { recordGamblingLoss } from '../achievements/achievement-progress.js';
 import { saveGame, isSavePaused, onSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
@@ -27,11 +28,12 @@ const SUIT_NAMES = ["Bích", "Chuồn", "Rô", "Cơ"];
 const spokenCard = (card) => `${RANKS[rankOf(card)]} ${SUIT_NAMES[suitOf(card)]}`;
 const cardsText = (cards) => sortCards(cards).map(cardLabel).join(" ");
 
-export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, onExit, renderMoney, renderLogEntry }) {
+export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, onExit, renderMoney, renderLogEntry, checkAchievements = () => {} }) {
   const selected = new Set();
   let timer = null;
   let status = "";
   let viewing = false;
+  let lastPileKey = "";
 
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -79,6 +81,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     for (const stake of TIEN_LEN_STAKES) {
       const blocker = startBlocker(stake);
       const choice = button("shop-group tl-table-pick", `🃏 Bàn ${formatMoney(stake)}`, () => sitDown(stake));
+      choice.dataset.tier = String(TIEN_LEN_STAKES.indexOf(stake) + 1);
       choice.dataset.stake = String(stake);
       choice.disabled = Boolean(blocker);
       choice.append(element("span", "side-job-note", `Góp ${formatMoney(stake)} · Thắng nhận ${formatMoney(getTienLenPot(stake))} (lời ${formatMoney(getTienLenPot(stake) - stake)})`));
@@ -157,6 +160,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     current.lastWinner = round.winner;
     const won = round.winner === 0;
     if (won) state.player.money += round.pot;
+    recordGamblingLoss(state.player, round, round.stake, won ? round.pot : 0);
     const content = `🃏 Tiến lên miền Nam (bàn ${formatMoneyAmount(round.stake)} VNĐ, ván ${round.number}): ` + (won
       ? `Bạn hết bài trước! Nhận ${formatMoneyAmount(round.pot)} VNĐ. Tiền +${formatMoneyAmount(round.pot - round.stake)} VNĐ.`
       : `${seatName(round.winner)} hết bài trước. Tiền -${formatMoneyAmount(round.stake)} VNĐ.`);
@@ -164,6 +168,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     save();
     renderMoney();
     renderLogEntry(log);
+    checkAchievements();
   }
   function forfeit() {
     const round = game();
@@ -175,12 +180,14 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       round.over = true;
       round.forfeited = true;
       round.paid = true;
+      recordGamblingLoss(state.player, round, round.stake, 0);
       current.lastWinner = null;
       const log = pushLog(`🃏 Tiến lên miền Nam (bàn ${formatMoneyAmount(round.stake)} VNĐ, ván ${round.number}): Bỏ ván. Tiền -${formatMoneyAmount(round.stake)} VNĐ.`);
       save();
       renderLogEntry(log);
       status = "";
       if (dialog.open) renderTable();
+      checkAchievements();
     });
   }
   function leaveTable() {
@@ -321,8 +328,11 @@ function appendCardDetails(node, card) {
     box.classList.toggle("is-winner", round.winner === seat);
     box.classList.toggle("is-passed", round.passed[seat] && !round.over);
     const count = round.hands[seat].length;
+    const fan = element("span", "tl-fan");
+    fan.setAttribute("aria-hidden", "true");
+    for (let index = 0; index < Math.min(count, 7); index += 1) fan.append(element("span", "tl-back"));
     box.append(element("span", "tl-avatar", info.icon), element("span", "tl-name", info.name),
-      element("span", "tl-count", `🂠 ${count} lá`));
+      element("span", "tl-count", `🂠 ${count} lá`), fan);
     if (count <= 3 && count > 0 && !round.over) box.append(element("span", "tl-danger", "Sắp hết bài"));
     if (round.passed[seat] && !round.over) box.append(element("span", "tl-badge", "Bỏ lượt"));
     if (round.turn === seat && !round.over) box.append(element("span", "tl-badge is-turn", "Đang đánh…"));
@@ -332,13 +342,19 @@ function appendCardDetails(node, card) {
   function centerPile(round) {
     const center = element("div", "tl-center");
     center.append(element("span", "tl-table-mark", "TIẾN LÊN"), element("span", "tl-center-label", round.current ? "Bộ bài trên bàn" : "Sẵn sàng mở vòng"));
+    const pileKey = round.current ? `${round.number}|${round.current.by}|${round.current.cards.join(",")}` : "";
     if (round.current) {
       const pile = element("div", "tl-pile");
+      if (pileKey !== lastPileKey) pile.classList.add("is-new");
+      if (status.includes("CHẶT")) center.classList.add("is-chop");
       for (const card of round.current.cards) pile.append(cardFace(card, "tl-card is-small"));
       center.append(pile, element("p", "tl-pile-caption", `${seatName(round.current.by)} · ${describeCombo(round.current)}`));
     } else if (!round.over) {
-      center.append(element("p", "tl-pile-caption", round.turn === 0 ? "Bạn mở vòng mới" : `${seatName(round.turn)} mở vòng mới`));
+      const slot = element("span", "tl-slot");
+      slot.setAttribute("aria-hidden", "true");
+      center.append(slot, element("p", "tl-pile-caption", round.turn === 0 ? "Bạn mở vòng mới" : `${seatName(round.turn)} mở vòng mới`));
     }
+    lastPileKey = pileKey;
     return center;
   }
   function resultPanel(round) {
@@ -347,7 +363,9 @@ function appendCardDetails(node, card) {
     const title = round.forfeited ? "🏳️ Bạn đã bỏ ván" : won ? "🎉 Bạn hết bài trước!" : `😢 ${seatName(round.winner)} hết bài trước`;
     const change = won ? `+${formatMoney(round.pot - round.stake)} (nhận ${formatMoney(round.pot)}, đã góp ${formatMoney(round.stake)})`
       : `−${formatMoney(round.stake)} (phần đã góp)`;
-    panel.append(element("h3", "", title), element("p", "game-summary", `Thay đổi số dư: ${change}\nVí hiện có: ${formatMoney(state.player.money)}`));
+    const net = won ? round.pot - round.stake : -round.stake;
+    panel.append(element("h3", "", title), element("p", `game-net ${net >= 0 ? "is-gain" : "is-loss"}`, `${net >= 0 ? "+" : "−"}${formatMoney(Math.abs(net))}`),
+      element("p", "game-summary", `Thay đổi số dư: ${change}\nVí hiện có: ${formatMoney(state.player.money)}`));
     const rest = element("ul", "dialog-entries tl-remaining");
     for (let seat = 0; seat < 4; seat += 1) {
       const row = element("li");

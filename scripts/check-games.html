@@ -102,8 +102,13 @@
     option("heads").click();
     body().querySelector('.game-option[data-bet="100000"]').click();
     assert(body().querySelector(".game-summary").textContent.includes("Có thể nhận 190k VNĐ"), "Shows bet and possible payout");
+    state.player.gamblingLosses = 9_950_000;
+    Math.random = () => 0.9; // Force tails while betting heads.
     start().click();
+    Math.random = random;
     await until(() => body().querySelector(".game-result"), "coin result");
+    assert(state.player.gamblingLosses === 10_050_000, "Settled coin loss increases cumulative gambling losses");
+    assert(JSON.parse(localStorage.getItem("lifeAgainAchievements"))["gambling-loss-10m"], "Gambling achievement unlocks immediately at settlement");
     const coinLog = state.logs.at(-1).content;
     assert(coinLog.includes("Sấp ngửa") && [9_900_000, 10_090_000].includes(state.player.money), "Coin settles once");
     assert(!state.player.gameRound, "Instant games leave no pending round");
@@ -165,6 +170,7 @@
     for (const [game, select] of [["dice", () => { option("number").click(); option("4").click(); }],
       ["box", () => option("normal").click()]]) {
       const plays = state.player.gamePlays?.age === state.player.age ? state.player.gamePlays.count : 0;
+      const gamblingBefore = state.player.gamblingLosses;
       open();
       pick(game).click();
       select();
@@ -172,6 +178,7 @@
       await until(() => body().querySelector(".game-result"), `${game} result`);
       assert(state.logs.at(-1).content.includes(G.games.find(g => g.id === game).name), `${game} recorded`);
       if (game === "box") {
+        assert(state.player.gamblingLosses === gamblingBefore, "Mystery boxes do not count as gambling losses");
         const item = state.player.boxItems.at(-1);
         assert(item && state.logs.at(-1).content.includes("cất vào Tài sản") && body().textContent.includes("Đã cất vào Tài sản"),
           "Box prize goes to assets instead of cash");

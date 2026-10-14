@@ -1,0 +1,32 @@
+[
+  {
+    "result": "PASS: 44 everyday stories; five-year proposals; priority and consecutive-special deferrals; migration; reload; marriage; breakup; salary; promotions",
+    "pageErrors": [],
+    "test": "check-adult-life.html"
+  },
+  {
+    "result": "PASS: 4 scenes, both age-40 histories, photo clues, per-life reward gating, all deaths, safe exit, saves, salary, wallet and achievement.",
+    "pageErrors": [],
+    "test": "check-last-train.html"
+  },
+  {
+    "result": "PASS: pet shop; petting companions; grouped assets; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price",
+    "pageErrors": [],
+    "test": "check-shop.html"
+  },
+  {
+    "result": "INCOMPLETE: Page.wait_for_function: Timeout 20000ms exceeded.",
+    "pageErrors": [],
+    "test": "check-life-fuzz.html?seed=100&lives=12"
+  },
+  {
+    "result": "PASS life fuzz: {\"lives\":8,\"years\":223,\"deaths\":8,\"reloads\":30,\"events\":187,\"maxAge\":103,\"causes\":{\"old-age\":8},\"clicks\":2735,\"unsaved\":{\"activities-dialog › 🕹️Game CenterChơi một ván cho vui, thắng thua khô :: player.arcade.progress\":11,\"page › Quan hệ 👥 :: player.arcade\":3,\"page › 💳 Tài sản :: player.arcade\":3,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":1}}",
+    "pageErrors": [
+      "Tiến trình đã thay đổi ở tab khác. Hãy tải lại để tránh ghi đè bản lưu.",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')"
+    ],
+    "test": "check-life-fuzz.html?seed=500&lives=8&startAge=60"
+  }
+]

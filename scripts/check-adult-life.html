@@ -96,7 +96,7 @@
     state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
     confirm.click();
     assert(state.player.age === 32 && state.player.nextMarriageProposalAge === 34, "Confirming saved first refusal schedules 34");
-    assert(state.player.money === 84_000_000, "Marriage story still receives annual salary");
+    assert(state.player.money === 72_000_000, "Marriage story still receives annual salary");
     birthday.click();
     assert(state.player.age === 33 && !state.pendingEvent, "No repeat proposal at 33");
     birthday.click();
@@ -145,7 +145,7 @@
       choose(0);
       confirm.click();
       assert(state.player.age === 25 && state.player.partner, "Age-25 dating can be accepted");
-      assert(state.player.money === (status === "employed" ? 120_000_000 - 36_000_000 : -24_000_000), "Guaranteed dating preserves salary eligibility (after living costs)");
+      assert(state.player.money === (status === "employed" ? 120_000_000 - 48_000_000 : -24_000_000), "Guaranteed dating preserves salary eligibility (after living costs)");
     }
     // A career priority pushes the due proposal to next year and saves that date.
     Object.assign(state.player, { age: 36, partner: person, marriedAtAge: null,

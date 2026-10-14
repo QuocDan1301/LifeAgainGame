@@ -1,0 +1,18 @@
+[
+  {
+    "result": "PASS life fuzz: {\"lives\":12,\"years\":463,\"deaths\":12,\"reloads\":65,\"events\":497,\"maxAge\":50,\"causes\":{\"event\":3,\"diabetes\":1,\"gastritis\":1,\"exhaustion\":4,\"kidney-stones\":1,\"pneumonia\":2},\"clicks\":4685,\"unsaved\":{\"page › 💳 Tài sản :: player.arcade\":7,\"activities-dialog › 🕹️Game CenterChơi một ván cho vui, thắng thua khô :: player.arcade.progress\":13,\"page › Phiên mới · Còn 4 lượt :: player.auction\":3,\"page › Phiên mới · Còn 5 lượt :: player.auction\":1,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":3,\"page › Quan hệ 👥 :: player.arcade\":3,\"page › Phiên mới · Còn 3 lượt :: player.auction\":1}}",
+    "pageErrors": [
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')",
+      "Cannot read properties of null (reading 'picked')"
+    ],
+    "test": "check-life-fuzz.html?seed=100&lives=12"
+  },
+  {
+    "result": "PASS life fuzz: {\"lives\":20,\"years\":1167,\"deaths\":20,\"reloads\":71,\"events\":1231,\"maxAge\":98,\"causes\":{\"hepatitis-b\":2,\"old-age\":4,\"early-cancer\":3,\"diabetes\":2,\"kidney-stones\":3,\"hypertension\":2,\"herniated-disc\":1,\"gastritis\":1,\"gout\":1,\"event\":1},\"clicks\":0,\"unsaved\":{}}",
+    "pageErrors": [],
+    "test": "check-life-fuzz.html?seed=1000&lives=20&explore=0"
+  }
+]

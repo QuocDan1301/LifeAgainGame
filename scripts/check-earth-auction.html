@@ -88,11 +88,11 @@
     assert(state.player.intelligence === 50 && state.player.happiness === 50, 'Rewards wait for confirmation');
     state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     confirm.click();
-    assert(state.player.age === 30 && state.player.money === 120_500_000 - 36_000_000 && state.player.intelligence === 60 && state.player.happiness === 60,
-      'Confirm advances one year, adds salary once (less 30% living costs) and awards both stats');
+    assert(state.player.age === 30 && state.player.money === 120_500_000 - 48_000_000 && state.player.intelligence === 60 && state.player.happiness === 60,
+      'Confirm advances one year, adds salary once (less 40% living costs) and awards both stats');
     assert(state.player.achievementFlags['story-alien'] && state.logs.at(-1).content.includes('hai quả cam'),
       'Achievement and the supplied diary entry persist');
-    assert(document.getElementById('money-value').textContent === '84,5 triệu' && state.logs.at(-1).content.includes('500.000 VNĐ'),
+    assert(document.getElementById('money-value').textContent === '72,5 triệu' && state.logs.at(-1).content.includes('500.000 VNĐ'),
       'Cash reward appears in the wallet and diary');
     birthday.click();
     assert(state.pendingEvent?.kind === 'marriage-proposal' && state.pendingEvent.age === 31, 'Deferred proposal appears at 31');

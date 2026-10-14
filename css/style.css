@@ -2180,6 +2180,23 @@ body::before {
   font-size: 1.7rem;
   line-height: 1.4;
 }
+/* Ngân sách năm tới: ô chọn co theo hộp thoại, lựa chọn dài không đẩy rộng lưới. */
+.finance-budget > * { min-width: 0; }
+.finance-budget label { display: grid; gap: 6px; }
+.finance-budget select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 2px solid #c8af70;
+  border-radius: 10px;
+  background: #fffdf3;
+  color: inherit;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 1.5rem;
+}
+.finance-budget select:disabled { opacity: 0.6; }
+.finance-budget select:focus-visible { outline: 3px solid #285a91; outline-offset: 2px; }
 #life-jobs:empty::after {
   content: "Chưa có việc làm. Vào Hoạt động → Làm thêm để kiếm thêm thu nhập.";
   color: #5a6b78;
@@ -2374,7 +2391,6 @@ body::before {
   transform: translateY(-2px);
 }
 .game-option:focus-visible, .game-door:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
-.game-dice-values .game-option { font-size: 30px; line-height: 1; }
 .game-all-in, .tl-all-in { border-color: #d9534f; color: #a3261f; font-weight: 700; }
 .game-all-in[aria-pressed="true"] { border-color: #a3261f; background: radial-gradient(circle, #ff9a7a 60%, #e0533f 100%); color: #fff; }
 .game-bet-input {
@@ -2395,36 +2411,303 @@ body::before {
 .game-live { min-height: 1.4em; text-align: center; }
 .game-result.is-win { border-color: #3f8f4c; background: #e2f7d4; }
 .game-result.is-lose { border-color: #d98a8a; background: #ffe8e8; }
-/* Đồng xu */
-.game-coin-wrap { display: grid; place-items: center; height: 190px; perspective: 600px; }
-.game-coin { position: relative; width: 120px; height: 120px; transform-style: preserve-3d; }
-.game-coin-face {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  border: 5px solid #c9971c;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff3b0, #f2c640 60%, #d9a521);
-  backface-visibility: hidden;
-  white-space: pre-line;
-  font-family: "Sriracha", cursive;
-  font-size: 19px;
-  line-height: 1.5;
-  text-align: center;
+/* Đồng xu: mặt khắc nổi, vành răng cưa, ánh kim; Ngửa vàng, Sấp ánh đồng */
+.game-coin-face, .coin-mini {
+  --coin-hi: #fff4b8; --coin-mid: #f0c43c; --coin-lo: #c18e16; --coin-rim: #a87812; --coin-ink: #6b4a0a;
+  position: relative; display: grid; place-items: center; align-content: center; gap: 2px; border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 26%, rgb(255 255 255 / 75%) 0 8%, transparent 26%),
+    radial-gradient(circle at 50% 50%, var(--coin-hi) 0%, var(--coin-mid) 58%, var(--coin-lo) 100%);
+  box-shadow: 0 0 0 5px var(--coin-rim), 0 0 0 7px var(--coin-lo), inset 0 0 0 6px rgb(255 240 190 / 55%), inset 0 -6px 10px rgb(0 0 0 / 18%);
+  color: var(--coin-ink); font-family: "Sriracha", cursive; text-align: center; text-shadow: 0 1px 0 rgb(255 248 210 / 80%);
+}
+.game-coin-face::after, .coin-mini::after { content: ""; position: absolute; inset: 11%; border: 2px dashed rgb(120 80 10 / 35%); border-radius: 50%; }
+.is-tails.game-coin-face, .is-tails.coin-mini { --coin-hi: #ffe2c4; --coin-mid: #e19a5a; --coin-lo: #a8622b; --coin-rim: #8a4f20; --coin-ink: #5c2d0c; }
+.coin-symbol { font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", serif; line-height: 1; }
+.coin-label { line-height: 1; letter-spacing: .06em; }
+/* Màn chọn mặt: hai đồng xu nhỏ */
+.coin-faces { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.game-option.coin-pick { display: grid; justify-items: center; gap: 8px; padding: 14px 8px 10px; font-size: 19px; }
+.coin-mini { width: 64px; height: 64px; box-shadow: 0 0 0 3px var(--coin-rim), 0 0 0 4px var(--coin-lo), inset 0 0 0 4px rgb(255 240 190 / 55%), 0 4px 6px rgb(0 0 0 / 18%); }
+.coin-mini .coin-symbol { font-size: 26px; }
+.coin-mini .coin-label { display: none; }
+.game-option.coin-pick[aria-pressed="true"] .coin-mini { animation: coin-pick-bob 1.6s ease-in-out infinite; }
+/* Màn tung: bàn nỉ xanh, viền vàng */
+#games-dialog:has(.coin-table) { width: min(560px, calc(100vw - 24px)); }
+.game-stage-coin { background: #fbf6e8; border-color: #d9c49a; }
+.coin-table { display: grid; justify-items: center; gap: 6px; padding: 14px 12px 12px; border: 2px solid #b8955a; border-radius: 18px;
+  background: radial-gradient(120% 90% at 50% 20%, #3f7457 0%, #2b5640 55%, #1d3d2d 100%);
+  box-shadow: inset 0 0 0 4px #1d3d2d, inset 0 -16px 28px rgb(0 0 0 / 25%); color: #f3ecd2; transition: box-shadow 300ms ease; }
+.coin-pick-chip { margin: 0; padding: 3px 14px; border: 1px solid #c9a453; border-radius: 999px; background: rgb(20 45 32 / 65%); color: #f3dfa7; font-size: 16px; }
+.coin-table .game-coin-wrap { position: relative; height: 210px; }
+.coin-table .game-live { margin: 0; color: #f3ecd2; font-family: "Sriracha", cursive; font-size: 19px; }
+.game-coin-wrap { display: grid; place-items: center; height: 190px; perspective: 700px; }
+.game-coin { position: relative; z-index: 1; width: 132px; height: 132px; transform-style: preserve-3d; }
+.game-coin .game-coin-face { position: absolute; inset: 0; backface-visibility: hidden; }
+.game-coin .is-tails { transform: rotateY(180deg); }
+.game-coin .coin-symbol { font-size: 46px; }
+.game-coin .coin-label { font-size: 20px; }
+.coin-shadow { position: absolute; bottom: 30px; width: 120px; height: 18px; border-radius: 50%; background: rgb(0 0 0 / 55%); filter: blur(4px); opacity: .55; }
+.coin-table.is-win { box-shadow: inset 0 0 0 4px #1d3d2d, inset 0 -16px 28px rgb(0 0 0 / 25%), 0 0 0 3px #f3d27a, 0 0 22px rgb(243 210 122 / 55%); }
+.coin-table.is-win .game-coin { filter: drop-shadow(0 0 14px rgb(255 226 120 / 85%)); }
+.coin-table.is-lose .game-live { color: #f5c9bd; }
+/* Kết quả: số tiền lời/lỗ cỡ lớn */
+.game-net { margin: 2px 0 6px; font-family: "Sriracha", cursive; font-size: clamp(28px, 7vw, 36px); line-height: 1.15; font-variant-numeric: tabular-nums; }
+.game-net.is-gain { color: #2f7a3b; }
+.game-net.is-loss { color: #b03a2e; }
+@keyframes coin-pick-bob { 50% { transform: translateY(-4px) rotate(-6deg); } }
+@keyframes coin-lose-shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .coin-table.is-lose .game-coin-wrap { animation: coin-lose-shake 380ms ease-in-out; }
+  .game-net { animation: auction-price-pop 360ms cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-option.coin-pick[aria-pressed="true"] .coin-mini { animation: none; }
+}
+@media (max-width: 480px) {
+  .coin-table .game-coin-wrap { height: 190px; }
+  .coin-shadow { bottom: 26px; width: 104px; }
+  .game-coin { width: 116px; height: 116px; }
+  .game-coin .coin-symbol { font-size: 40px; }
+  .game-coin .coin-label { font-size: 18px; }
+  .coin-mini { width: 56px; height: 56px; }
 }
 .game-floor.is-fallen { background: #ffd2d2; }
-.game-coin-face.is-tails { transform: rotateY(180deg); }
 /* Xúc xắc và hộp */
 .game-die, .game-box { display: grid; place-items: center; height: 160px; font-size: 110px; line-height: 1; }
 .game-box.is-open { filter: drop-shadow(0 0 18px #ffd84d); }
-/* Đấu giá cổ vật */
-.auction-artifact { text-align: center; font-size: 76px; line-height: 1.3; }
-.auction-price { font-weight: 700; font-variant-numeric: tabular-nums; }
-.auction-clue, .auction-appraisal { padding: 12px; border-left: 3px solid #bb9446; background: #fff8df; line-height: 1.6; }
-.auction-bidders, .auction-log { padding-left: 22px; line-height: 1.7; overflow-wrap: anywhere; }
-.auction-actions button { flex: 1 1 150px; white-space: normal; }
-.auction-card { overflow-wrap: anywhere; }
+/* Đoán xúc xắc: mặt có chấm thật, khối lập phương 3D trên bàn nỉ xanh dương */
+.die-face, .die-mini { display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); box-sizing: border-box; border-radius: 18%;
+  background: radial-gradient(circle at 30% 25%, #ffffff 0%, #f7f4ec 55%, #e6dfcf 100%); box-shadow: inset 0 0 0 1px rgb(0 0 0 / 8%), inset 0 -4px 6px rgb(0 0 0 / 10%); }
+.die-pip { place-self: center; width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a4a4a, #111 70%); }
+.die-face.is-1 .die-pip, .die-mini.is-1 .die-pip { width: 78%; background: radial-gradient(circle at 35% 30%, #ff6b5e, #b3170c 72%); }
+.die-mini { width: 38px; height: 38px; padding: 5px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%), 0 2px 3px rgb(0 0 0 / 18%); }
+/* Màn chọn */
+.dice-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.dice-modes .game-option { display: grid; gap: 2px; padding: 10px 8px; }
+.game-dice-values { margin-top: 10px; }
+.game-dice-values .dice-parity { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.game-dice-values .dice-parity .game-option { display: grid; justify-items: center; gap: 6px; padding: 10px 6px; font-size: 19px; line-height: 1.2; }
+.dice-parity-faces { display: flex; gap: 4px; }
+.dice-parity-faces .die-mini { width: 30px; height: 30px; padding: 4px; }
+.game-dice-values .dice-numbers { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.game-dice-values .dice-numbers .game-option { display: grid; justify-items: center; gap: 4px; min-width: 0; padding: 8px 2px 6px; font-size: 15px; line-height: 1; }
+.game-option[aria-pressed="true"] .die-mini { box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%), 0 0 0 3px #fff, 0 3px 6px rgb(0 0 0 / 25%); }
+/* Màn lăn: bàn nỉ xanh dương, viền vàng */
+#games-dialog:has(.dice-table) { width: min(560px, calc(100vw - 24px)); }
+.game-stage-dice { background: #fbf6e8; border-color: #d9c49a; }
+.dice-table { display: grid; justify-items: center; gap: 6px; padding: 14px 12px 12px; border: 2px solid #b8955a; border-radius: 18px;
+  background: radial-gradient(120% 90% at 50% 20%, #2f5f93 0%, #224a78 55%, #15304f 100%);
+  box-shadow: inset 0 0 0 4px #15304f, inset 0 -16px 28px rgb(0 0 0 / 28%); color: #eaf2ff; transition: box-shadow 300ms ease; }
+.dice-pick-chip { margin: 0; padding: 3px 14px; border: 1px solid #c9a453; border-radius: 999px; background: rgb(10 25 45 / 55%); color: #f3dfa7; font-size: 16px; }
+.dice-scene { position: relative; display: grid; place-items: center; width: 100%; height: 210px; }
+.dice-bounce { position: relative; z-index: 1; margin-bottom: 18px; perspective: 700px; }
+.dice-tilt { transform-style: preserve-3d; transform: rotateX(-20deg) rotateY(24deg); }
+.dice-cube { --size: 96px; position: relative; width: var(--size); height: var(--size); transform-style: preserve-3d; }
+.dice-cube .dice-side { position: absolute; inset: 0; padding: 12%; backface-visibility: hidden; border: 1px solid #d8d0bd; }
+.dice-cube .side-1 { transform: translateZ(calc(var(--size) / 2)); }
+.dice-cube .side-6 { transform: rotateY(180deg) translateZ(calc(var(--size) / 2)); }
+.dice-cube .side-3 { transform: rotateY(90deg) translateZ(calc(var(--size) / 2)); }
+.dice-cube .side-4 { transform: rotateY(-90deg) translateZ(calc(var(--size) / 2)); }
+.dice-cube .side-2 { transform: rotateX(90deg) translateZ(calc(var(--size) / 2)); }
+.dice-cube .side-5 { transform: rotateX(-90deg) translateZ(calc(var(--size) / 2)); }
+.dice-shadow { position: absolute; bottom: 22px; width: 110px; height: 18px; border-radius: 50%; background: rgb(0 0 0 / 60%); filter: blur(5px); opacity: .5; }
+.dice-table .game-live { margin: 0; color: #eaf2ff; font-family: "Sriracha", cursive; font-size: 19px; }
+.dice-table.is-win { box-shadow: inset 0 0 0 4px #15304f, inset 0 -16px 28px rgb(0 0 0 / 28%), 0 0 0 3px #f3d27a, 0 0 22px rgb(243 210 122 / 55%); }
+/* Không đặt filter lên khối 3D (filter làm phẳng cảnh 3D); phát sáng ở lớp bọc bên ngoài. */
+.dice-table.is-win .dice-bounce { filter: drop-shadow(0 0 12px rgb(255 226 120 / 80%)); }
+.dice-table.is-lose .game-live { color: #f5c9bd; }
+@media (prefers-reduced-motion: no-preference) {
+  .dice-table.is-lose .dice-scene { animation: coin-lose-shake 380ms ease-in-out; }
+}
+@media (max-width: 480px) {
+  .dice-cube { --size: 84px; }
+  .game-dice-values .dice-numbers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .die-mini { width: 42px; height: 42px; }
+}
+/* Hộp bí ẩn: thẻ chọn hộp, bảng phần thưởng theo bậc, sân khấu mở hộp với tia sáng theo độ hiếm */
+.game-setup-box, .box-stage, .box-reveal { --tier-miss: #8a8f98; --tier-common: #4c9a5b; --tier-fair: #3f7fc4; --tier-rare: #8a55c9; --tier-epic: #e07a1f; --tier-legend: #d4a017; }
+.box-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.game-option.box-pick { display: grid; justify-items: center; gap: 2px; padding: 12px 6px 10px; font-size: 17px; line-height: 1.25; }
+.box-pick-icon { font-size: 40px; line-height: 1.1; filter: drop-shadow(0 3px 3px rgb(0 0 0 / 18%)); }
+.game-option.box-pick[aria-pressed="true"] .box-pick-icon { animation: box-pick-wiggle 1.4s ease-in-out infinite; }
+.box-tier-list { display: grid; gap: 6px; margin: 0 0 4px; padding: 0; list-style: none; }
+.box-tier { --tier: var(--tier-miss); display: grid; grid-template-columns: 116px minmax(0, 1fr) auto; align-items: center; gap: 8px;
+  padding: 6px 10px; border: 1px solid color-mix(in srgb, var(--tier) 35%, #e8d9b0); border-left: 5px solid var(--tier); border-radius: 10px; background: #fffaf0; }
+.box-tier-name { justify-self: start; padding: 1px 8px; border-radius: 999px; background: var(--tier); color: #fff; font-family: "Sriracha", cursive; font-size: 14px; white-space: nowrap; }
+.box-tier-items { display: flex; flex-wrap: wrap; gap: 4px; font-size: 24px; line-height: 1.2; }
+.box-tier-value { color: var(--tier); font-family: "Sriracha", cursive; font-size: 18px; font-weight: 400; font-variant-numeric: tabular-nums; }
+:is(.box-tier, .box-reveal).is-miss { --tier: var(--tier-miss); }
+:is(.box-tier, .box-reveal).is-common { --tier: var(--tier-common); }
+:is(.box-tier, .box-reveal).is-fair { --tier: var(--tier-fair); }
+:is(.box-tier, .box-reveal).is-rare { --tier: var(--tier-rare); }
+:is(.box-tier, .box-reveal).is-epic { --tier: var(--tier-epic); }
+:is(.box-tier, .box-reveal).is-legend { --tier: var(--tier-legend); }
+.box-tier.is-legend { background: linear-gradient(90deg, #fff6d6, #fffaf0); }
+/* Sân khấu mở hộp */
+#games-dialog:has(.box-theater) { width: min(560px, calc(100vw - 24px)); }
+.box-stage { background: #fbf6e8; border-color: #d9c49a; }
+.box-theater { --tier: #c9b7ff; display: grid; justify-items: center; gap: 6px; padding: 14px 12px 12px; border: 2px solid #8f7bd0; border-radius: 18px;
+  background: radial-gradient(120% 90% at 50% 25%, #4a3f86 0%, #2f2760 55%, #1b1640 100%);
+  box-shadow: inset 0 0 0 4px #1b1640, inset 0 -16px 28px rgb(0 0 0 / 30%); color: #efe9ff; }
+.box-pick-chip { margin: 0; padding: 3px 14px; border: 1px solid #a996e6; border-radius: 999px; background: rgb(20 15 50 / 55%); color: #e6dcff; font-size: 16px; }
+.box-scene { position: relative; display: grid; place-items: center; width: 100%; height: 200px; overflow: hidden; }
+.box-theater .game-box { position: relative; z-index: 2; height: auto; margin-bottom: 26px; font-size: 96px; filter: drop-shadow(0 8px 8px rgb(0 0 0 / 40%)); }
+.box-pedestal { position: absolute; z-index: 1; bottom: 16px; width: 140px; height: 22px; border-radius: 50%;
+  background: linear-gradient(#cfc3f5, #8673c9); box-shadow: 0 5px 0 #4e3f8f, 0 12px 18px rgb(0 0 0 / 35%); }
+.box-rays { position: absolute; z-index: 0; top: 50%; left: 50%; width: 320px; height: 320px; margin: -170px 0 0 -160px; border-radius: 50%; opacity: 0;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--tier) 75%, transparent) 0deg 10deg, transparent 10deg 24deg);
+  -webkit-mask: radial-gradient(circle, #000 18%, transparent 68%); mask: radial-gradient(circle, #000 18%, transparent 68%); }
+.box-theater.is-open .box-rays { opacity: 1; }
+.box-theater.is-open { --tier: var(--tier-miss); }
+.box-theater.is-open.is-miss { --tier: #9aa1ab; }
+.box-theater.is-open.is-common { --tier: #6fd08a; }
+.box-theater.is-open.is-fair { --tier: #6fb2ff; }
+.box-theater.is-open.is-rare { --tier: #c79bff; }
+.box-theater.is-open.is-epic { --tier: #ffa94d; }
+.box-theater.is-open.is-legend { --tier: #ffd84d; box-shadow: inset 0 0 0 4px #1b1640, inset 0 -16px 28px rgb(0 0 0 / 30%), 0 0 0 3px #ffd84d, 0 0 26px rgb(255 216 77 / 60%); }
+.box-theater.is-miss .box-rays { opacity: .35; }
+.box-theater .game-box.is-open { filter: drop-shadow(0 0 18px var(--tier)); }
+.box-theater .game-live { margin: 0; color: #efe9ff; font-family: "Sriracha", cursive; font-size: 18px; }
+.box-reveal { --tier: var(--tier-miss); display: grid; justify-items: center; gap: 2px; min-width: min(280px, 100%); padding: 8px 16px 10px; border: 2px solid var(--tier);
+  border-radius: 14px; background: #fffaf0; color: #2c2440; text-align: center; }
+.box-reveal-tier { padding: 1px 10px; border-radius: 999px; background: var(--tier); color: #fff; font-family: "Sriracha", cursive; font-size: 14px; }
+.box-reveal-name { font-family: "Sriracha", cursive; font-size: 20px; font-weight: 400; }
+.box-reveal-value { color: #5b5470; font-size: 16px; font-variant-numeric: tabular-nums; }
+@keyframes box-pick-wiggle { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(-10deg); } 86% { transform: rotate(9deg); } 94% { transform: rotate(-5deg); } }
+@keyframes box-rays-spin { to { transform: rotate(360deg); } }
+@keyframes box-reveal-in { from { transform: translateY(8px) scale(0.92); opacity: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .box-theater.is-open .box-rays { animation: box-rays-spin 14s linear infinite; }
+  .box-reveal { animation: box-reveal-in 320ms cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-option.box-pick[aria-pressed="true"] .box-pick-icon { animation: none; }
+}
+@media (max-width: 480px) {
+  .box-tier { grid-template-columns: 108px minmax(0, 1fr) auto; gap: 6px; padding: 6px 8px; }
+  .box-tier-items { font-size: 21px; }
+  .box-pick-icon { font-size: 34px; }
+  .box-theater .game-box { font-size: 84px; }
+}
+@media (max-width: 360px) {
+  .box-tier { grid-template-columns: minmax(0, 1fr) auto; }
+  .box-tier-items { grid-column: 1 / -1; grid-row: 2; }
+}
+/* Đấu giá cổ vật: sàn đấu giá nhung đỏ, viền vàng, cổ vật dưới đèn rọi */
+#games-dialog:has(.auction-house) { width: min(600px, calc(100vw - 24px)); background: #f7f0de; border-color: #ba9758; }
+.auction-house { --auction-velvet: #5a1d29; --auction-velvet-deep: #34101a; --auction-gold: #d9b45a; --auction-ink: #3a2a1c;
+  display: grid; gap: 12px; padding: 16px; border-color: #d9c49a; background: #fbf6e8; color: var(--auction-ink); overflow-wrap: anywhere;
+  font-family: "Patrick Hand", cursive; font-size: 18px; }
+.auction-house h3, .auction-house h4 { margin: 0; }
+.auction-stage { position: relative; display: grid; justify-items: center; gap: 4px; padding: 18px 14px 16px; border: 2px solid var(--auction-gold);
+  border-radius: 16px; background: radial-gradient(120% 90% at 50% 0%, #7a2b3a 0%, var(--auction-velvet) 45%, var(--auction-velvet-deep) 100%);
+  box-shadow: inset 0 0 0 4px #34101a, inset 0 -18px 30px rgb(0 0 0 / 25%); color: #fbeccb; text-align: center; }
+.auction-spotlight { position: relative; display: grid; place-items: center; width: 132px; height: 132px; }
+.auction-spotlight::before { content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 236 170 / 55%) 0%, rgb(255 222 140 / 18%) 45%, transparent 70%); }
+.auction-spotlight::after { content: ""; position: absolute; bottom: 4px; width: 104px; height: 16px; border-radius: 50%;
+  background: linear-gradient(#e6c574, #a88234); box-shadow: 0 4px 0 #6d521f; }
+.auction-artifact { position: relative; z-index: 1; margin-bottom: 14px; font-size: 72px; line-height: 1; filter: drop-shadow(0 6px 6px rgb(0 0 0 / 35%)); }
+.auction-stage .auction-name { margin: 0; font-family: "Sriracha", cursive; font-size: 24px; font-weight: 400; color: #ffe7a6; text-shadow: 0 2px 0 rgb(0 0 0 / 35%); }
+.auction-provenance { margin: 0; color: #e7cfaa; font-size: 16px; line-height: 1.45; }
+.auction-board { display: grid; justify-items: center; gap: 2px; padding: 12px 14px; border: 1px solid #c9a453; border-radius: 14px;
+  background: linear-gradient(#fff7dd, #f6e5b4); box-shadow: 0 3px 0 #d7bc78; text-align: center; }
+.auction-board-label { color: #7d6233; font-size: 15px; }
+.auction-price { font-variant-numeric: tabular-nums; }
+.auction-board .auction-price { font-family: "Sriracha", cursive; font-size: clamp(30px, 8vw, 38px); font-weight: 400; line-height: 1.15; color: #6b2b16; }
+.auction-leader { padding: 2px 12px; border-radius: 999px; background: #efe1bd; color: #5d4a2a; font-size: 15px; }
+.auction-leader.is-player { background: #d9efd2; color: #2f6a37; }
+.auction-board-meta { display: grid; justify-items: center; gap: 4px; margin-top: 6px; color: #7d6233; font-size: 14px; }
+.auction-rounds { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.auction-rounds li { width: 12px; height: 12px; border: 2px solid #b48f45; border-radius: 50%; background: #fffaf0; }
+.auction-rounds li.is-done { background: #b48f45; }
+.auction-rounds li.is-current { background: #f3d27a; box-shadow: 0 0 0 3px rgb(217 180 90 / 35%); }
+.auction-section-label { display: block; margin-bottom: 2px; color: #7d5a1f; font-family: "Sriracha", cursive; font-size: 15px; }
+.auction-clue, .auction-appraisal { padding: 10px 12px; border: 1px solid #e3cf9b; border-left: 4px solid #bb9446; border-radius: 10px; background: #fffaf0; line-height: 1.5; }
+.auction-clue p, .auction-appraisal p { margin: 0; font-size: 17px; }
+.auction-appraisal { border-left-color: #4f7a8c; background: #f3f8f8; }
+.auction-appraisal-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
+.auction-appraisal .auction-section-label { color: #35606f; }
+.auction-confidence { padding: 1px 10px; border-radius: 999px; font-size: 13px; }
+.auction-confidence.is-low { background: #fde3d6; color: #8d3b1f; }
+.auction-confidence.is-medium { background: #fbefc8; color: #75581a; }
+.auction-confidence.is-high { background: #d9efd2; color: #2f6a37; }
+.auction-range { font-family: "Sriracha", cursive; font-size: 20px !important; color: #24485a; font-variant-numeric: tabular-nums; }
+.auction-note { color: #556b70; font-size: 15px !important; }
+.auction-appraise { width: 100%; }
+.auction-bidders { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.auction-rival { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 10px;
+  border: 1px solid #e3cf9b; border-radius: 12px; background: #fffaf0; transition: background 160ms ease, opacity 160ms ease; }
+.auction-rival-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #f1e3bf; font-size: 22px; }
+.auction-rival-text { display: grid; line-height: 1.25; }
+.auction-rival-text strong { font-size: 17px; }
+.auction-rival-text small { color: #7a6a52; font-size: 14px; }
+.auction-rival-status { padding: 2px 10px; border-radius: 999px; background: #efe6d2; color: #6c5c43; font-size: 13px; white-space: nowrap; }
+.auction-rival.is-leading { border-color: #c98c3c; background: #fff0d4; box-shadow: 0 0 0 2px rgb(201 140 60 / 20%); }
+.auction-rival.is-leading .auction-rival-status { background: #c98c3c; color: #fffaf0; }
+.auction-rival.is-out { opacity: .55; }
+.auction-rival.is-out .auction-rival-text strong { text-decoration: line-through; }
+.auction-wallet { margin: 0; text-align: center; font-size: 16px; font-variant-numeric: tabular-nums; }
+.auction-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.auction-actions button { min-height: 48px; margin: 0; white-space: normal; }
+.auction-actions .auction-bid { grid-column: 1 / -1; min-height: 54px; font-size: 19px; }
+.auction-actions .auction-withdraw { border-color: #d9a59a; background: #fff3f0; color: #8d3b2a; }
+.auction-rule { margin: 0; text-align: center; }
+.auction-history h4 { margin-bottom: 4px; color: #7d5a1f; font-family: "Sriracha", cursive; font-size: 16px; font-weight: 400; }
+.auction-log { display: grid; gap: 2px; margin: 0; padding: 8px 10px; border-radius: 10px;
+  background: #f5ecd6; list-style: none; font-size: 15px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.auction-log li { display: flex; gap: 8px; }
+.auction-log li:last-child { font-weight: 700; }
+.auction-log-icon { flex: none; }
+.auction-result-banner { padding: 12px 14px; border-radius: 14px; text-align: center; }
+.auction-result-banner h4 { font-family: "Sriracha", cursive; font-size: 22px; font-weight: 400; }
+.auction-result-banner p { margin: 2px 0 0; font-size: 16px; }
+.auction-result-banner.is-win { border: 2px solid #d9b45a; background: linear-gradient(#fff4c9, #f7df94); color: #5e3f0c; }
+.auction-result-banner.is-lose { border: 1px solid #d4c7ae; background: #f1ebde; color: #5b5142; }
+.auction-stamp { position: absolute; z-index: 2; top: 6px; right: -34px; padding: 3px 10px; border: 3px solid currentColor; border-radius: 8px;
+  background: rgb(255 250 240 / 92%); font-family: "Sriracha", cursive; font-size: 16px; line-height: 1.2; white-space: nowrap; transform: rotate(-12deg); }
+.auction-stamp.is-genuine { color: #2f7a3b; }
+.auction-stamp.is-replica { color: #2f5f8f; }
+.auction-stamp.is-fake { color: #b03a2e; }
+.auction-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; }
+.auction-facts div { padding: 8px 6px; border: 1px solid #e3cf9b; border-radius: 10px; background: #fffaf0; text-align: center; }
+.auction-facts dt { color: #7a6a52; font-size: 13px; }
+.auction-facts dd { margin: 0; font-size: 16px; font-weight: 700; }
+.auction-value { margin: 0; text-align: center; font-family: "Sriracha", cursive; font-size: 20px; color: #6b2b16; }
+.auction-ledger { display: grid; gap: 4px; margin: 0; padding: 10px 12px; border-radius: 10px; background: #f5ecd6; font-variant-numeric: tabular-nums; }
+.auction-ledger div { display: flex; justify-content: space-between; gap: 8px; }
+.auction-ledger dd { margin: 0; font-weight: 700; white-space: nowrap; }
+.auction-ledger .auction-net { padding-top: 4px; border-top: 1px dashed #c8b07a; }
+.auction-net.is-gain dd { color: #2f7a3b; }
+.auction-net.is-loss dd { color: #b03a2e; }
+.auction-rules { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.auction-rules li { display: flex; gap: 10px; padding: 8px 10px; border-radius: 10px; background: #fffaf0; border: 1px solid #ecdcb2; font-size: 17px; line-height: 1.4; }
+.auction-rule-icon { flex: none; font-size: 20px; }
+.auction-house > .game-primary { min-height: 52px; margin: 0; font-size: 18px; }
+@media (max-width: 480px) {
+  .auction-house { padding: 12px; gap: 10px; }
+  .auction-spotlight { width: 112px; height: 112px; }
+  .auction-artifact { font-size: 60px; }
+  .auction-stamp { right: -28px; font-size: 14px; }
+  .auction-rival { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 8px; }
+  .auction-rival-icon { width: 34px; height: 34px; font-size: 19px; }
+}
+/* Màn rất hẹp: nhãn trạng thái xuống dưới tên để tên đối thủ không bị bẻ dòng. */
+@media (max-width: 360px) {
+  .auction-rival { grid-template-columns: 34px minmax(0, 1fr); }
+  .auction-rival-icon { grid-row: span 2; }
+  .auction-rival-status { justify-self: start; }
+  .auction-actions { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .auction-artifact { animation: auction-float 3.2s ease-in-out infinite; }
+  .auction-board .auction-price { animation: auction-price-pop 360ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .auction-stamp { animation: auction-stamp 420ms cubic-bezier(0.22, 1.4, 0.36, 1) both; }
+}
+@keyframes auction-float { 50% { transform: translateY(-5px); } }
+@keyframes auction-price-pop { from { transform: scale(0.92); opacity: 0.4; } }
+@keyframes auction-stamp { from { transform: rotate(-12deg) scale(1.8); opacity: 0; } }
 #life-auction-items[data-empty="true"]::before { content: "Chưa có cổ vật. Ghé Trò Chơi → Đấu giá cổ vật để bắt đầu sưu tầm."; display: block; line-height: 1.6; }
 /* Leo tháp */
 #games-dialog:has(.tower-stage) { width: min(640px, calc(100vw - 24px)); background: #f7f0de; border-color: #ba9758; }
@@ -3489,6 +3772,27 @@ dialog .lottery-grid .lottery-number.is-picked {
   .gc-pull-button { min-height: 120px; }
   .gc-pull-label { font-size: 18px; }
 }
+/* Kéo bò: dòng trạng thái dạng bong bóng, thanh kéo có tên bò và phần trăm, cờ đích; bảng tỉ lệ thành thẻ màu */
+.gc-stage-cow > .game-live { margin: 8px auto 0; padding: 6px 14px; max-width: 360px; border-radius: 14px; background: #fff8dc; border: 1px solid #ecd28a;
+  box-shadow: 0 2px 0 #e5c76b; font-size: 17px; line-height: 1.4; }
+.gc-pull-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.gc-pull-percent { font-family: "Sriracha", cursive; font-size: 22px; color: #2f7a3b; font-variant-numeric: tabular-nums; }
+.gc-pull-bar { position: relative; height: 24px; overflow: visible; box-shadow: inset 0 2px 3px rgb(120 80 20 / 25%); }
+.gc-pull-bar::after { content: "🏁"; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); font-size: 22px; line-height: 1; }
+.gc-pull-fill { box-shadow: inset 0 -3px 0 rgb(0 0 0 / 10%), inset 0 3px 0 rgb(255 255 255 / 45%); transition: width 80ms linear; }
+/* 3 thẻ trên, 2 thẻ hiếm (vàng, vương miện) dưới rộng hơn. */
+.gc-legend:has(.gc-legend-cow) { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; max-width: 420px; margin: 10px auto 0; }
+.gc-legend-cow { grid-column: span 2; }
+.gc-legend-cow.is-gold, .gc-legend-cow.is-crown { grid-column: span 3; }
+.gc-legend-cow { --tag: #d6ac45; display: grid; justify-items: center; gap: 0; padding: 6px 2px; border: 2px solid var(--tag); border-radius: 12px; background: #fffaf0; line-height: 1.2; }
+.gc-legend-cow .gc-legend-icon { font-size: 22px; line-height: 1.1; }
+.gc-legend-cow strong { font-family: "Sriracha", cursive; font-size: 16px; font-weight: 400; color: #6b4a12; }
+.gc-legend-cow small { font-size: 13px; color: #6b6252; }
+.gc-legend-cow.is-brown { --tag: #c98a4b; }
+.gc-legend-cow.is-buffalo { --tag: #5a6b78; }
+.gc-legend-cow.is-gold { --tag: #f2b705; background: linear-gradient(#fff6cf, #fffaf0); }
+.gc-legend-cow.is-crown { --tag: #e0457b; background: linear-gradient(#ffe3ef, #fffaf0); }
+.gc-legend-cow .gc-legend-icon, .gc-legend-cow small { white-space: nowrap; }
 
 /* ===== Tiến lên miền Nam ===== */
 #games-dialog:has(.tl-shell, .tl-lobby) { width: min(960px, calc(100vw - 24px)); padding: 24px; border-color: #c5a467; background: #f7f1e2; }
@@ -3621,6 +3925,117 @@ dialog .lottery-grid .lottery-number.is-picked {
 }
 @media (max-width: 360px) { .tl-hand { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .tl-hand .tl-card, .tl-seat { transition: none; } }
+/* ===== Tiến lên: nâng cấp giao diện (bàn nỉ viền gỗ, lá úp của đối thủ, hiệu ứng đặt bài, phỉnh cược) ===== */
+/* Phông đồng bộ với game: chữ phụ dùng Patrick Hand thay vì phông hệ thống. */
+.tl-eyebrow, .tl-phase, .tl-metric > span, .tl-count, .tl-badge, .tl-danger, .tl-table-mark, .tl-center-label,
+.tl-selection, .tl-tables .side-job-note, .tl-rest-count, .tl-turn { font-family: "Patrick Hand", cursive; font-weight: 400; }
+.tl-eyebrow { font-size: 14px; letter-spacing: .04em; }
+.tl-phase { font-size: 15px; border-radius: 999px; padding: 6px 14px; }
+.tl-phase.is-your-turn { background: #2f6a44; border-color: #2f6a44; color: #fff8e5; box-shadow: 0 0 0 3px rgb(47 106 68 / 18%); }
+.tl-metric > span { font-size: 14px; }
+.tl-metric strong { font-size: 20px; }
+.tl-count { font-size: 14px; }
+.tl-badge { font-size: 13px; border-radius: 999px; padding: 2px 9px; }
+.tl-danger { font-size: 13px; }
+.tl-selection { font-size: 14px; }
+.tl-status { font-family: "Patrick Hand", cursive; font-size: 17px; text-align: center; }
+.tl-turn { font-size: 15px; }
+.tl-me { font-size: 16px; }
+/* Bàn nỉ: viền gỗ, chỉ vàng bên trong, hoa văn bốn chất mờ ở giữa */
+.tl-board { position: relative; border: 8px solid #7a5530; border-radius: 40px;
+  background: radial-gradient(ellipse at 50% 45%, #3f7a5c 0%, #2a5a43 55%, #1c4231 100%);
+  box-shadow: inset 0 0 0 3px #c9a453, inset 0 0 0 6px rgb(0 0 0 / 18%), inset 0 10px 30px rgb(0 0 0 / 30%), 0 6px 0 #5a3d20, 0 12px 20px rgb(60 40 20 / 25%); }
+.tl-board::before { content: "♠ ♥ ♦ ♣"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: rgb(255 255 255 / 6%);
+  font-size: clamp(34px, 9vw, 64px); letter-spacing: .2em; white-space: nowrap; pointer-events: none; }
+.tl-board > * { position: relative; }
+/* Ghế đối thủ: thẻ nổi, lượt đang đánh có vòng sáng nhấp nháy */
+.tl-seat { background: rgb(15 40 30 / 78%); border-color: rgb(201 164 83 / 45%); box-shadow: 0 4px 10px rgb(0 0 0 / 25%); font-family: "Sriracha", cursive; }
+.tl-seat.is-turn { border-color: #f3d27a; box-shadow: 0 0 0 3px rgb(243 210 122 / 45%), 0 4px 10px rgb(0 0 0 / 25%); }
+.tl-seat.is-winner { background: linear-gradient(#4b8a59, #2f6a44); border-color: #f3d27a; }
+.tl-avatar { box-shadow: 0 0 0 2px rgb(255 255 255 / 25%); }
+.tl-seat-top .tl-fan { grid-column: 1 / -1; justify-self: center; }
+/* Lá úp: lưng bài đỏ đô, viền trắng, hoa văn kẻ chéo */
+.tl-fan { display: flex; justify-content: center; padding: 2px 0 0; }
+.tl-back { width: 14px; height: 20px; border: 1.5px solid #fff8ea; border-radius: 3px; box-shadow: 0 1px 2px rgb(0 0 0 / 35%);
+  background: repeating-linear-gradient(45deg, #9c2f2f 0 3px, #7d2222 3px 6px), #8a2828; }
+.tl-back + .tl-back { margin-left: -8px; }
+.tl-fan .tl-back:nth-child(odd) { transform: translateY(-1px) rotate(-3deg); }
+.tl-fan .tl-back:nth-child(even) { transform: rotate(3deg); }
+/* Giữa bàn: ô chờ mở vòng, bộ vừa đánh rơi xuống, chặt thì lóe sáng */
+.tl-table-mark { font-family: "Sriracha", cursive; font-size: 14px; letter-spacing: .3em; color: #d9c48e; }
+.tl-center-label { font-size: 13px; color: #cfe0d3; }
+.tl-pile-caption { font-family: "Patrick Hand", cursive; font-size: 16px; padding: 2px 10px; border-radius: 999px; background: rgb(0 0 0 / 22%); }
+.tl-slot { display: block; width: 44px; height: 62px; border: 2px dashed rgb(217 196 142 / 55%); border-radius: 7px; }
+.tl-pile .tl-card { box-shadow: 0 4px 8px rgb(0 0 0 / 35%); }
+.tl-pile .tl-card:nth-child(odd) { transform: rotate(-4deg); }
+.tl-pile .tl-card:nth-child(even) { transform: rotate(3deg) translateY(2px); }
+.tl-center.is-chop .tl-pile-caption { background: #b3261e; color: #fff4e0; }
+.tl-center.is-chop .tl-pile { filter: drop-shadow(0 0 10px rgb(255 120 90 / 85%)); }
+/* Khu bài của bạn: khay gỗ sáng */
+.tl-player-area { background: linear-gradient(#efe5cf, #e3d5b6); border: 1px solid #cdb98f; box-shadow: inset 0 2px 0 #fff8e8, 0 3px 0 #c8b184; }
+.tl-me.is-turn { color: #2f6a44; }
+.tl-hand .tl-card { background: linear-gradient(#fffefb, #f6f1e4); }
+.tl-hand .tl-card[aria-pressed="true"] { background: linear-gradient(#fff9de, #ffefb3); border-color: #c9952c; box-shadow: 0 0 0 2px #c9952c, 0 8px 12px rgb(120 80 10 / 30%); }
+/* Nút: nút Đánh nổi bật, nhóm phụ đồng màu khay */
+.tl-actions .tl-play { background: linear-gradient(#3c7552, #2c5c40); border-color: #2c5c40; box-shadow: 0 3px 0 #1f4430; font-family: "Sriracha", cursive; font-size: 18px; }
+.tl-actions .tl-play:disabled { box-shadow: none; }
+.tl-actions .shop-back { font-family: "Sriracha", cursive; font-size: 15px; box-shadow: 0 2px 0 #d6c7a6; }
+.tl-forfeit { font-family: "Patrick Hand", cursive; font-size: 15px; }
+/* Sảnh: bàn chơi là thẻ nỉ xanh có chồng phỉnh theo mức cược */
+.tl-tables .tl-table-pick { position: relative; padding: 16px 16px 16px 74px; border: 2px solid #8a6a3c; border-radius: 16px; color: #fff8e5;
+  background: radial-gradient(ellipse at 30% 30%, #3f7a5c, #24503b); box-shadow: inset 0 0 0 2px rgb(201 164 83 / 55%), 0 3px 0 #5a3d20; font-family: "Sriracha", cursive; }
+/* buttons.css tô ghi chú của nút nhóm màu xám xanh; trên nền nỉ cần chữ sáng nên tăng độ ưu tiên bằng id hộp thoại. */
+#games-dialog .tl-tables .tl-table-pick > .side-job-note { color: #eef5ef; font-size: 15px; text-shadow: 0 1px 0 rgb(0 0 0 / 30%); }
+.tl-tables .tl-table-pick::before { content: ""; position: absolute; left: 16px; top: 50%; width: 42px; height: 42px; margin-top: -21px; border-radius: 50%;
+  background: radial-gradient(circle, var(--chip) 0 38%, #fff 39% 46%, var(--chip) 47% 100%);
+  box-shadow: 0 0 0 2px #fff, 0 3px 0 rgb(0 0 0 / 35%), 0 6px 0 -1px var(--chip), 0 6px 0 1px #fff; }
+.tl-table-pick[data-tier="1"] { --chip: #3a7bd5; }
+.tl-table-pick[data-tier="2"] { --chip: #2f9a52; }
+.tl-table-pick[data-tier="3"] { --chip: #d4472f; }
+.tl-table-pick[data-tier="4"] { --chip: #1c1c1c; }
+.tl-tables .tl-all-in { --chip: #c9952c; border-color: #9c3b26; background: radial-gradient(ellipse at 30% 30%, #8c3a2a, #5c1f17); }
+.tl-tables .tl-table-pick:disabled { filter: grayscale(.7); opacity: .55; }
+.tl-rules { padding: 10px 14px; border: 1px solid #d6c7a6; border-radius: 12px; background: #fbf6e9; }
+@keyframes tl-pile-drop { from { transform: translateY(-26px) scale(1.15); opacity: 0; } }
+@keyframes tl-turn-pulse { 50% { box-shadow: 0 0 0 6px rgb(243 210 122 / 18%), 0 4px 10px rgb(0 0 0 / 25%); } }
+@media (prefers-reduced-motion: no-preference) {
+  .tl-pile.is-new { animation: tl-pile-drop 340ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .tl-seat.is-turn { animation: tl-turn-pulse 1.4s ease-in-out infinite; }
+  .tl-center.is-chop .tl-pile.is-new { animation: tl-pile-drop 340ms cubic-bezier(0.22, 1, 0.36, 1), coin-lose-shake 380ms 340ms ease-in-out; }
+}
+@media (max-width: 760px) {
+  .tl-actions .shop-back { font-size: 14px; }
+}
+@media (max-width: 480px) {
+  .tl-board { border-width: 5px; border-radius: 26px; }
+  .tl-phase { font-size: 13px; padding: 5px 9px; max-width: none; }
+  .tl-metric > span { font-size: 12px; }
+  .tl-metric strong { font-size: 16px; }
+  .tl-count { font-size: 12px; }
+  .tl-badge, .tl-danger { font-size: 11px; }
+  .tl-back { width: 11px; height: 16px; }
+  .tl-back + .tl-back { margin-left: -7px; }
+  .tl-table-mark { font-size: 11px; letter-spacing: .18em; }
+  .tl-center-label { font-size: 11px; }
+  .tl-pile-caption { font-size: 13px; }
+  .tl-slot { width: 34px; height: 48px; }
+  .tl-status { font-size: 15px; }
+  .tl-me { font-size: 14px; }
+  .tl-turn { font-size: 13px; }
+  .tl-selection { font-size: 13px; }
+  .tl-actions .shop-back { font-size: 13px; }
+  .tl-tables .tl-table-pick { padding: 14px 12px 14px 66px; }
+  .tl-tables .tl-table-pick::before { left: 12px; width: 38px; height: 38px; margin-top: -19px; }
+}
+@media (prefers-reduced-motion: reduce) { .tl-seat.is-turn { animation: none; } }
+@media (max-width: 360px) {
+  .tl-heading h3 { font-size: 19px; }
+  .tl-phase { flex: none; font-size: 12px; padding: 4px 8px; white-space: nowrap; }
+  .tl-metric strong { font-size: 14px; }
+  .tl-pile-caption { font-size: 12px; padding: 1px 8px; }
+  .tl-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tl-actions button { min-height: 44px; white-space: nowrap; }
+}
 
 /* Gắp thú: máy nhìn từ trên xuống, bàn điều khiển 4 hướng và nút GẮP lớn. */
 .gc-claw-canvas { border-color: #b9a3e8; }

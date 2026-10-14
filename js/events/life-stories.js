@@ -14,6 +14,9 @@ const isEmployed = (player, age) => player.employmentStatus === 'employed' && ag
 // Hoàn cảnh dùng trong `needs`. Các cặp bổ sung nhau (partner/single, children/noChildren…)
 // để mỗi người chơi luôn có đủ sự kiện hợp với đời mình.
 export const NEEDS = {
+  criminalRecord: player => (player.criminalRecord?.length ?? 0) > 0,
+  outsidePrison: player => !player.prison,
+  reformationReady: player => player.lifePath === 'reformed' && (player.reformedYears ?? 0) >= 3 && !player.workInvestigation && !player.reformationRecognized,
   studyAbroad: (player, age) => age >= 18 && age <= 21 && player.careerPath?.id === 'study-abroad' && player.careerPath.school?.type === 'international',
   father: player => relative(player, 'father')?.alive === true,
   mother: player => relative(player, 'mother')?.alive === true,
@@ -108,16 +111,17 @@ export function fillStoryText(text, player = {}, child = player.children?.[0]) {
 
 // Mặt cười gắn lúc hiển thị (dữ liệu không chứa emoji), khớp với cảm xúc của đoạn văn.
 // Mỗi đoạn luôn ra cùng một mặt để tải lại game không đổi.
+// Chỉ dùng emoji mặt phổ biến (Unicode 13 trở xuống) để máy cũ vẫn hiển thị được.
 export const FACES = {
-  joy: ['😄', '😊', '🥰', '😁', '🤗'],
-  warm: ['🙂', '😌', '😊', '☺️', '😇'],
-  neutral: ['🙂', '😐', '😶', '🤔'],
-  uneasy: ['😕', '😟', '😬', '🥲', '😓'],
-  sad: ['😔', '😢', '🥺', '😞', '😥'],
-  heavy: ['😭', '😢', '😞'],
+  joy: ['😄', '😊', '🥰', '😁', '🤗', '😃', '😆', '🥳', '😍', '🤩', '😀', '😸'],
+  warm: ['🙂', '😌', '😊', '☺️', '😇', '😙', '😚', '🤗', '😺'],
+  neutral: ['🙂', '😐', '😶', '🤔', '😑', '🧐', '😗', '😯'],
+  uneasy: ['😕', '😟', '😬', '🥲', '😓', '😰', '😧', '🙁', '😖', '😣'],
+  sad: ['😔', '😢', '🥺', '😞', '😥', '☹️', '😩', '😿'],
+  heavy: ['😭', '😢', '😞', '😫', '😩', '😿'],
   // Bùi ngùi: kết quả nhẹ lòng nhưng giữa chuyện mất mát, bệnh tật.
-  tender: ['🥲', '😌', '🙂'],
-  dilemma: ['🤔', '😟', '😬', '😕', '🙁', '😶'],
+  tender: ['🥲', '😌', '🙂', '🥺', '😇', '☺️'],
+  dilemma: ['🤔', '😟', '😬', '😕', '🙁', '😶', '🧐', '😯', '😮', '😐'],
 };
 
 // Đoạn văn nói về mất mát, bệnh tật, tang lễ: không dùng mặt cười tươi.
@@ -129,7 +133,20 @@ function faceSeed(key) {
   for (const char of key) hash = (hash * 31 + char.codePointAt(0)) >>> 0;
   return hash;
 }
-const pickFace = (mood, key) => FACES[mood][faceSeed(key) % FACES[mood].length];
+
+// Mặt cho cả sự kiện: tình huống trước, rồi từng kết quả theo thứ tự tác giả viết.
+// Mặt đã dùng trong cùng sự kiện thì chọn mặt kế tiếp trong nhóm, để các lựa chọn không lặp mặt nhau.
+function pickEventFaces(entries) {
+  const used = new Set();
+  return entries.map(([mood, key]) => {
+    const pool = FACES[mood];
+    const start = faceSeed(key) % pool.length;
+    const free = pool.map((_, step) => pool[(start + step) % pool.length]).find(face => !used.has(face));
+    const face = free ?? pool[start];
+    used.add(face);
+    return face;
+  });
+}
 
 // Kết quả: theo mức hạnh phúc của lựa chọn; hạnh phúc không đổi thì xét các chỉ số còn lại.
 // Giữa chuyện buồn (somber), kết quả tích cực chỉ ở mức bùi ngùi.
@@ -151,7 +168,6 @@ export function situationMood(story) {
   return isSomber(story.text) || average <= -1.5 ? 'sad' : 'dilemma';
 }
 
-const withFace = (text, mood, key) => `${text} ${pickFace(mood, key)}`;
 
 // Thứ tự lựa chọn xoay vòng theo sự kiện và theo ván chơi (cố định khi tải lại), để lựa chọn
 // có lợi nhất không luôn nằm ở ô đầu tiên như trong dữ liệu.
@@ -170,9 +186,19 @@ function toGameEvent(story, age, player) {
   const child = story.childAge
     ? player.children?.find(kid => getChildAge(kid, age) >= story.childAge[0] && getChildAge(kid, age) <= story.childAge[1])
     : player.children?.[0];
+  const saving = story.choices.every(choice => choice.money < 0 || choice.home || choice.salaryMonths)
+    ? { label: 'Chưa chi tiền lúc này', text: 'Tôi xem lại số tiền trong ví và quyết định để dành. Chuyện này phải chờ thêm.', effects: {} }
+    : null;
+  const authoredChoices = [...story.choices, ...(saving ? [saving] : [])];
+  const prepared = authoredChoices.map(source => prepareStoryChoice(source, player, age));
+  const somberStory = isSomber(story.text);
+  const [situationFace, ...resultFaces] = pickEventFaces([
+    [situationMood(story), story.id],
+    ...prepared.map((choice, index) => [resultMood(choice.effects, somberStory || isSomber(choice.text)), `${story.id}#${index}`]),
+  ]);
   return {
     id: story.id, age, title: fillStoryText(story.title, player, child), mode: 'choice',
-    text: withFace(fillStoryText(story.text, player, child), situationMood(story), story.id),
+    text: `${fillStoryText(story.text, player, child)} ${situationFace}`,
     ...art,
     kind: 'everyday', category: 'everyday', catalogVersion: 3, lifeStory: true,
     chain: isChain(story), weight: isChain(story) ? CHAIN_WEIGHT : 1,
@@ -180,14 +206,13 @@ function toGameEvent(story, age, player) {
     conditionText: `Tuổi ${age}; còn sống${requirements.length ? '; ' + requirements.join(', ') : ''}.`,
     automaticResult: false,
     everydayDifficultyApplied: true,
-    choices: [...orderChoices(story, player), ...(story.choices.every(choice => choice.money < 0 || choice.home || choice.salaryMonths) ? [{ label: 'Chưa chi tiền lúc này', text: 'Tôi xem lại số tiền trong ví và quyết định để dành. Chuyện này phải chờ thêm.', effects: {} }] : [])].map((source) => {
-      const authored = story.choices.indexOf(source);
-      const index = authored < 0 ? story.choices.length : authored;
-      const choice = prepareStoryChoice(source, player, age);
+    choices: [...orderChoices(story, player), ...(saving ? [saving] : [])].map((source) => {
+      const index = authoredChoices.indexOf(source);
+      const choice = prepared[index];
       return ({
       label: fillStoryText(choice.label, player, child),
       title: fillStoryText(choice.title ?? story.title, player, child),
-      text: withFace(fillStoryText(choice.text, player, child), resultMood(choice.effects, isSomber(story.text) || isSomber(choice.text)), `${story.id}#${index}`),
+      text: `${fillStoryText(choice.text, player, child)} ${resultFaces[index]}`,
       effects: { ...(choice.effects ?? {}) },
       ...(choice.money === undefined ? {} : { money: choice.money }),
       ...(choice.keepsake ? { keepsake: { ...choice.keepsake } } : {}),

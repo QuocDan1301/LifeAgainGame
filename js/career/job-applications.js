@@ -1,3 +1,4 @@
+import { getRecordPenalty, isRehabilitated } from '../events/crime-consequences.js';
 import { saveGame } from "../core/save-store.js";
 import { getStudyAbroadCountry, getOverseasJobBlocker } from "../education/study-abroad.js";
 import { formatMoney } from "../core/money-format.js";
@@ -20,6 +21,7 @@ const PROMOTION_WAIT_YEARS = 2;
 
 export function getJobApplicationBlocker(player) {
   if (player.isAlive === false) return "Nhân vật đã qua đời.";
+  if (player.prison && player.prison.releaseAge > player.age) return "Bạn đang thụ án, chưa thể nộp hồ sơ xin việc.";
   if (player.careerPath?.id === "casual") return "Bạn không đi học tiếp. Vào Hoạt động → Làm thêm để nhận nghề tự do.";
   if (!player.careerPath) return "Bạn chưa chọn ngành học nên chưa có hồ sơ để nộp.";
   if (player.age < GRADUATION_AGE) {
@@ -94,6 +96,10 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     if (player.careerExperience?.careerId === studied && getRehireLevel(player, studied) > 1) {
       body.append(element("p", "side-job-intro", `💼 Kinh nghiệm cũ: ứng tuyển lại ngành này ở vị trí ${getCareerProfile(studied, player.careerPath).ranks[getRehireLevel(player, studied) - 1]}.`));
     }
+    const recordPenalty = getRecordPenalty(player);
+    if (recordPenalty || isRehabilitated(player)) body.append(element("p", "side-job-intro", recordPenalty
+      ? `Tiền án làm giảm ${Math.round(recordPenalty * 100)} điểm % cơ hội phỏng vấn. Hoàn lương: giữ ít nhất ba năm không phạm pháp bên ngoài, hoàn thành chuỗi trở về để nhận thư giới thiệu. Tiến độ: ${player.reformedYears ?? 0}/3 năm.`
+      : "Thư giới thiệu sau quá trình hoàn lương đã khôi phục cơ hội phỏng vấn; tiền án vẫn được lưu."));
     if (blocker) body.append(element("p", "license-age-note", blocker));
     if (player.age >= GRADUATION_AGE - 1 && player.isAlive !== false) {
       const prepared = hasInterviewPrep(player);
