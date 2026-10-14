@@ -64,6 +64,8 @@ export function createInitialState() {
       tarotUsedAge: null,
       tarotReading: null,
       tarotBuff: null,
+      detective: null,
+      garden: null,
       developmentDone: {},
       studyBlock: null,
       schoolRewardsReceived: {},

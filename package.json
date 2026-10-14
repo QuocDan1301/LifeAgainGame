@@ -9,6 +9,8 @@
     "test:game-center": "node scripts/check-game-center-progress.mjs",
     "test:work": "node scripts/check-work-temptation.mjs && node scripts/check-crime.mjs",
     "test:auction": "node scripts/check-auction.mjs",
+    "test:detective": "node scripts/check-detective.mjs",
+    "test:garden": "node scripts/check-garden.mjs",
     "test:server": "node scripts/check-server.mjs",
     "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
   }

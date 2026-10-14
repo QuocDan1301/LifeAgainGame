@@ -5,11 +5,13 @@ import { getLicenseType, hasLicense } from "../career/licenses.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { applyActivityGain } from "../core/stat-budget.js";
 import { isInPrison } from "../events/crime.js";
+import { crimeTools } from "../events/crime-tools.js";
 
 // Cửa hàng dùng chung cho "Mua vật nuôi" và "Mua sắm". Giá và lãi tính bằng VNĐ;
 // món có profit sinh lãi mỗi năm, mọi món đều bán lại được một nửa giá mua.
 // limit: số lượng tối đa được sở hữu cùng lúc, để lãi không nhân lên vô hạn.
 export const shopCatalog = [
+  ...crimeTools,
   // Thú cưng: không sinh lãi; mỗi năm vuốt ve mỗi con một lần để được cộng hạnh phúc.
   // food, vaccine: tiền thức ăn và tiêm ngừa trả mỗi năm từ năm sau khi mua (không có vaccine = không cần tiêm).
   { id: "hamster", shop: "pets", group: "companion", icon: "🐹", name: "Chuột hamster", price: 300_000, happiness: 1, limit: 1,
@@ -89,7 +91,7 @@ export const shops = {
     title: "🛍️ Mua sắm",
     owned: "purchases",
     groups: [
-      { id: "items", label: "🧸 Mua vật dụng", comingSoon: true },
+      { id: "items", label: "🧸 Mua vật dụng" },
       { id: "vehicles", label: "🚗 Mua phương tiện" },
       { id: "realestate", label: "🏢 Mua bất động sản" },
       { id: "business", label: "🏪 Kinh doanh" },
@@ -102,6 +104,7 @@ export const ownedSections = [
   { list: "life-livestock", groups: ["companion", "cattle", "poultry"] },
   { list: "life-realestate", groups: ["realestate", "business"] },
   { list: "life-vehicles", groups: ["vehicles"] },
+  { list: "life-items", groups: ["items"] },
 ];
 
 export const getShopItem = (id) => shopCatalog.find((item) => item.id === id);
@@ -282,10 +285,12 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
     const buy = element("button", "shop-buy");
     buy.type = "button";
     const licensed = !item.license || hasLicense(state.player, item.license);
+    const oldEnough = !item.minAge || state.player.age >= item.minAge;
+    if (item.minAge) figures.push(`🔞 Từ ${item.minAge} tuổi`);
     const affordable = state.player.money >= item.price;
     const full = isAtLimit(state.player, item);
-    buy.disabled = !licensed || !affordable || full;
-    buy.textContent = !licensed ? `🪪 Cần ${getLicenseType(item.license).name.toLocaleLowerCase("vi-VN")}`
+    buy.disabled = !oldEnough || !licensed || !affordable || full || state.player.isAlive === false || isInPrison(state.player);
+    buy.textContent = !oldEnough ? `Từ ${item.minAge} tuổi` : !licensed ? `🪪 Cần ${getLicenseType(item.license).name.toLocaleLowerCase("vi-VN")}`
       : full ? `Đã đủ ${item.limit}` : affordable ? "🛒 Mua" : "Không đủ tiền";
     buy.addEventListener("click", () => ask(
       `🛒 Mua ${item.name}?`,
@@ -325,7 +330,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
   // Kiểm tra lại khi xác nhận: chỉ mua khi ví, giới hạn sở hữu và giấy phép còn đủ cho cả count món.
   function purchase(item, count) {
     const player = state.player;
-    if (count < 1 || player.money < item.price * count ||
+    if (count < 1 || player.isAlive === false || isInPrison(player) || (item.minAge && player.age < item.minAge) || player.money < item.price * count ||
         (item.limit && countOwned(player, item.id) + count > item.limit) ||
         (item.license && !hasLicense(player, item.license))) return;
     const key = shops[item.shop].owned;

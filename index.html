@@ -1492,6 +1492,15 @@
             ></span
           >
         </button>
+        <button type="button" id="activity-garden">
+          <span class="activity-icon" aria-hidden="true">🪴</span
+          ><span class="activity-text"
+            ><span class="activity-title">Vườn nhà</span
+            ><span class="activity-note"
+              >Gieo một luống rau, nấu một bữa cơm, thêm một mùa vui!</span
+            ></span
+          >
+        </button>
         <button type="button" id="activity-beauty">
           <span class="activity-icon" aria-hidden="true">💄</span
           ><span class="activity-text"
@@ -1570,6 +1579,15 @@
             ><span class="activity-title">Du lịch</span
             ><span class="activity-note"
               >Đi một chuyến, mang về cả trời kỷ niệm!</span
+            ></span
+          >
+        </button>
+        <button type="button" id="activity-detective">
+          <span class="activity-icon" aria-hidden="true">🕵️</span
+          ><span class="activity-text"
+            ><span class="activity-title">Thám tử tư</span
+            ><span class="activity-note"
+              >Đối chiếu manh mối, chỉ đúng người, nhận thù lao xứng đáng!</span
             ></span
           >
         </button>
@@ -1838,6 +1856,34 @@
       </div>
       <div id="tarot-body"></div>
     </dialog>
+    <dialog id="detective-dialog" aria-labelledby="detective-title">
+      <div class="dialog-heading">
+        <h2 id="detective-title">🕵️ Thám tử tư</h2>
+        <button
+          type="button"
+          class="dialog-close"
+          id="close-detective"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
+      </div>
+      <div id="detective-body"></div>
+    </dialog>
+    <dialog id="garden-dialog" aria-labelledby="garden-title">
+      <div class="dialog-heading">
+        <h2 id="garden-title">🪴 Vườn nhà</h2>
+        <button
+          type="button"
+          class="dialog-close"
+          id="close-garden"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
+      </div>
+      <div id="garden-body"></div>
+    </dialog>
     <dialog id="shop-confirm-dialog" aria-labelledby="shop-confirm-title">
       <h2 id="shop-confirm-title"></h2>
       <p id="shop-confirm-text"></p>
@@ -1904,6 +1950,16 @@
       >
         <h3 id="life-vehicles-title">🚗 Phương tiện</h3>
         <ul id="life-vehicles" class="dialog-entries"></ul>
+      </section>
+      <section
+        class="dialog-card life-panel"
+        id="life-items-panel"
+        data-icon="🧸"
+        data-tab="Vật dụng"
+        aria-labelledby="life-items-title"
+      >
+        <h3 id="life-items-title">🧸 Vật dụng và đạo cụ</h3>
+        <ul id="life-items" class="dialog-entries"></ul>
       </section>
       <section
         class="dialog-card life-panel"

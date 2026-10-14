@@ -152,6 +152,8 @@ import { initLottery, mergeLotteryPurchaseLogs } from "./leisure/lottery.js";
 import { initTravel } from "./leisure/travel.js";
 import { initGameCenter } from "./leisure/game-center.js";
 import { initTarot } from "./leisure/tarot.js";
+import { initDetective } from "./leisure/detective.js";
+import { initGarden } from "./leisure/garden.js";
 import { playEventSound, playOutcomeSound } from "./ui/music.js";
 import { initSelfDevelopment } from "./stats/self-development.js";
 import {
@@ -2652,6 +2654,18 @@ initGameCenter(state, {
   checkAchievements,
 });
 initTarot(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
+initDetective(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
+initGarden(state, {
   renderMoney,
   renderStats,
   renderLogEntry,

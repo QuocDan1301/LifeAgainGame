@@ -7,11 +7,14 @@ import { prepareStoryChoice } from '../js/core/story-transactions.js';
 import { createWorkTemptationEvent } from '../js/career/work-temptation.js';
 import assert from 'node:assert/strict';
 import { createInitialState } from '../js/core/state.js';
+import { crimeTools, hasCrimeTool } from '../js/events/crime-tools.js';
+import { shopCatalog, shops, getSellPrice } from '../js/leisure/shop.js';
 import { CRIMES, commitCrime, crimeRisk, createPrisonEvent, isInPrison } from '../js/events/crime.js';
 import { completeLifeYear } from '../js/relationships/family.js';
 
 const player = () => ({ ...createInitialState().player, age: 24, money: 100_000_000,
-  health: 80, happiness: 80, intelligence: 70, appearance: 70, relatives: [], illnessPlan: [] });
+  health: 80, happiness: 80, intelligence: 70, appearance: 70, relatives: [], illnessPlan: [],
+  purchases: crimeTools.map(tool => ({ id: tool.id, uid: tool.id, boughtAtAge: 24 })) });
 let count = 0;
 const test = (name, fn) => { fn(); count++; console.log(`PASS ${name}`); };
 test('Age, death and invalid actions cannot mutate the character', () => {
@@ -19,6 +22,33 @@ test('Age, death and invalid actions cannot mutate the character', () => {
     const before = JSON.stringify(p);
     assert.equal(commitCrime(p, p.age === 24 && p.isAlive ? 'invalid' : 'theft', () => 0), null);
     assert.equal(JSON.stringify(p), before);
+  }
+});
+test('Every crime requires its matching purchased tool, without mutation or rolling when missing', () => {
+  for (const crime of CRIMES) {
+    const p = player();
+    p.purchases = p.purchases.filter(item => item.id !== crimeTools.find(tool => tool.crime === crime.id).id);
+    const before = JSON.stringify(p);
+    assert.equal(hasCrimeTool(p, crime.id), false);
+    assert.equal(commitCrime(p, crime.id, () => { throw new Error('Must not roll without a tool'); }), null);
+    assert.equal(JSON.stringify(p), before);
+    p.purchases = undefined;
+    assert.equal(commitCrime(p, crime.id), null);
+  }
+});
+test('Tools are purchasable items, reusable after reload, and selling removes eligibility', () => {
+  assert.equal(shops.shopping.groups.find(group => group.id === 'items').comingSoon, undefined);
+  for (const tool of crimeTools) {
+    assert.ok(shopCatalog.some(item => item.id === tool.id && item.group === 'items' && item.shop === 'shopping'));
+    assert.equal(tool.minAge, 18);
+    assert.equal(getSellPrice(tool), tool.price / 2);
+    const p = JSON.parse(JSON.stringify(player()));
+    const before = p.purchases.length;
+    assert.ok(commitCrime(p, tool.crime, () => 0.99));
+    assert.equal(p.purchases.length, before);
+    p.age++;
+    p.purchases = p.purchases.filter(item => item.id !== tool.id);
+    assert.equal(commitCrime(p, tool.crime), null);
   }
 });
 test('Successful crime pays once per year and survives reload', () => {

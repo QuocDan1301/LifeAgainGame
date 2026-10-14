@@ -26,6 +26,36 @@ try {
   const $ = id => document.getElementById(id);
   $('activities').click(); $('activity-crime').click();
   assert($('crime-dialog').open, 'Crime dialog opens');
+  const blocked = $('crime-dialog').querySelector('button');
+  assert(blocked.disabled && blocked.textContent.includes('Cần mua'), 'Missing tool disables crime');
+  const toolsButton = [...$('crime-dialog').querySelectorAll('button')].find(button => button.textContent.includes('Mua đạo cụ'));
+  toolsButton.click();
+  assert($('shop-dialog').open && document.querySelector('#shop-list h3').textContent.includes('Mua vật dụng'), 'Shortcut opens tool shopping');
+  state.player.age = 17;
+  document.querySelector('#shop-list .shop-back').click();
+  document.querySelector('#shop-list [data-group="items"]').click();
+  assert([...document.querySelectorAll('#shop-list .shop-buy')].every(button => button.disabled && button.textContent.includes('18')), 'Tools cannot be bought before age 18');
+  state.player.age = 24;
+  document.querySelector('#shop-list .shop-back').click();
+  document.querySelector('#shop-list [data-group="items"]').click();
+  const glove = [...document.querySelectorAll('#shop-list .shop-item')].find(card => card.querySelector('h4').textContent.includes('Găng tay'));
+  glove.querySelector('.shop-buy').click();
+  $('shop-cancel').click();
+  assert(!state.player.purchases.some(item => item.id === 'crime-gloves'), 'Cancelled purchase grants no tool');
+  glove.querySelector('.shop-buy').click();
+  $('shop-confirm').click();
+  assert(state.player.purchases.some(item => item.id === 'crime-gloves'), 'Confirmed purchase grants tool');
+  assert(state.player.money === 99_800_000, 'Tool purchase deducts price');
+  const ownedGlove = [...document.querySelectorAll('#shop-list .shop-item')].find(card => card.querySelector('h4').textContent.includes('Găng tay'));
+  assert(ownedGlove.querySelector('.shop-buy').disabled, 'Cannot buy another copy of the same tool');
+  assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.purchases.some(item => item.id === 'crime-gloves'), 'Tool ownership saved');
+  $('close-shop').click();
+  $('assets').click();
+  assert($('life-items').textContent.includes('Găng tay'), 'Owned tool appears in assets');
+  $('close-life-profile').click();
+  $('activities').click(); $('activity-crime').click();
+  assert(!$('crime-dialog').querySelector('button').disabled, 'Purchased tool unlocks matching crime');
+  assert($('crime-dialog').querySelectorAll('button')[1].disabled, 'Other crime still requires its own tool');
   const original = Math.random;
   try { Math.random = () => 0; $('crime-dialog').querySelector('button').click(); }
   finally { Math.random = original; }
@@ -43,7 +73,14 @@ try {
   assert(state.pendingEvent?.id === 'prison-release', 'Release story opens on time');
   $('event-choices').querySelector('button').click(); $('event-confirm').click();
   assert(state.player.age === 26 && state.player.prison === null, 'Release completes');
-  result.textContent = 'PASS: crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release';
+  $('assets').click();
+  $('life-items').querySelector('.shop-sell').click();
+  $('shop-confirm').click();
+  assert(!state.player.purchases.some(item => item.id === 'crime-gloves'), 'Selling removes tool ownership');
+  $('close-life-profile').click();
+  $('activities').click(); $('activity-crime').click();
+  assert($('crime-dialog').querySelector('button').disabled, 'Selling tool locks the crime again');
+  result.textContent = 'PASS: tool shopping; age limit; cancel/confirm; saved ownership; reusable tools; inventory/selling; crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release';
 } catch (error) { result.textContent = 'FAIL: ' + error.stack; }
 finally { keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index])); }
 </script>

@@ -2,6 +2,7 @@ import { getConvictionSocialUpdates } from './crime-consequences.js';
 import { formatMoney } from "../core/money-format.js";
 import { addChoiceIcon } from "./event-emotions.js";
 import { isServing } from "../career/street-work.js";
+import { getCrimeTool, hasCrimeTool } from "./crime-tools.js";
 
 // Các mức án và xác suất là quy tắc hư cấu của game.
 export const CRIMES = [
@@ -19,7 +20,7 @@ export function crimeRisk(player, crime) {
 export function commitCrime(player, id, random = Math.random) {
   const crime = CRIMES.find(item => item.id === id);
   if (!crime || player.isAlive === false || player.age < 18 || isInPrison(player) ||
-      player.crimeActionAge === player.age || isServing(player) || isStudyingAbroad(player)) return null;
+      player.crimeActionAge === player.age || isServing(player) || isStudyingAbroad(player) || !hasCrimeTool(player, id)) return null;
   const risk = crimeRisk(player, crime);
   player.crimeActionAge = player.age;
   player.lifePath = "dark";
@@ -51,7 +52,7 @@ export function createPrisonEvent(player, age) {
     id: "prison-release", kind: "prison", title: "Ngày trở về", text: "Cánh cổng trại giam mở ra. Tôi đã chấp hành xong án, nhưng tiền án và những lựa chọn cũ vẫn là một phần cuộc đời.",
     choices: [
       { label: "Làm lại cuộc đời", text: "Tôi bắt đầu làm lại. Trở ngại xin việc do tiền án giảm từ 20 xuống 10 điểm %. Sau ít nhất ba năm không phạm pháp bên ngoài và hoàn thành những cuộc hẹn trong chuỗi trở về, tôi có thể nhận thư giới thiệu, khôi phục cơ hội xin việc và một phần gắn kết.", effects: { happiness: 10 }, playerUpdates: { prison: null, lifePath: "reformed", crimeHeat: 0, releasedAtAge: age, reformedYears: 0, reformationRecognized: false } },
-      { label: "Vẫn chọn con đường xấu", text: "Tôi vẫn muốn kiếm tiền bằng con đường cũ. Tái phạm sẽ dễ bị bắt và chịu án dài hơn.", effects: { happiness: -5 }, playerUpdates: { prison: null, lifePath: "dark", releasedAtAge: age, reformedYears: 0, reformationRecognized: false } },
+      { label: "Vẫn chọn sống khác", text: "Tôi vẫn muốn kiếm tiền bằng con đường cũ. Tái phạm sẽ dễ bị bắt và chịu án dài hơn.", effects: { happiness: -5 }, playerUpdates: { prison: null, lifePath: "dark", releasedAtAge: age, reformedYears: 0, reformationRecognized: false } },
     ],
   };
   return {
@@ -70,7 +71,7 @@ export function initCrime(state, ui) {
   const button = document.createElement("button");
   button.type = "button";
   button.id = "activity-crime";
-  button.innerHTML = '<span class="activity-icon" aria-hidden="true">🌑</span><span class="activity-text"><span class="activity-title">Con đường xấu / Nhà tù</span><span class="activity-note">Từ 18 tuổi · Lựa chọn sai có thể đánh đổi tự do</span></span>';
+  button.innerHTML = '<span class="activity-icon" aria-hidden="true">🌑</span><span class="activity-text"><span class="activity-title">Sống khác</span><span class="activity-note">Từ 18 tuổi · Lựa chọn sai có thể đánh đổi tự do</span></span>';
   document.getElementById("activity-shopping").before(button);
   const dialog = document.createElement("dialog");
   dialog.id = "crime-dialog";
@@ -80,17 +81,20 @@ export function initCrime(state, ui) {
     dialog.replaceChildren();
     const heading = document.createElement("h2");
     heading.id = "crime-title";
-    heading.textContent = isInPrison(state.player) ? "⛓️ Đang thụ án" : "🌑 Con đường xấu";
+    heading.textContent = isInPrison(state.player) ? "⛓️ Đang thụ án" : "🌑 Sống khác";
     const status = document.createElement("p");
     status.textContent = message || (isInPrison(state.player)
       ? `Đang thụ án vì ${state.player.prison.crime.toLowerCase()}. Ra tù ở tuổi ${state.player.prison.releaseAge}. Bấm + Tuổi để trải qua từng năm cải tạo.`
       : `Tiền án: ${(state.player.criminalRecord ?? []).length}. Mỗi năm chỉ được chọn một hành vi. Các mức án là quy tắc hư cấu của game.`);
     dialog.append(heading, status);
     for (const crime of CRIMES) {
+      const tool = getCrimeTool(crime.id);
+      const equipped = hasCrimeTool(state.player, crime.id);
       const action = document.createElement("button");
       action.type = "button";
       action.textContent = addChoiceIcon(`${crime.name} · ${formatMoney(crime.reward)} · Nguy cơ bắt ${Math.round(crimeRisk(state.player, crime) * 100)}% · Án ${crime.years + (state.player.criminalRecord?.length ? 1 : 0)} năm`);
-      action.disabled = state.player.age < 18 || state.player.isAlive === false || isInPrison(state.player) ||
+      action.textContent += ` · ${equipped ? "Đã có" : "Cần mua"} ${tool.icon} ${tool.name}`;
+      action.disabled = !equipped || state.player.age < 18 || state.player.isAlive === false || isInPrison(state.player) ||
         state.pendingEvent !== null || state.player.crimeActionAge === state.player.age || isServing(state.player) || isStudyingAbroad(state.player);
       action.addEventListener("click", () => {
         const content = commitCrime(state.player, crime.id);
@@ -106,6 +110,16 @@ export function initCrime(state, ui) {
       });
       dialog.append(action);
     }
+    const shop = document.createElement("button");
+    shop.type = "button";
+    shop.textContent = "🛍️ Mua đạo cụ";
+    shop.disabled = state.player.age < 18 || state.player.isAlive === false || isInPrison(state.player) || Boolean(state.pendingEvent);
+    shop.addEventListener("click", () => {
+      dialog.close();
+      document.getElementById("activity-shopping").click();
+      document.querySelector('#shop-list [data-group="items"]')?.click();
+    });
+    dialog.append(shop);
     if (state.player.age < 18) status.textContent = "Con đường này chỉ mở từ 18 tuổi.";
     if (isStudyingAbroad(state.player)) status.textContent = "Hãy hoàn thành hành trình du học trước khi chọn con đường này.";
     const close = document.createElement("button");

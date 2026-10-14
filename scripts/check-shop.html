@@ -103,7 +103,7 @@
     $("activity-shopping").click();
     const groups = [...document.querySelectorAll("#shop-dialog .shop-group")];
     assert(groups.map(b => b.dataset.group).join() === "items,vehicles,realestate,business", "Shopping shows items, vehicles, real estate, business");
-    assert(groups[0].disabled, "Items are coming soon");
+    assert(!groups[0].disabled, "Items group is available for buying tools");
     document.querySelector(".shop-back").click();
     assert(!$("shop-dialog").open && $("activities-dialog").open, "Back on the group screen returns to Activities");
     $("activity-shopping").click();
@@ -189,7 +189,7 @@
     assert(state.player.livestock.length === 2 && !state.player.livestock.some(entry => entry.boughtAtAge === 22) &&
       $("life-livestock").textContent.includes("Bồ câu ×2"), "Selling from a group sells the newest one");
     $("close-life-profile").click();
-    result.textContent = "PASS: pet shop; petting companions; grouped assets; shopping groups; coming-soon items; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price";
+    result.textContent = "PASS: pet shop; petting companions; grouped assets; shopping groups; tools group; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {
