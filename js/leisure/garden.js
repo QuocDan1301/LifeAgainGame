@@ -4,10 +4,11 @@ import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { NO_SLOT_LABEL, STAT_LABELS, describeActivitySlots, getActivitySlotsLeft, previewActivityGain } from "../core/stat-budget.js";
 import {
-  CARE_PER_SEASON, GARDEN_MIN_AGE, MAX_FERTILIZER, advanceSeason, buy, buyPlot, canFertilize, canWater, careLeft, clearPlot,
-  cook, cookRank, cookTiers, cookedTotal, cropOf, crops, eat, fertilize, gardenAchievementIds, gardenOf, getCookBlocker,
-  getPlantBlocker, groceries, harvest, hasEatenThisYear, ingredientOf, isReady, isResting, missingFor, plant, plotPrice,
-  recipes, removePest, seasons, sell, sellPriceOf, waterAll, weathers, yieldOf,
+  DILIGENT_CARE_BONUS, GARDEN_MIN_AGE, MAX_FERTILIZER, STARTER_SEEDS, advanceSeason, buy, buyPlot, canFertilize, canWaterAll, canWaterPlot,
+  careLeft, careMax, clearPlot, cook, cookRank, cookTiers, cookedTotal, cropOf, crops, dryCount, eat, fertilize,
+  gardenAchievementIds, gardenOf, getCookBlocker, getDiligentBlocker, getPlantBlocker, groceries, harvest, hasEatenThisYear,
+  ingredientOf, isDiligent, isReady, isResting, missingFor, plant, plotPrice, recipes, removePest, seasons, sell, sellPriceOf,
+  waterAll, waterPlot, weathers, workDiligently, yieldOf,
 } from "./garden-data.js";
 
 const TABS = [
@@ -89,6 +90,12 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
       ? "Sang tuổi mới, mùa xuân sẽ trở lại. Cây đã chín vẫn thu hoạch được."
       : `${weather.icon} ${weather.name}: ${weather.note}`);
     node.append(top, track, weatherChip);
+    if (!resting) {
+      const forecast = weathers[g.forecast];
+      node.append(element("p", "garden-forecast", forecast
+        ? `📻 Dự báo ${lower(seasons[g.season + 1].name)}: ${forecast.icon} ${forecast.name}`
+        : "📻 Sau mùa đông vườn nghỉ. Cây chưa chín được giữ trên luống tới mùa xuân năm sau."));
+    }
     return node;
   }
 
@@ -158,24 +165,57 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     const g = garden();
     const row = element("div", "garden-care");
     const leaves = element("span", "garden-care-leaves");
-    for (let index = 0; index < CARE_PER_SEASON; index++) leaves.append(element("span", index < careLeft(g) ? "is-left" : "", "🌿"));
+    const max = careMax(g);
+    for (let index = 0; index < max; index++) leaves.append(element("span", index < careLeft(g) ? "is-left" : "", "🌿"));
     row.append(element("span", "garden-care-label", "Công chăm mùa này"), leaves,
-      element("span", "garden-care-value", `${careLeft(g)}/${CARE_PER_SEASON}`));
-    // Nút mờ thì nói rõ vì sao: vườn nghỉ, chưa có cây, đã tưới đủ hay hết công.
+      element("span", "garden-care-value", `${careLeft(g)}/${max}`));
+    // Nút mờ thì nói rõ vì sao: vườn nghỉ, chưa có cây, đã tưới đủ hay không đủ công tưới hết.
     const growing = g.plots.filter((plot) => plot && !plot.withered && !isReady(plot));
-    const label = canWater(g) ? "💧 Tưới cả vườn · 1 công"
+    const dry = dryCount(g);
+    const label = canWaterAll(g) ? `💧 Tưới ${dry} luống khô · ${dry} công`
       : isResting(g) ? "🛌 Vườn đang nghỉ đông"
         : !growing.length ? "💧 Chưa có cây cần tưới"
-          : growing.every((plot) => plot.watered) ? (g.weather === "rain" ? "🌧️ Mưa đã tưới cả vườn" : "✅ Cả vườn đã được tưới")
-            : "💧 Hết công chăm mùa này";
+          : !dry ? (g.weather === "rain" ? "🌧️ Mưa đã tưới cả vườn" : "✅ Cả vườn đã được tưới")
+            : careLeft(g) ? `💧 Còn ${careLeft(g)} công, chưa đủ tưới ${dry} luống: chạm từng luống để chọn`
+              : `💧 Hết công: ${dry} luống chưa được tưới`;
     const water = button("garden-action garden-water", label, () => {
       if (!waterAll(garden())) return;
       commit("💧 Bạn tưới đẫm từng luống. Đất sẫm màu, lá rau tươi lại.", ".garden-water");
-      if (!reducedMotion.matches) body.querySelectorAll(".garden-plot.is-watered").forEach((plot) =>
-        plot.animate([{ filter: "brightness(1.35)" }, { filter: "brightness(1)" }], { duration: 700, easing: "ease-out" }));
+      flashWatered();
     });
-    water.disabled = !canWater(g);
-    return [row, water];
+    water.disabled = !canWaterAll(g);
+    return [row, water, diligentCard()];
+  }
+  function flashWatered() {
+    if (!reducedMotion.matches) body.querySelectorAll(".garden-plot.is-watered").forEach((plot) =>
+      plot.animate([{ filter: "brightness(1.35)" }, { filter: "brightness(1)" }], { duration: 700, easing: "ease-out" }));
+  }
+
+  // Chăm kỹ năm nay: đổi 1 lượt thời gian rảnh lấy thêm công cho các mùa còn lại.
+  function diligentCard() {
+    const g = garden();
+    if (isResting(g)) return null;
+    const card = element("div", "garden-diligent");
+    if (isDiligent(g)) {
+      card.classList.add("is-on");
+      card.append(element("p", "", `🧑‍🌾 Năm nay bạn dành thời gian chăm kỹ: mỗi mùa có thêm ${DILIGENT_CARE_BONUS} công.`));
+      return card;
+    }
+    const seasonsLeft = 4 - g.season;
+    const blocker = getDiligentBlocker(player());
+    const action = button("garden-action garden-diligent-button", `🧑‍🌾 Chăm kỹ năm nay · 1 lượt rảnh`, () => askConfirm(
+      "Dành thời gian chăm kỹ?",
+      `Dùng 1 lượt thời gian rảnh của năm nay. Đổi lại, ${seasonsLeft === 4 ? "mỗi mùa trong năm" : `mỗi mùa trong ${seasonsLeft} mùa còn lại của năm`} có thêm ${DILIGENT_CARE_BONUS} công chăm. ${describeActivitySlots(player())}`,
+      "🧑‍🌾 Chăm kỹ", () => {
+        if (!workDiligently(state.player)) return;
+        log(`🧑‍🌾 Năm nay tôi dành thời gian rảnh ra vườn nhiều hơn, chăm từng luống kỹ càng.`);
+        commit(`🧑‍🌾 Mùa này bạn có thêm ${DILIGENT_CARE_BONUS} công chăm.`, ".garden-water");
+      }));
+    action.disabled = Boolean(blocker);
+    card.append(action, element("p", "garden-diligent-note", blocker && !getActivitySlotsLeft(player())
+      ? `⏳ ${blocker}`
+      : `Thêm ${DILIGENT_CARE_BONUS} công mỗi mùa${seasonsLeft < 4 ? ` cho ${seasonsLeft} mùa còn lại` : ""}. Dùng chung lượt rảnh với ăn uống, rèn luyện, du lịch.`));
+    return card;
   }
 
   function plotTile(plot, index) {
@@ -232,7 +272,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     const price = plotPrice(g);
     if (price === null) return null;
     const tile = button("garden-plot-buy", "", () => askConfirm("Mở thêm luống?",
-      `Thuê người làm đất và đóng khung luống mới với giá ${formatMoney(price)}. Luống mở rồi dùng được mãi.`, "🪴 Mở luống", () => {
+      `Thuê người làm đất và đóng khung luống mới với giá ${formatMoney(price)}. Luống mở rồi dùng được mãi, nhưng mỗi mùa cần thêm công để tưới.`, "🪴 Mở luống", () => {
         const paid = buyPlot(state.player);
         if (!paid) return;
         log(`🌱 Tôi mở thêm một luống rau ở vườn nhà: Tiền -${formatMoneyAmount(paid)} VNĐ.`);
@@ -309,6 +349,13 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
         commit(`🧺 Bạn thu được ${amount} phần ${lower(crop.name)}. Nông sản đã vào kho.`, `[data-plot="${index}"]`);
       }));
     } else {
+      const water = button("garden-action garden-water-one", plot.watered ? "✅ Đã tưới" : "💧 Tưới luống · 1 công", () => {
+        if (!waterPlot(garden(), index)) return;
+        commit("💧 Bạn tưới đẫm luống này.", `[data-plot="${index}"]`);
+        flashWatered();
+      });
+      water.disabled = !canWaterPlot(g, index);
+      actions.append(water);
       const pest = button("garden-action", "🐛 Bắt sâu · 1 công", () => {
         if (!removePest(garden(), index)) return;
         commit("🐛 Bạn lật từng chiếc lá, bắt sạch sâu.", `[data-plot="${index}"]`);
@@ -370,7 +417,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     if (buyTile) grid.append(buyTile);
     const nodes = [reportCard(), ...careMeter(), grid];
     if (selected !== null && selected < g.plotsOwned) nodes.push(plotDetail(selected));
-    else nodes.push(element("p", "garden-note garden-hint", "Chạm vào một luống để gieo hạt, bắt sâu, bón phân hoặc thu hoạch."));
+    else nodes.push(element("p", "garden-note garden-hint", "Chạm vào một luống để gieo hạt, tưới, bắt sâu, bón phân hoặc thu hoạch. Mỗi việc chăm tốn 1 công cho một luống."));
     nodes.push(seasonButton());
     report = null;
     return nodes.filter(Boolean);
@@ -462,7 +509,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
   function sellMarket(g) {
     const sellSection = element("section", "garden-section");
     sellSection.append(element("h3", "", "💰 Bán nông sản"),
-      element("p", "garden-note", "Giá chợ đổi theo từng mùa. Giữ lại để nấu ăn hoặc chờ giá tốt hơn cũng được."));
+      element("p", "garden-note", "Rau trái vườn nhà chủ yếu để nấu ăn, bán chỉ là thêm chút tiền chợ. Giá đổi theo từng mùa, chờ giá tốt rồi bán cũng được."));
     const stock = crops.filter((crop) => g.goods[crop.id] > 0);
     if (!stock.length) sellSection.append(element("p", "garden-empty", "Kho chưa có nông sản. Thu hoạch xong sẽ bán được ở đây."));
     for (const crop of stock) {
@@ -623,6 +670,10 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     toast = null;
     report = null;
     if (state.player.age >= GARDEN_MIN_AGE) {
+      if (!state.player.garden) {
+        const gifts = Object.entries(STARTER_SEEDS).map(([id, count]) => `${count} gói hạt ${lower(cropOf(id).name)}`);
+        toast = `🎁 Nhà còn sẵn ${gifts.join(" và ")}. Chạm vào một luống để gieo thử.`;
+      }
       gardenOf(state.player);
       saveGame(state);
     }

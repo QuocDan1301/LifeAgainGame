@@ -324,6 +324,7 @@ export function detectiveAchievementIds(detective, file) {
   if (detective.solved >= 1) ids.push("detective-first");
   if (detective.solved >= 10) ids.push("detective-ten");
   if (detective.streak >= 5) ids.push("detective-streak");
+  if (detective.reputation >= detectiveRanks.at(-1).min) ids.push("detective-top-rank");
   if (file?.result?.correct && file.result.unproven === 0 && file.tier === 2 && file.extraHours === 0) ids.push("detective-hard-clean");
   return ids;
 }

@@ -1,18 +1,24 @@
-import { applyActivityGain, useActivitySlot } from "../core/stat-budget.js";
+import { applyActivityGain, getActivitySlotsLeft, useActivitySlot } from "../core/stat-budget.js";
 
 // Vườn nhà: luống đất, mùa vụ, chợ, bếp và món ăn tự nấu (không đụng giao diện).
-// Mỗi năm tuổi có 4 mùa; người chơi tự bấm sang mùa. Mỗi mùa có thời tiết riêng và một số công chăm
-// để tưới, bắt sâu, bón phân. Sang Đông xong thì vườn nghỉ tới năm sau.
+// Mỗi năm tuổi có 4 mùa; người chơi tự bấm sang mùa. Mỗi mùa có thời tiết riêng (biết trước một mùa nhờ
+// dự báo) và một số công chăm. Tưới, bắt sâu, bón phân đều tốn 1 công cho từng luống, nên công không đủ
+// làm hết mọi việc: phải chọn chăm luống nào. Dành 1 lượt thời gian rảnh để chăm kỹ thì mỗi mùa trong
+// năm có thêm công. Sang Đông xong thì vườn nghỉ tới năm sau.
 // Ăn món tự nấu dùng chung lượt thời gian rảnh với Ăn uống; mỗi món ăn được một lần mỗi năm.
+// Vườn chủ yếu để nấu ăn; bán nông sản chỉ là tiền chợ thêm.
 // Các con số là thông số gameplay.
 export const GARDEN_MIN_AGE = 11;
 export const START_PLOTS = 4;
-export const PLOT_PRICES = [1_000_000, 2_000_000, 4_000_000, 8_000_000];
+export const PLOT_PRICES = [500_000, 1_000_000, 1_500_000, 2_000_000];
 export const MAX_PLOTS = START_PLOTS + PLOT_PRICES.length;
-export const CARE_PER_SEASON = 4;
+export const CARE_PER_SEASON = 3;
+export const DILIGENT_CARE_BONUS = 3;
 export const PEST_CHANCE = 0.2;
 export const MAX_FERTILIZER = 2;
 export const REST_SEASON = 4;
+// Gói hạt tặng khi mới mở vườn: nhân vật nhỏ tuổi thường chưa có tiền, bán lứa rau đầu là đủ mua hạt lứa sau.
+export const STARTER_SEEDS = { "rau-muong": 2, "hanh-la": 2 };
 
 export const seasons = [
   { id: "spring", name: "Mùa xuân", short: "Xuân", icon: "🌸" },
@@ -21,7 +27,7 @@ export const seasons = [
   { id: "winter", name: "Mùa đông", short: "Đông", icon: "❄️" },
 ];
 export const weathers = {
-  fair: { icon: "⛅", name: "Ôn hòa", note: "Cây chỉ lớn ở những luống được tưới trong mùa." },
+  fair: { icon: "⛅", name: "Ôn hòa", note: "Luống nào được tưới mới lớn thêm. Mỗi luống tốn 1 công tưới." },
   rain: { icon: "🌧️", name: "Mưa thuận", note: "Mưa đều, mọi luống tự được tưới trong mùa này." },
   drought: { icon: "🔥", name: "Nắng hạn", note: "Luống nào không được tưới sẽ héo khi hết mùa." },
 };
@@ -75,13 +81,13 @@ export const recipes = [
     description: "Kho lửa liu riu đến khi nước sánh lại, cay nồng vị ớt." },
   { id: "sinh-to-dau", tier: 1, icon: "🍓", name: "Sinh tố dâu", needs: { "dau-tay": 2 }, effects: { appearance: 2, happiness: 1 },
     description: "Ly sinh tố hồng mát lạnh từ dâu chín mọng." },
-  { id: "canh-chua-ca", tier: 2, icon: "🍲", name: "Canh chua cá", needs: { ca: 1, "ca-chua": 2, ot: 1, "rau-thom": 1, "rau-muong": 1 }, effects: { health: 4, happiness: 2 },
+  { id: "canh-chua-ca", tier: 2, icon: "🍲", name: "Canh chua cá", needs: { ca: 1, "ca-chua": 2, ot: 1, "rau-thom": 1, "rau-muong": 1 }, effects: { health: 3, happiness: 2 },
     description: "Vị chua thanh, cay nhẹ, thơm rau, đậm đà miền sông nước." },
-  { id: "goi-cuon", tier: 2, icon: "🥢", name: "Gỏi cuốn tôm thịt", needs: { tom: 1, thit: 1, "rau-thom": 2, "dua-leo": 1, gao: 1 }, effects: { health: 3, appearance: 2, happiness: 1 },
+  { id: "goi-cuon", tier: 2, icon: "🥢", name: "Gỏi cuốn tôm thịt", needs: { tom: 1, thit: 1, "rau-thom": 2, "dua-leo": 1, gao: 1 }, effects: { health: 2, appearance: 2, happiness: 1 },
     description: "Từng cuốn trong veo, tôm hồng ẩn sau lớp rau xanh." },
-  { id: "banh-xeo", tier: 2, icon: "🥞", name: "Bánh xèo", needs: { gao: 1, tom: 1, thit: 1, "hanh-la": 1, "rau-thom": 1 }, effects: { happiness: 4, health: 1, intelligence: 1 },
+  { id: "banh-xeo", tier: 2, icon: "🥞", name: "Bánh xèo", needs: { gao: 1, tom: 1, thit: 1, "hanh-la": 1, "rau-thom": 1 }, effects: { happiness: 3, health: 1, intelligence: 1 },
     description: "Vỏ bánh vàng giòn kêu xèo xèo, cuốn rau chấm nước mắm chua ngọt." },
-  { id: "lau-chua-cay", tier: 2, icon: "🫕", name: "Lẩu chua cay", needs: { tom: 1, ca: 1, "ca-chua": 1, ot: 2, "rau-muong": 2 }, effects: { happiness: 4, health: 2 },
+  { id: "lau-chua-cay", tier: 2, icon: "🫕", name: "Lẩu chua cay", needs: { tom: 1, ca: 1, "ca-chua": 1, ot: 2, "rau-muong": 2 }, effects: { happiness: 3, health: 2 },
     description: "Nồi lẩu nghi ngút khói cho một buổi tối quây quần." },
 ];
 
@@ -90,8 +96,10 @@ export const groceryOf = (id) => groceries.find((item) => item.id === id);
 export const ingredientOf = (id) => cropOf(id) ?? groceryOf(id);
 export const recipeOf = (id) => recipes.find((recipe) => recipe.id === id);
 export const plotPrice = (garden) => PLOT_PRICES[garden.plotsOwned - START_PLOTS] ?? null;
-export const careLeft = (garden) => Math.max(0, CARE_PER_SEASON - garden.care);
 export const isResting = (garden) => garden.season >= REST_SEASON;
+export const isDiligent = (garden) => garden.diligent === garden.year;
+export const careMax = (garden) => CARE_PER_SEASON + (isDiligent(garden) ? DILIGENT_CARE_BONUS : 0);
+export const careLeft = (garden) => isResting(garden) ? 0 : Math.max(0, careMax(garden) - garden.care);
 export const isReady = (plot) => Boolean(plot && !plot.withered && plot.growth >= cropOf(plot.crop).grow);
 export const yieldOf = (plot) => Math.max(1, cropOf(plot.crop).yield + plot.fert - plot.penalty);
 export const sellPriceOf = (garden, cropId) => Math.round(cropOf(cropId).price * (garden.prices?.[cropId] ?? 1) / 1_000) * 1_000;
@@ -105,10 +113,12 @@ function rollWeather(season, random) {
   const roll = random();
   return roll < odds[0] ? "fair" : roll < odds[0] + odds[1] ? "rain" : "drought";
 }
-// Đầu mỗi mùa: thời tiết, sâu bệnh và giá chợ mới; công chăm và nước tưới bắt đầu lại.
+// Đầu mỗi mùa: thời tiết (đúng như dự báo mùa trước), dự báo cho mùa sau, sâu bệnh và giá chợ mới;
+// công chăm và nước tưới bắt đầu lại. Mùa đông không có dự báo vì sau đó vườn nghỉ.
 function startSeason(garden, random) {
   garden.care = 0;
-  garden.weather = rollWeather(garden.season, random);
+  garden.weather = garden.forecast ?? rollWeather(garden.season, random);
+  garden.forecast = garden.season < 3 ? rollWeather(garden.season + 1, random) : null;
   garden.prices = Object.fromEntries(crops.map((crop) => [crop.id, Math.round((0.7 + random() * 0.7) * 100) / 100]));
   for (const plot of garden.plots) {
     if (!plot || plot.withered) continue;
@@ -119,18 +129,23 @@ function startSeason(garden, random) {
 
 export function gardenOf(player, random = Math.random) {
   if (!player.garden || typeof player.garden !== "object") {
-    player.garden = { year: player.age, season: 0, care: 0, weather: "fair", prices: {}, plotsOwned: START_PLOTS,
-      plots: Array(START_PLOTS).fill(null), seeds: {}, goods: {}, dishes: {}, eaten: {}, cooked: {}, harvested: {}, earned: 0 };
+    player.garden = { year: player.age, season: 0, care: 0, weather: "fair", forecast: null, diligent: null, prices: {},
+      plotsOwned: START_PLOTS, plots: Array(START_PLOTS).fill(null), seeds: { ...STARTER_SEEDS }, goods: {}, dishes: {}, eaten: {}, cooked: {},
+      harvested: {}, earned: 0 };
     startSeason(player.garden, random);
   }
   const garden = player.garden;
   // Sang tuổi mới: vườn bắt đầu lại từ mùa xuân, món nấu năm cũ không để được nữa.
+  // Dự báo cũ (nếu năm trước chưa đi hết bốn mùa) là của mùa khác nên bỏ đi.
   if (garden.year !== player.age) {
     garden.year = player.age;
     garden.season = 0;
     garden.dishes = {};
+    garden.forecast = null;
     startSeason(garden, random);
   }
+  // Bản lưu cũ chưa có dự báo.
+  if (garden.forecast === undefined) garden.forecast = garden.season < 3 ? rollWeather(garden.season + 1, random) : null;
   return garden;
 }
 
@@ -150,26 +165,52 @@ export function plant(garden, plotIndex, cropId) {
   garden.plots[plotIndex] = { crop: cropId, growth: 0, watered: garden.weather === "rain", pest: false, fert: 0, penalty: 0, withered: false };
   return true;
 }
-const growing = (garden) => garden.plots.filter((plot) => plot && !plot.withered && !isReady(plot));
-export const canWater = (garden) => !isResting(garden) && careLeft(garden) > 0 && growing(garden).some((plot) => !plot.watered);
-export function waterAll(garden) {
-  if (!canWater(garden)) return false;
+const isGrowing = (plot) => Boolean(plot && !plot.withered && !isReady(plot));
+const dryPlots = (garden) => garden.plots.filter((plot) => isGrowing(plot) && !plot.watered);
+export const dryCount = (garden) => dryPlots(garden).length;
+// Mỗi luống tưới tốn 1 công. Tưới cả vườn chỉ được khi đủ công cho mọi luống khô; không đủ thì chọn từng luống.
+export const canWaterPlot = (garden, plotIndex) => {
+  const plot = garden.plots[plotIndex];
+  return isGrowing(plot) && !plot.watered && careLeft(garden) > 0;
+};
+export function waterPlot(garden, plotIndex) {
+  if (!canWaterPlot(garden, plotIndex)) return false;
   garden.care++;
-  growing(garden).forEach((plot) => { plot.watered = true; });
+  garden.plots[plotIndex].watered = true;
   return true;
+}
+export const canWaterAll = (garden) => dryCount(garden) > 0 && careLeft(garden) >= dryCount(garden);
+export function waterAll(garden) {
+  if (!canWaterAll(garden)) return 0;
+  const dry = dryPlots(garden);
+  garden.care += dry.length;
+  dry.forEach((plot) => { plot.watered = true; });
+  return dry.length;
 }
 export function removePest(garden, plotIndex) {
   const plot = garden.plots[plotIndex];
-  if (!plot?.pest || isResting(garden) || careLeft(garden) === 0) return false;
+  if (!isGrowing(plot) || !plot.pest || careLeft(garden) === 0) return false;
   garden.care++;
   plot.pest = false;
   return true;
 }
 export const canFertilize = (garden, plotIndex) => {
   const plot = garden.plots[plotIndex];
-  return Boolean(plot && !plot.withered && !isReady(plot) && plot.fert < MAX_FERTILIZER && !isResting(garden) &&
-    careLeft(garden) > 0 && garden.goods.phan > 0);
+  return isGrowing(plot) && plot.fert < MAX_FERTILIZER && careLeft(garden) > 0 && garden.goods.phan > 0;
 };
+// Chăm kỹ: dành 1 lượt thời gian rảnh của năm, mỗi mùa còn lại trong năm có thêm DILIGENT_CARE_BONUS công.
+export function getDiligentBlocker(player) {
+  const garden = player.garden;
+  if (isResting(garden)) return "Vườn đang nghỉ đông tới năm sau.";
+  if (isDiligent(garden)) return "Năm nay bạn đã dành thời gian chăm kỹ.";
+  if (!getActivitySlotsLeft(player)) return "Đã hết thời gian rảnh năm nay.";
+  return "";
+}
+export function workDiligently(player) {
+  if (getDiligentBlocker(player) || !useActivitySlot(player)) return false;
+  player.garden.diligent = player.garden.year;
+  return true;
+}
 export function fertilize(garden, plotIndex) {
   if (!canFertilize(garden, plotIndex)) return false;
   garden.care++;
@@ -217,7 +258,6 @@ export function advanceSeason(garden, random = Math.random) {
   }
   garden.season++;
   if (!isResting(garden)) startSeason(garden, random);
-  else garden.care = CARE_PER_SEASON;
   return report;
 }
 

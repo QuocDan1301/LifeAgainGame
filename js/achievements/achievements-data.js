@@ -779,6 +779,12 @@ export const achievements = [
     flag(),
   ),
   item(
+    "detective-top-rank", "other", "Thám tử", "🏅",
+    "Thám tử lành nghề",
+    "Đạt bậc thám tử cao nhất trong hoạt động Thám tử.",
+    flag(),
+  ),
+  item(
     "garden-first-harvest", "other", "Vườn nhà và bếp", "🧺",
     "Mùa vụ đầu tiên",
     "Thu hoạch lứa rau trái đầu tiên ở vườn nhà.",

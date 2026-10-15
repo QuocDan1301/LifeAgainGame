@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import {
-  gardenOf, plant, getPlantBlocker, waterAll, canWater, removePest, fertilize, harvest, clearPlot, advanceSeason, isReady,
-  yieldOf, buy, buyPlot, sell, sellPriceOf, cook, eat, getCookBlocker, recipeOf, recipes, crops, cookedTotal,
-  gardenAchievementIds, careLeft, isResting, CARE_PER_SEASON, START_PLOTS, PLOT_PRICES, MAX_PLOTS, REST_SEASON,
+  gardenOf, plant, getPlantBlocker, waterAll, canWaterAll, waterPlot, dryCount, removePest, fertilize, harvest, clearPlot,
+  advanceSeason, isReady, yieldOf, buy, buyPlot, sell, sellPriceOf, cook, eat, getCookBlocker, recipeOf, recipes, crops,
+  cookedTotal, gardenAchievementIds, careLeft, careMax, isResting, workDiligently, getDiligentBlocker, weathers,
+  CARE_PER_SEASON, DILIGENT_CARE_BONUS, STARTER_SEEDS, START_PLOTS, PLOT_PRICES, MAX_PLOTS, REST_SEASON,
 } from '../js/leisure/garden-data.js';
 import { ACTIVITY_SLOTS_PER_YEAR, getActivitySlotsLeft } from '../js/core/stat-budget.js';
 
@@ -18,6 +19,8 @@ assert.equal(g.plots.length, START_PLOTS);
 assert.equal(g.season, 0);
 assert.equal(g.weather, 'fair');
 assert.equal(careLeft(g), CARE_PER_SEASON);
+assert.deepEqual(g.seeds, STARTER_SEEDS, 'Mới mở vườn có sẵn gói hạt khởi đầu');
+g.seeds = {};
 
 // Mua hạt, gieo đúng mùa.
 assert.equal(buy(player, 'rau-muong', 2), 40_000);
@@ -31,10 +34,14 @@ assert.equal(plant(g, 0, 'rau-muong'), false, 'Luống đang có cây');
 assert.equal(plant(g, 1, 'rau-muong'), true);
 assert.equal(g.seeds['rau-muong'], 0);
 
-// Tưới tốn 1 công cho cả vườn; không tưới lại khi đã tưới hết.
-assert.equal(waterAll(g), true);
+// Tưới tốn 1 công cho mỗi luống; tưới cả vườn khi đủ công cho mọi luống khô.
+assert.equal(dryCount(g), 2);
+assert.equal(waterPlot(g, 0), true);
 assert.equal(careLeft(g), CARE_PER_SEASON - 1);
-assert.equal(canWater(g), false);
+assert.equal(waterPlot(g, 0), false, 'Luống đã tưới thì không tưới lại');
+assert.equal(waterAll(g), 1, 'Tưới cả vườn chỉ tưới luống còn khô');
+assert.equal(careLeft(g), CARE_PER_SEASON - 2);
+assert.equal(canWaterAll(g), false);
 // Bỏ tưới luống 2 để kiểm tra cây không lớn.
 g.plots[1].watered = false;
 let report = advanceSeason(g, calm);
@@ -56,6 +63,8 @@ g.weather = 'drought';
 report = advanceSeason(g, fair);
 assert.equal(report.withered, 1);
 assert.equal(g.plots[1].withered, true);
+g.plots[1].pest = true;
+assert.equal(removePest(g, 1), false, 'Không tốn công bắt sâu ở luống đã héo');
 assert.equal(clearPlot(g, 1), true);
 assert.equal(g.plots[1], null);
 // Mùa thu: có sâu (fair < 0,2), gieo ớt, bón phân và để sâu.
@@ -127,8 +136,8 @@ assert.equal(getCookBlocker(empty, recipeOf('rau-muong-luoc')), 'Chưa đủ ngu
 const slots = getActivitySlotsLeft(player);
 assert.equal(slots, ACTIVITY_SLOTS_PER_YEAR);
 const gains = eat(player, 'banh-xeo');
-assert.deepEqual(gains, { happiness: 4, health: 1, intelligence: 1 });
-assert.equal(player.happiness, 54);
+assert.deepEqual(gains, { happiness: 3, health: 1, intelligence: 1 });
+assert.equal(player.happiness, 53);
 assert.equal(getActivitySlotsLeft(player), slots - 1);
 assert.equal(eat(player, 'banh-xeo'), null, 'Mỗi món chỉ ăn một lần mỗi năm');
 assert.equal(eat(player, 'goi-cuon') !== null, true);
@@ -147,4 +156,76 @@ assert.equal(g.plots[0].crop, 'hanh-la');
 assert.ok(eat(player, 'banh-xeo') === null, 'Không còn món để ăn');
 assert.deepEqual(JSON.parse(JSON.stringify(g)), g, 'Vườn lưu được bằng JSON');
 assert.ok(crops.every((crop) => crop.plant.length && crop.grow >= 1));
+
+const stats = { health: 50, happiness: 50, intelligence: 50, appearance: 50, isAlive: true };
+
+// Trẻ 11 tuổi chưa có đồng nào: gieo hạt được tặng, bán lứa đầu (kể cả lúc giá thấp nhất) là đủ mua hạt lứa sau.
+const kid = { age: 11, money: 0, ...stats };
+const yard = gardenOf(kid, calm);
+yard.prices = Object.fromEntries(crops.map((crop) => [crop.id, 0.7]));
+let seedIndex = 0;
+for (const [id, count] of Object.entries(STARTER_SEEDS)) {
+  for (let n = 0; n < count; n++) assert.equal(plant(yard, seedIndex++, id), true);
+}
+yard.weather = 'rain';
+yard.plots.forEach((plot) => { plot.watered = true; });
+advanceSeason(yard, calm);
+yard.prices = Object.fromEntries(crops.map((crop) => [crop.id, 0.7]));
+yard.plots.forEach((_, index) => harvest(yard, index));
+for (const id of Object.keys(STARTER_SEEDS)) sell(kid, id, yard.goods[id]);
+const reseed = Object.entries(STARTER_SEEDS).reduce((total, [id, count]) => total + crops.find((crop) => crop.id === id).seed * count, 0);
+assert.ok(kid.money >= reseed, `Bán lứa đầu (${kid.money}) đủ mua lại hạt (${reseed})`);
+
+// Công không đủ thì phải chọn luống: 5 luống khô mà mùa này chỉ có CARE_PER_SEASON công.
+const farmer = { age: 30, money: 50_000_000, ...stats };
+const field = gardenOf(farmer, calm);
+assert.equal(buyPlot(farmer), PLOT_PRICES[0]);
+buy(farmer, 'rau-muong', 5);
+for (let index = 0; index < 5; index++) assert.equal(plant(field, index, 'rau-muong'), true);
+assert.equal(dryCount(field), 5);
+assert.equal(canWaterAll(field), false, 'Không đủ công tưới hết');
+assert.equal(waterAll(field), 0);
+for (let index = 0; index < CARE_PER_SEASON; index++) assert.equal(waterPlot(field, index), true);
+assert.equal(careLeft(field), 0);
+assert.equal(waterPlot(field, 4), false, 'Hết công');
+
+// Chăm kỹ: tốn 1 lượt rảnh, có thêm công ngay mùa này và các mùa sau trong năm.
+assert.equal(workDiligently(farmer), true);
+assert.equal(getActivitySlotsLeft(farmer), ACTIVITY_SLOTS_PER_YEAR - 1);
+assert.equal(careLeft(field), DILIGENT_CARE_BONUS);
+assert.equal(waterAll(field), 5 - CARE_PER_SEASON, 'Đủ công thì tưới nốt các luống còn khô');
+assert.ok(getDiligentBlocker(farmer), 'Mỗi năm chỉ chăm kỹ một lần');
+assert.equal(workDiligently(farmer), false);
+advanceSeason(field, calm);
+assert.equal(careMax(field), CARE_PER_SEASON + DILIGENT_CARE_BONUS, 'Mùa sau vẫn có thêm công');
+while (!isResting(field)) advanceSeason(field, calm);
+assert.equal(careLeft(field), 0, 'Vườn nghỉ thì không còn công');
+assert.equal(workDiligently(farmer), false, 'Không chăm kỹ khi vườn nghỉ');
+farmer.age = 31;
+gardenOf(farmer, calm);
+assert.equal(careMax(field), CARE_PER_SEASON, 'Sang năm mới phải chọn chăm kỹ lại');
+farmer.activitySlots = { age: 31, used: ACTIVITY_SLOTS_PER_YEAR };
+assert.ok(getDiligentBlocker(farmer).includes('rảnh'));
+assert.equal(workDiligently(farmer), false, 'Hết lượt rảnh thì không chăm kỹ được');
+
+// Dự báo: thời tiết mùa sau đúng như dự báo; mùa đông không có dự báo.
+const watcher = { age: 40, money: 0, ...stats };
+const sky = gardenOf(watcher);
+for (let season = 0; season < 3; season++) {
+  const forecast = sky.forecast;
+  assert.ok(forecast in weathers);
+  advanceSeason(sky);
+  assert.equal(sky.weather, forecast);
+}
+assert.equal(sky.forecast, null);
+// Năm cũ dừng giữa chừng: dự báo cũ bị bỏ, mùa xuân mới có dự báo riêng.
+sky.season = 1;
+sky.forecast = 'drought';
+watcher.age = 42;
+gardenOf(watcher, fixed(0.3));
+assert.equal(sky.weather, 'fair', 'Không dùng dự báo của mùa khác');
+// Bản lưu cũ chưa có dự báo thì được bổ sung.
+delete sky.forecast;
+gardenOf(watcher);
+assert.ok(sky.forecast in weathers);
 console.log('garden ok');

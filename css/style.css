@@ -3793,6 +3793,11 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-water:hover:not(:disabled) { background: linear-gradient(180deg, #dcf0ff, #bfe1f8); }
 .garden-advance { justify-self: stretch; font-size: 18px; }
 .garden-rest-note { margin: 0; padding: 12px; border-radius: 12px; background: #e6edf6; color: #3b4d66; font-size: 14px; text-align: center; }
+.garden-forecast { margin: 0; padding: 6px 12px; border-radius: 12px; background: rgb(255 255 255 / 55%); color: rgb(34 53 31 / 85%); font-size: 13px; line-height: 1.4; }
+.garden-diligent { display: grid; gap: 6px; }
+.garden-diligent.is-on p { margin: 0; padding: 8px 12px; border-radius: 12px; background: #eef7e4; color: var(--g-leaf-dark); font-size: 14px; font-weight: 700; line-height: 1.4; }
+.garden-diligent-button { justify-self: stretch; border-style: dashed; }
+.garden-diligent-note { margin: 0; color: var(--g-muted); font-size: 13px; line-height: 1.4; }
 
 /* Luống đất */
 .garden-plots {
