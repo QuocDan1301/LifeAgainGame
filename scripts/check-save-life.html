@@ -13,6 +13,7 @@
     const {state,createInitialState} = await import('../js/core/state.js');
     const {createAdmirer,getDatingUpdates} = await import('../js/relationships/relationships.js');
     const {achievements} = await import('../js/achievements/achievements-data.js');
+    const {forecastNextYear} = await import('../js/relationships/family.js');
     assert(getAgeEvents(35).length===5 && getAgeEvents(35).filter(e=>!e.specialId).length===4,'Two ordinary stories plus the age-35 special');
     let deaths=0,wins=0,safe=0;
     for(let i=1;i<=4;i++) {
@@ -48,7 +49,8 @@
     const reset=()=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());
       Object.assign(state,createInitialState());
-      Object.assign(state.player,{age:34,gender:'male',orientation:'heterosexual',health:80,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',money:0,nextPromotionAge:null,employmentStatus:'declined'});
+      Object.assign(state.player,{affairLastEventAge:200, // Keep random affair opportunities out of proposal/story checks.
+        age:34,gender:'male',orientation:'heterosexual',health:80,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',money:0,nextPromotionAge:null,employmentStatus:'declined'});
       birthday.disabled=false;
       document.getElementById('game-screen').hidden=false;
       document.getElementById('lobby-screen').hidden=true;
@@ -101,6 +103,8 @@
       reset();
       const person=createAdmirer(state.player,30,()=>0.4);
       Object.assign(state.player,getDatingUpdates(state.player,person,30));
+      const expectedMoney=forecastNextYear(state.player).after+(finalChoice===0?50000000:25000000);
+      const expectedHappiness=(finalChoice===0?60:65)-(expectedMoney<0?3:0);
       startRescue();
       assert(state.pendingEvent.specialId==='save-life' && state.player.nextMarriageProposalAge===36,'Drawn special postpones the due marriage proposal');
       for(let i=1;i<=3;i++) {
@@ -111,7 +115,7 @@
       choose(finalChoice);resume();
       assert(state.player.money===0 && !state.player.achievementFlags['story-save-life'],'Preview awards nothing before confirmation');
       confirm.click();
-      assert(state.player.age===35 && state.player.isAlive && state.player.money===(finalChoice===0?50000000:25000000)-24000000 && state.player.happiness===(finalChoice===0?60:65),'Exact cash and happiness reward');
+      assert(state.player.age===35 && state.player.isAlive && state.player.money===expectedMoney && state.player.happiness===expectedHappiness,'Exact reward after forecast living/dating costs and debt mood penalty');
       assert(state.player.achievementFlags['story-save-life'] && state.logs.at(-1).content.includes('bữa cơm bình thường'),'Achievement and supplied diary saved');
       birthday.click();assert(state.pendingEvent.kind==='marriage-proposal' && state.pendingEvent.age===36,'Marriage resumes the following year');
       choose(0);confirm.click();

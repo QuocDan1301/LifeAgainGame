@@ -74,7 +74,8 @@
     const start=(age,health=50,extra={})=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
        
-      Object.assign(state.player,{age:age-1,healthCheckAge:age-1,money:START_MONEY,health,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null}, age===100?structuredClone(married):{},extra);
+      Object.assign(state.player,{affairLastEventAge:200, // These fixtures target later-life stories, not random affairs.
+        age:age-1,healthCheckAge:age-1,money:START_MONEY,health,happiness:50,intelligence:50,appearance:50,studyBlock:'A00',employmentStatus:'declined',nextPromotionAge:null}, age===100?structuredClone(married):{},extra);
       birthday.disabled=false;document.getElementById('game-screen').hidden=false;
       const pool=getAgeEvents(age,state.player.careerPath,state.player);
       const index=pool.findIndex(e=>e.specialId==='later-'+age);

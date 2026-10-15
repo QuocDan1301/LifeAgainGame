@@ -3,282 +3,329 @@
     "test": "check-achievement-progress.html",
     "result": "PASS: university and military unlock only on confirmation, persist to achievements and game save",
     "pageErrors": [],
-    "milliseconds": 748
+    "milliseconds": 886,
+    "diagnostic": null
   },
   {
     "test": "check-adult-life.html",
     "result": "PASS: 44 everyday stories; five-year proposals; priority and consecutive-special deferrals; migration; reload; marriage; breakup; salary; promotions",
     "pageErrors": [],
-    "milliseconds": 927
-  },
-  {
-    "test": "check-auction.html",
-    "result": "PASS auction UI: preview; annual play count; durable hidden truth; resume; appraisal; buy; asset sale; duplicate protection; withdrawal; age and annual limits",
-    "pageErrors": [],
-    "milliseconds": 506
+    "milliseconds": 1230,
+    "diagnostic": null
   },
   {
     "test": "check-appearance.html",
     "result": "PASS: acquaintance 15% + (looks−50)×0.2 + 10% social, 5–35%, social settings only, friendship or romance by age and orientation, refusals respected; small first-impression edge; small casting/interview edge only for image careers; prep options with trade-offs, no permanent gains; mild avoidable ageing; free reach-out, personal care and style lesson; real gains shown before paying",
     "pageErrors": [],
-    "milliseconds": 813
+    "milliseconds": 951,
+    "diagnostic": null
+  },
+  {
+    "test": "check-auction.html",
+    "result": "PASS auction UI: preview; annual play count; durable hidden truth; resume; appraisal; buy; asset sale; duplicate protection; withdrawal; age and annual limits",
+    "pageErrors": [],
+    "milliseconds": 692,
+    "diagnostic": null
   },
   {
     "test": "check-beauty.html",
     "result": "PASS: nail; three packages; age gate; success and failure; once per year; diary; save",
     "pageErrors": [],
-    "milliseconds": 592
+    "milliseconds": 881,
+    "diagnostic": null
   },
   {
     "test": "check-career-salary.html",
     "result": "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI",
     "pageErrors": [],
-    "milliseconds": 709
+    "milliseconds": 899,
+    "diagnostic": null
   },
   {
     "test": "check-career-milestones.html",
     "result": "PASS: age-16 chain (success, failure, stop); milestone promotion chain; retry; rank-3 gate",
     "pageErrors": [],
-    "milliseconds": 1502
+    "milliseconds": 2061,
+    "diagnostic": null
   },
   {
     "test": "check-crime.html",
     "result": "PASS: tool shopping; age limit; cancel/confirm; saved ownership; reusable tools; inventory/selling; crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release",
     "pageErrors": [],
-    "milliseconds": 652
+    "milliseconds": 831,
+    "diagnostic": null
   },
   {
     "test": "check-casual-life.html",
     "result": "PASS male: age-18 route; service; asset requirements; both jobs; save",
     "pageErrors": [],
-    "milliseconds": 1036
+    "milliseconds": 1258,
+    "diagnostic": null
   },
   {
     "test": "check-earth-auction.html",
-    "result": "FAIL: Error: Confirm advances one year, adds salary once (less 40% living costs) and awards both stats\n    at assert (https://game.test/scripts/check-earth-auction.html:6:58)\n    at https://game.test/scripts/check-earth-auction.html:91:5",
+    "result": "PASS: 7 scenes, 26 paths, illustrations, saved progress, rewards, diary, annual salary and both proposal deferrals.",
     "pageErrors": [],
-    "milliseconds": 906
+    "milliseconds": 1087,
+    "diagnostic": null
   },
   {
     "test": "check-dating-drama.html",
     "result": "PASS: dialogue bubbles, denial branch, real reload, partner response, transcript, final consequences and double confirmation",
     "pageErrors": [],
-    "milliseconds": 1359
+    "milliseconds": 1710,
+    "diagnostic": null
   },
   {
     "test": "check-family.html",
     "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
     "pageErrors": [],
-    "milliseconds": 834
+    "milliseconds": 1063,
+    "diagnostic": null
   },
   {
     "test": "check-food.html",
     "result": "PASS: five dishes; money and stat changes; max 100; once per year; diary; save",
     "pageErrors": [],
-    "milliseconds": 570
-  },
-  {
-    "test": "check-football.html",
-    "result": "PASS: football needs health 60% to be chosen at 18",
-    "pageErrors": [],
-    "milliseconds": 654
+    "milliseconds": 704,
+    "diagnostic": null
   },
   {
     "test": "check-event-media.html",
     "result": "PASS: 4395 reviewed scene/results; 4495 complete OpenMoji icons, animated SVGs, original posters, old-save migration and unlimited reuse.",
     "pageErrors": [],
-    "milliseconds": 2664
+    "milliseconds": 2732,
+    "diagnostic": null
   },
   {
     "test": "check-game-center-progress.html",
     "result": "PASS Game Center UI: three annual challenges; interrupted-result handling; personal best; claim and save; repeat-claim protection; full album; badge reward; annual reset with lifetime records",
     "pageErrors": [],
-    "milliseconds": 550
+    "milliseconds": 470,
+    "diagnostic": null
   },
   {
-    "test": "check-games.html",
-    "result": "PASS: 7 games; payout tables 89–95%; outcomes fixed at start; blackjack rules; 18+; 5 plays/year; no probabilities shown; balance limit; tower stop; resume",
+    "test": "check-football.html",
+    "result": "PASS: football needs health 60% to be chosen at 18",
     "pageErrors": [],
-    "milliseconds": 825
+    "milliseconds": 984,
+    "diagnostic": null
   },
   {
     "test": "check-happiness.html",
     "result": "PASS: happiness bands; resilience for small setbacks; 3-year low streak opens support (free confide, schedule, professional, postpone with warning); no repeat while running; reset at 20; no death/firing/breakup from mood; work pressure and low-mood events; partner talk/time/space with kept or broken promises; free mood activities with yearly limit; travel repeats 100/75/50% shown before paying; lingering breakup grief with visible cause and time",
     "pageErrors": [],
-    "milliseconds": 889
+    "milliseconds": 976,
+    "diagnostic": null
   },
   {
-    "test": "check-health.html",
-    "result": "PASS: health bands; work limits by health; sick leave; emergency instead of a health floor; repeated exhaustion risk; rest year; no income after event death; old-age risk by age/health/illness; aging decline; football fitness; rescue choices; low-health card; free recovery with yearly limit; gym/yoga by health; pre-birthday choices",
+    "test": "check-games.html",
+    "result": "PASS: 7 games; payout tables 89–95%; outcomes fixed at start; blackjack rules; 18+; 5 plays/year; no probabilities shown; balance limit; tower stop; resume",
     "pageErrors": [],
-    "milliseconds": 715
+    "milliseconds": 1345,
+    "diagnostic": null
   },
   {
     "test": "check-hospital.html",
     "result": "PASS: 10 diseases with own stage configs; diagnosis; mild/severe/critical; low health speeds up; cost by stage; rest; emergency; visible card; warning before the birthday; death only when critical",
     "pageErrors": [],
-    "milliseconds": 799
+    "milliseconds": 834,
+    "diagnostic": null
   },
   {
-    "test": "check-intellect.html",
-    "result": "PASS: intellect bands; interview 60/35/10% + (I−50)×0.4 + 10% prep, 5–95%, weak answers stay weak; good answers acknowledged; exam prep (steady/group/cram/none), correct answers always pass, hints never change the truth, retake or change career; scholarship; promotion by handling + experience + intellect + merit; project bug options; risk offer red flags; free learning with yearly limit and diminishing returns; mild, varied cognitive aging without diagnosis",
+    "test": "check-health.html",
+    "result": "PASS: health bands; work limits by health; sick leave; emergency instead of a health floor; repeated exhaustion risk; rest year; no income after event death; old-age risk by age/health/illness; aging decline; football fitness; rescue choices; low-health card; free recovery with yearly limit; gym/yoga by health; pre-birthday choices",
     "pageErrors": [],
-    "milliseconds": 805
+    "milliseconds": 1173,
+    "diagnostic": null
   },
   {
     "test": "check-job-applications.html",
     "result": "PASS: automatic interview only with the age-16 milestone, told by its mentor for all 22 careers (interview, result, retry); Xin việc lists every career, only the studied one opens after graduating; saved question; one try per year; hire pays the first salary; no retry popup",
     "pageErrors": [],
-    "milliseconds": 888
+    "milliseconds": 937,
+    "diagnostic": null
+  },
+  {
+    "test": "check-intellect.html",
+    "result": "PASS: intellect bands; interview 60/35/10% + (I−50)×0.4 + 10% prep, 5–95%, weak answers stay weak; good answers acknowledged; exam prep (steady/group/cram/none), correct answers always pass, hints never change the truth, retake or change career; scholarship; promotion by handling + experience + intellect + merit; project bug options; risk offer red flags; free learning with yearly limit and diminishing returns; mild, varied cognitive aging without diagnosis",
+    "pageErrors": [],
+    "milliseconds": 1143,
+    "diagnostic": null
   },
   {
     "test": "check-last-train.html",
     "result": "PASS: 4 scenes, both age-40 histories, photo clues, per-life reward gating, all deaths, safe exit, saves, salary, wallet and achievement.",
     "pageErrors": [],
-    "milliseconds": 1037
+    "milliseconds": 1237,
+    "diagnostic": null
   },
   {
     "test": "check-licenses.html",
     "result": "PASS: age 18+; 2 licences x 5 questions; random question; hidden answers; retry; licence in assets and diary",
     "pageErrors": [],
-    "milliseconds": 514
+    "milliseconds": 586,
+    "diagnostic": null
   },
   {
     "test": "check-life-archive.html",
     "result": "PASS: event death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
     "pageErrors": [],
-    "milliseconds": 701
+    "milliseconds": 904,
+    "diagnostic": null
   },
   {
     "test": "check-life-events.html",
     "result": "PASS: warning chain (problem → warning → review), misconduct warned, grief adds no warnings; firing keeps side jobs and experience; worry max 2 years; rare noticed layoffs with priced package; contract notice, renewal or switch; living floor and forecast; parents with names and ages; old saves safe; death by age and condition, care helps; grief by bond -5/-10/-15 then -3/-2/-1; real memories; widowed history; 5/year cap; stacked support; family tab with free calls and penalty-free postponing",
     "pageErrors": [],
-    "milliseconds": 670
-  },
-  {
-    "test": "check-later-specials.html",
-    "result": "FAIL: Error: Random special selected at 100\n    at assert (https://game.test/scripts/check-later-specials.html:6:58)\n    at start (https://game.test/scripts/check-later-specials.html:85:7)\n    at https://game.test/scripts/check-later-specials.html:88:7",
-    "pageErrors": [],
-    "milliseconds": 5160
-  },
-  {
-    "test": "check-life-log.html",
-    "result": "PASS: same-age events merged; duplicate lines shown once with ×N; on load and live; save data unchanged",
-    "pageErrors": [],
-    "milliseconds": 511
-  },
-  {
-    "test": "check-lottery.html",
-    "result": "PASS: prize tables; quick pick; age 18+; 30 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary",
-    "pageErrors": [],
-    "milliseconds": 583
+    "milliseconds": 753,
+    "diagnostic": null
   },
   {
     "test": "check-life-fuzz.html",
     "result": "PASS life fuzz: {\"lives\":3,\"years\":80,\"deaths\":3,\"reloads\":10,\"events\":97,\"maxAge\":31,\"causes\":{\"gastritis\":1,\"pneumonia\":1,\"kidney-stones\":1},\"clicks\":647,\"unsaved\":{\"page › Quan hệ 👥 :: player.arcade, player.relatives\":1,\"page › 💳 Tài sản :: player.arcade\":1}}",
     "pageErrors": [],
-    "milliseconds": 4086
+    "milliseconds": 4106,
+    "diagnostic": null
+  },
+  {
+    "test": "check-life-log.html",
+    "result": "PASS: same-age events merged; duplicate lines shown once with ×N; on load and live; save data unchanged",
+    "pageErrors": [],
+    "milliseconds": 594,
+    "diagnostic": null
+  },
+  {
+    "test": "check-lottery.html",
+    "result": "PASS: prize tables; quick pick; age 18+; 30 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary",
+    "pageErrors": [],
+    "milliseconds": 800,
+    "diagnostic": null
   },
   {
     "test": "check-love.html",
     "result": "PASS: matchmaking, second partner, capacity, UI selection, individual interactions, breakup and persistence",
     "pageErrors": [],
-    "milliseconds": 725
+    "milliseconds": 880,
+    "diagnostic": null
   },
   {
     "test": "check-milestone-priority.html",
     "result": "PASS: age-18 career and age-24 chain keep priority over deferrable events; deferred support follows; relatives saved on load; contract notices after skipped or renewed terms; prisoners limited to remote family actions; family support paid once; paid matchmaking profile survives closing; no side jobs or job offers after retirement",
     "pageErrors": [],
-    "milliseconds": 836
-  },
-  {
-    "test": "check-polish.html",
-    "result": "PASS: shared rank lock (success+same career / failure / other career), milestone chain replaces first promotion with fallback kept, rank-3 gate; age-16 odds shown and stat-based, random step kept, stop text; school minimum 80; diminishing training from 80; odds shown for promotion and casting; old-age death explained; lock note on career choice; yearly friend chat",
-    "pageErrors": [],
-    "milliseconds": 720
+    "milliseconds": 877,
+    "diagnostic": null
   },
   {
     "test": "check-old-house.html",
     "result": "PASS: 7 scenes, 6 early exits, 2 rewards, illustrations, saved progress, salary once, wallet, achievement and diary.",
     "pageErrors": [],
-    "milliseconds": 1147
+    "milliseconds": 1156,
+    "diagnostic": null
+  },
+  {
+    "test": "check-polish.html",
+    "result": "PASS: shared rank lock (success+same career / failure / other career), milestone chain replaces first promotion with fallback kept, rank-3 gate; age-16 odds shown and stat-based, random step kept, stop text; school minimum 80; diminishing training from 80; odds shown for promotion and casting; old-age death explained; lock note on career choice; yearly friend chat",
+    "pageErrors": [],
+    "milliseconds": 748,
+    "diagnostic": null
+  },
+  {
+    "test": "check-save-life.html",
+    "result": "PASS: random selection among all 3 stories, no-event chance, 4 scenes, warnings, deaths, rewards, saves and scheduled proposals.",
+    "pageErrors": [],
+    "milliseconds": 2614,
+    "diagnostic": null
   },
   {
     "test": "check-school-rewards.html",
     "result": "PASS: random ranges, all four stats, cash, caps, once per life, saved results, diaries, UI, university and failed admission.",
     "pageErrors": [],
-    "milliseconds": 906
+    "milliseconds": 798,
+    "diagnostic": null
   },
   {
-    "test": "check-save-life.html",
-    "result": "FAIL: Error: Ordinary draw or no-event draw preserves the due proposal this year\n    at assert (https://game.test/scripts/check-save-life.html:6:57)\n    at https://game.test/scripts/check-save-life.html:93:9",
+    "test": "check-later-specials.html",
+    "result": "PASS: 208 complete branching paths; rewards, wallet losses, clues, assets, saved results, nonfatal injuries, fatal choices, keepsakes, memories, free lessons, spouse eligibility, proposal deferral and all 54 final endings.",
     "pageErrors": [],
-    "milliseconds": 1326
+    "milliseconds": 18302,
+    "diagnostic": null
   },
   {
     "test": "check-self-development.html",
     "result": "PASS: 4 stats × 2 activities × 3 packages; price-based gains; immediate registration; once per year; max 100; Tarot wands/pentacles; diary; save",
     "pageErrors": [],
-    "milliseconds": 910
+    "milliseconds": 1086,
+    "diagnostic": null
   },
   {
     "test": "check-shop.html",
     "result": "PASS: pet shop; petting companions; grouped assets; shopping groups; tools group; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price",
     "pageErrors": [],
-    "milliseconds": 1011
+    "milliseconds": 1127,
+    "diagnostic": null
   },
   {
     "test": "check-side-jobs.html",
     "result": "PASS: age 16+; part-time/full-time rules; five stores; confirm; status title; achievement; yearly pay and health; current jobs; quitting",
     "pageErrors": [],
-    "milliseconds": 907
-  },
-  {
-    "test": "check-tarot-animation.html",
-    "result": "PASS: close/reopen/finish during Tarot flip produces no stale callback or duplicate fee",
-    "pageErrors": [],
-    "milliseconds": 898
+    "milliseconds": 1109,
+    "diagnostic": null
   },
   {
     "test": "check-study-abroad.html",
     "result": "PASS (stay abroad): admission, majors, fees, reload, language, work, dialogue, graduation, job listing, interview, salary and saved country",
     "pageErrors": [],
-    "milliseconds": 1743
+    "milliseconds": 1691,
+    "diagnostic": null
+  },
+  {
+    "test": "check-tarot-animation.html",
+    "result": "PASS: close/reopen/finish during Tarot flip produces no stale callback or duplicate fee",
+    "pageErrors": [],
+    "milliseconds": 912,
+    "diagnostic": null
   },
   {
     "test": "check-tarot.html",
     "result": "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 4 Tarot achievements",
     "pageErrors": [],
-    "milliseconds": 1062
+    "milliseconds": 885,
+    "diagnostic": null
   },
   {
     "test": "check-tien-len-ui.html",
     "result": "PASS Tien len UI: stake options; full hand; selection; clear; keyboard focus; sort; hint; legal play; turn states; center pile; forfeit confirmation and result",
     "pageErrors": [],
-    "milliseconds": 434
+    "milliseconds": 450,
+    "diagnostic": null
   },
   {
     "test": "check-theater-luggage.html",
     "result": "PASS: both chains, all early exits, both reward choices, certificate, reloads, salary and all injury branches at 100/80/40/20/1 health.",
     "pageErrors": [],
-    "milliseconds": 2073
+    "milliseconds": 2104,
+    "diagnostic": null
   },
   {
     "test": "check-travel.html",
     "result": "PASS: nine destinations from the table; cost and happiness; max 100; one trip per year; diary",
     "pageErrors": [],
-    "milliseconds": 627
+    "milliseconds": 689,
+    "diagnostic": null
   },
   {
     "test": "check-work-temptation.html",
     "result": "PASS work temptation UI: real yearly event; four choices in debt; saved offer and result; arrest without wages; duplicate confirmation; prison year; refusal; delayed investigation after leaving job",
     "pageErrors": [],
-    "milliseconds": 825
+    "milliseconds": 877,
+    "diagnostic": null
   },
   {
     "test": "check-tower-ui.html",
     "result": "PASS tower UI: five milestones; named doors; reveal lock; current floor; accurate cash-out and next-floor amounts; saved door, reload, stale-timer rejection and single settlement",
     "pageErrors": [],
-    "milliseconds": 3562
+    "milliseconds": 3579,
+    "diagnostic": null
   }
 ]

@@ -1,0 +1,165 @@
+﻿{
+    "date":  "2026-10-15",
+    "timezone":  "Asia/Saigon",
+    "scope":  "Local working tree and production build; isolated Chromium sessions on Windows.",
+    "coverage":  {
+                     "nodeSuites":  {
+                                        "passed":  24,
+                                        "total":  24
+                                    },
+                     "originalHtmlSuites":  {
+                                                "passed":  47,
+                                                "total":  47,
+                                                "javascriptErrors":  0
+                                            },
+                     "isolatedLegacyStoryRechecks":  {
+                                                         "passed":  3,
+                                                         "total":  3,
+                                                         "method":  "Historical diagnostic only; current original fixtures now pass without in-memory adaptation."
+                                                     },
+                     "layout":  {
+                                    "states":  240,
+                                    "sizes":  [
+                                                  "320x568",
+                                                  "390x844",
+                                                  "740x360",
+                                                  "768x1024",
+                                                  "1280x900"
+                                              ],
+                                    "skipped":  0,
+                                    "horizontalOverflows":  0,
+                                    "clippedText":  0,
+                                    "missingControlNames":  0,
+                                    "javascriptErrors":  0,
+                                    "smallTextFindings":  0,
+                                    "smallTouchTargets":  0
+                                },
+                     "session":  [
+                                     "Actual two-tab playing lock",
+                                     "Storage quota failure and successful retry",
+                                     "Keyboard focus remains in modal or browser chrome",
+                                     "Lock released and latest save resumed after closing active tab"
+                                 ],
+                     "economy":  {
+                                     "groups":  26,
+                                     "controlledCashFlowLives":  96,
+                                     "assumptions":  "Stable work and maintained health; excludes stochastic illness, job loss and survival risk."
+                                 },
+                     "stories":  {
+                                     "simulatedLives":  4000,
+                                     "catalogEvents":  681,
+                                     "chains":  68
+                                 },
+                     "detective":  {
+                                       "generatedCases":  900,
+                                       "guarantees":  [
+                                                          "One solution",
+                                                          "Enough evidence within allotted hours",
+                                                          "Compound clues required in advanced cases"
+                                                      ]
+                                   },
+                     "build":  "passed",
+                     "staticServerAndBuiltAssets":  "passed"
+                 },
+    "findings":  [
+                     {
+                         "id":  "QA-001",
+                         "severity":  "P2",
+                         "status":  "Still reproduced locally after follow-up; root cause remains unconfirmed",
+                         "area":  "Offline updates",
+                         "title":  "A downloaded update remains waiting after a normal reload to the lobby",
+                         "reproduction":  [
+                                              "Install and control the built game with a real service worker on localhost.",
+                                              "Open the cached game offline, reconnect and serve a second worker/cache version.",
+                                              "Verify the new worker is installed and waiting while the game stays open.",
+                                              "Reload to the lobby without clearing browser data."
+                                          ],
+                         "actual":  "The current build still leaves revision 2 installed/waiting after returning to the lobby: the 15-second revision check times out, skip-waiting was posted, and direct skipWaiting also times out. Save data remains intact.",
+                         "impact":  "Some update scenarios may leave players on old code. Save data was preserved.",
+                         "location":  "js/core/offline.js:17; scripts/sw-template.js:16",
+                         "evidence":  "output/tester-audit/offline.json",
+                         "limitation":  "Reproduced in headless local Chrome both with native networking and request interception, and in a separate online-only probe. No deployed-site or physical-device reproduction.",
+                         "mitigation":  "Added five-second deadlines to optional CDN/font requests, extended skip-waiting message lifetime, and prevented update checks during activation. Unit tests pass, but these changes have not resolved the real-browser timeout."
+                     },
+                     {
+                         "id":  "QA-002",
+                         "severity":  "P2",
+                         "status":  "Fixed and verified: all 47 original browser suites pass without in-memory isolation",
+                         "area":  "Regression coverage",
+                         "title":  "Three browser checks have expectations that predate dating costs and marital-affair events",
+                         "locations":  [
+                                           "scripts/check-earth-auction.html:91",
+                                           "scripts/check-earth-auction.html:95",
+                                           "scripts/check-later-specials.html:85",
+                                           "scripts/check-save-life.html:94"
+                                       ],
+                         "actual":  "Story fixtures now suppress random affair opportunities explicitly; cash assertions include dating expenses through forecastNextYear. Rescue rewards also account for the debt mood penalty.",
+                         "verification":  "All three passed after isolating their fixtures in memory from those unrelated mechanics, including 208 later-life paths.",
+                         "recommendation":  "Use forecast-derived expected money; explicitly suppress unrelated random events in story-focused fixtures; add separate tests for their priority interactions.",
+                         "evidence":  [
+                                          "output/tester-audit/browser-checks.json",
+                                          "output/tester-audit/browser-rechecks.json",
+                                          "output/tester-audit/browser-isolated-specials.json"
+                                      ]
+                     },
+                     {
+                         "id":  "QA-003",
+                         "severity":  "P3",
+                         "status":  "Fixed and verified at five viewport sizes",
+                         "area":  "UI readability",
+                         "title":  "Garden labels are small on phones",
+                         "actual":  "Garden plot names and seasonal market badges now use 12px text. No small-text findings in the 240-state audit.",
+                         "locations":  [
+                                           "css/style.css:4126",
+                                           "css/style.css:4045"
+                                       ],
+                         "recommendation":  "Increase plot labels and badges to at least 12px and inspect the garden layout on a real phone.",
+                         "evidence":  "output/tester-audit/layout.json"
+                     },
+                     {
+                         "id":  "QA-004",
+                         "severity":  "P3",
+                         "status":  "Fixed and verified at five viewport sizes",
+                         "area":  "Touch usability",
+                         "title":  "Detective rules summary has a 25px-high tap area",
+                         "location":  "css/style.css:3399",
+                         "recommendation":  "Add vertical padding or min-height around 40–44px.",
+                         "evidence":  "output/tester-audit/layout.json",
+                         "actual":  "Detective rules summary has a minimum 44px height and vertical padding. No small touch-target findings in the 240-state audit."
+                     }
+                 ],
+    "balanceObservations":  [
+                                "All 96 controlled stable-income profiles eventually reached one billion VND. Median first-billion ages were 32.5 (single), 33 (family), 36 (comfort), and 37 (entry-level).",
+                                "This measures cash flow under stable conditions, not the difficulty of surviving a full life. The three random UI-fuzz lives ended by age 31, so that sample cannot establish late-life survival balance.",
+                                "No duplicate reward collection or forecast/collection mismatch was detected by the executed mechanics suites."
+                            ],
+    "limitations":  [
+                        "Chromium and simulated viewports; no physical Android/iPhone or Safari run.",
+                        "No live deployment load test or real-user retention/playtime study.",
+                        "External CDN availability and final online font rendering were not verified.",
+                        "The service-worker timeout is retained as an investigation finding, not a claim that all production updates fail."
+                    ],
+    "guidelineSource":  "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md",
+    "followup":  {
+                     "date":  "2026-10-15",
+                     "nodeResults":  "output/tester-audit/mechanics-followup.json",
+                     "changes":  [
+                                     "Garden readability and detective touch target improved",
+                                     "Three legacy story fixtures updated without changing player gender or bypassing dating expenses",
+                                     "Optional CDN/font requests have a five-second deadline; skip-waiting message extends the worker lifetime",
+                                     "Do not start a registration update while a waiting worker is being activated; regression check added"
+                                 ],
+                     "verification":  [
+                                          "24/24 Node suites",
+                                          "47/47 browser suites",
+                                          "240 layout states; zero overflow, clipped text, unnamed controls, small text or small targets",
+                                          "Build and static server passed",
+                                          "Two-tab lock, quota retry, modal keyboard and save resume passed"
+                                      ],
+                     "unresolved":  [
+                                        "QA-001: actual browser offline update remains waiting; not marked fixed",
+                                        "Economic simulations measure stable cash flow and do not establish overall survival difficulty"
+                                    ],
+                     "guidelineReference":  "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md"
+                 }
+}

@@ -15,7 +15,7 @@ self.addEventListener("install", event => {
 
  
 self.addEventListener("message", event => {
-  if (event.data === "skip-waiting") self.skipWaiting();
+  if (event.data === "skip-waiting") event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener("activate", event => {
@@ -33,14 +33,16 @@ async function cacheStylesheetWithFonts(url) {
   try {
     const cache = await caches.open(RUNTIME_CACHE);
     if (await cache.match(url, { ignoreVary: true })) return;
-    const response = await fetch(url, { mode: "cors" });
+    // Font warming is optional: a stalled CDN must not hold activation open.
+    const signal = AbortSignal.timeout(5000);
+    const response = await fetch(url, { mode: "cors", signal });
     if (!response.ok) return;
     const css = await response.clone().text();
     await cache.put(url, response);
     const fonts = [...css.matchAll(/url\(["']?([^"')]+)["']?\)/g)].map(match => new URL(match[1], url).href);
     await Promise.all(fonts.map(async font => {
       if (await cache.match(font, { ignoreVary: true })) return;
-      const fontResponse = await fetch(font, { mode: "cors" });
+      const fontResponse = await fetch(font, { mode: "cors", signal });
       if (fontResponse.ok) await cache.put(font, fontResponse);
     }));
   } catch {
@@ -82,7 +84,10 @@ async function cacheFirst(request) {
     await runtime.match(request, { ignoreVary: true });
   if (cached) return cached;
   try {
-    const response = await fetch(request);
+    // Pending CDN fetch events can also delay replacement of the active worker.
+    const options = FONT_HOSTS.has(new URL(request.url).hostname)
+      ? { signal: AbortSignal.timeout(5000) } : undefined;
+    const response = await fetch(request, options);
     if (response.ok || response.type === "opaque") {
       const copy = response.clone();
       caches.open(RUNTIME_CACHE).then(cache => cache.put(request, copy)).catch(() => {});

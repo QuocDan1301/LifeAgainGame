@@ -49,6 +49,13 @@ assert.deepEqual(active.messages, ['skip-waiting']);
 active.serviceWorker.emit('controllerchange');
 assert.equal(active.reloads, 1, 'opens the installed version at the lobby');
 
+const readyUpdate = await app();
+assert.deepEqual(readyUpdate.messages, ['skip-waiting']);
+assert.equal(readyUpdate.updates, 0, 'does not start another update while activating the waiting worker');
+readyUpdate.window.emit('focus');
+await flush();
+assert.equal(readyUpdate.updates, 0, 'focus does not race an activation with another update');
+
 const otherTab = await app({ idle: false, waiting: false });
 otherTab.serviceWorker.emit('controllerchange');
 assert.equal(otherTab.reloads, 0, 'another tab updating does not interrupt play');
@@ -91,7 +98,7 @@ const caches = {
   delete: async name => buckets.delete(name),
 };
 const handlers = new Map();
-const sw = vm.createContext({ caches, Request, Response, URL,
+const sw = vm.createContext({ caches, Request, Response, URL, AbortSignal,
   fetch: async () => { downloads++; return new Response('new image'); },
   self: { location: { origin: 'https://game.test' }, clients: { claim: async () => {} }, addEventListener: (type, callback) => handlers.set(type, callback) },
 });
@@ -105,4 +112,38 @@ await activation;
 assert.equal(buckets.has('life-again-runtime'), false, 'cleans up legacy runtime cache');
 assert.equal(buckets.has('life-again-test-v2'), true);
 assert.equal(buckets.has('life-again-runtime-test-v2'), true);
+// A stalled font CDN must not prevent this worker or the next version activating.
+const realTimeout = AbortSignal.timeout.bind(AbortSignal);
+let fontSignal;
+sw.AbortSignal = { timeout: milliseconds => {
+  assert.equal(milliseconds, 5000, 'font warming has a five-second budget');
+  return realTimeout(20);
+} };
+sw.fetch = async (_url, options) => {
+  fontSignal = options.signal;
+  return new Promise((resolve, reject) => options.signal.addEventListener('abort',
+    () => reject(options.signal.reason), { once: true }));
+};
+let deadline;
+try {
+  await Promise.race([
+    sw.cacheStylesheetWithFonts('https://fonts.googleapis.com/stalled'),
+    new Promise((_, reject) => { deadline = setTimeout(() => reject(new Error('Font warming blocked activation')), 1000); }),
+  ]);
+} finally { clearTimeout(deadline); }
+assert.equal(fontSignal.aborted, true, 'stalled optional downloads are aborted');
+try {
+  const response = await Promise.race([
+    sw.cacheFirst(new Request('https://fonts.gstatic.com/stalled.woff2')),
+    new Promise((_, reject) => { deadline = setTimeout(() => reject(new Error('Runtime font fetch blocked update')), 1000); }),
+  ]);
+  assert.equal(response.type, 'error', 'runtime font failure allows fallback without blocking');
+  assert.equal(fontSignal.aborted, true, 'runtime CDN requests have the same deadline');
+} finally { clearTimeout(deadline); }
+let skipWaitingCalls = 0;
+sw.self.skipWaiting = async () => { skipWaitingCalls++; };
+let messageLifetime;
+handlers.get('message')({ data: 'skip-waiting', waitUntil: promise => { messageLifetime = promise; } });
+await messageLifetime;
+assert.equal(skipWaitingCalls, 1, 'message lifetime covers activation request');
 console.log('PASS offline updates: opening/reconnection checks, safe lobby activation, other tabs, first install, offline fallback, versioned caches.');

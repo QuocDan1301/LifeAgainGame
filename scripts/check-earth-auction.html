@@ -14,6 +14,8 @@
     const { createAdmirer, getDatingUpdates } = await import('../js/relationships/relationships.js');
     const { achievements } = await import('../js/achievements/achievements-data.js');
     const { getCareerProfile } = await import('../js/career/career-jobs.js');
+    const { forecastNextYear } = await import('../js/relationships/family.js');
+    const { formatMoneyAmount } = await import('../js/core/money-format.js');
     assert(getAgeEvents(30).length === 5 && getAgeEvents(30).filter(e => !e.specialId).length === 4,
       'Age 30 retains two everyday stories plus its special story');
     assert(!step(0) && !step(8), 'Reject invalid steps');
@@ -62,6 +64,7 @@
       Object.assign(state, createInitialState());
       Object.assign(state.player, { age:29, gender:'male', orientation:'heterosexual', health:90,
         happiness:50, intelligence:50, appearance:70, studyBlock:'A', money:0,
+        affairLastEventAge:200, // Isolate proposal/story priority from random affair opportunities.
         employmentStatus:'employed', careerLevel:1, lastSalaryAge:29, nextPromotionAge:null,
         careerPath:{ id:'programming', field:'Công nghệ thông tin' }, job:getCareerProfile('programming').ranks[0] });
       document.getElementById('game-screen').hidden = false;
@@ -70,6 +73,7 @@
     reset();
     const person = createAdmirer(state.player,25,()=>0.4);
     Object.assign(state.player, getDatingUpdates(state.player,person,25));
+    const expectedMoney = forecastNextYear(state.player).after + 500_000;
     let roll=0;
     Math.random=()=>roll++===0?0.1:0.1;
     birthday.click();
@@ -88,11 +92,11 @@
     assert(state.player.intelligence === 50 && state.player.happiness === 50, 'Rewards wait for confirmation');
     state.pendingEvent = JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;
     confirm.click();
-    assert(state.player.age === 30 && state.player.money === 120_500_000 - 48_000_000 && state.player.intelligence === 60 && state.player.happiness === 60,
-      'Confirm advances one year, adds salary once (less 40% living costs) and awards both stats');
+    assert(state.player.age === 30 && state.player.money === expectedMoney && state.player.intelligence === 60 && state.player.happiness === 60,
+      'Confirm advances one year, applies the forecast including dating costs once, and awards both stats');
     assert(state.player.achievementFlags['story-alien'] && state.logs.at(-1).content.includes('hai quả cam'),
       'Achievement and the supplied diary entry persist');
-    assert(document.getElementById('money-value').textContent === '72,5 triệu' && state.logs.at(-1).content.includes('500.000 VNĐ'),
+    assert(document.getElementById('money-value').textContent === formatMoneyAmount(expectedMoney) && state.logs.at(-1).content.includes('500.000 VNĐ'),
       'Cash reward appears in the wallet and diary');
     birthday.click();
     assert(state.pendingEvent?.kind === 'marriage-proposal' && state.pendingEvent.age === 31, 'Deferred proposal appears at 31');

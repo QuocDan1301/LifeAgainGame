@@ -12,5 +12,12 @@
     "pageErrors": [],
     "milliseconds": 3569,
     "diagnostic": null
+  },
+  {
+    "test": "check-later-specials.html",
+    "result": "PASS: 208 complete branching paths; rewards, wallet losses, clues, assets, saved results, nonfatal injuries, fatal choices, keepsakes, memories, free lessons, spouse eligibility, proposal deferral and all 54 final endings.",
+    "pageErrors": [],
+    "milliseconds": 20200,
+    "diagnostic": null
   }
 ]

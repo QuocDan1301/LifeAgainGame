@@ -8,7 +8,8 @@ const root = process.cwd();
 const existing = fs.readFileSync('scripts/check-mobile-layout.py', 'utf8');
 const seed = existing.match(/SEED = """([\s\S]*?)"""/)[1];
 const audit = existing.match(/AUDIT = r"""([\s\S]*?)"""/)[1];
-const sizes = [[320, 568], [390, 844], [740, 360], [768, 1024], [1280, 900]];
+const screenshotsOnly = process.argv.includes('--screenshots');
+const sizes = screenshotsOnly ? [[320, 568], [390, 844]] : [[320, 568], [390, 844], [740, 360], [768, 1024], [1280, 900]];
 const scenes = [
   ['main', []], ['menu', ['#menu-button']], ['achievements', ['#achievements']], ['fortune', ['#fortune-button']],
   ['assets', ['#assets']], ['budget', ['#assets', '#open-family-budget']], ['relationships', ['#relationships']],
@@ -20,7 +21,7 @@ const scenes = [
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true });
 const rows = [];
 fs.mkdirSync('output/tester-audit', { recursive: true });
-const write = () => fs.writeFileSync('output/tester-audit/layout.json', JSON.stringify(rows, null, 2));
+const write = () => fs.writeFileSync('output/tester-audit/' + (screenshotsOnly ? 'layout-screenshots.json' : 'layout.json'), JSON.stringify(rows, null, 2));
 try {
   for (const [width, height] of sizes) {
     const size = `${width}x${height}`;
@@ -51,7 +52,7 @@ try {
       }, scope);
       const row = { size, scene, ...metrics, accessibility };
       rows.push(row);
-      if (metrics.docOverflowX > 1 || metrics.scopeOverflowX > 1 || metrics.overflowing.length || accessibility.unlabeled.length || metrics.closeInView === false) {
+      if (screenshotsOnly || metrics.docOverflowX > 1 || metrics.scopeOverflowX > 1 || metrics.overflowing.length || accessibility.unlabeled.length || metrics.closeInView === false) {
         await page.screenshot({ path: `output/tester-audit/layout-${size}-${scene.replace(/[^a-z0-9-]/gi, '-')}.png` }).catch(() => {});
       }
       write();
@@ -65,7 +66,7 @@ try {
     await page.locator('#continue-button').click();
     await page.locator('#game-screen').waitFor({ state: 'visible' });
     await page.locator('#app-loader').waitFor({ state: 'hidden' });
-    for (const [name, selectors] of scenes) {
+    for (const [name, selectors] of scenes.filter(([name]) => !screenshotsOnly || ['main', 'act-garden', 'act-detective'].includes(name))) {
       try {
         await page.evaluate(() => {
           document.querySelectorAll('dialog[open]').forEach(dialog => dialog.close());

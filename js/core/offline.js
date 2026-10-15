@@ -55,7 +55,7 @@ export function initOffline(isIdle) {
     activate(registration.waiting);
     let checking = false;
     async function checkUpdate() {
-      if (checking || document.visibilityState === "hidden") return;
+      if (checking || reloading || document.visibilityState === "hidden") return;
       checking = true;
       try {
         await registration.update();

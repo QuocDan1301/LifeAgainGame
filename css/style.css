@@ -3396,7 +3396,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-tier-badge.tier-0 { background: #dff3dc; color: #2f6b2a; }
 .detective-tier-badge.tier-1 { background: #ffecc7; color: #8a5a00; }
 .detective-tier-badge.tier-2 { background: #fbdcd6; color: #9b2c1c; }
-.detective-rules summary { font-family: "Sriracha", cursive; font-size: 18px; cursor: pointer; }
+.detective-rules summary { box-sizing: border-box; min-height: 44px; padding: 10px 0; font-family: "Sriracha", cursive; font-size: 18px; cursor: pointer; }
 .detective-rules ul { margin: 8px 0 0; padding-left: 22px; font-family: "Patrick Hand", cursive; font-size: 1.7rem; line-height: 1.4; }
 .detective-rules li + li { margin-top: 4px; }
 
@@ -4042,7 +4042,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   text-align: center;
 }
 .garden-item.is-highlight { border-color: #9ccc78; box-shadow: 0 0 0 2px rgb(156 204 120 / 35%); }
-.garden-item-badge { position: absolute; top: -9px; padding: 1px 8px; border-radius: 999px; background: var(--g-leaf); color: #fff; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.garden-item-badge { position: absolute; top: -9px; padding: 1px 8px; border-radius: 999px; background: var(--g-leaf); color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; }
 .garden-item-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #e6f2d6); font-size: 30px; }
 .garden-item h4 { margin: 2px 0 0; font-family: "Sriracha", cursive; font-size: 17px; font-weight: 400; }
 .garden-item-meta { margin: 0; font-size: 12px; line-height: 1.35; color: var(--g-muted); }
@@ -4123,7 +4123,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .garden-sprite { font-size: 32px; }
   .garden-sprite.stage-0 { font-size: 22px; }
   .garden-sprite.stage-1, .garden-sprite.stage-2 { font-size: 26px; }
-  .garden-plot-name { font-size: 10px; }
+  .garden-plot-name { font-size: 12px; }
   .garden-badge { min-width: 18px; height: 18px; font-size: 10px; }
   .garden-hero h3 { font-size: 21px; }
   .garden-sell-row { grid-template-columns: 1fr 1fr; }

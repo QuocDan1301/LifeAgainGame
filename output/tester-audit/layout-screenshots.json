@@ -1,0 +1,518 @@
+[
+  {
+    "size": "320x568",
+    "scene": "lobby",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      320,
+      568
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 568,
+      "clientH": 568,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 7,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "scene": "main",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      320,
+      568
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 568,
+      "clientH": 568,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "scene": "act-detective",
+    "scope": "#detective-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      312,
+      556
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      275,
+      3,
+      315,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1406,
+      "clientH": 538,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "scene": "act-garden",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      312,
+      556
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      275,
+      3,
+      315,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1165,
+      "clientH": 538,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "scene": "act-garden-garden-tab-market",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      312,
+      556
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      275,
+      3,
+      315,
+      43
+    ],
+    "vertical": {
+      "scrollH": 3063,
+      "clientH": 538,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 28,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "scene": "act-garden-garden-tab-kitchen",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      312,
+      556
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      275,
+      3,
+      315,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1829,
+      "clientH": 538,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "scene": "act-garden-garden-tab-pantry",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      312,
+      556
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      275,
+      3,
+      315,
+      43
+    ],
+    "vertical": {
+      "scrollH": 999,
+      "clientH": 538,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "320x568",
+    "pageErrors": []
+  },
+  {
+    "size": "390x844",
+    "scene": "lobby",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      390,
+      844
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 844,
+      "clientH": 844,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 7,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "main",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      390,
+      844
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 844,
+      "clientH": 844,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-detective",
+    "scope": "#detective-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1155,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1056,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden-garden-tab-market",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1855,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 28,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden-garden-tab-kitchen",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1623,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden-garden-tab-pantry",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 874,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "pageErrors": []
+  }
+]

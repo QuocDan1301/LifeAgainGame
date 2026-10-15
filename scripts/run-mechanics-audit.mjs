@@ -12,7 +12,7 @@ for (const name of cases) {
   results.push(row);
   console.log(`${run.status === 0 ? 'PASS' : 'FAIL'} ${name}`);
   fs.mkdirSync('output', { recursive: true });
-  fs.writeFileSync('output/mechanics-node-results.json', JSON.stringify(results, null, 2));
+  fs.writeFileSync(process.env.MECHANICS_REPORT ?? 'output/mechanics-node-results.json', JSON.stringify(results, null, 2));
 }
 console.log(`${results.filter(row => row.exitCode === 0).length}/${results.length} checks passed; static server HTTP and live deployment checked separately.`);
 process.exitCode = results.every(row => row.exitCode === 0) ? 0 : 1;

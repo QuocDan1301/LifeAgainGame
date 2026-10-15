@@ -1,5 +1,6 @@
 [
   "PASS two real browser tabs: concurrent play is blocked.",
   "PASS full storage: visible error, retry, exact money saved.",
-  "FAIL AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'games-notice-dialog'\n\n    at file:///C:/Users/Admin/OneDrive/Ta%CC%80i%20li%C3%AA%CC%A3u/HoiSinhNewLifeGame/scripts/run-tester-session.mjs:65:12"
+  "PASS keyboard: notice traps focus and Escape returns to activities.",
+  "PASS closing active tab releases the lock; remaining tab resumes latest save."
 ]

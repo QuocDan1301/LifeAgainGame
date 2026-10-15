@@ -146,7 +146,7 @@
     ],
     "scopeOverflowX": 0,
     "vertical": {
-      "scrollH": 658,
+      "scrollH": 621,
       "clientH": 538,
       "overflowY": "auto",
       "beyondViewport": false
@@ -1545,17 +1545,15 @@
       43
     ],
     "vertical": {
-      "scrollH": 1342,
+      "scrollH": 1406,
       "clientH": 538,
       "overflowY": "auto",
       "beyondViewport": false
     },
     "overflowing": [],
     "clipped": [],
-    "smallTargets": [
-      "div#detective-body > details.dialog-card.detective-rules > summary 244x25 \"📖 Cách làm việc\""
-    ],
-    "smallTargetCount": 1,
+    "smallTargets": [],
+    "smallTargetCount": 0,
     "targetCount": 5,
     "smallText": [],
     "smallTextCount": 0,
@@ -1595,15 +1593,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 13,
-    "smallText": [
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > button.garden-plot-buy > span.garden-plot-name 10px \"Mở luống mới\""
-    ],
-    "smallTextCount": 5,
-    "minFont": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
@@ -1639,16 +1631,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 28,
-    "smallText": [
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\""
-    ],
-    "smallTextCount": 8,
-    "minFont": 11,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
@@ -3356,17 +3341,15 @@
       43
     ],
     "vertical": {
-      "scrollH": 1199,
+      "scrollH": 1176,
       "clientH": 814,
       "overflowY": "auto",
       "beyondViewport": false
     },
     "overflowing": [],
     "clipped": [],
-    "smallTargets": [
-      "div#detective-body > details.dialog-card.detective-rules > summary 314x25 \"📖 Cách làm việc\""
-    ],
-    "smallTargetCount": 1,
+    "smallTargets": [],
+    "smallTargetCount": 0,
     "targetCount": 5,
     "smallText": [],
     "smallTextCount": 0,
@@ -3406,15 +3389,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 13,
-    "smallText": [
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > div.garden-plot.is-empty > span.garden-plot-name 10px \"Gieo hạt\"",
-      "div.garden-plots > button.garden-plot-buy > span.garden-plot-name 10px \"Mở luống mới\""
-    ],
-    "smallTextCount": 5,
-    "minFont": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
@@ -3450,16 +3427,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 28,
-    "smallText": [
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\""
-    ],
-    "smallTextCount": 8,
-    "minFont": 11,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
@@ -5167,17 +5137,15 @@
       49
     ],
     "vertical": {
-      "scrollH": 1019,
+      "scrollH": 1039,
       "clientH": 318,
       "overflowY": "auto",
       "beyondViewport": false
     },
     "overflowing": [],
     "clipped": [],
-    "smallTargets": [
-      "div#detective-body > details.dialog-card.detective-rules > summary 520x25 \"📖 Cách làm việc\""
-    ],
-    "smallTargetCount": 1,
+    "smallTargets": [],
+    "smallTargetCount": 0,
     "targetCount": 5,
     "smallText": [],
     "smallTextCount": 0,
@@ -5255,16 +5223,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 28,
-    "smallText": [
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\""
-    ],
-    "smallTextCount": 8,
-    "minFont": 11,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
@@ -6972,17 +6933,15 @@
       82
     ],
     "vertical": {
-      "scrollH": 1041,
+      "scrollH": 1039,
       "clientH": 916,
       "overflowY": "auto",
       "beyondViewport": false
     },
     "overflowing": [],
     "clipped": [],
-    "smallTargets": [
-      "div#detective-body > details.dialog-card.detective-rules > summary 520x25 \"📖 Cách làm việc\""
-    ],
-    "smallTargetCount": 1,
+    "smallTargets": [],
+    "smallTargetCount": 0,
     "targetCount": 5,
     "smallText": [],
     "smallTextCount": 0,
@@ -7060,16 +7019,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 28,
-    "smallText": [
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\""
-    ],
-    "smallTextCount": 8,
-    "minFont": 11,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
@@ -7372,14 +7324,14 @@
     "docOverflowX": 0,
     "box": [
       425,
-      190,
+      171,
       855,
-      710
+      729
     ],
     "scopeOverflowX": 0,
     "vertical": {
-      "scrollH": 514,
-      "clientH": 514,
+      "scrollH": 551,
+      "clientH": 551,
       "overflowY": "auto",
       "beyondViewport": false
     },
@@ -8777,17 +8729,15 @@
       76
     ],
     "vertical": {
-      "scrollH": 1041,
+      "scrollH": 1039,
       "clientH": 804,
       "overflowY": "auto",
       "beyondViewport": false
     },
     "overflowing": [],
     "clipped": [],
-    "smallTargets": [
-      "div#detective-body > details.dialog-card.detective-rules > summary 520x25 \"📖 Cách làm việc\""
-    ],
-    "smallTargetCount": 1,
+    "smallTargets": [],
+    "smallTargetCount": 0,
     "targetCount": 5,
     "smallText": [],
     "smallTextCount": 0,
@@ -8865,16 +8815,9 @@
     "smallTargets": [],
     "smallTargetCount": 0,
     "targetCount": 28,
-    "smallText": [
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\"",
-      "div.garden-items > article.garden-item.is-highlight > span.garden-item-badge 11px \"Gieo được mùa này\""
-    ],
-    "smallTextCount": 8,
-    "minFont": 11,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
     "accessibility": {
       "unlabeled": [],
       "iconButtons": []
