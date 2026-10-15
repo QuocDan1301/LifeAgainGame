@@ -6,12 +6,17 @@ import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCac
 import { initMusic } from "./ui/music.js";
 import { moveCloseButtonsOutside } from "./ui/dialog-close.js";
 import { initOffline } from "./core/offline.js";
+import { saveGame } from "./core/save-store.js";
 
  
 moveCloseButtonsOutside();
 initMusic();
  
-initOffline(() => !document.getElementById("lobby-screen").hidden && !document.querySelector("dialog[open]"));
+initOffline(() => !document.getElementById("lobby-screen").hidden && !document.querySelector("dialog[open]"), {
+  beforeUpdate() {
+    if (!document.getElementById("game-screen").hidden) saveGame(state);
+  },
+});
 
  
 const warmGame = () => warmModuleCache([new URL("./main.js", import.meta.url).href]);

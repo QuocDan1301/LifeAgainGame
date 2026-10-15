@@ -1,0 +1,571 @@
+{
+  "title": "Life Again — Sống thêm một đời nữa",
+  "language": "vi",
+  "duration_seconds": 194,
+  "width": 1920,
+  "height": 1080,
+  "fps": 24,
+  "audio": "Instrumental arrangement of game music; no spoken narration",
+  "visuals": "Existing game screenshots, character sprites, project OpenMoji assets and animated typography",
+  "scenes": [
+    {
+      "seconds": 7,
+      "chapter": "MỘT CHUYẾN XE. MỘT CUỘC ĐỜI.",
+      "title": "Nếu được sống\nthêm một lần…",
+      "body": "Bạn sẽ viết lại câu chuyện của mình thế nào?",
+      "tags": [],
+      "kind": "intro",
+      "art": null,
+      "icons": [],
+      "accent": "#f6d46a",
+      "subtitle": "Life Again — game mô phỏng cuộc đời bằng tiếng Việt.",
+      "sources": [
+        "gioi-thieu.html"
+      ],
+      "start": 0,
+      "end": 7
+    },
+    {
+      "seconds": 8,
+      "chapter": "01 / KHỞI ĐẦU",
+      "title": "Cuộc đời mới.\nDo bạn lựa chọn.",
+      "body": "Tạo nhân vật, chọn giới tính, đặt tên và quê quán.\nHoặc để một khởi đầu ngẫu nhiên đưa bạn đi.",
+      "tags": [
+        "Tạo tùy chỉnh",
+        "Khởi đầu ngẫu nhiên",
+        "Bến xe cuộc đời"
+      ],
+      "kind": "portraits",
+      "art": null,
+      "icons": [],
+      "accent": "#f6d46a",
+      "subtitle": "Tạo nhân vật theo ý bạn, hoặc bắt đầu với một cuộc đời ngẫu nhiên.",
+      "sources": [
+        "index.html#create-character-title",
+        "js/core/character-data.js"
+      ],
+      "start": 7,
+      "end": 15
+    },
+    {
+      "seconds": 9,
+      "chapter": "02 / MỖI NĂM MỘT CÂU CHUYỆN",
+      "title": "Một lựa chọn.\nMột ngã rẽ.",
+      "body": "Bấm + Tuổi để bước sang năm mới.\nĐón sự kiện, chọn cách ứng xử, viết tiếp nhật ký.",
+      "tags": [
+        "Sự kiện theo tuổi",
+        "Lựa chọn & hệ quả",
+        "Nhật ký cuộc đời"
+      ],
+      "kind": "dual",
+      "art": [
+        "img/site/game.jpg",
+        "img/site/event.jpg"
+      ],
+      "icons": [],
+      "accent": "#76dbe9",
+      "subtitle": "Mỗi lần bấm cộng tuổi là một năm trôi qua, với sự kiện và những ngã rẽ mới.",
+      "sources": [
+        "gioi-thieu.html",
+        "js/events/events.js",
+        "js/events/life-stories.js"
+      ],
+      "start": 15,
+      "end": 24
+    },
+    {
+      "seconds": 8,
+      "chapter": "03 / CÂN BẰNG CUỘC SỐNG",
+      "title": "Giàu có thôi,\nđã đủ hạnh phúc?",
+      "body": "Sức khỏe. Trí tuệ. Hạnh phúc. Ngoại hình.\nBốn chỉ số cùng thay đổi theo cách bạn sống.",
+      "tags": [
+        "Chăm sóc bản thân",
+        "Đánh đổi mỗi năm"
+      ],
+      "kind": "stats",
+      "art": null,
+      "icons": [
+        "1F4AA",
+        "1F9E0",
+        "2764",
+        "2728"
+      ],
+      "accent": "#f6d46a",
+      "subtitle": "Cân bằng sức khỏe, trí tuệ, hạnh phúc và ngoại hình trong từng lựa chọn.",
+      "sources": [
+        "js/stats/self-development.js",
+        "index.html#player-name"
+      ],
+      "start": 24,
+      "end": 32
+    },
+    {
+      "seconds": 9,
+      "chapter": "04 / HỌC VẤN",
+      "title": "Ước mơ lớn\ntừ những trang sách.",
+      "body": "Đi học, thi chuyển cấp, chọn khối học.\nHọc tiếp, du học và mở lối đến nghề nghiệp.",
+      "tags": [
+        "Thi cử",
+        "Chọn khối",
+        "Du học"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F393",
+        "1F4DA",
+        "2708"
+      ],
+      "accent": "#76dbe9",
+      "subtitle": "Đi học, thi chuyển cấp, chọn khối và du học để mở thêm cơ hội cho tương lai.",
+      "sources": [
+        "js/education/education.js",
+        "js/education/study-blocks.js",
+        "js/education/study-abroad.js"
+      ],
+      "start": 32,
+      "end": 41
+    },
+    {
+      "seconds": 9,
+      "chapter": "05 / NGHỀ NGHIỆP",
+      "title": "Bắt đầu nhỏ.\nVươn xa hơn.",
+      "body": "Xin việc, làm thêm, tích lũy kinh nghiệm.\nĐón cột mốc nghề nghiệp, thăng tiến và tăng lương.",
+      "tags": [
+        "Xin việc",
+        "Làm thêm",
+        "Bậc nghề & lương",
+        "Học bằng lái"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F4BC",
+        "1F4B0",
+        "1F697"
+      ],
+      "accent": "#f6d46a",
+      "subtitle": "Xin việc, làm thêm, học bằng lái và phát triển sự nghiệp qua những cột mốc riêng.",
+      "sources": [
+        "js/career/job-applications.js",
+        "js/career/side-jobs.js",
+        "js/career/career-milestones.js",
+        "js/career/licenses.js"
+      ],
+      "start": 41,
+      "end": 50
+    },
+    {
+      "seconds": 9,
+      "chapter": "06 / TÀI SẢN & KINH DOANH",
+      "title": "Từ đồng lương\nđến cơ ngơi.",
+      "body": "Mua vật dụng, phương tiện và bất động sản.\nKinh doanh, cho thuê nhà, tính toán chi tiêu và nợ vay.",
+      "tags": [
+        "Nhà đất",
+        "Xe cộ",
+        "Cửa hàng",
+        "Tài chính"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F3E0",
+        "1F697",
+        "1F3EA"
+      ],
+      "accent": "#f6d46a",
+      "subtitle": "Mua nhà, mua xe, kinh doanh và quản lý tài sản. Mỗi khoản thu chi đều có ý nghĩa.",
+      "sources": [
+        "js/leisure/shop.js",
+        "js/core/life-profile.js"
+      ],
+      "start": 50,
+      "end": 59
+    },
+    {
+      "seconds": 9,
+      "chapter": "07 / TÌNH YÊU",
+      "title": "Gặp một người.\nĐổi cả cuộc đời.",
+      "body": "Làm quen, hẹn hò, trò chuyện và tặng quà.\nTiến tới hôn nhân, hoặc đối diện những lần chia tay.",
+      "tags": [
+        "Làm quen",
+        "Hẹn hò",
+        "Kết hôn",
+        "Biến cố tình cảm"
+      ],
+      "kind": "romance",
+      "art": null,
+      "icons": [
+        "1F48D",
+        "2764",
+        "1F381"
+      ],
+      "accent": "#f4b5b8",
+      "subtitle": "Làm quen, hẹn hò, tặng quà và kết hôn. Tình cảm cũng có những lựa chọn khó khăn.",
+      "sources": [
+        "js/relationships/relationships.js",
+        "js/relationships/dating-drama.js",
+        "js/relationships/matchmaking.js"
+      ],
+      "start": 59,
+      "end": 68
+    },
+    {
+      "seconds": 9,
+      "chapter": "08 / GIA ĐÌNH",
+      "title": "Nhà là nơi\ncó người chờ.",
+      "body": "Gắn kết với cha mẹ, bạn bè và bạn đời.\nSinh con hoặc nhận con nuôi, cùng chăm lo gia đình.",
+      "tags": [
+        "Chuyện nhà",
+        "Gắn kết",
+        "Nuôi dạy con",
+        "Ngân sách gia đình"
+      ],
+      "kind": "phone",
+      "art": "output/family-conversation-mobile.png",
+      "icons": [],
+      "accent": "#f4b5b8",
+      "subtitle": "Trò chuyện với người thân, xây dựng gia đình, đón con và cùng gánh vác cuộc sống.",
+      "sources": [
+        "js/relationships/family.js",
+        "js/relationships/family-conversations.js",
+        "js/relationships/family-budget.js"
+      ],
+      "start": 68,
+      "end": 77
+    },
+    {
+      "seconds": 9,
+      "chapter": "09 / CHĂM SÓC BẢN THÂN",
+      "title": "Sống tốt hơn,\ntừng chút một.",
+      "body": "Tập gym, yoga, học ngoại ngữ, chơi cờ, vẽ và thiền.\nĂn uống, đến bệnh viện, làm đẹp và chăm sóc da.",
+      "tags": [
+        "Phát triển bản thân",
+        "Bệnh viện",
+        "Ăn uống",
+        "Làm đẹp"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F3CB",
+        "1F3E5",
+        "1F372",
+        "1F484"
+      ],
+      "accent": "#76dbe9",
+      "subtitle": "Rèn luyện, học hỏi, ăn uống, chữa bệnh và làm đẹp để chăm sóc cả thể chất lẫn tinh thần.",
+      "sources": [
+        "js/stats/self-development.js",
+        "js/stats/hospital.js",
+        "js/stats/food.js",
+        "js/stats/beauty.js"
+      ],
+      "start": 77,
+      "end": 86
+    },
+    {
+      "seconds": 9,
+      "chapter": "10 / NHỮNG NIỀM VUI NHỎ",
+      "title": "Đi xa.\nVà có bạn đồng hành.",
+      "body": "Du lịch trong nước và quốc tế, lưu dấu những chuyến đi.\nNuôi thú cưng, chăm vật nuôi và tận hưởng đời thường.",
+      "tags": [
+        "Đà Nẵng · Hội An",
+        "Tokyo · Paris",
+        "Thú cưng & vật nuôi"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "2708",
+        "1F431",
+        "1F3E0"
+      ],
+      "accent": "#f6d46a",
+      "subtitle": "Khám phá những điểm đến trong và ngoài nước, nuôi thú cưng và tạo thêm kỷ niệm.",
+      "sources": [
+        "js/leisure/travel.js",
+        "js/leisure/shop.js"
+      ],
+      "start": 86,
+      "end": 95
+    },
+    {
+      "seconds": 10,
+      "chapter": "11 / VƯỜN NHÀ",
+      "title": "Gieo một hạt.\nGặt một mùa vui.",
+      "body": "Trồng cây theo mùa, tưới nước, bón phân và bắt sâu.\nThu hoạch, mua bán nông sản, vào bếp và nấu ăn.",
+      "tags": [
+        "Khu vườn",
+        "Chợ",
+        "Kho thực phẩm",
+        "Nhà bếp"
+      ],
+      "kind": "phone",
+      "art": "output/tester-audit/layout-390x844-act-garden.png",
+      "icons": [],
+      "accent": "#9ed4a6",
+      "subtitle": "Chăm vườn qua từng mùa, thu hoạch nông sản, đi chợ và nấu những món ăn từ thành quả của mình.",
+      "sources": [
+        "js/leisure/garden-data.js",
+        "js/leisure/garden.js"
+      ],
+      "start": 95,
+      "end": 105
+    },
+    {
+      "seconds": 10,
+      "chapter": "12 / THÁM TỬ TƯ",
+      "title": "Mọi manh mối\nđều có tiếng nói.",
+      "body": "Nhận vụ án, khám xét hiện trường và hỏi nhân chứng.\nGhi sổ tay, xâu chuỗi chứng cứ, suy luận và phá án.",
+      "tags": [
+        "Hồ sơ vụ án",
+        "Sổ tay",
+        "Nhân chứng",
+        "Suy luận"
+      ],
+      "kind": "phone",
+      "art": "output/detective-notebook-mobile.png",
+      "icons": [],
+      "accent": "#76dbe9",
+      "subtitle": "Trở thành thám tử tư: thu thập manh mối, hỏi nhân chứng và tìm lời giải cho từng vụ án.",
+      "sources": [
+        "js/leisure/detective.js",
+        "js/leisure/detective-reasoning.js"
+      ],
+      "start": 105,
+      "end": 115
+    },
+    {
+      "seconds": 8,
+      "chapter": "13 / ĐẤU GIÁ CỔ VẬT",
+      "title": "Nhìn dấu vết.\nTrả đúng giá.",
+      "body": "Quan sát hiện vật, cân nhắc giá trị và ra giá.\nMang về cổ vật cho bộ sưu tập của riêng mình.",
+      "tags": [
+        "Thẩm định",
+        "Trả giá",
+        "Sưu tập cổ vật"
+      ],
+      "kind": "phone",
+      "art": "output/auction-mobile.png",
+      "icons": [],
+      "accent": "#f6d46a",
+      "subtitle": "Bước vào phiên đấu giá, quan sát dấu vết và quyết định món cổ vật nào xứng đáng để sở hữu.",
+      "sources": [
+        "js/leisure/auction.js",
+        "js/leisure/auction-core.js"
+      ],
+      "start": 115,
+      "end": 123
+    },
+    {
+      "seconds": 10,
+      "chapter": "14 / GAME CENTER",
+      "title": "Một vé vào cửa.\nThêm bao niềm vui.",
+      "body": "Kéo bò, gắp thú, bóng rổ và đập chuột.\nTích xu, nhận vé, đổi quà và hoàn thiện album thú bông.",
+      "tags": [
+        "Kéo bò",
+        "Gắp thú",
+        "Bóng rổ",
+        "Đập chuột"
+      ],
+      "kind": "phone",
+      "art": "output/game-center-mobile.png",
+      "icons": [],
+      "accent": "#b9b0fa",
+      "subtitle": "Chơi bốn trò ở Game Center, tích vé đổi quà và sưu tập thú bông để giữ lại hoặc tặng người thân.",
+      "sources": [
+        "js/leisure/game-center-data.js",
+        "js/leisure/game-center-progress.js",
+        "js/leisure/arcade-games.js"
+      ],
+      "start": 123,
+      "end": 133
+    },
+    {
+      "seconds": 10,
+      "chapter": "15 / TRÒ CHƠI TRONG GAME",
+      "title": "Thử tài.\nThử cả vận may.",
+      "body": "Tiến lên miền Nam, xì dách, sấp ngửa, đoán xúc xắc.\nMở hộp bí ẩn, leo tháp tài lộc và biết lúc nên dừng.",
+      "tags": [
+        "Tiến lên",
+        "Xì dách",
+        "Hộp bí ẩn",
+        "Leo tháp"
+      ],
+      "kind": "landscape",
+      "art": "output/tien-len-desktop.png",
+      "icons": [],
+      "accent": "#b9b0fa",
+      "subtitle": "Khám phá Tiến lên, xì dách, sấp ngửa, xúc xắc, hộp bí ẩn và leo tháp. Các trò chơi dùng tài sản trong game.",
+      "sources": [
+        "js/leisure/games.js",
+        "js/leisure/tien-len.js"
+      ],
+      "start": 133,
+      "end": 143
+    },
+    {
+      "seconds": 7,
+      "chapter": "16 / MỘT CHÚT TÒ MÒ",
+      "title": "Hôm nay,\nvận may gọi tên ai?",
+      "body": "Xem tarot, mua vé số và chờ kết quả.\nNhững bất ngờ nhỏ giữa hành trình dài.",
+      "tags": [
+        "Tarot",
+        "Vé số",
+        "Tiền & phần thưởng trong game"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F52E",
+        "1F39F",
+        "1F3B2"
+      ],
+      "accent": "#b9b0fa",
+      "subtitle": "Xem tarot, mua vé số và đón thêm những bất ngờ trong thế giới của Life Again.",
+      "sources": [
+        "js/leisure/tarot.js",
+        "js/leisure/lottery.js"
+      ],
+      "start": 143,
+      "end": 150
+    },
+    {
+      "seconds": 8,
+      "chapter": "17 / CÁI GIÁ CỦA LỰA CHỌN",
+      "title": "Có những ngã rẽ\nkhó quay đầu.",
+      "body": "Cám dỗ nghề nghiệp, sai lầm và hành vi phạm pháp.\nTiền bạc, danh tiếng và tự do đều có thể đổi thay.",
+      "tags": [
+        "Cám dỗ",
+        "Biến cố",
+        "Hệ quả lâu dài"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F4BC",
+        "1F512",
+        "1F4DC"
+      ],
+      "accent": "#efab81",
+      "subtitle": "Đối diện cám dỗ, biến cố và hệ quả của những sai lầm. Mỗi lựa chọn đều để lại dấu vết.",
+      "sources": [
+        "js/career/work-temptation.js",
+        "js/events/crime.js",
+        "js/events/crime-consequences.js"
+      ],
+      "start": 150,
+      "end": 158
+    },
+    {
+      "seconds": 8,
+      "chapter": "18 / ĐIỀU CÒN Ở LẠI",
+      "title": "Không chỉ là\nnhững con số.",
+      "body": "Giữ kỷ vật, quà tặng, thú bông và cổ vật.\nNhìn lại các mốc tình cảm và những trang kỷ niệm.",
+      "tags": [
+        "Kỷ vật",
+        "Kỷ niệm",
+        "Bộ sưu tập"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F381",
+        "1F9F8",
+        "1F48D"
+      ],
+      "accent": "#f4b5b8",
+      "subtitle": "Lưu giữ kỷ vật, quà tặng, cổ vật và những kỷ niệm làm nên một cuộc đời riêng biệt.",
+      "sources": [
+        "index.html#life-keepsakes-title",
+        "index.html#life-memories-title",
+        "js/core/life-profile.js"
+      ],
+      "start": 158,
+      "end": 166
+    },
+    {
+      "seconds": 9,
+      "chapter": "19 / MỖI ĐỜI MỘT DẤU ẤN",
+      "title": "Khép một đời.\nMở thêm khám phá.",
+      "body": "Mở khóa thành tựu, danh hiệu và dấu ấn.\nSổ các cuộc đời lưu lại hành trình đã qua.",
+      "tags": [
+        "Thành tựu",
+        "Danh hiệu",
+        "Sổ các cuộc đời"
+      ],
+      "kind": "phone",
+      "art": "output/life-archive-390-event.png",
+      "icons": [],
+      "accent": "#f6d46a",
+      "subtitle": "Nhìn lại cuộc đời trong trang tổng kết, khám phá thành tựu và mang những dấu ấn vào sổ các cuộc đời.",
+      "sources": [
+        "js/achievements/achievements-data.js",
+        "js/core/life-archive.js",
+        "js/ui/life-archive.js"
+      ],
+      "start": 166,
+      "end": 175
+    },
+    {
+      "seconds": 11,
+      "chapter": "20 / MANG CÂU CHUYỆN THEO BẠN",
+      "title": "Chơi ở đâu.\nTiếp tục ở đó.",
+      "body": "Miễn phí, không cần tài khoản. Lưu tiến trình trên máy.\nCài như ứng dụng; chơi offline sau lần tải đầu.",
+      "tags": [
+        "Điện thoại & máy tính",
+        "Mã chuyển thiết bị",
+        "Tệp sao lưu"
+      ],
+      "kind": "icons",
+      "art": null,
+      "icons": [
+        "1F4F1",
+        "1F4BE",
+        "1F512"
+      ],
+      "accent": "#76dbe9",
+      "subtitle": "Chơi miễn phí trên điện thoại và máy tính. Cài ứng dụng, chơi offline sau lần tải đầu; chuyển máy bằng mã khi có mạng hoặc dùng tệp sao lưu.",
+      "sources": [
+        "gioi-thieu.html#offline",
+        "gioi-thieu.html#chuyen-may",
+        "js/core/save-store.js",
+        "js/core/transfer.js"
+      ],
+      "start": 175,
+      "end": 186
+    },
+    {
+      "seconds": 8,
+      "chapter": "LIFE AGAIN",
+      "title": "Cuộc đời tiếp theo…\nbạn sẽ sống thế nào?",
+      "body": "Bắt đầu một cuộc đời mới.",
+      "tags": [
+        "MIỄN PHÍ",
+        "TIẾNG VIỆT",
+        "CHƠI TRÊN TRÌNH DUYỆT"
+      ],
+      "kind": "outro",
+      "art": null,
+      "icons": [],
+      "accent": "#f6d46a",
+      "subtitle": "Life Again. Sống thêm một đời nữa, từng năm một.",
+      "sources": [
+        "gioi-thieu.html"
+      ],
+      "start": 186,
+      "end": 194
+    }
+  ],
+  "notes": [
+    "No unverified multiplayer, account, or ranking claims.",
+    "Offline play requires an initial online load; transfer codes require connectivity.",
+    "Mini-games use in-game currency and assets."
+  ],
+  "credits": {
+    "game": "Life Again / QuocDan",
+    "icons": "OpenMoji, CC BY-SA 4.0; see project js/img/events/openmoji/NOTICE.md",
+    "music": "Arrangement based on js/ui/music-themes.js"
+  }
+}

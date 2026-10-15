@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import { createFamilyConversation, rememberFamilyConversation, FAMILY_MEMORY_LIMIT } from '../js/relationships/family-conversations.js';
 
+import { getRelativeActionConfig, RELATIVE_ACTIONS } from '../js/relationships/family-members.js';
+
 const parent = () => ({ id: 'mother', role: 'Mẹ', name: 'Lan', alive: true, bond: 70, condition: 'healthy' });
 const player = (extra = {}) => ({ age: 30, money: 1e7, isAlive: true, ...extra });
 const cases = [
-  [player({ age: 3 }), parent(), 'call', 'little-day'],
+  [player({ age: 6 }), parent(), 'call', 'school-day'],
   [player({ age: 10 }), parent(), 'call', 'school-day'],
   [player({ age: 16 }), parent(), 'call', 'growing-up'],
   [player(), { ...parent(), bond: 20 }, 'visit', 'rebuilding'],
@@ -27,6 +29,20 @@ for (const [person, relative, action, topic] of cases) {
   }
   assert.equal(JSON.stringify([person, relative]), snapshot, 'preview/resolution never mutate inputs');
 }
+for (let age = 0; age < 6; age++) {
+  for (const action of Object.keys(RELATIVE_ACTIONS)) {
+    assert.equal(getRelativeActionConfig(player({ age }), action), null, `age ${age}: family actions locked`);
+  }
+  for (const action of ['call', 'visit']) {
+    assert.equal(createFamilyConversation(player({ age }), parent(), action), null, `age ${age}: no conversation`);
+  }
+}
+for (const age of [6, 17]) {
+  assert.ok(getRelativeActionConfig(player({ age }), 'call'));
+  assert.equal(getRelativeActionConfig(player({ age }), 'visit').cost, 0);
+  assert.equal(getRelativeActionConfig(player({ age }), 'care'), null);
+}
+assert.ok(getRelativeActionConfig(player({ age: 18 }), 'care'));
 let relative = parent();
 const person = player({ money: -1 });
 const first = createFamilyConversation(person, relative, 'call');

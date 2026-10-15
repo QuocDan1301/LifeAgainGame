@@ -751,7 +751,8 @@ body::before {
 #menu-panel[hidden] {
   display: none;
 }
-#restart-button {
+#restart-button,
+[data-game-update] {
   width: 100%;
   padding: 12px;
   border: none;
@@ -761,6 +762,14 @@ body::before {
   font: inherit;
   cursor: pointer;
 }
+.game-update-controls { margin-top: 14px; width: 100%; }
+[data-game-update] { min-height: 44px; white-space: normal; overflow-wrap: anywhere; }
+[data-game-update]:hover:not(:disabled) { background: #ffe284; }
+[data-game-update]:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
+[data-game-update]:disabled { cursor: wait; opacity: 0.65; }
+[data-game-update-status] { max-width: 34ch; margin: 8px auto; color: #173247; font: 400 14px/1.5 system-ui, sans-serif; overflow-wrap: anywhere; }
+[data-game-update-status]:empty { display: none; }
+#menu-panel [data-game-update-status] { max-width: 24ch; }
 .stats progress {
   appearance: none;
   -webkit-appearance: none;

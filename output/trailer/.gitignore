@@ -1,0 +1,8 @@
+# Local rendering dependencies and intermediate media.
+tools/
+__pycache__/
+video-silent.mp4
+soundtrack.wav
+asset-review.jpg
+scene-*.jpg
+check-*.jpg

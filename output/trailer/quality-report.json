@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "full_decode": "video and audio passed",
+  "video": "H.264, 1920x1080, 24fps",
+  "audio": "AAC stereo, normalized to -16 LUFS target",
+  "subtitle_cues": 22,
+  "duration_seconds": 194,
+  "size_bytes": 17829169,
+  "missing_source_files": [],
+  "ffmpeg_stream_info": "Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:\\Users\\Admin\\OneDrive\\Tài liệu\\HoiSinhNewLifeGame\\output\\trailer\\Life-Again-Trailer-1080p.mp4':\n  Metadata:\n    major_brand     : isom\n    minor_version   : 512\n    compatible_brands: isomiso2avc1mp41\n    title           : Life Again — Sống thêm một đời nữa\n    encoder         : Lavf61.7.100\n    comment         : Game: Life Again / QuocDan. Music arranged from game themes. Icons: OpenMoji CC BY-SA 4.0, https://openmoji.org/\n  Duration: 00:03:14.00, start: 0.000000, bitrate: 735 kb/s\n  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080, 528 kb/s, 24 fps, 24 tbr, 12288 tbn (default)\n      Metadata:\n        handler_name    : VideoHandler\n        vendor_id       : [0][0][0][0]\n        encoder         : Lavc61.19.100 libx264\n  Stream #0:1[0x2](zxx): Audio: aac (LC) (mp4a / 0x6134706D), 96000 Hz, stereo, fltp, 198 kb/s (default)\n      Metadata:\n        handler_name    : SoundHandler\n        vendor_id       : [0][0][0][0]\n  Stream #0:2[0x3](vie): Subtitle: mov_text (tx3g / 0x67337874), 0 kb/s (default)\n      Metadata:\n        handler_name    : SubtitleHandler\nAt least one output file must be specified\n"
+}

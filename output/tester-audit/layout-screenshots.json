@@ -21,7 +21,7 @@
     "clipped": [],
     "smallTargets": [],
     "smallTargetCount": 0,
-    "targetCount": 7,
+    "targetCount": 8,
     "smallText": [],
     "smallTextCount": 0,
     "minFont": 12,
@@ -83,7 +83,7 @@
       43
     ],
     "vertical": {
-      "scrollH": 1406,
+      "scrollH": 1383,
       "clientH": 538,
       "overflowY": "auto",
       "beyondViewport": false
@@ -279,7 +279,7 @@
     "clipped": [],
     "smallTargets": [],
     "smallTargetCount": 0,
-    "targetCount": 7,
+    "targetCount": 8,
     "smallText": [],
     "smallTextCount": 0,
     "minFont": 12,
@@ -341,7 +341,7 @@
       43
     ],
     "vertical": {
-      "scrollH": 1155,
+      "scrollH": 1196,
       "clientH": 814,
       "overflowY": "auto",
       "beyondViewport": false

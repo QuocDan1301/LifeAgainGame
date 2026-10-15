@@ -4,7 +4,7 @@ const answer = (id, label, reply, memory, bond = 0, happiness = 0, followUp = nu
   ({ id, label, reply, memory, bond, happiness, followUp });
 
 export function createFamilyConversation(player, relative, action) {
-  if (!relative?.alive || player.isAlive === false || !['call', 'visit'].includes(action)) return null;
+  if ((player.age ?? 0) < 6 || !relative?.alive || player.isAlive === false || !['call', 'visit'].includes(action)) return null;
   const age = player.age ?? 0;
   const who = relative.role.toLowerCase();
   const memories = Array.isArray(relative.conversationMemories) ? relative.conversationMemories : [];
@@ -39,14 +39,6 @@ export function createFamilyConversation(player, relative, action) {
         answer('unsure', 'Nhờ cùng suy nghĩ, chưa quyết định vội', `${relative.role} kể cả những lần mình chọn sai. Cuộc nói chuyện không cho bạn đáp án sẵn, nhưng có thêm một góc nhìn.`, 'Chúng tôi cùng cân nhắc một quyết định còn bỏ ngỏ.', 2),
       ];
     }
-  } else if (age < 6) {
-    topic = 'little-day'; title = 'Một ngày bé xíu';
-    prompt = `${relative.role} cúi xuống hỏi: “Hôm nay con có chuyện gì vui muốn kể không?”`;
-    choices = [
-      answer('play', 'Rủ cùng chơi một trò', `${relative.role} gác việc đang làm, ngồi xuống chơi cùng bạn. Tiếng cười làm căn nhà rộn lên.`, 'Chúng tôi cùng chơi một trò và cười rất lâu.', 2, 1),
-      answer('story', 'Xin nghe một câu chuyện', `Câu chuyện ${who} kể có chỗ quên, chỗ tự bịa thêm. Bạn vẫn muốn nghe tiếp.`, 'Tôi nghe người thân kể một câu chuyện.', 1, 1),
-      answer('hug', 'Lại gần và ôm một cái', `${relative.role} ôm bạn vào lòng: “Không có gì để kể cũng được mà.”`, 'Tôi được ôm dù chẳng có chuyện gì đặc biệt.', 2),
-    ];
   } else if (age < 18) {
     topic = age < 12 ? 'school-day' : 'growing-up'; title = age < 12 ? 'Chuyện ở trường' : 'Điều mình muốn trở thành';
     prompt = age < 12 ? `“Ở lớp có vui không? Có điều gì làm con buồn không?” ${relative.role} hỏi trong lúc xếp lại đồ trên bàn.`

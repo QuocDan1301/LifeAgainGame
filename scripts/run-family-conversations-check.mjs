@@ -39,6 +39,25 @@ try {
   const action = (relative, type) => page.locator(`[data-relative="${relative}"][data-action="${type}"]`);
   const snapshot = () => page.evaluate(() => JSON.stringify(familyState));
   await load();
+  const child = JSON.parse(await snapshot());
+  child.player.age = 5;
+  await load(child);
+  assert.equal(await page.locator('[data-relative][data-action]').count(), 0, 'family actions hidden before six');
+  assert.match(await page.locator('#relationship-family-panel').textContent(), /Từ 6 tuổi/);
+  child.player.age = 6;
+  await load(child);
+  assert.equal(await action('mother', 'call').isEnabled(), true, 'conversation unlocks at six');
+  assert.equal(await action('mother', 'visit').isEnabled(), true, 'family time unlocks at six');
+  await action('mother', 'call').click();
+  assert.equal(await page.locator('[data-family-choice]').count(), 3);
+  await page.keyboard.press('Escape');
+  // A stale enabled control must also respect the current age in the action handler.
+  await page.evaluate(() => { familyState.player.age = 5; });
+  const locked = await snapshot();
+  await action('mother', 'call').dispatchEvent('click');
+  assert.equal(await page.locator('#family-conversation-dialog').evaluate(el => el.open), false);
+  assert.equal(await snapshot(), locked, 'blocked action changes no state');
+  await load();
   const original = await snapshot();
   await action('mother', 'call').click();
   assert.equal(await page.locator('[data-family-choice]').count(), 3);

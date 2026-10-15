@@ -504,6 +504,12 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     family.replaceChildren();
     const player = state.player;
     ensureRelatives(player);
+    if ((player.age ?? 0) < 6) {
+      const note = document.createElement("p");
+      note.className = "side-job-intro";
+      note.textContent = "Từ 6 tuổi, bạn có thể tương tác với gia đình.";
+      family.append(note);
+    }
     for (const relative of player.relatives) {
       const card = document.createElement("article");
       card.className = `family-member${relative.alive ? "" : " is-passed"}`;

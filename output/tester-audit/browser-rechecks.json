@@ -1,9 +1,16 @@
 [
   {
+    "test": "check-family.html",
+    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
+    "pageErrors": [],
+    "milliseconds": 1179,
+    "diagnostic": null
+  },
+  {
     "test": "check-save-life.html",
     "result": "PASS: random selection among all 3 stories, no-event chance, 4 scenes, warnings, deaths, rewards, saves and scheduled proposals.",
     "pageErrors": [],
-    "milliseconds": 2249,
+    "milliseconds": 3203,
     "diagnostic": null
   }
 ]

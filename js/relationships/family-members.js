@@ -76,7 +76,7 @@ export const getPartnerAge = (partner, playerAge) => partner.ageAtMeeting + Math
  
 export function getRelativeActionConfig(player, type) {
   const config = RELATIVE_ACTIONS[type];
-  if (!config) return null;
+  if (!config || (player.age ?? 0) < 6) return null;
   if ((player.age ?? 0) >= 18) return config;
   if (type === "call") return { ...config, label: "🤗 Chơi và trò chuyện cùng nhau" };
   if (type === "visit") return { ...config, label: "🏠 Dành thời gian cùng gia đình", cost: 0 };
