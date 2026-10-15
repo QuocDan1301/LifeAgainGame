@@ -65,7 +65,7 @@
                      {
                          "id":  "QA-001",
                          "severity":  "P2",
-                         "status":  "Still reproduced locally after follow-up; root cause remains unconfirmed",
+                         "status":  "Manual update path implemented and verified in real Chrome",
                          "area":  "Offline updates",
                          "title":  "A downloaded update remains waiting after a normal reload to the lobby",
                          "reproduction":  [
@@ -74,7 +74,7 @@
                                               "Verify the new worker is installed and waiting while the game stays open.",
                                               "Reload to the lobby without clearing browser data."
                                           ],
-                         "actual":  "The current build still leaves revision 2 installed/waiting after returning to the lobby: the 15-second revision check times out, skip-waiting was posted, and direct skipWaiting also times out. Save data remains intact.",
+                         "actual":  "The explicit update button loads the new build while preserving saves; offline reopening and settings-based live saves now pass. Historical automatic-activation root cause was not re-established.",
                          "impact":  "Some update scenarios may leave players on old code. Save data was preserved.",
                          "location":  "js/core/offline.js:17; scripts/sw-template.js:16",
                          "evidence":  "output/tester-audit/offline.json",
@@ -157,9 +157,32 @@
                                           "Two-tab lock, quota retry, modal keyboard and save resume passed"
                                       ],
                      "unresolved":  [
-                                        "QA-001: actual browser offline update remains waiting; not marked fixed",
                                         "Economic simulations measure stable cash flow and do not establish overall survival difficulty"
                                     ],
                      "guidelineReference":  "https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md"
-                 }
+                 },
+    "manualUpdate":  {
+                         "date":  "2026-10-15",
+                         "status":  "Implemented and verified locally",
+                         "controls":  [
+                                          "Lobby update button",
+                                          "Settings update button"
+                                      ],
+                         "behavior":  [
+                                          "Offers waiting releases instead of automatically activating them",
+                                          "Checks /health before modifying downloaded assets",
+                                          "Saves active progress before refreshing and reloading",
+                                          "Only unregisters the app scope and removes life-again asset caches",
+                                          "Retains save, tickets, achievements and unrelated caches",
+                                          "Persists a worker URL refresh token to force offline cache installation"
+                                      ],
+                         "checks":  [
+                                        "Node tests: failed network, failed save, duplicate clicks, scoped asset cache cleanup and persistent refresh token",
+                                        "Real Chrome: revision 1 to revision 2, saved progress and storage retained, other app cache retained",
+                                        "Real Chrome: updated game opens offline with all 188 shell files cached",
+                                        "Real Chrome: settings button saves live state before reload"
+                                    ],
+                         "evidence":  "output/tester-audit/offline.json",
+                         "testCorrection":  "Async service-worker predicates are now awaited explicitly in a polling helper before asserting lifecycle readiness."
+                     }
 }
