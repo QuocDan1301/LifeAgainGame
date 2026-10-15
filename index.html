@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fff1ad" />
     <title>Life Again</title>
-     
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
@@ -18,14 +18,14 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css"
       />
     </noscript>
-     
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Francois+One&family=Oswald:wght@200..700&family=Patrick+Hand&family=Sriracha&display=swap"
       rel="stylesheet"
     />
-     
+
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/achievements.css" />
     <link rel="stylesheet" href="./css/lobby.css" />
@@ -103,7 +103,7 @@
     />
     <link rel="manifest" href="./manifest.json" />
     <meta name="copyright" content="© 2026 QuocDan. Mọi quyền được bảo lưu." />
-     
+
     <style>
       #app-loader {
         position: fixed;
@@ -247,7 +247,7 @@
   </head>
   <body>
     <div id="game-update-toast" role="status" hidden></div>
-     
+
     <div id="app-loader" role="status" aria-live="polite">
       <div class="app-loader-inner">
         <svg class="app-loader-mark" viewBox="0 0 120 120" aria-hidden="true">
@@ -388,8 +388,13 @@
       </button>
       <div class="lobby-center">
         <div id="move-home" class="move-home" hidden>
-          <p><b>Life Again đã chuyển sang địa chỉ mới.</b> Bấm nút dưới đây để mang theo cuộc đời đang chơi, vé, sổ các cuộc đời và thành tựu.</p>
-          <button type="button" id="move-home-button" class="lobby-primary">Chuyển sang nhà mới</button>
+          <p>
+            <b>Life Again đã chuyển sang địa chỉ mới.</b> Bấm nút dưới đây để
+            mang theo cuộc đời đang chơi, vé, sổ các cuộc đời và thành tựu.
+          </p>
+          <button type="button" id="move-home-button" class="lobby-primary">
+            Chuyển sang nhà mới
+          </button>
           <p id="move-home-status" class="transfer-status" role="status"></p>
         </div>
         <p class="lobby-eyebrow">BẾN XE KHỞI ĐẦU</p>
@@ -406,18 +411,21 @@
           🎟️ Vé còn lại: <strong id="ticket-count" aria-live="polite">0</strong>
         </p>
         <p class="lobby-links">
+          <button type="button" data-open-community>🌐 Cộng đồng</button>
           <button type="button" id="open-transfer">📲 Chuyển thiết bị</button>
           <a href="./gioi-thieu.html#cai-dat" id="install-link"
             >⬇️ Cài game vào máy</a
           >
         </p>
         <div class="game-update-controls" hidden>
-          <button type="button" data-game-update hidden>↻ Cập nhật bản mới</button>
+          <button type="button" data-game-update hidden>
+            ↻ Cập nhật bản mới
+          </button>
           <p data-game-update-status role="status"></p>
         </div>
         <p id="lobby-message" role="status"></p>
       </div>
-       
+
       <div class="lobby-life-stages">
         <svg
           viewBox="6 0 563 206"
@@ -1259,7 +1267,6 @@
       class="lobby-dialog"
       aria-labelledby="death-title"
     >
-       
       <h2 id="death-title" tabindex="-1" autofocus>Hành trình đã khép lại</h2>
       <p id="death-content"></p>
       <div id="death-summary"></div>
@@ -1269,7 +1276,6 @@
     </dialog>
 
     <div class="game" id="game-screen" hidden>
-       
       <header class="game-header">
         <button
           type="button"
@@ -1307,8 +1313,11 @@
             <span data-sfx-icon aria-hidden="true">🔔</span>
             <span data-sfx-label>Hiệu ứng âm thanh: Bật</span>
           </button>
-          <button type="button" data-game-update hidden>↻ Cập nhật bản mới</button>
+          <button type="button" data-game-update hidden>
+            ↻ Cập nhật bản mới
+          </button>
           <p data-game-update-status role="status"></p>
+          <button type="button" class="menu-community" data-open-community>🌐 Cộng đồng</button>
           <button type="button" id="restart-button">Về bến xe</button>
         </div>
         <img id="logo" src="./img/logo.webp" alt="Life Again" />
@@ -1322,7 +1331,7 @@
           <span aria-hidden="true">🏆</span>
         </button>
       </header>
-       
+
       <main class="journal" aria-label="Nhật ký cuộc đời" tabindex="0">
         <div class="fortune-wrapper">
           <button type="button" class="fortune-button" id="fortune-button">
@@ -1332,7 +1341,7 @@
             </span>
           </button>
         </div>
-         
+
         <section
           id="health-alert"
           class="health-alert"
@@ -1342,7 +1351,7 @@
         ></section>
         <div id="life-log" role="log" aria-label="Sự kiện cuộc đời"></div>
       </main>
-       
+
       <nav class="game-actions" aria-label="Chức năng game">
         <button
           type="button"
@@ -1399,7 +1408,7 @@
           <span class="age-label">Tuổi</span>
         </button>
       </nav>
-       
+
       <section class="character" aria-label="Thông tin nhân vật">
         <div class="character-card">
           <button
@@ -1421,7 +1430,6 @@
           <p id="player-province"></p>
         </div>
         <div class="character-details">
-           
           <div class="stats">
             <h3 class="stats-title">Chỉ số</h3>
             <div class="stat-row">
@@ -1453,7 +1461,7 @@
               <span id="looks-value">65%</span>
             </div>
           </div>
-           
+
           <div class="wallet">
             <span class="wallet-icon" aria-hidden="true">
               <i class="fa-solid fa-sack-dollar"></i>
@@ -1467,6 +1475,14 @@
         </div>
       </section>
     </div>
+    <dialog id="community-dialog" aria-labelledby="community-title">
+      <div class="dialog-heading">
+        <h2 id="community-title">🌐 Cộng đồng Life Again</h2>
+        <button type="button" class="dialog-close" id="close-community" aria-label="Đóng cộng đồng">✕</button>
+      </div>
+      <p class="community-intro">Gặp gỡ người chơi, chia sẻ câu chuyện và góp ý cho game.</p>
+      <div id="community-channels" class="community-channels" aria-label="Các kênh cộng đồng"></div>
+    </dialog>
     <dialog id="restart-dialog" aria-labelledby="restart-title">
       <h2 id="restart-title">Về bến xe?</h2>
       <p>
@@ -1478,10 +1494,21 @@
         <button type="button" id="confirm-restart">Về bến xe</button>
       </div>
     </dialog>
-    <dialog id="family-conversation-dialog" aria-labelledby="family-conversation-title" aria-describedby="family-conversation-prompt">
+    <dialog
+      id="family-conversation-dialog"
+      aria-labelledby="family-conversation-title"
+      aria-describedby="family-conversation-prompt"
+    >
       <div class="dialog-heading">
         <h2 id="family-conversation-title">Chuyện nhà</h2>
-        <button type="button" class="dialog-close" id="close-family-conversation" aria-label="Đóng">✕</button>
+        <button
+          type="button"
+          class="dialog-close"
+          id="close-family-conversation"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
       </div>
       <div id="family-conversation-body"></div>
     </dialog>
@@ -1497,7 +1524,7 @@
           ✕
         </button>
       </div>
-       
+
       <div
         id="relationship-tabs"
         class="life-tabs"
@@ -1532,11 +1559,6 @@
         aria-labelledby="relationship-family-title"
       >
         <h3 id="relationship-family-title">👪 Gia đình</h3>
-        <p class="side-job-intro">
-          Dưới 18 tuổi, chơi và dành thời gian cùng gia đình đều miễn phí. Khi
-          trưởng thành, gọi điện vẫn miễn phí; về thăm có chi phí đi lại. Mỗi
-          cách kết nối một lần mỗi năm. Bạn bè ở cuối mục.
-        </p>
         <div id="relationship-family"></div>
       </section>
       <section
@@ -1898,16 +1920,46 @@
       </div>
       <div id="love-body"></div>
     </dialog>
-    <dialog id="games-notice-dialog" aria-labelledby="games-notice-title" aria-describedby="games-notice-content">
+    <dialog
+      id="games-notice-dialog"
+      aria-labelledby="games-notice-title"
+      aria-describedby="games-notice-content"
+    >
       <div class="dialog-heading">
         <h2 id="games-notice-title">Giải trí có trách nhiệm</h2>
-        <button type="button" class="dialog-close" id="close-games-notice" aria-label="Đóng">✕</button>
+        <button
+          type="button"
+          class="dialog-close"
+          id="close-games-notice"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
       </div>
       <div id="games-notice-content">
-        <p>Các trò chơi tại đây chỉ mang tính giải trí, không quảng bá hay khuyến khích cờ bạc dưới bất kỳ hình thức nào.</p>
-        <p>Nội dung mô phỏng phản ánh rủi ro và hậu quả nghiêm trọng khi xem cờ bạc là con đường làm giàu. Thắng thua trong trò chơi không phản ánh khả năng kiếm tiền ngoài đời thực. Đừng đánh đổi tài sản, tương lai và hạnh phúc của bạn vào may rủi.</p>
+        <p>
+          Các trò chơi tại đây <strong>chỉ mang tính giải trí</strong>,
+          <strong>không</strong> quảng bá hay khuyến khích cờ bạc dưới bất kỳ
+          hình thức nào.
+        </p>
+        <p>
+          Nội dung mô phỏng phản ánh
+          <strong>rủi ro và hậu quả nghiêm trọng</strong> khi xem cờ bạc là con
+          đường làm giàu. Thắng thua trong trò chơi không phản ánh khả năng kiếm
+          tiền ngoài đời thực.
+          <strong
+            >Đừng đánh đổi tài sản, tương lai và hạnh phúc của bạn vào may
+            rủi.</strong
+          >
+        </p>
       </div>
-      <button type="button" id="confirm-games-notice" class="games-notice-confirm">Tôi đã hiểu — Tiếp tục chơi</button>
+      <button
+        type="button"
+        id="confirm-games-notice"
+        class="games-notice-confirm"
+      >
+        Tôi đã hiểu — Tiếp tục chơi
+      </button>
     </dialog>
     <dialog id="games-dialog" aria-labelledby="games-title">
       <div class="dialog-heading">
@@ -2078,7 +2130,7 @@
           ✕
         </button>
       </div>
-       
+
       <div
         id="life-tabs"
         class="life-tabs"
@@ -2207,9 +2259,9 @@
       <img id="event-image" src="" alt="" hidden />
       <p id="event-content"></p>
       <p id="career-eligibility-feedback" role="alert" hidden></p>
-       
+
       <div id="event-choices"></div>
-       
+
       <button type="button" id="event-confirm" hidden>Xác nhận</button>
     </dialog>
     <dialog id="achievements-dialog" aria-labelledby="achievements-title">
@@ -2251,8 +2303,6 @@
       <button type="button" id="close-fortune">Để xem có đúng không!</button>
     </dialog>
     <script>
-       
-       
       (function () {
         var loader = document.getElementById("app-loader");
         var label = document.getElementById("app-loader-label");
@@ -2269,7 +2319,7 @@
           },
           hide: hide,
         };
-         
+
         var done = false;
         function ready() {
           if (done) return;
@@ -2290,7 +2340,6 @@
       })();
     </script>
     <script>
-       
       window.addEventListener("error", function (event) {
         if (
           !/requested module|does not provide an export|binding name|module script failed/i.test(

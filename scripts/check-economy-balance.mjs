@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { getAnnualEconomy, getIncomeTax, getRent, getResidence } from '../js/core/economy.js';
 import { getFamilyBudget, collectFamilyBudget } from '../js/relationships/family-budget.js';
 import { getLivingCost } from '../js/relationships/family.js';
 import { prepareStoryChoice, HOME_TERMS } from '../js/core/story-transactions.js';
@@ -45,7 +46,11 @@ test('Forecast includes rentals, businesses, livestock, pet upkeep and the loan 
   assert.equal(JSON.stringify(p), before);
   assert.equal(forecast.assets, 421_800_000);
   assert.equal(forecast.upkeep, 3_500_000);
-  assert.equal(forecast.living, 343_260_000, '40% through 200m, 55% through 600m, 70% above');
+  assert.equal(forecast.living, 0, 'No percentage-based living charge');
+  assert.equal(forecast.rent, 24_000_000, 'The only house is leased out');
+  assert.equal(forecast.economy.assetTax, 20_490_000);
+  assert.equal(forecast.economy.propertyTax, 5_000_000);
+  assert.ok(forecast.tax > 0 && forecast.insurance > 0);
   actualYear(p, 51);
   assert.equal(p.money, forecast.after);
 });
@@ -59,7 +64,8 @@ test('Loan principal repayments increase wallet but not living costs', () => {
   const p = worker(); p.storyLoans = [{ id: 'tu', principal: 30_000_000, outstanding: 30_000_000,
     repaymentYears: 3, lentAtAge: 50, lastRepaidAge: 50, amountRepaid: 0 }];
   const f = forecastNextYear(p);
-  assert.equal(f.repayments, 10_000_000); assert.equal(f.living, 102_000_000);
+  assert.equal(f.repayments, 10_000_000); assert.equal(f.living, 0);
+  assert.equal(f.tax, forecastNextYear({ ...p, storyLoans: [] }).tax);
   actualYear(p, 51); assert.equal(p.money, f.after);
 });
 test('Existing assets above the new cap remain owned and are paid only for future years', () => {
@@ -133,9 +139,9 @@ test('Debt carried into a working-age year costs interest, shown in the forecast
   assert.equal(p.money, forecast.after);
   assert.match(result.living.content, /Lãi nợ/);
 });
-test('Frugal living helps when poor but saves at most 12 million for high earners', () => {
-  assert.equal(getYearLivingCost(null, 30, 0, 'frugal'), 16_000_000);
-  assert.equal(getYearLivingCost(null, 30, 0, 'normal'), 24_000_000);
+test('Legacy frugal and normal modes no longer charge mandatory living costs', () => {
+  assert.equal(getYearLivingCost(null, 30, 0, 'frugal'), 0);
+  assert.equal(getYearLivingCost(null, 30, 0, 'normal'), 0);
   const normal = getYearLivingCost(null, 30, 600_000_000, 'normal');
   assert.equal(normal - getYearLivingCost(null, 30, 600_000_000, 'frugal'), FRUGAL_MAX_SAVING);
 });
@@ -255,14 +261,18 @@ test('Prison years skip rent and pet costs, pause the mortgage without a lump su
   actualYear(p, 34);
   assert.equal(p.homeLoans[0].outstanding, 400_000_000, 'One instalment after release, not the paused years at once');
 });
-test('Progressive living costs preserve low-income savings and charge only marginal bands', () => {
-  for (const [income, cost] of [[84e6, 33.6e6], [200e6, 80e6], [300e6, 135e6], [600e6, 300e6], [1200e6, 720e6]]) {
+test('Only optional comfort costs remain; income taxes use marginal bands', () => {
+  for (const income of [84e6, 200e6, 300e6, 600e6, 1200e6]) {
+    const cost = 0;
     assert.equal(getYearLivingCost(null, 35, income), cost);
     assert.equal(getYearLivingCost(null, 35, income, 'comfortable'), cost + 36e6);
     assert.equal(getYearLivingCost(null, 35, income, 'luxury'), cost + 120e6);
   }
-  assert.equal(getLivingCost(22, 300e6, 'luxury'), 0);
-  assert.equal(getLivingCost(35, 300e6, 'luxury'), 255e6);
+  assert.equal(getLivingCost(21, 300e6, 'luxury'), 0);
+  assert.equal(getLivingCost(35, 300e6, 'luxury'), 120e6);
+  assert.equal(getIncomeTax(60e6), 3e6);
+  assert.equal(getIncomeTax(180e6), 15e6);
+  assert.equal(getIncomeTax(360e6), 42e6);
   assert.ok(84e6 - getLivingCost(35, 84e6) > 50e6);
 });
 
@@ -309,11 +319,11 @@ test('Family commitments and comfort match forecasts, including prison and chang
 
 test('Housing deposit and annual mortgage are real expenses, not an extra living charge', () => {
   const p = { ...worker(), age: 35, money: 500e6 };
-  const choice = prepareStoryChoice({ home: 'story-small-home', label: 'Mua nhà' }, p, 35);
+  const choice = prepareStoryChoice({ home: 'story-home', label: 'Mua nhà' }, p, 35);
   p.money += choice.money; Object.assign(p, choice.playerUpdates);
-  assert.equal(p.money, 320e6);
+  assert.equal(p.money, 380e6);
   const f = forecastNextYear(p);
-  assert.equal(f.mortgage, Math.ceil(720e6 * 1.9 / HOME_TERMS['story-small-home'].years));
+  assert.equal(f.mortgage, Math.ceil(480e6 * 1.6 / HOME_TERMS['story-home'].years));
   actualYear(p, 36);
   assert.equal(p.money, f.after);
 });
@@ -333,8 +343,8 @@ function simulateBudgetLife(career, style, modern) {
     if (style === 'family' && age === 40) p.relatives = [{ id: 'mother', role: 'Mẹ', name: 'Mẹ',
       alive: true, ageAtPlayerBirth: 25, bond: 70, condition: 'healthy', done: {}, interactions: {},
       supportPlan: modern ? 'support' : 'none' }];
-    if (style === 'family' && age === 35 && p.money >= 180e6) {
-      const home = prepareStoryChoice({ label: 'Nhà', home: 'story-small-home' }, p, p.age);
+    if (style === 'family' && age === 35 && p.money >= HOME_TERMS['story-home'].deposit) {
+      const home = prepareStoryChoice({ label: 'Nhà', home: 'story-home' }, p, p.age);
       p.money += home.money; Object.assign(p, home.playerUpdates);
     }
     const f = forecastNextYear(p);
@@ -345,18 +355,21 @@ function simulateBudgetLife(career, style, modern) {
       const recurring = (year.salary?.amount ?? 0) + (year.sideJobs?.amount ?? 0);
       const normal = Math.max(24e6, Math.min(recurring, 200e6) * 0.3 + Math.max(0, recurring - 200e6) * 0.5);
       const frugal = Math.max(16e6, Math.min(recurring, 200e6) * 0.2 + Math.max(0, recurring - 200e6) * 0.5, normal - 12e6);
-      p.money += (year.living?.amount ?? 0) - (p.livingMode === 'frugal' ? frugal : normal);
+      p.money += (year.living?.amount ?? 0) + (year.living?.economy?.total ?? 0) - (p.livingMode === 'frugal' ? frugal : normal);
     }
     if (p.money > 1e9 && billionaireAge === null) billionaireAge = age;
     if ([35, 50, 62, 80].includes(age)) cash[age] = Math.round(p.money);
   }
   return { cash, billionaireAge };
 }
-test('96 controlled lives compare B against the previous costs, including childfree and entry-level lives', () => {
+test('Controlled lives compare explicit taxes and rent with the previous living costs', () => {
   const rows = Object.keys(careerAnnualSalaries).flatMap(career => ['single', 'comfort', 'family', 'entry'].map(style => ({
     career, style, before: simulateBudgetLife(career, style, false), after: simulateBudgetLife(career, style, true),
   })));
-  for (const row of rows) assert.ok(row.after.cash[62] < row.before.cash[62], row.career + '/' + row.style);
+  for (const row of rows) {
+    assert.ok(Object.values(row.after.cash).every(Number.isFinite), row.career + '/' + row.style);
+    if (row.style === 'entry') assert.ok(row.after.cash[62] > 0, row.career + ': entry salary remains viable');
+  }
   const median = values => { const sorted = [...values].sort((a,b) => a-b); return (sorted[Math.floor((sorted.length-1)/2)] + sorted[Math.ceil((sorted.length-1)/2)]) / 2; };
   const summary = ['single', 'comfort', 'family', 'entry'].map(style => {
     const group = rows.filter(r => r.style === style);
@@ -370,7 +383,7 @@ test('96 controlled lives compare B against the previous costs, including childf
   });
   fs.mkdirSync(new URL('../output/', import.meta.url), { recursive: true });
   fs.writeFileSync(new URL('../output/economy-balance-report.json', import.meta.url), JSON.stringify({
-    assumptions: '96 controlled cash-flow lives; age 23–80; stable work and maintained health; no windfalls; entry stays rank 1; other profiles promote at 27/37. Family buys a small home at 35 when affordable, one child at 30; B adds education and parent support. This is not a stochastic survival simulation or the original 93-life sample.',
+    assumptions: '96 controlled cash-flow lives; age 23–80; stable work and maintained health; no windfalls; entry stays rank 1; other profiles promote at 27/37. Family buys a small home at 35 when affordable, one child at 30; new model uses taxes, insurance, rent and optional comfort instead of percentage living charges. This is not a stochastic survival simulation or the original 93-life sample.',
     summary, rows,
   }, null, 2));
   console.log('BUDGET_SIMULATION', JSON.stringify(summary));

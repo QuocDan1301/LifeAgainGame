@@ -154,7 +154,7 @@
     $("activity-self-development").click();
     $("self-development-body").querySelector('.shop-group[data-stat="intelligence"]').click();
     const free = id => $("self-development-body").querySelector(`.dev-recover[data-activity="${id}"]`);
-    assert(free("library") && free("study-together") && free("learn-at-work").disabled, "Free learning; learning at work needs a job");
+    assert(free("library") && free("study-together") && !free("learn-at-work"), "Two free learning activities; removed workplace activity is absent");
     free("library").click();
     assert(state.player.intelligence === 86 && state.player.money === 10_000_000 && free("library").disabled, "Free reading: +1 when already sharp, once per year");
     const course = $("self-development-body").querySelector('.dev-buy[data-activity="language"][data-tier="standard"]');

@@ -1,16 +1,238 @@
 [
   {
-    "test": "check-family.html",
-    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
+    "test": "check-career-milestones.html",
+    "result": "PASS: age-16 chain (success, failure, stop); milestone promotion chain; retry; rank-3 gate",
     "pageErrors": [],
-    "milliseconds": 1179,
+    "milliseconds": 3992,
     "diagnostic": null
   },
   {
-    "test": "check-save-life.html",
-    "result": "PASS: random selection among all 3 stories, no-event chance, 4 scenes, warnings, deaths, rewards, saves and scheduled proposals.",
+    "test": "check-achievement-progress.html",
+    "result": "PASS: university and military unlock only on confirmation, persist to achievements and game save",
     "pageErrors": [],
-    "milliseconds": 3203,
+    "milliseconds": 4016,
+    "diagnostic": null
+  },
+  {
+    "test": "check-career-salary.html",
+    "result": "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI",
+    "pageErrors": [],
+    "milliseconds": 1294,
+    "diagnostic": null
+  },
+  {
+    "test": "check-family.html",
+    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
+    "pageErrors": [],
+    "milliseconds": 1365,
+    "diagnostic": null
+  },
+  {
+    "test": "check-last-train.html",
+    "result": "FAIL: Error: Exact reward plus one annual salary\n    at assert (https://game.test/scripts/check-last-train.html:6:50)\n    at https://game.test/scripts/check-last-train.html:72:7",
+    "pageErrors": [],
+    "milliseconds": 1151,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": null,
+        "partner": null,
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 45,
+        "money": 86400000,
+        "health": 79,
+        "happiness": 60,
+        "intelligence": 60,
+        "appearance": 50,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": "💻 Lập trình viên tập sự",
+        "employmentStatus": "employed",
+        "careerLevel": 1,
+        "lastSalaryAge": 45,
+        "nextPromotionAge": null,
+        "careerPath": {
+          "id": "programming",
+          "field": "Công nghệ thông tin"
+        },
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A00",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {
+          "story-last-train": true
+        },
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school",
+          "age-30",
+          "money-1m",
+          "money-10m",
+          "story-last-train"
+        ],
+        "ending": null,
+        "lifeId": "legacy-e405322e",
+        "specialChainsSeen": [
+          "last-train"
+        ],
+        "careerHighestRanks": {
+          "programming": 1
+        },
+        "careerYears": {
+          "programming": 2
+        },
+        "careerTrackedAge": 45,
+        "employedSince": 45,
+        "relatives": [
+          {
+            "id": "father",
+            "role": "Bố",
+            "name": "Thanh Bình",
+            "ageAtPlayerBirth": 36,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán vé số",
+            "trackedFrom": 45,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          },
+          {
+            "id": "mother",
+            "role": "Mẹ",
+            "name": "Lan Anh",
+            "ageAtPlayerBirth": 33,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán hàng rong",
+            "trackedFrom": 45,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          }
+        ],
+        "illnessPlan": [
+          {
+            "id": "early-cancer",
+            "age": 95
+          },
+          {
+            "id": "coronary",
+            "age": 95
+          }
+        ],
+        "moodEffects": [],
+        "lowHappinessYears": 0,
+        "strainedYears": 0,
+        "storyLoans": [],
+        "homeLoans": [],
+        "vietlottPot": {
+          "amount": 15000000000,
+          "updatedAge": 45
+        },
+        "economyPaidAge": 45,
+        "economyIncomeYear": {
+          "age": 45,
+          "salary": 120000000,
+          "sideIncome": 0,
+          "assetIncome": 0,
+          "retired": false,
+          "paidIncomeTax": 0,
+          "paidInsurance": 9600000
+        },
+        "familyBudgetPaidAge": 45,
+        "specialChainsCompleted": [
+          "last-train"
+        ]
+      },
+      "pendingEvent": null,
+      "logs": [
+        {
+          "age": 45,
+          "content": "🚉 Năm 45 tuổi, tôi lên chuyến tàu cuối lúc nửa đêm. Tấm ảnh chiếc vòng trăng khuyết trên vé giúp tôi nhận ra kẻ giả mạo. Tôi xuống đúng ga Bình An và trở về an toàn, hiểu rằng không phải ai gọi tên mình cũng là người đang chờ mình về.\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê.",
+          "summary": "🚉 Chuyến tàu âm giới\nTrí tuệ +10 · Hạnh phúc +10\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê."
+        }
+      ],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-job-applications.html",
+    "result": "PASS: automatic interview only with the age-16 milestone, told by its mentor for all 22 careers (interview, result, retry); Xin việc lists every career, only the studied one opens after graduating; saved question; one try per year; hire pays the first salary; no retry popup",
+    "pageErrors": [],
+    "milliseconds": 1292,
     "diagnostic": null
   }
 ]

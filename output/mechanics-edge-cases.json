@@ -4,10 +4,10 @@
     "severity": "medium",
     "confirmed": false,
     "status": "fixed",
-    "description": "Du học mô tả 30% / 50% nhưng thực tế thu 30% / 55% / 70%. Ngân sách chung lại mô tả 40% / 55% / 70% cho mọi nơi.",
+    "description": "Mô tả sau tốt nghiệp khớp cơ chế mới: không thu sinh hoạt theo tỷ lệ, thuế và thuê nhà được tách riêng.",
     "income": 600000000,
-    "actualCost": 280000000,
-    "describedCost": 280000000
+    "actualCost": 0,
+    "describedCost": 0
   },
   {
     "id": "child-relationship-field",

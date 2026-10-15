@@ -1,8 +1,13 @@
-import { describeYearLivingCost } from './relationships/family.js';
-import { educationEntryAchievementIds } from './achievements/achievement-progress.js';
-import { archiveLife, observeLifeProgress, getLifeId } from './core/life-archive.js';
-import { describeDeathCause } from './core/life-profile.js';
-import { renderFamilyBudgetControls } from './relationships/family-budget.js';
+import { describeYearLivingCost } from "./relationships/family.js";
+import { INCOME_TAX_BANDS } from "./core/economy.js";
+import { educationEntryAchievementIds } from "./achievements/achievement-progress.js";
+import {
+  archiveLife,
+  observeLifeProgress,
+  getLifeId,
+} from "./core/life-archive.js";
+import { describeDeathCause } from "./core/life-profile.js";
+import { renderFamilyBudgetControls } from "./relationships/family-budget.js";
 import { saveGame } from "./core/save-store.js";
 import {
   createStudyAbroadMajorEvent,
@@ -75,16 +80,26 @@ import {
 import { eventCategories, getEventCategory } from "./events/event-category.js";
 import { getSpecialDialogue } from "./events/special-dialogue.js";
 import { state } from "./core/state.js";
-import { createCasualStartChoice, createCasualServiceEvent, isServing } from "./career/street-work.js";
-import { addEventEmotions, addChoiceIcon, addChoiceIcons } from "./events/event-emotions.js";
+import {
+  createCasualStartChoice,
+  createCasualServiceEvent,
+  isServing,
+} from "./career/street-work.js";
+import {
+  addEventEmotions,
+  addChoiceIcon,
+  addChoiceIcons,
+} from "./events/event-emotions.js";
 import { createPrisonEvent, initCrime, isInPrison } from "./events/crime.js";
-import { createWorkTemptationEvent, createWorkInvestigationEvent } from "./career/work-temptation.js";
+import {
+  createWorkTemptationEvent,
+  createWorkInvestigationEvent,
+} from "./career/work-temptation.js";
 import { initEducation } from "./education/education.js";
 import { createSchoolEntryReward } from "./education/school-rewards.js";
 import {
   LIVING_MODES,
   DEBT_INTEREST_RATE,
-  FRUGAL_MAX_SAVING,
   createChildProposalEvent,
   forecastNextYear,
   getChildProposalUpdates,
@@ -103,6 +118,7 @@ import {
   canGetFamilySupport,
   createRelativeDeathEvent,
   ensureRelatives,
+  ensureBirthFamilyLog,
   getLivingFamily,
 } from "./relationships/family-members.js";
 import {
@@ -183,11 +199,10 @@ const statNames = {
   happiness: "Hạnh phúc",
   appearance: "Ngoại hình",
 };
- 
- 
+
 const nameElement = document.getElementById("player-name");
 const ageElement = document.getElementById("player-age");
- 
+
 nameElement.textContent = state.player.name;
 renderAvatar(state.player);
 ageElement.textContent = state.player.age;
@@ -195,14 +210,15 @@ document.getElementById("player-province").textContent =
   state.player.province || "";
 const ageButton = document.getElementById("age-up");
 const logElement = document.getElementById("life-log");
- 
+
 const logLines = new WeakMap();
 logElement.replaceChildren();
 state.logs = mergeLotteryPurchaseLogs(state.logs);
+if (ensureBirthFamilyLog(state)) saveGame(state);
 state.logs.forEach((log) => {
   renderLogEntry(log);
 });
- 
+
 requestAnimationFrame(() => {
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
@@ -214,17 +230,17 @@ function setMenuOpen(isOpen) {
   menuToggle.setAttribute("aria-expanded", String(isOpen));
   menuToggle.setAttribute("aria-label", isOpen ? "Đóng cài đặt" : "Mở cài đặt");
 }
- 
+
 menuToggle.addEventListener("click", () => {
   setMenuOpen(menuPanel.hidden);
 });
- 
+
 document.addEventListener("click", (event) => {
   if (!menuToggle.contains(event.target) && !menuPanel.contains(event.target)) {
     setMenuOpen(false);
   }
 });
- 
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !menuPanel.hidden) {
     setMenuOpen(false);
@@ -235,41 +251,40 @@ const restartButton = document.getElementById("restart-button");
 const restartDialog = document.getElementById("restart-dialog");
 const cancelRestart = document.getElementById("cancel-restart");
 const confirmRestart = document.getElementById("confirm-restart");
- 
+
 restartButton.addEventListener("click", () => {
   setMenuOpen(false);
   restartDialog.showModal();
 });
- 
+
 cancelRestart.addEventListener("click", () => {
   restartDialog.close();
   menuToggle.focus();
 });
- 
+
 confirmRestart.addEventListener("click", () => {
   saveEventProgress();
   window.location.reload();
 });
 if (!Array.isArray(state.player.relatives)) {
   ensureRelatives(state.player);
-   
+
   saveGame(state);
 }
 let hospitalUi = null;
 function renderStats() {
-   
   document.getElementById("health").value = state.player.health;
   document.getElementById("health-value").textContent =
     `${state.player.health}%`;
-   
+
   document.getElementById("smarts").value = state.player.intelligence;
   document.getElementById("smarts-value").textContent =
     `${state.player.intelligence}%`;
-   
+
   document.getElementById("happiness").value = state.player.happiness;
   document.getElementById("happiness-value").textContent =
     `${state.player.happiness}%`;
-   
+
   document.getElementById("looks").value = state.player.appearance;
   document.getElementById("looks-value").textContent =
     `${state.player.appearance}%`;
@@ -279,9 +294,7 @@ function renderStats() {
   updateStatColor("looks", state.player.appearance);
   renderHealthAlert();
 }
- 
- 
- 
+
 let healthAlertOpen = false;
 function getMoodAlertItems(player) {
   const nextAge = player.age + 1;
@@ -427,13 +440,11 @@ function renderHealthAlert() {
   }
   box.append(details);
 }
- 
- 
- 
+
 function needsFinanceCheck() {
   const forecast = forecastNextYear(state.player);
   return (
-    state.player.age >= 22 &&
+    state.player.age >= (state.player.careerPath?.id === "casual" ? 18 : 22) &&
     forecast.after < 0 &&
     forecast.income < forecast.costs
   );
@@ -470,15 +481,23 @@ function showFinanceCheck() {
   const list = node("ul", "dialog-entries health-check-risks");
   list.append(
     node("li", "", `💵 Thu nhập dự kiến: ${formatMoney(forecast.income)}`),
+    node("li", "", `🧾 Thuế thu nhập cá nhân: ${formatMoney(forecast.economy?.incomeTax ?? 0)}`),
+    node("li", "", `🏪 Thuế thu nhập tài sản sinh lời: ${formatMoney(forecast.economy?.assetTax ?? 0)}`),
+    node("li", "", `🏘️ Thuế bất động sản: ${formatMoney(forecast.economy?.propertyTax ?? 0)}`),
     node(
       "li",
       "",
-      `🏠 Sinh hoạt phí (${(LIVING_MODES[player.livingMode] ?? LIVING_MODES.normal).label.toLowerCase()}): ${formatMoney(forecast.living)}` +
+      `🛡️ Bảo hiểm: ${formatMoney(forecast.insurance)} · Thuê nhà: ${formatMoney(forecast.rent)}` +
+        (forecast.living ? ` · Học xa nhà / tiện nghi tự chọn: ${formatMoney(forecast.living)}` : "") +
         (forecast.childcare
           ? ` · Nuôi con: ${formatMoney(forecast.childcare)}`
           : "") +
-        (forecast.dating ? ` · Chi phí hẹn hò: ${formatMoney(forecast.dating)}` : "") +
-        (forecast.familyBudget > forecast.dating ? ` · Học cho con và hỗ trợ cha mẹ: ${formatMoney(forecast.familyBudget - forecast.dating)}` : "") +
+        (forecast.dating
+          ? ` · Chi phí hẹn hò: ${formatMoney(forecast.dating)}`
+          : "") +
+        (forecast.familyBudget > forecast.dating
+          ? ` · Học cho con và hỗ trợ cha mẹ: ${formatMoney(forecast.familyBudget - forecast.dating)}`
+          : "") +
         (forecast.tuition
           ? ` · Học phí: ${formatMoney(forecast.tuition)}`
           : "") +
@@ -498,47 +517,85 @@ function showFinanceCheck() {
       `👛 Ví hiện có ${formatMoney(player.money)} → sau sinh nhật khoảng ${formatMoney(forecast.after)}`,
     ),
   );
+  const taxHelp = node("details", "finance-tax-help");
+  taxHelp.append(node("summary", "", "🧾 Cách tính thuế và tiền nhà"),
+    node("p", "side-job-intro", "Quy ước trong game: thu nhập từ công việc được giảm trừ 120 triệu/năm cho bản thân, thêm 36 triệu cho mỗi con đến 18 tuổi và trừ bảo hiểm trước khi tính thuế. Thuế suất lũy tiến 5–30%, chỉ áp dụng phần vượt từng bậc; lương hưu được miễn thuế thu nhập và bảo hiểm."),
+    node("p", "side-job-intro", "Bảo hiểm 8% lương, tối đa 28,8 triệu/năm. Thu nhập tài sản sinh lời chịu 5% phần vượt 12 triệu/năm. Thuế bất động sản 0,1% giá mua, giảm trừ 1 tỷ nếu có nhà để ở. Tiền thưởng, bán tài sản và tiền được trả nợ không tính vào thu nhập chịu thuế thường xuyên."),
+    node("p", "side-job-intro", "Sau khi ra trường từ 22 tuổi (nghề tự do từ 18): thuê nhà 2 triệu/tháng trong nước hoặc 3 triệu/tháng ở nước ngoài. Có nhà để ở thì miễn tiền thuê; nhà đang cho thuê không tính là chỗ ở. Không còn phí sinh hoạt bắt buộc theo tỷ lệ thu nhập."));
+  const taxTable = node("table", "career-salary-table finance-income-tax-table");
+  const caption = node("caption", "", "Thuế TNCN theo phần thu nhập tính thuế mỗi năm (sau giảm trừ)");
+  const taxHead = node("thead");
+  const taxHeading = node("tr");
+  for (const text of ["Phần thu nhập", "Thuế suất"]) {
+    const heading = node("th", "", text);
+    heading.scope = "col";
+    taxHeading.append(heading);
+  }
+  taxHead.append(taxHeading);
+  const taxBody = node("tbody");
+  let previousBand = 0;
+  for (const [ceiling, rate] of INCOME_TAX_BANDS) {
+    const row = node("tr");
+    const band = !Number.isFinite(ceiling) ? `Trên ${formatMoney(previousBand)}`
+      : previousBand ? `Trên ${formatMoney(previousBand)} đến ${formatMoney(ceiling)}` : `Đến ${formatMoney(ceiling)}`;
+    row.append(node("td", "", band), node("td", "", `${Math.round(rate * 100)}%`));
+    taxBody.append(row);
+    previousBand = ceiling;
+  }
+  taxTable.append(caption, taxHead, taxBody);
+  taxHelp.append(taxTable);
   const budgetControls = node("div", "shop-groups finance-budget");
-  budgetControls.append(node("p", "side-job-intro", "Các lựa chọn áp dụng từ sinh nhật tới và giữ đến khi bạn đổi. Học cơ bản đã nằm trong phí nuôi con; các gói dưới đây là chi thêm. Con 6–22 tuổi không có gói học thêm hay hỗ trợ đại học thì gắn kết giảm dần. Hỗ trợ cha mẹ từ 65 tuổi hoặc khi yếu/bệnh nặng. Có thể giảm hoặc dừng trước năm kế tiếp; khoản đã cam kết vẫn trừ khi ở tù. Tiền thiếu trở thành nợ."));
-  const livingLabel = node("label", "side-job-intro", "Mức sống: ");
+  budgetControls.append(
+    node(
+      "p",
+      "side-job-intro",
+      "Các lựa chọn áp dụng từ sinh nhật tới và giữ đến khi bạn đổi. Học cơ bản đã nằm trong phí nuôi con; các gói dưới đây là chi thêm. Con 6–22 tuổi không có gói học thêm hay hỗ trợ đại học thì gắn kết giảm dần. Hỗ trợ cha mẹ từ 65 tuổi hoặc khi yếu/bệnh nặng. Có thể giảm hoặc dừng trước năm kế tiếp; khoản đã cam kết vẫn trừ khi ở tù. Tiền thiếu trở thành nợ.",
+    ),
+  );
+  const livingLabel = node("label", "side-job-intro", "Tiện nghi tự chọn: ");
   const livingSelect = node("select");
   livingSelect.id = "budget-living-mode";
   for (const [id, config] of Object.entries(LIVING_MODES)) {
-    const option = node("option", "", config.label + (config.extra ? ` · thêm ${formatMoney(config.extra)}/năm · Hạnh phúc +${config.happiness} khi không nợ` : id === "frugal" ? " · bớt tối đa 12 triệu/năm · Hạnh phúc −1" : ` · ${describeYearLivingCost(player.careerPath, forecast.age)}`));
-    option.value = id; livingSelect.append(option);
+    if (id === "frugal") continue;
+    const option = node(
+      "option",
+      "",
+      config.label +
+        (config.extra
+          ? ` · thêm ${formatMoney(config.extra)}/năm · Hạnh phúc +${config.happiness} khi không nợ`
+          : ` · ${describeYearLivingCost(player.careerPath, forecast.age)}`),
+    );
+    option.value = id;
+    livingSelect.append(option);
   }
-  livingSelect.value = player.livingMode ?? "normal";
-  livingSelect.disabled = player.age < 23 || player.isAlive === false || isInPrison(player);
-   
+  livingSelect.value = player.livingMode === "frugal" ? "normal" : player.livingMode ?? "normal";
+  livingSelect.disabled =
+    player.age < 22 || player.isAlive === false || isInPrison(player);
+
   livingSelect.addEventListener("change", () => {
     player.livingMode = livingSelect.value;
     saveEventProgress();
     showFinanceCheck();
   });
-  livingLabel.append(livingSelect); budgetControls.append(livingLabel);
+  livingLabel.append(livingSelect);
+  budgetControls.append(livingLabel);
   renderFamilyBudgetControls(budgetControls, player, () => {
     saveEventProgress();
     showFinanceCheck();
   });
   const choices = node("div", "shop-groups");
-  if (player.livingMode !== "frugal") {
-    choices.append(
-      action(
-        `📉 Giảm mức sống (sinh hoạt phí tối thiểu ${formatMoney(LIVING_MODES.frugal.floor)}, bớt tối đa ${formatMoney(FRUGAL_MAX_SAVING)}/năm, Hạnh phúc -1/năm)`,
-        () => {
-          state.player.livingMode = "frugal";
-          record("📉 Chuyển sang sống tiết kiệm để giảm chi phí sinh hoạt.");
-          showFinanceCheck();
-        },
-      ),
-    );
+  if (["comfortable", "luxury"].includes(player.livingMode)) {
+    choices.append(action("📉 Dừng chi tiện nghi tự chọn", () => {
+      player.livingMode = "normal";
+      record("📉 Dừng chi tiện nghi tự chọn; không còn khoản sinh hoạt bắt buộc theo thu nhập.");
+      showFinanceCheck();
+    }));
   }
   if (canGetFamilySupport(player)) {
     choices.append(
       action(
         `👪 Nhận hỗ trợ từ bố mẹ (+${formatMoney(FAMILY_SUPPORT.amount)})`,
         () => {
-           
           if (!canGetFamilySupport(state.player)) return;
           state.player.money += FAMILY_SUPPORT.amount;
           state.player.familySupportAge = state.player.age;
@@ -550,7 +607,7 @@ function showFinanceCheck() {
       ),
     );
   }
-   
+
   const canSeekWork = player.age < RETIREMENT_AGE && !isInPrison(player);
   if (canSeekWork) {
     choices.append(
@@ -565,15 +622,6 @@ function showFinanceCheck() {
       action("💼 Tìm việc chính (Xin việc)", () => {
         dialog.close();
         document.getElementById("activity-jobs").click();
-      }),
-    );
-  }
-  if (player.livingMode === "frugal") {
-    choices.append(
-      action("↩️ Trở lại mức sống bình thường", () => {
-        state.player.livingMode = "normal";
-        record("↩️ Trở lại mức sống bình thường.");
-        showFinanceCheck();
       }),
     );
   }
@@ -595,6 +643,7 @@ function showFinanceCheck() {
         : "Chi phí và thu nhập dự kiến cho năm tới.",
     ),
     list,
+    taxHelp,
     budgetControls,
     node(
       "p",
@@ -606,7 +655,7 @@ function showFinanceCheck() {
   if (!dialog.open) dialog.showModal();
   choices.querySelector("button")?.focus({ preventScroll: true });
 }
- 
+
 function getLifeAlertItems(player) {
   const items = [];
   if (needsFinanceCheck()) {
@@ -615,15 +664,6 @@ function getLifeAlertItems(player) {
       short: "💸 Thiếu hụt dự kiến",
       title: `💸 Năm tới: thu ${formatMoney(forecast.income)}, chi ${formatMoney(forecast.costs)}`,
       detail: `Ví sau sinh nhật khoảng ${formatMoney(forecast.after)}. Có thể giảm mức sống, nhận hỗ trợ người thân, làm thêm hoặc dùng tiết kiệm.`,
-      action: { label: "💸 Phương án tài chính", run: showFinanceCheck },
-    });
-  } else if (player.livingMode === "frugal") {
-     
-    items.push({
-      short: "📉 Đang sống tiết kiệm",
-      title: "📉 Đang sống tiết kiệm (Hạnh phúc -1/năm)",
-      detail:
-        "Thu nhập đã đủ chi phí năm tới. Có thể trở lại mức sống bình thường trong Phương án tài chính.",
       action: { label: "💸 Phương án tài chính", run: showFinanceCheck },
     });
   }
@@ -667,7 +707,7 @@ function getLifeAlertItems(player) {
   }
   return items;
 }
- 
+
 function getAgeUpHealthRisks() {
   const player = state.player;
   const nextAge = player.age + 1;
@@ -796,7 +836,7 @@ function showHealthCheck() {
   if (!dialog.open) dialog.showModal();
   choices.querySelector("button")?.focus({ preventScroll: true });
 }
- 
+
 renderStats();
 function renderLogContent(element, text) {
   element.replaceChildren();
@@ -816,7 +856,6 @@ function cleanLogText(text) {
   return addEventEmotions(cleaned);
 }
 function appendColoredNumbers(element, text) {
-   
   const parts = text.split(/([+−-]\d+(?:[.,]\d+)*(?:k| triệu| tỷ)?)/g);
   parts.forEach((part) => {
     if (/^[+−-]\d+(?:[.,]\d+)*(?:k| triệu| tỷ)?$/.test(part)) {
@@ -827,7 +866,6 @@ function appendColoredNumbers(element, text) {
       );
       element.append(number);
     } else {
-       
       element.append(document.createTextNode(part));
     }
   });
@@ -836,24 +874,24 @@ function updateStatColor(id, value) {
   const bar = document.getElementById(id);
   let color;
   if (value <= 20) {
-    color = "#e53935";  
+    color = "#e53935";
   } else if (value <= 50) {
     color = "#fb8c00"; // Cam
   } else if (value <= 80) {
-    color = "#fdd835";  
+    color = "#fdd835";
   } else {
-    color = "#43a047";  
+    color = "#43a047";
   }
   bar.style.setProperty("--stat-color", color);
 }
 function renderMoney() {
   const moneyElement = document.getElementById("money-value");
   moneyElement.textContent = formatMoneyAmount(state.player.money);
-   
+
   moneyElement
     .closest(".wallet")
     ?.classList.toggle("is-debt", state.player.money < 0);
-   
+
   const forecastElement = document.getElementById("money-forecast");
   if (forecastElement) {
     const forecast = forecastNextYear(state.player);
@@ -865,10 +903,10 @@ function renderMoney() {
     forecastElement.classList.toggle("is-negative", forecast.after < 0);
   }
 }
- 
+
 // Update legacy employment state without inventing historical pension payments.
 retirePlayer(state.player);
- 
+
 if (getPlayerAnnualSalary(state.player) && state.player.lastSalaryAge == null) {
   const salary = completeCareerYear(state.player, state.player.age);
   if (salary) {
@@ -900,16 +938,14 @@ function renderEducation() {
   button.title = description;
   button.setAttribute("aria-label", `Hoạt động. ${description}`);
 }
- 
+
 renderEducation();
 initRelationships(state, saveEventProgress, (log) => {
   renderLogEntry(log);
   renderMoney();
   renderStats();
 });
- 
- 
- 
+
 function renderLogLines(element, text) {
   const LOG_ICON =
     /^((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:️|⃣|\p{Emoji_Modifier}|\p{Regional_Indicator}|‍\p{Extended_Pictographic})*)\s*/u;
@@ -946,7 +982,7 @@ function renderLogEntry(log) {
   const text = compactLogText(log.summary ?? summarizeLifeLog(log.content));
   const last = logElement.lastElementChild;
   const sameAge = last?.dataset.age === String(log.age);
-   
+
   const repeated =
     sameAge &&
     [...last.querySelectorAll("p")].find((line) => line.dataset.text === text);
@@ -959,9 +995,9 @@ function renderLogEntry(log) {
   const content = document.createElement("p");
   content.dataset.text = text;
   logLines.set(log, content);
-   
+
   renderLogLines(content, text);
-   
+
   if (sameAge) {
     last.classList.remove("is-quiet");
     last.append(content);
@@ -969,7 +1005,7 @@ function renderLogEntry(log) {
   }
   const logItem = document.createElement("section");
   logItem.classList.add("log-entry");
-   
+
   if (text === "Một năm bình lặng.") logItem.classList.add("is-quiet");
   logItem.dataset.age = log.age;
   const title = document.createElement("h3");
@@ -977,7 +1013,7 @@ function renderLogEntry(log) {
   logItem.append(title, content);
   logElement.append(logItem);
 }
- 
+
 function updateLogEntry(log) {
   const line = logLines.get(log);
   if (!line) {
@@ -1118,20 +1154,21 @@ motionPreference.addEventListener("change", () => {
     );
   }
 });
- 
+
 function saveEventProgress() {
   state.player.lifeId ??= getLifeId(state);
   observeLifeProgress(state.player, state.pendingEvent);
   saveGame(state);
 }
- 
+
 const DOUBLE_TAP_GUARD_MS = 350;
 let choicesReadyAt = 0;
- 
+
 function showPendingEvent() {
   const pending = state.pendingEvent;
   if (!pending) return;
-  if (pending.stage === "choice" && pending.id === "career-18") pending.choices = careerEvent.choices.map(choice => ({ ...choice }));
+  if (pending.stage === "choice" && pending.id === "career-18")
+    pending.choices = careerEvent.choices.map((choice) => ({ ...choice }));
   retirePlayer(state.player, pending.age);
   if (
     pending.stage === "choice" &&
@@ -1250,8 +1287,6 @@ function showPendingEvent() {
       ]) {
         pending[key] = current[key];
         if (pending.stage === "choice") {
-           
-           
           pending.choices?.forEach((branch, index) => {
             const source = branch.sourceIndex ?? index;
             const match = current.choices.find(
@@ -1317,7 +1352,6 @@ function showPendingEvent() {
     pending.imageOptions,
   );
   if (pending.stage === "choice") {
-     
     eventContent.replaceChildren();
     let remaining = addEventEmotions(pending.text);
     while (remaining) {
@@ -1364,7 +1398,7 @@ function showPendingEvent() {
       if (dialogue)
         eventContent.append(document.createTextNode(`\n\n${dialogue}`));
     }
-     
+
     if (pending.referenceNotes) {
       const notes = document.createElement("details");
       notes.className = "event-reference-notes";
@@ -1376,7 +1410,7 @@ function showPendingEvent() {
       eventContent.append(notes);
     }
     eventConfirm.hidden = true;
-     
+
     const choiceLabels = addChoiceIcons(
       pending.choices.map((choice) => formatMoneyText(choice.label)),
     );
@@ -1409,8 +1443,12 @@ function showPendingEvent() {
         label.textContent = addChoiceIcon(choice.label.replace(/^🎮\s*/u, ""));
         button.replaceChildren(emblem, label);
       }
-       
-      if (choice.careerPath && choice.careerPath.id !== "casual" && !Object.hasOwn(choice.careerPath, "school")) {
+
+      if (
+        choice.careerPath &&
+        choice.careerPath.id !== "casual" &&
+        !Object.hasOwn(choice.careerPath, "school")
+      ) {
         const lock = getRankLock(state.player, choice.careerPath.id);
         const note = document.createElement("small");
         note.className = "event-choice-note";
@@ -1423,14 +1461,12 @@ function showPendingEvent() {
         button.append(note);
       }
       button.addEventListener("click", (event) => {
-         
         if (event.isTrusted && performance.now() < choicesReadyAt) return;
         chooseEventAction(index);
       });
       eventChoices.append(button);
     });
   } else {
-     
     const previewOnly = pending.mediaTransition || pending.mediaSkipInterview;
     const salary = previewOnly
       ? null
@@ -1462,18 +1498,18 @@ function showPendingEvent() {
     eventConfirm.textContent = addChoiceIcon(pending.confirmText ?? "Xác nhận");
     eventConfirm.hidden = false;
   }
-   
+
   const outcomeSound =
     pending.outcome && !pending.outcomeSoundPlayed ? pending.outcome : null;
   if (outcomeSound) pending.outcomeSoundPlayed = true;
   if (!eventDialog.open) {
     eventDialog.showModal();
-     
+
     if (!outcomeSound) playEventSound(pending.category);
   }
   if (outcomeSound) playOutcomeSound(outcomeSound);
   if (pending.stage === "result") animateEventResult();
-   
+
   eventDialog.scrollTop = 0;
   if (pending.stage === "choice") {
     eventChoices.querySelector("button")?.focus({
@@ -1484,8 +1520,7 @@ function showPendingEvent() {
   }
   saveEventProgress(); // Persist refreshed OpenMoji and remove legacy media limits.
 }
- 
- 
+
 function getChoiceOutcome(pending, choice) {
   if (choice.outcome === "success" || choice.outcome === "failure")
     return choice.outcome;
@@ -1495,12 +1530,11 @@ function getChoiceOutcome(pending, choice) {
   ) {
     return choice.correct ? "success" : "failure";
   }
-   
+
   if (choice.careerPath?.school) return "success";
   return null;
 }
 
- 
 function getChoiceBlocker(choice) {
   if (!canAffordChoice(state.player, choice)) return "Không đủ tiền";
   if (
@@ -1513,7 +1547,7 @@ function getChoiceBlocker(choice) {
 }
 function chooseEventAction(index) {
   const pending = state.pendingEvent;
-   
+
   if (!pending || pending.stage !== "choice") return;
   let choice = pending.choices[index];
   if (!choice) return;
@@ -1558,7 +1592,6 @@ function chooseEventAction(index) {
     return;
   }
   if (pending.kind === "job-interview") {
-     
     const assessment = rollInterview(
       state.player,
       choice.quality ?? (choice.correct === true ? "good" : "weak"),
@@ -1570,7 +1603,7 @@ function chooseEventAction(index) {
       assessment,
     );
     state.pendingEvent.category = pending.category;
-     
+
     state.pendingEvent.outcome =
       state.pendingEvent.updates.employmentStatus === "employed"
         ? "success"
@@ -1644,7 +1677,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-   
+
   if (pending.kind === "career-spark-pick" && choice.careerSparkId) {
     const firstStep = createCareerSparkStep(
       choice.careerSparkId,
@@ -1663,7 +1696,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-   
+
   if (
     (pending.kind === "career-spark" || pending.kind === "career-promotion") &&
     choice.nextStep
@@ -1693,7 +1726,13 @@ function chooseEventAction(index) {
     return;
   }
   if (pending.kind === "lost-child-chain" && choice.nextStep) {
-    const nextStep = createSpecialStep(pending.kind, pending.specialId, choice.nextStep, {}, state.player);
+    const nextStep = createSpecialStep(
+      pending.kind,
+      pending.specialId,
+      choice.nextStep,
+      {},
+      state.player,
+    );
     if (!nextStep) return;
     state.pendingEvent = createChainStep(choice, pending, {
       ...nextStep,
@@ -1708,7 +1747,7 @@ function chooseEventAction(index) {
   }
   if (pending.kind === "special-chain" && choice.nextStep) {
     const inventory = applySpecialInventory(pending.specialInventory, choice);
-     
+
     const nextStep = createSpecialStep(
       pending.kind,
       pending.specialId,
@@ -1728,7 +1767,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-   
+
   if (pending.kind === "exam-prep" && choice.examPrep) {
     const prep = EXAM_PREP[choice.examPrep];
     if (prep?.health)
@@ -1748,7 +1787,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-   
+
   if (pending.kind === "career-test") {
     const passed = choice.correct === true || choice.passedOverall === true;
     const next = passed
@@ -1775,7 +1814,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-   
+
   if (
     pending.kind === "enlistment-failure" &&
     (choice.retakeTest || choice.reselectCareer)
@@ -1802,7 +1841,7 @@ function chooseEventAction(index) {
   if (choice.careerPath?.id === "casual" && pending.age === 18) {
     choice = createCasualStartChoice(state.player, choice);
   }
-   
+
   if (
     choice.careerPath &&
     !Object.hasOwn(choice.careerPath, "school") &&
@@ -1829,9 +1868,8 @@ function chooseEventAction(index) {
     eligibilityFeedback.hidden = false;
     return;
   }
-   
+
   if (choice.careerPath && !Object.hasOwn(choice.careerPath, "school")) {
-     
     const schoolEvent =
       createExamPrepEvent(choice.careerPath, state.player) ??
       createSchoolEvent(choice.careerPath, state.player);
@@ -1848,14 +1886,14 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-   
+
   if (
     pending.category === "everyday" &&
     !pending.automaticResult &&
     !pending.catalogVersion
   )
     choice = rollEverydayLuck(choice, state.player);
-   
+
   choice = softenSetback(state.player, choice, pending.category);
   const updates = { age: pending.age };
   if (pending.kind === "child-proposal") {
@@ -1909,7 +1947,7 @@ function chooseEventAction(index) {
     updates.lostChildSchoolYearDueAge = choice.schoolYearDueAge;
   }
   if (choice.careerPath) updates.careerPath = choice.careerPath;
-   
+
   if (choice.playerUpdates) Object.assign(updates, choice.playerUpdates);
   if (typeof choice.careerSpark === "string")
     updates.careerSpark = choice.careerSpark;
@@ -2019,7 +2057,7 @@ function chooseEventAction(index) {
       }
     }
   }
-   
+
   for (const stat in choice.effects ?? {}) {
     if (!Object.hasOwn(statNames, stat)) continue;
     const oldValue = state.player[stat];
@@ -2042,7 +2080,7 @@ function chooseEventAction(index) {
     if (delta)
       changes.push(`${statNames[stat]} ${delta > 0 ? "+" : ""}${delta}`);
   }
-   
+
   if (choice.money) {
     const oldMoney = state.player.money;
     const newMoney = oldMoney + choice.money;
@@ -2055,7 +2093,7 @@ function chooseEventAction(index) {
   }
   const resultContent =
     choice.text + (changes.length ? "\n" + changes.join(" · ") : "");
-   
+
   state.pendingEvent = {
     stage: "result",
     specialId: pending.specialId,
@@ -2087,7 +2125,7 @@ function chooseEventAction(index) {
             resultText: choice.text,
             changes,
           })),
-     
+
     logContent:
       choice.logContent ??
       (pending.automaticResult
@@ -2100,10 +2138,10 @@ function chooseEventAction(index) {
   saveEventProgress();
   showPendingEvent();
 }
- 
+
 ageButton.addEventListener("click", () => {
   if (state.pendingEvent || state.player.isAlive === false) return;
-   
+
   if (!isInPrison(state.player) && gamesUi.hasActiveTienLen()) {
     if (!document.querySelector("dialog[open]")) {
       gamesUi.openTienLen(
@@ -2131,14 +2169,19 @@ ageButton.addEventListener("click", () => {
   const nextAge = state.player.age + 1;
   retirePlayer(state.player, nextAge);
 
-   
   if (checkOldAgeDeath(nextAge)) {
     return;
   }
 
   const schoolYearEvent =
     nextAge === 11 && state.player.lostChildSchoolYearDueAge === 11
-      ? createSpecialStep("lost-child-chain", "lost-child-school", 5, {}, state.player)
+      ? createSpecialStep(
+          "lost-child-chain",
+          "lost-child-school",
+          5,
+          {},
+          state.player,
+        )
       : null;
   const orientationEvent =
     nextAge === 24 ? createOrientationEvent(state.player) : null;
@@ -2154,14 +2197,11 @@ ageButton.addEventListener("click", () => {
     (nextAge === 105 ? ageStories[0] : null) ??
     createPrisonEvent(state.player, nextAge) ??
     createCasualServiceEvent(state.player, nextAge) ??
-     
-     
     (nextAge === 18 ? careerEvent : null) ??
     orientationEvent ??
     createWorkInvestigationEvent(state.player, nextAge) ??
     (nextAge === 16
-      ? (ageStories.find((event) => event.kind === "career-spark-pick") ??
-        null)
+      ? (ageStories.find((event) => event.kind === "career-spark-pick") ?? null)
       : null) ??
     (nextAge === 100
       ? ageStories.find((event) => event.id === "centennial-memorial")
@@ -2205,7 +2245,7 @@ ageButton.addEventListener("click", () => {
       ? createDatingEvent(state.player, nextAge)
       : null;
   const stories = [...ageStories, ...(datingEvent ? [datingEvent] : [])];
-   
+
   const moodEvent =
     nextAge > 18 &&
     !priorityEvent &&
@@ -2224,8 +2264,7 @@ ageButton.addEventListener("click", () => {
         createRiskOfferEvent(state.player, nextAge) ??
         createMoodEvent(state.player, nextAge))
       : null;
-   
-   
+
   const eventChance = 0.8;
 
   const hasEvent =
@@ -2245,8 +2284,6 @@ ageButton.addEventListener("click", () => {
         ? Boolean(randomAgeStory)
         : nextAge <= 10 || Math.random() < eventChance));
 
-   
-   
   const ordinaryYear =
     !priorityEvent &&
     !promotionEvent &&
@@ -2295,7 +2332,7 @@ ageButton.addEventListener("click", () => {
       log.content =
         schooling.content +
         (salary || childcare.content ? `\n${log.content}` : "");
-     
+
     const extras = [
       employment,
       family,
@@ -2321,7 +2358,6 @@ ageButton.addEventListener("click", () => {
     state.logs.push(log);
     saveEventProgress();
 
-     
     ageElement.textContent = state.player.age;
     renderMoney();
     renderStats();
@@ -2329,26 +2365,24 @@ ageButton.addEventListener("click", () => {
     renderEducation();
     renderLogEntry(log);
 
-     
     if (state.player.isAlive === false) {
       endLifeAfterYear();
       return;
     }
 
-     
     const logContainer = logElement.parentElement;
     logContainer.scrollTop = logContainer.scrollHeight;
 
-     
     checkAchievements();
-     
+
     lotteryUi.showResults();
 
-     
     return;
   }
   const pickedStory =
-    (["prison", "casual-service"].includes(priorityEvent?.kind) ? priorityEvent : null) ??
+    (["prison", "casual-service"].includes(priorityEvent?.kind)
+      ? priorityEvent
+      : null) ??
     quietYearAcquaintance ??
     (nextAge === 25 ? datingEvent : null) ??
     priorityEvent ??
@@ -2373,7 +2407,7 @@ ageButton.addEventListener("click", () => {
     !quietYearAcquaintance && ordinaryYear
       ? (createAcquaintanceEvent(state.player, nextAge) ?? pickedStory)
       : pickedStory;
-   
+
   const choices = story.choices?.length
     ? story.choices
     : [
@@ -2427,7 +2461,7 @@ ageButton.addEventListener("click", () => {
   saveEventProgress();
   showPendingEvent();
 });
- 
+
 eventConfirm.addEventListener("click", (event) => {
   const pending = state.pendingEvent;
   if (!pending || pending.stage === "choice") return;
@@ -2527,13 +2561,13 @@ eventConfirm.addEventListener("click", (event) => {
   }
   state.logs.push(log);
   state.pendingEvent = null;
-   
+
   const died =
     state.player.isAlive === false ||
     (!pending.nonFatal && state.player.health <= 0);
   if (died) {
     state.player.isAlive = false;
-     
+
     if (!state.player.deathCause) {
       state.player.deathCause = "event";
       state.player.deathEvent = pending.title;
@@ -2562,11 +2596,11 @@ eventConfirm.addEventListener("click", (event) => {
   checkAchievements();
   lotteryUi.showResults();
 });
- 
+
 eventDialog.addEventListener("cancel", (event) => {
   event.preventDefault();
 });
- 
+
 // Older saves at the former upper age limit now use the age-105 finale.
 if (
   state.player.isAlive !== false &&
@@ -2639,7 +2673,11 @@ initMatchmaking(state, {
   renderLogEntry,
   checkAchievements,
 });
-const gamesUi = initGames(state, { renderMoney, renderLogEntry, checkAchievements });
+const gamesUi = initGames(state, {
+  renderMoney,
+  renderLogEntry,
+  checkAchievements,
+});
 initFood(state, { renderMoney, renderStats, renderLogEntry });
 initBeauty(state, { renderMoney, renderStats, renderLogEntry });
 const lotteryUi = initLottery(state, {
@@ -2647,7 +2685,7 @@ const lotteryUi = initLottery(state, {
   renderLogEntry,
   updateLogEntry,
 });
- 
+
 lotteryUi.showResults();
 initTravel(state, { renderMoney, renderStats, renderLogEntry });
 initGameCenter(state, {
@@ -2700,21 +2738,20 @@ const fortuneName = document.getElementById("fortune-name");
 const fortuneContent = document.getElementById("fortune-content");
 const closeFortuneButton = document.getElementById("close-fortune");
 fortuneButton.addEventListener("click", () => {
-   
   if (document.querySelector("dialog[open]")) return;
-   
+
   if (
     typeof state.player.fortune !== "string" ||
     state.player.fortune.trim() === ""
   ) {
     const randomIndex = Math.floor(Math.random() * fortunePredictions.length);
     state.player.fortune = fortunePredictions[randomIndex];
-     
+
     saveGame(state);
   }
   fortuneName.textContent = `Dành cho ${state.player.name}`;
   fortuneContent.textContent = state.player.fortune;
-   
+
   setMenuOpen(false);
   fortuneDialog.showModal();
 });
@@ -2722,18 +2759,23 @@ closeFortuneButton.addEventListener("click", () => {
   fortuneDialog.close();
 });
 
- 
 const deathDialog = document.getElementById("death-dialog");
- 
+
 function showLifeSummary() {
   checkAchievements();
-  const archived = archiveLife(state, undefined, describeDeathCause(state.player));
-  if (archived.status === 'saved' || archived.status === 'duplicate') saveEventProgress();
+  const archived = archiveLife(
+    state,
+    undefined,
+    describeDeathCause(state.player),
+  );
+  if (archived.status === "saved" || archived.status === "duplicate")
+    saveEventProgress();
   renderLifeSummary(state);
-  if (archived.status === 'error') {
-    const note = document.createElement('p');
-    note.textContent = 'Chưa ghi được Sổ các cuộc đời trên thiết bị. Bản lưu cuộc đời vẫn được giữ để thử lại.';
-    document.getElementById('death-summary').append(note);
+  if (archived.status === "error") {
+    const note = document.createElement("p");
+    note.textContent =
+      "Chưa ghi được Sổ các cuộc đời trên thiết bị. Bản lưu cuộc đời vẫn được giữ để thử lại.";
+    document.getElementById("death-summary").append(note);
   }
   deathDialog.showModal();
   deathDialog.scrollTop = 0;
@@ -2743,7 +2785,7 @@ deathDialog.addEventListener("cancel", (event) => event.preventDefault());
 document
   .getElementById("return-after-death")
   .addEventListener("click", () => window.location.reload());
- 
+
 function endLifeAfterYear() {
   const log = {
     age: state.player.age,
@@ -2763,7 +2805,7 @@ function endLifeAfterYear() {
 function checkOldAgeDeath(nextAge) {
   // Survivors of age 104 always see the final story at 105.
   if (nextAge === 105) return false;
-   
+
   const stages = (state.player.illnesses ?? [])
     .filter((illness) => getDisease(illness.id))
     .map((illness) => getIllnessStage(illness, nextAge, state.player.health));
@@ -2776,7 +2818,6 @@ function checkOldAgeDeath(nextAge) {
     return false;
   }
 
-   
   const healthBefore = state.player.health;
   state.player.age = nextAge;
   state.player.isAlive = false;
@@ -2797,7 +2838,6 @@ function checkOldAgeDeath(nextAge) {
 
   state.logs.push(log);
 
-   
   saveEventProgress();
 
   ageElement.textContent = nextAge;
@@ -2812,7 +2852,6 @@ function checkOldAgeDeath(nextAge) {
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
 
-   
   showLifeSummary();
 
   checkAchievements();

@@ -12,16 +12,17 @@ const results = [];
 const path = { id: 'study-abroad', school: { type: 'international', countryId: 'china' } };
 const income = 600_000_000;
 const actualCost = getStudyAbroadLivingCost(path, 35, income);
-const describedCost = 200_000_000 * 0.3 + 400_000_000 * 0.55;
-const admissionText = createStudyAbroadSchoolEvent({ id: 'study-abroad' }, { intelligence: 100, money: 0 })
-  .choices.find(choice => choice.careerPath.school.countryId === 'china').text;
-assert.ok(admissionText.includes('30% đến 200 triệu') && admissionText.includes('55% phần 200–600 triệu') && admissionText.includes('70% phần trên 600 triệu'));
-assert.equal(actualCost, 280_000_000);
+const describedCost = 0;
+const admissionText = createStudyAbroadSchoolEvent({ id: "study-abroad" }, { intelligence: 100, money: 0 })
+  .choices.find(choice => choice.careerPath.school.countryId === "china").text;
+assert.ok(admissionText.includes("thuê nhà 36 triệu/năm"));
+assert.ok(!admissionText.includes("55%"));
+assert.equal(actualCost, 0);
 assert.equal(describedCost, actualCost);
-assert.match(describeYearLivingCost(path, 35), /30% đến 200 triệu/);
-assert.match(describeYearLivingCost(null, 35), /40% đến 200 triệu/);
-results.push({ id: 'abroad-cost-copy', severity: 'medium', confirmed: false, status: 'fixed',
-  description: 'Du học mô tả 30% / 50% nhưng thực tế thu 30% / 55% / 70%. Ngân sách chung lại mô tả 40% / 55% / 70% cho mọi nơi.',
+assert.match(describeYearLivingCost(path, 35), /thuế, bảo hiểm và thuê nhà/);
+assert.match(describeYearLivingCost(null, 35), /Không thu sinh hoạt phí/);
+results.push({ id: "abroad-cost-copy", severity: "medium", confirmed: false, status: "fixed",
+  description: "Mô tả sau tốt nghiệp khớp cơ chế mới: không thu sinh hoạt theo tỷ lệ, thuế và thuê nhà được tách riêng.",
   income, actualCost, describedCost });
 
 const family = { age: 40, money: 100_000_000, children: [{ id: 'child', name: 'Con',

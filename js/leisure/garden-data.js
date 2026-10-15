@@ -321,7 +321,9 @@ export function eat(player, recipeId) {
 export function gardenAchievementIds(garden) {
   const ids = [];
   if (Object.keys(garden.harvested).length) ids.push("garden-first-harvest");
+  if (crops.filter((crop) => garden.harvested[crop.id]).length >= 5) ids.push("garden-five-crops");
   if (crops.every((crop) => garden.harvested[crop.id])) ids.push("garden-all-crops");
+  if (recipes.filter((recipe) => garden.cooked[recipe.id]).length >= 3) ids.push("cook-three-recipes");
   const complex = recipes.filter((recipe) => recipe.tier === 2);
   if (complex.some((recipe) => garden.cooked[recipe.id])) ids.push("cook-complex-first");
   if (complex.every((recipe) => garden.cooked[recipe.id])) ids.push("cook-all-complex");

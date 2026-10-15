@@ -186,6 +186,12 @@ export const achievements = [
     number("money", 10000000),
   ),
   item(
+    "money-100m", "assets", "Tiền bạc", "🏦",
+    "Một trăm triệu đầu tiên",
+    "Tích lũy ít nhất 100.000.000 VNĐ trong ví.",
+    number("money", 100000000),
+  ),
+  item(
     "millionaire",
     "assets",
     "Tiền bạc",
@@ -200,8 +206,20 @@ export const achievements = [
     "Tiền bạc",
     "💎",
     "Tỷ phú",
-    "Sở hữu số tiền vượt mốc 1.000.000.000 VNĐ.",
-    number("money", 1000000000, true),
+    "Tích lũy ít nhất 1.000.000.000 VNĐ trong ví.",
+    number("money", 1000000000),
+  ),
+  item(
+    "money-5b", "assets", "Tiền bạc", "💼",
+    "Nền tảng vững vàng",
+    "Tích lũy ít nhất 5.000.000.000 VNĐ trong ví.",
+    number("money", 5000000000),
+  ),
+  item(
+    "money-10b", "assets", "Tiền bạc", "👑",
+    "Gia sản mười tỷ",
+    "Tích lũy ít nhất 10.000.000.000 VNĐ trong ví.",
+    number("money", 10000000000),
   ),
   item(
     "own-house",
@@ -737,6 +755,12 @@ export const achievements = [
     flag(),
   ),
   item(
+    "tarot-ten", "other", "Tarot", "📜",
+    "Mười lời nhắn",
+    "Khám phá 10 lá Tarot khác nhau; bộ sưu tập được giữ qua các cuộc đời.",
+    flag(),
+  ),
+  item(
     "tarot-major", "other", "Tarot", "🌟",
     "Người nghe chuyện của sao",
     "Khám phá đủ 22 lá Ẩn chính.",
@@ -749,9 +773,15 @@ export const achievements = [
     flag(),
   ),
   item(
+    "tarot-half", "other", "Tarot", "🌗",
+    "Nửa hành trình bộ bài",
+    "Khám phá 39 lá Tarot khác nhau; bộ sưu tập được giữ qua các cuộc đời.",
+    flag(),
+  ),
+  item(
     "tarot-all", "other", "Tarot", "🃏",
     "Người giữ 78 lá",
-    "Khám phá toàn bộ bộ bài Tarot.",
+    "Khám phá đủ 78 lá Tarot khác nhau qua một hoặc nhiều cuộc đời.",
     flag(),
   ),
   item(
@@ -781,7 +811,7 @@ export const achievements = [
   item(
     "detective-top-rank", "other", "Thám tử", "🏅",
     "Thám tử lành nghề",
-    "Đạt bậc thám tử cao nhất trong hoạt động Thám tử.",
+    "Tích lũy 24 uy tín để đạt bậc thám tử cao nhất.",
     flag(),
   ),
   item(
@@ -791,9 +821,21 @@ export const achievements = [
     flag(),
   ),
   item(
+    "garden-five-crops", "other", "Vườn nhà và bếp", "🌱",
+    "Vườn nhà nhiều sắc",
+    "Thu hoạch ít nhất 5 loại cây trồng khác nhau trong một cuộc đời.",
+    flag(),
+  ),
+  item(
     "garden-all-crops", "other", "Vườn nhà và bếp", "🌻",
     "Khu vườn đủ đầy",
     "Thu hoạch đủ cả 10 loại cây trồng.",
+    flag(),
+  ),
+  item(
+    "cook-three-recipes", "other", "Vườn nhà và bếp", "🥘",
+    "Bữa cơm đổi món",
+    "Nấu ít nhất 3 công thức khác nhau trong một cuộc đời.",
     flag(),
   ),
   item(

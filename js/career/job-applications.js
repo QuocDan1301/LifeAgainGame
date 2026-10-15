@@ -2,6 +2,7 @@ import { getRecordPenalty, isRehabilitated } from '../events/crime-consequences.
 import { saveGame } from "../core/save-store.js";
 import { getStudyAbroadCountry, getOverseasJobBlocker } from "../education/study-abroad.js";
 import { formatMoney } from "../core/money-format.js";
+import { collectHiringDeductions } from "../core/economy.js";
 import { careerPaths } from "./career-event.js";
 import { createJobInterview, createInterviewResult, getCareerProfile, getEmploymentContext } from "./career-jobs.js";
 import { hasCareerMilestone } from "./career-milestones.js";
@@ -197,6 +198,8 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     }
      
     const salary = completeCareerYear(player, player.age, updates);
+    const deductions = collectHiringDeductions(player, player.age, salary);
+    if (deductions?.content) salary.content += `\n${deductions.content}`;
     startEmploymentRecord(player, player.age);
     delete player.jobInterview;
     result.content += rehireNote;

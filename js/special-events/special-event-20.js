@@ -56,17 +56,17 @@ const steps = {
   },
   2: {
     title: "🌤️ Lên đường thôi!",
-    text: "Một buổi sáng đẹp trời, cả bọn xuất phát với quyết tâm chinh phục ngọn núi. Riêng Huy vừa xuống xe đã hỏi ngay chỗ bán bánh tráng. Trước khi đi, tôi ghé quầy hàng chuẩn bị đồ.",
+    text: "Một buổi sáng đẹp trời, cả bọn xuất phát với quyết tâm chinh phục ngọn núi. Riêng Huy vừa xuống xe đã hỏi chỗ bán bánh tráng. Trước khi đi, tôi ghé quầy hàng chuẩn bị đồ.",
     ...art("1F31E", "Buổi sáng bắt đầu chuyến đi núi"),
     choices: [
-      next("🔦 Nước với đèn pin, đủ bộ!", 3, { grants: "flashlight" }),
-      next("🥖 Bánh mì trước, tính sau!", 3, { grants: "bread" }),
+      next("💧 Nước là quan trọng nhất", 3),
+      next("🔦 Đèn pin là không thể thiếu", 3, { grants: "flashlight" }),
       next("💪 Có niềm tin là đủ!", 3),
     ],
   },
   3: {
     title: "🧓 Chuyện bên quán nước",
-    text: "Bác bán nước kể rằng trận mưa vừa rồi làm lộ một khe đá có những đốm sáng kỳ lạ. Chú Tư, người dẫn đường đang ngồi gần đó, bảo có thể dẫn cả nhóm đến xem. Huy buông ngay bịch bánh tráng: “Lấp lánh là tao thấy có tương lai rồi đó!”",
+    text: "Bác bán nước kể rằng sau trận mưa vừa rồi xuất hiện những đốm sáng kỳ lạ. Chú Tư, người dẫn đường đang ngồi gần đó, bảo có thể dẫn cả nhóm đến xem. Huy buông ngay bịch bánh tráng: “Lấp lánh là tao thấy có tương lai rồi đó!”",
     ...art("1F964", "Bác bán nước kể chuyện về khe đá"),
     choices: [
       next("🥾 Chú dẫn tụi con đi với!", 4),
@@ -80,11 +80,10 @@ const steps = {
   },
   4: {
     title: "🐕 Công lớn của Bắp",
-    text: "Đến điểm nghỉ chân, Bắp — chú chó của chú Tư — chạy từ bụi cây ra. Huy giật mình núp sau lưng tôi: “Tao bảo vệ phía sau!” Chân Bắp làm bật một viên đá dính bùn, bên trong có thứ gì đó lóe sáng.",
+    text: "Đến điểm nghỉ chân, Bắp — chú chó của chú Tư — phóng từ bụi cây ra. Huy giật mình: “Đạ mú”. Chân Bắp làm bật một viên đá dính bùn, bên trong có thứ gì đó lóe sáng.",
     ...art("1F9ED", "Bắp phát hiện viên đá lấp lánh"),
     choices: [
       next("✨ Nhặt lên coi thử nào!", 5),
-      next("🥖 Bắp, đổi bánh lấy đá!", 5, { requires: "bread" }),
       ending(
         "🚶 Đá thôi, đi tiếp đi!",
         "🪨 Manh mối bị bỏ lại",
@@ -95,27 +94,33 @@ const steps = {
   },
   5: {
     title: "🔦 Lấp lánh trong khe đá",
-    text: "Chú Tư nhìn viên đá rồi chỉ về khe đá gần đó: “Chắc nước mưa cuốn từ chỗ kia xuống.” Từ bên ngoài, tôi thấy nhiều đốm sáng tương tự. Huy bật đèn điện thoại, máy báo còn 1% pin: “Đúng lúc đời sắp sáng thì máy lại tối.”",
+    text: "Chú Tư nhìn viên đá rồi chỉ về khe đá gần đó: “Chắc nước mưa cuốn từ chỗ kia xuống.” Từ bên ngoài, tôi thấy nhiều đốm sáng tương tự. Huy bật đèn điện thoại, máy báo còn 1% pin: “?*&*@#!!.”",
     ...art("1F50D", "Những đốm sáng trong khe đá"),
     choices: [
       next("🔦 Đèn pin đây, để tôi!", 6, { requires: "flashlight" }),
-      next("🙏 Chú Tư cho mượn đèn nha!", 6),
+      ending(
+        "Tối quá, không thấy được gì",
+        "🍜 Bí mật nằm lại",
+        "Tôi xuống núi ăn cơm. Cả nhóm no bụng, nhưng bí mật trong khe đá vẫn nằm lại chờ một người tò mò hơn.",
+        "1F37D",
+      ),
       ending(
         "🍚 Thôi, đói quá rồi!",
         "🍜 Bí mật nằm lại",
-        "Tôi chọn xuống núi ăn cơm. Cả nhóm no bụng, nhưng bí mật trong khe đá vẫn nằm lại chờ một người tò mò hơn.",
+        "Tôi xuống núi ăn cơm. Cả nhóm no bụng, nhưng bí mật trong khe đá vẫn nằm lại chờ một người tò mò hơn.",
         "1F37D",
       ),
     ],
   },
   6: {
     title: "📞 Khoan mua xe đã!",
-    text: "Chú Tư gửi ảnh cho một người quen làm địa chất. Người đó gọi lại: “Đáng chú ý đấy, nhưng phải khảo sát và kiểm định mới kết luận được.” Trong lúc ấy, Huy đã chọn xong màu xe dù chưa ai hỏi.",
+    text: "Chú Tư gửi ảnh cho một người quen làm địa chất. Người đó bảo: “Có lẽ nào...nhưng tôi cần phải xác minh thêm” Trong lúc ấy, Huy đã chọn xong màu xe dù chưa ai hỏi.",
     ...art("1F4F1", "Cuộc gọi từ người am hiểu địa chất"),
     choices: [
       next("📍 Gửi vị trí, nhờ kiểm định!", 7),
       next("📣 Đăng khoe trước cho nóng!", 7, {
-        transitionText: "Tôi vừa đăng bài thì mẹ bình luận: “Giàu rồi trả mẹ tiền điện nha con.” Quê quá, tôi xóa bài rồi cùng chú Tư gửi thông tin cho đoàn khảo sát.\n\n",
+        transitionText:
+          "Tôi vừa đăng bài thì mẹ bình luận: “Giàu rồi trả mẹ tiền điện nha con.” Quê quá, tôi xóa bài rồi cùng chú Tư gửi thông tin cho đoàn khảo sát.\n\n",
       }),
       ending(
         "🙅 Thủ tục quá, thôi bỏ!",
@@ -151,10 +156,13 @@ export function createDiamondSpecialStep(stepNumber, inventory = {}) {
     kind: "special-chain",
     specialId: "diamond-mine",
     specialStep: stepNumber,
-     
+    specialInventory: { ...inventory },
+
     choices: step.choices
       .map((choice, sourceIndex) => ({ ...choice, sourceIndex }))
-      .filter((choice) => !choice.requires || inventory[choice.requires] === true),
+      .filter(
+        (choice) => !choice.requires || inventory[choice.requires] === true,
+      ),
   };
 }
 

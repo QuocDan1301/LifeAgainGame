@@ -180,7 +180,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       const blocker = getStreetJobBlocker(state.player, job.id);
       const row = element("article", "shop-item");
       row.append(element("h4", "", `${job.icon} ${job.name}`),
-        element("p", "side-job-note", `${formatMoney(job.income)}/năm · Sức khỏe ${job.health}/năm · Cần ${job.assetName}.`));
+        element("p", "side-job-note", `${formatMoney(job.income)}/năm · Sức khỏe ${job.health}/năm · ${job.asset ? `Cần ${job.assetName}.` : "Không cần mua phương tiện."}`));
       const action = button(hired ? "shop-sell" : "shop-buy", hired ? "🚪 Nghỉ nghề" : "📝 Nhận nghề", () => {
         if (hired) state.player.streetJobs = (state.player.streetJobs ?? []).filter(entry => entry.id !== job.id);
         else if (!startStreetJob(state.player, job.id)) return;
@@ -268,7 +268,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
       const job = streetJobs.find(item => item.id === entry.id);
       if (!job) continue;
       const row = element("li", "shop-owned");
-      row.append(element("span", "", `${job.icon} ${job.name} · Thu nhập ròng ${formatMoney(job.income)}/năm · Cần ${job.assetName}`),
+      row.append(element("span", "", `${job.icon} ${job.name} · Thu nhập ròng ${formatMoney(job.income)}/năm${job.asset ? ` · Cần ${job.assetName}` : ""}`),
         quit(`🚪 Nghỉ nghề ${job.name.toLowerCase()}?`, "Ngừng nghề này từ năm nay.", () => {
           state.player.streetJobs = (state.player.streetJobs ?? []).filter(item => item.id !== job.id);
           record(`🚪 Nghỉ nghề ${job.name.toLowerCase()}.`);

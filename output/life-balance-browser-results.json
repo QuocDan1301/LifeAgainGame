@@ -1,37 +1,12 @@
 [
   {
-    "test": "check-crime.html",
-    "result": "PASS: crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release",
+    "test": "check-achievement-progress.html",
+    "result": "PASS: university and military unlock only on confirmation, persist to achievements and game save",
     "pageErrors": []
   },
   {
-    "test": "check-job-applications.html",
-    "result": "PASS: automatic interview only with the age-16 milestone, told by its mentor for all 22 careers (interview, result, retry); Xin việc lists every career, only the studied one opens after graduating; saved question; one try per year; hire pays the first salary; no retry popup",
-    "pageErrors": []
-  },
-  {
-    "test": "check-career-salary.html",
-    "result": "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI",
-    "pageErrors": []
-  },
-  {
-    "test": "check-career-milestones.html",
-    "result": "PASS: age-16 chain (success, failure, stop); milestone promotion chain; retry; rank-3 gate",
-    "pageErrors": []
-  },
-  {
-    "test": "check-side-jobs.html",
-    "result": "PASS: age 16+; part-time/full-time rules; five stores; confirm; status title; achievement; yearly pay and health; current jobs; quitting",
-    "pageErrors": []
-  },
-  {
-    "test": "check-family.html",
-    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
-    "pageErrors": []
-  },
-  {
-    "test": "check-adult-life.html",
-    "result": "PASS: 44 everyday stories; five-year proposals; priority and consecutive-special deferrals; migration; reload; marriage; breakup; salary; promotions",
+    "test": "check-shop.html",
+    "result": "PASS: pet shop; petting companions; grouped assets; shopping groups; tools group; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price",
     "pageErrors": []
   },
   {

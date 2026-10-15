@@ -16,7 +16,7 @@
     assert(shopCatalog.every(item => item.price > 0 && item.description && shops[item.shop].groups.some(g => g.id === item.group)),
       "Every item has a price, description and a valid group");
     assert(shopCatalog.filter(item => item.group === "vehicles").every(item => !item.profit), "Vehicles only have a price");
-    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group) && !item.id.startsWith("story-") && item.id !== "noodle-cart").every(item => item.profit > 0),
+    assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group) && !item.id.startsWith("story-") && item.id !== "noodle-cart" && item.id !== "starter-apartment").every(item => item.profit > 0),
       "Real estate, businesses and animals earn yearly");
     const expected = ["own-house", "own-resort", "own-hotel", "own-restaurant", "own-cafe", "own-noodle-cart", "own-motorbike",
       "own-big-bike", "own-car", "own-lamborghini", "own-porsche", "own-rolls-royce", "own-private-jet"];

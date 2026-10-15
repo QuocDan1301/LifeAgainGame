@@ -1,5 +1,6 @@
 import { beginSaveSession, endSaveSession, trackSavedGame } from "../core/save-store.js";
 import { createInitialState } from "../core/state.js";
+import { ensureRelatives, ensureBirthFamilyLog } from "../relationships/family-members.js";
 import { initLifeArchive } from "./life-archive.js";
 import { initTransfer } from "./transfer-ui.js";
 import { initInstallButton } from "./install-button.js";
@@ -182,6 +183,10 @@ export function initLobby(enterGame) {
         lifeUnlockedAchievementIds: [],
       });
       Object.assign(next.player, rollStartingStats());
+      const parents = ensureRelatives(next.player);
+      const familyIntroduction = parents
+        .map((parent) => `${parent.id === "father" ? "👨" : "👩"} ${parent.role}: ${parent.name} · Nghề nghiệp: ${parent.job}.`)
+        .join("\n");
       next.logs.push({
         age: 0,
         content:
@@ -190,8 +195,9 @@ export function initLobby(enterGame) {
             "Bạn chào đời trong vòng tay yêu thương của gia đình.",
             "Tiếng khóc đầu tiên của bạn khiến cả nhà xúc động.",
             "Bạn chào đời vào một buổi sáng yên bình.",
-          ]),
+          ]) + `\n${familyIntroduction}`,
       });
+      ensureBirthFamilyLog(next);
       await beginSaveSession();
       await startLife(next, expectedSave);
       trackSavedGame();

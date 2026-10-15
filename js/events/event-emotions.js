@@ -38,6 +38,15 @@ export function addEventEmotions(text) {
 }
 
 const sourceActions = [
+  [/(?:từ chối|không (?:đồng ý|tham gia|nhận|đi|mua|bán|vay|học|uống)|bỏ qua|rời đi|dừng lại|tránh xa)/iu, "🙅"],
+  [/(?:bán hàng rong)/iu, "🧺"],
+  [/(?:bán vé số|mua vé số)/iu, "🎟️"],
+  [/(?:nghỉ việc|thôi việc|nghỉ nghề)/iu, "🚪"],
+  [/(?:nghỉ ngơi|nghỉ dưỡng|thư giãn|ngủ)/iu, "🛌"],
+  [/(?:cấp cứu|gọi cứu thương)/iu, "🚑"],
+  [/(?:báo (?:công an|cảnh sát)|tố cáo|trình báo)/iu, "🚔"],
+  [/(?:trả nợ|bồi thường|thanh toán|chi trả|học phí)/iu, "💸"],
+  [/(?:kiểm tra|xem xét|xác minh|đối chiếu|tìm hiểu|nghiên cứu)/iu, "🔎"],
   [/(?:ép (?:mọi người|người|buộc)|áp đặt|bắt (?:tiếp tục|phải)|ra lệnh|quát|hét|nói thật to)/iu, "😠"],
   [/(?:không trao đổi|im lặng|không nói|giữ kín|giấu kín|lờ đi|phớt lờ)/iu, "😶"],
   [/(?:lắng nghe|nghe.*(?:góp ý|chia sẻ|tâm sự)|giữ nhịp chung)/iu, "👂"],
@@ -45,7 +54,7 @@ const sourceActions = [
   [/(?:tự đoán|đoán đại|đánh liều|liều lĩnh|mạo hiểm|tự ý)/iu, "😬"],
   [/(?:nhờ|xin giúp|hỗ trợ|phụ trách|hợp tác|phối hợp|thỏa thuận|thảo luận)/iu, "🤝"],
   [/(?:chia sẻ|tâm sự|trò chuyện|trao đổi|nói chuyện|gọi điện|nhắn tin)/iu, "💬"],
-  [/(?:cảm ơn|biết ơn|trân trọng)/iu, "🥹"],
+  [/(?:cảm ơn|biết ơn|trân trọng)/iu, "🙏"],
   [/(?:chờ|đợi|kiên nhẫn)/iu, "⏳"],
   [/(?:tiết kiệm|ngân sách|dự phòng|đầu tư|gửi ngân hàng)/iu, "💰"],
   [/(?:trả nợ|vay|mượn tiền|bồi thường|thanh toán|chi trả|học phí|tiền)/iu, "💸"],
@@ -53,7 +62,7 @@ const sourceActions = [
   [/(?:vé máy bay|bay|chuyến bay)/iu, "✈️"],
   [/(?:khám bệnh|đi khám|chữa|điều trị|bác sĩ|bệnh viện|cấp cứu)/iu, "🩺"],
   [/(?:thuốc|uống thuốc)/iu, "💊"],
-  [/(?:ăn|bữa|nấu|món|thức ăn)/iu, "😋"],
+  [/(?:ăn|bữa|nấu|món|thức ăn)/iu, "🍲"],
   [/(?:uống|cà phê|trà)/iu, "☕"],
   [/(?:xin việc|ứng tuyển|làm việc|công việc|nghề|nhiệm vụ)/iu, "💼"],
   [/(?:báo (?:công an|cảnh sát)|tố cáo|trình báo)/iu, "🚔"],
@@ -73,16 +82,16 @@ const sourceActions = [
   [/(?:vị trí|khoảng cách|chiều sâu|kích thước|bố cục|sắp xếp)/iu, "📐"],
   [/(?:đọc|học|ôn|từ vựng|tài liệu)/iu, "📚"],
   [/(?:từ chối|không (?:đồng ý|tham gia|nhận|đi|mua)|bỏ qua|rời đi|dừng lại|tránh xa)/iu, "🙅"],
-  [/(?:giúp|an ủi|động viên|chăm sóc|tha thứ|xin lỗi|làm lại cuộc đời|cải tạo)/iu, "🤗"],
+  [/(?:giúp|an ủi|động viên|chăm sóc|tha thứ|xin lỗi|làm lại cuộc đời|cải tạo)/iu, "🫶"],
   [/(?:bỏ chạy|chạy trốn|kêu cứu|cầu cứu|hoảng|sợ)/iu, "😨"],
   [/(?:gây gổ|đánh nhau|trả đũa|cãi|đe dọa|tức giận)/iu, "😠"],
   [/(?:trộm|cướp|lừa đảo|con đường xấu|phạm pháp)/iu, "😈"],
   [/(?:nghỉ ngơi|nghỉ dưỡng|thư giãn|ngủ|bình tĩnh)/iu, "😌"],
-  [/(?:tỏ tình|hẹn hò|kết hôn|cầu hôn|ôm|yêu thương)/iu, "🥰"],
-  [/(?:học|đọc sách|ôn tập|tìm hiểu|nghiên cứu|suy nghĩ|hỏi|kiểm tra|xem xét)/iu, "🧐"],
-  [/(?:tập luyện|tập thể dục|thử sức|quyết tâm|cố gắng|tiến lên|đối mặt)/iu, "😤"],
-  [/(?:đi chơi|bạn bè|vui|ăn mừng|du lịch|khám phá|tham gia)/iu, "😊"],
-  [/(?:đồng ý|chấp nhận|nhận lời|tiếp tục|xác nhận|sẵn sàng)/iu, "🙂"],
+  [/(?:tỏ tình|hẹn hò|kết hôn|cầu hôn|ôm|yêu thương)/iu, "❤️"],
+  [/(?:học|đọc sách|ôn tập|tìm hiểu|nghiên cứu|suy nghĩ|hỏi|kiểm tra|xem xét)/iu, "📚"],
+  [/(?:tập luyện|tập thể dục|thử sức|quyết tâm|cố gắng|tiến lên|đối mặt)/iu, "💪"],
+  [/(?:đi chơi|bạn bè|vui|ăn mừng|du lịch|khám phá|tham gia)/iu, "🎉"],
+  [/(?:đồng ý|chấp nhận|nhận lời|tiếp tục|xác nhận|sẵn sàng)/iu, "✅"],
 ];
 const actions = sourceActions.map(([pattern, icon]) => [wholeWord(pattern), icon]);
  
@@ -104,8 +113,7 @@ export function addChoiceIcons(labels) {
     const meaning = [...new Set([...actions, ...rules].filter(([pattern]) => pattern.test(label)).map(([, icon]) => icon))];
     const start = labelSeed(label) % CHOICE_FACES.length;
     const faces = CHOICE_FACES.map((_, step) => CHOICE_FACES[(start + step) % CHOICE_FACES.length]);
-    const icon = meaning.find((candidate) => !used.has(candidate)) ??
-      faces.find((face) => !used.has(face)) ?? faces[0];
+    const icon = meaning[0] ?? faces.find((face) => !used.has(face)) ?? faces[0];
     used.add(icon);
     return `${icon} ${label}`;
   });

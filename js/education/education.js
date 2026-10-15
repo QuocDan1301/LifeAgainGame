@@ -128,7 +128,7 @@ export function initEducation(state, save) {
         (state.player.employmentStatus === "retired"
           ? `Đã nghỉ hưu: lương hưu ${formatSalary(state.player.pensionAnnualAmount ?? 0)}/năm.`
           : annualSalary
-          ? `Hiện tại: ${formatSalary(annualSalary)}/năm. Lương được cộng vào ví khi nhận việc và mỗi năm tiếp theo.`
+          ? `Lương trước thuế: ${formatSalary(annualSalary)}/năm (${formatSalary(Math.round(annualSalary / 12))}/tháng). Thuế, bảo hiểm và thuê nhà được tách riêng trong Tài sản → Ngân sách năm tới.`
           : "Chưa có việc chính trong ngành.") + `
 ${lock.unlocked ? "⭐" : "🔒"} ${lock.reason}`;
       getCareerProfile(state.player.careerPath?.id, state.player.careerPath).ranks.forEach((rank, index) => {

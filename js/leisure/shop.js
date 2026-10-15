@@ -6,6 +6,8 @@ import { askConfirm } from "../ui/confirm-dialog.js";
 import { applyActivityGain } from "../core/stat-budget.js";
 import { isInPrison } from "../events/crime.js";
 import { crimeTools } from "../events/crime-tools.js";
+import { getHomeFinancing, prepareHomePurchase } from "../core/housing.js";
+import { getHomePurchasePreview } from "../core/housing-preview.js";
 
  
  
@@ -60,15 +62,17 @@ export const shopCatalog = [
   { id: "private-jet", shop: "shopping", group: "vehicles", icon: "✈️", name: "Máy bay riêng", price: 15_000_000_000,
     achievement: "own-private-jet", description: "Bầu trời là của riêng bạn, bay đi đâu tùy thích." },
    
-  { id: "story-home", shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà trả góp", price: 1_500_000_000, description: "Căn nhà mua qua câu chuyện, dùng để ở." },
-  { id: "story-small-home", shop: "shopping", group: "realestate", icon: "🏠", name: "Căn hộ nhỏ trả góp", price: 900_000_000, description: "Căn hộ mua qua câu chuyện, dùng để ở." },
-  { id: "house", shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà lầu", price: 5_000_000_000, profit: 300_000_000, limit: 3,
-    achievement: "own-house", description: "Căn nhà nhiều tầng khang trang, cho thuê nguyên căn." },
+  { id: "starter-apartment", shop: "shopping", group: "realestate", icon: "🏡", name: "Căn hộ đầu tiên", price: 800_000_000, residential: true, limit: 1,
+    description: "Căn hộ để ở. Mua xong không còn tiền thuê nhà hằng năm; không tự sinh lãi. Được giảm trừ thuế nhà ở." },
+  { id: "story-home", residential: true, shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà trả góp", price: 600_000_000, minAge: 18, limit: 1,
+    description: "Nhà để ở giá 600 triệu, trả trước 120 triệu và trả góp phần còn lại. Được miễn tiền thuê nhà ngay khi mua." },
+  { id: "house", residential: true, shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà lầu", price: 5_000_000_000, profit: 300_000_000, limit: 3,
+    achievement: "own-house", description: "Dùng để ở thì không phải thuê nhà. Có thể cho thuê nguyên căn để nhận thu nhập, nhưng khi đó cần chỗ ở khác." },
   { id: "restaurant", shop: "shopping", group: "realestate", icon: "🍽️", name: "Nhà hàng", price: 8_000_000_000, profit: 640_000_000, limit: 2,
     achievement: "own-restaurant", description: "Mặt bằng nhà hàng rộng rãi ở khu đông khách." },
-  { id: "hotel", shop: "shopping", group: "realestate", icon: "🏨", name: "Khách sạn", price: 50_000_000_000, profit: 3_000_000_000, limit: 2,
+  { id: "hotel", shop: "shopping", group: "realestate", icon: "🏨", name: "Khách sạn", price: 15_000_000_000, profit: 900_000_000, limit: 2,
     achievement: "own-hotel", description: "Khách sạn trung tâm, phòng kín khách quanh năm." },
-  { id: "resort", shop: "shopping", group: "realestate", icon: "🏝️", name: "Resort", price: 200_000_000_000, profit: 12_000_000_000, limit: 1,
+  { id: "resort", shop: "shopping", group: "realestate", icon: "🏝️", name: "Resort", price: 30_000_000_000, profit: 1_800_000_000, limit: 1,
     achievement: "own-resort", description: "Khu nghỉ dưỡng ven biển, sóng vỗ rì rào." },
    
   { id: "noodle-cart", shop: "shopping", group: "business", icon: "🍜", name: "Xe hủ tiếu", price: 30_000_000, limit: 3,
@@ -107,7 +111,7 @@ export const ownedSections = [
   { list: "life-items", groups: ["items"] },
 ];
 
-export const getShopItem = (id) => shopCatalog.find((item) => item.id === id);
+export const getShopItem = (id) => shopCatalog.find((item) => item.id === (id === "story-small-home" ? "story-home" : id));
 export const getSellPrice = (item) => Math.floor(item.price / 2);
 
  
@@ -137,7 +141,7 @@ export function describeAges(ages) {
 }
 
 const ownedOf = (player) => [...(player.livestock ?? []), ...(player.purchases ?? [])];
-export const countOwned = (player, id) => ownedOf(player).filter((entry) => entry.id === id).length;
+export const countOwned = (player, id) => ownedOf(player).filter((entry) => getShopItem(entry.id)?.id === id).length;
 export const isAtLimit = (player, item) => Boolean(item.limit) && countOwned(player, item.id) >= item.limit;
  
 export const maxBuyable = (player, item) =>
@@ -269,12 +273,19 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
 
   function renderItem(item) {
     const card = element("article", "shop-item");
+    const financing = getHomeFinancing(item.id);
+    const homePreview = financing ? getHomePurchasePreview(state.player, item.id) : null;
     const figures = [`💰 Giá mua: ${formatMoney(item.price)}`];
+    if (financing) figures.push(`Trả trước: ${formatMoney(financing.deposit)} · Vay: ${formatMoney(financing.principal)}`,
+      `Trả góp: ${formatMoney(financing.annualPayment)}/năm × ${financing.years} năm từ năm sau · Lãi đơn ${financing.rate * 100}%/năm`);
+    if (homePreview) figures.push(homePreview.summary, homePreview.note, ...(homePreview.warning ? [homePreview.warning] : []));
     figures.push(item.profit
       ? `📈 ${item.shop === "pets" ? "Lãi mỗi năm" : item.group === "business" ? "Lãi kinh doanh mỗi năm" : "Lãi cho thuê mỗi năm"}: +${formatMoney(item.profit)}`
       : isCompanion(item) ? `💖 Vuốt ve mỗi năm: Hạnh phúc +${item.happiness}`
       : `🔁 Bán lại: ${formatMoney(getSellPrice(item))}`);
-    if (item.profit) figures.push("Lợi nhuận ròng sau chi phí vận hành; thu từ năm sau.");
+    if (item.profit) figures.push("Lợi nhuận sau chi phí vận hành, trước thuế tài sản; thu từ năm sau.");
+    if (item.residential) figures.push("🏠 Nếu dùng để ở: không phải trả tiền thuê nhà. Nhà đang cho thuê không được tính là chỗ ở.");
+    if (item.group === "realestate") figures.push("🧾 Thuế bất động sản 0,1%/năm; có nhà để ở được giảm trừ 1 tỷ giá trị tính thuế.");
     if (isRental(item) && item.profit) figures.push(`🔑 Vào Tài sản để cho thuê, mỗi lần ${LEASE_YEARS} năm`);
     if (isCompanion(item)) {
       figures.push(`🍖 Thức ăn: -${formatMoney(item.food)}/năm`,
@@ -287,20 +298,22 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
     const licensed = !item.license || hasLicense(state.player, item.license);
     const oldEnough = !item.minAge || state.player.age >= item.minAge;
     if (item.minAge) figures.push(`🔞 Từ ${item.minAge} tuổi`);
-    const affordable = state.player.money >= item.price;
+    const affordable = state.player.money >= (financing?.deposit ?? item.price);
     const full = isAtLimit(state.player, item);
     buy.disabled = !oldEnough || !licensed || !affordable || full || state.player.isAlive === false || isInPrison(state.player);
     buy.textContent = !oldEnough ? `Từ ${item.minAge} tuổi` : !licensed ? `🪪 Cần ${getLicenseType(item.license).name.toLocaleLowerCase("vi-VN")}`
-      : full ? `Đã đủ ${item.limit}` : affordable ? "🛒 Mua" : "Không đủ tiền";
+      : full ? `Đã đủ ${item.limit}` : affordable ? (financing ? "🏠 Mua trả góp" : "🛒 Mua") : (financing ? "Chưa đủ tiền trả trước" : "Không đủ tiền");
     buy.addEventListener("click", () => ask(
       `🛒 Mua ${item.name}?`,
-      `Bạn muốn mua ${item.icon} ${item.name} với giá ${formatMoney(item.price)}?\n` +
+      (financing
+        ? `Giá nhà ${formatMoney(financing.price)}; trả trước ${formatMoney(financing.deposit)}, vay ${formatMoney(financing.principal)}.\nLãi đơn ${financing.rate * 100}%/năm; trả ${formatMoney(financing.annualPayment)}/năm × ${financing.years} năm từ tuổi ${state.player.age + 1}. Tổng gốc và lãi: ${formatMoney(financing.total)}.\n${homePreview.summary}\n${homePreview.note}\n${homePreview.warning ? homePreview.warning + "\n" : ""}`
+        : `Bạn muốn mua ${item.icon} ${item.name} với giá ${formatMoney(item.price)}?\n`) +
         (isRental(item) && item.profit
           ? `Tiền thuê: +${formatMoney(item.profit)}/năm. Sau khi mua, vào Tài sản để cho thuê, mỗi hợp đồng ${LEASE_YEARS} năm.\n`
           : item.profit ? `Lãi mỗi năm: +${formatMoney(item.profit)}, bắt đầu từ năm sau.\n`
           : isCompanion(item) ? `Mỗi năm vuốt ve một lần: Hạnh phúc +${item.happiness}.\n` +
             `Chi phí ${describeUpkeep(item)}: -${formatMoney(getPetUpkeep(item))}/năm, bắt đầu từ năm sau.\n` : "") +
-        `Nếu bán lại chỉ nhận ${formatMoney(getSellPrice(item))}.`,
+        (financing ? `Được miễn tiền thuê nhà ngay khi mua. Chỉ có thể bán sau khi trả hết nợ; giá bán lại ${formatMoney(getSellPrice(item))}.` : `Nếu bán lại chỉ nhận ${formatMoney(getSellPrice(item))}.`),
       "Xác nhận mua",
       () => purchase(item, 1),
     ));
@@ -330,19 +343,29 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
    
   function purchase(item, count) {
     const player = state.player;
-    if (count < 1 || player.isAlive === false || isInPrison(player) || (item.minAge && player.age < item.minAge) || player.money < item.price * count ||
+    const financing = getHomeFinancing(item.id);
+    const paid = financing?.deposit ?? item.price;
+    if (count < 1 || (financing && count !== 1) || player.isAlive === false || isInPrison(player) || (item.minAge && player.age < item.minAge) || player.money < paid * count ||
         (item.limit && countOwned(player, item.id) + count > item.limit) ||
         (item.license && !hasLicense(player, item.license))) return;
     const key = shops[item.shop].owned;
     const stamp = Date.now();
-    player.money -= item.price * count;
-    player[key] = [...(player[key] ?? []), ...Array.from({ length: count }, (_, index) => ({
-      uid: `${item.id}-${stamp}-${index}-${Math.floor(Math.random() * 1e6)}`,
-      id: item.id,
-      boughtAtAge: player.age,
-    }))];
+    if (financing) {
+      const home = prepareHomePurchase(player, item.id, player.age, `${item.id}-${stamp}-${Math.floor(Math.random() * 1e6)}`);
+      player.money += home.money;
+      Object.assign(player, home.playerUpdates);
+    } else {
+      player.money -= paid * count;
+      player[key] = [...(player[key] ?? []), ...Array.from({ length: count }, (_, index) => ({
+        uid: `${item.id}-${stamp}-${index}-${Math.floor(Math.random() * 1e6)}`,
+        id: item.id,
+        boughtAtAge: player.age,
+      }))];
+    }
     if (item.achievement) recordAchievementFlags(state, [item.achievement]);
-    record(`${item.shop === "pets" ? "🐾" : "🛍️"} Mua ${count > 1 ? `${count} ` : ""}${item.icon} ${item.name}: Tiền -${formatMoneyAmount(item.price * count)} VNĐ.`);
+    record(financing
+      ? `🏠 Mua ${item.name} giá ${formatMoney(item.price)}: trả trước ${formatMoney(paid)}; trả góp ${formatMoney(financing.annualPayment)}/năm trong ${financing.years} năm từ năm sau. Nhà được dùng để ở ngay.`
+      : `${item.shop === "pets" ? "🐾" : "🛍️"} Mua ${count > 1 ? `${count} ` : ""}${item.icon} ${item.name}: Tiền -${formatMoneyAmount(paid * count)} VNĐ.`);
     checkAchievements();
     renderShop();
   }
@@ -434,6 +457,9 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
         ));
         row.append(element("span", "",
           `${item.icon} ${item.name}${many ? ` ×${units.length}` : ""} · Mua lúc ${describeAges(units.map((unit) => unit.boughtAtAge))}${income}`));
+        if (item.residential && units.some(unit => !Number.isInteger(unit.rentedAtAge) || age > getLeaseEndAge(unit))) {
+          row.append(element("span", "shop-lease-status", "🏠 Có thể dùng để ở · không phải thuê nhà."));
+        }
         if (isRental(item) && item.profit) row.append(renderLease(item, units));
         if (isCompanion(item)) row.append(petButton(item, owned, renderOwned));
         row.append(sell);

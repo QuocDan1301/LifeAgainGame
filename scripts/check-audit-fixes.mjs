@@ -29,7 +29,7 @@ test('Zero and missing scores cannot grant a new diploma or hire', () => {
   assert.equal(canGraduateAbroad(p), false);
   const event = createStudyAbroadYearEvent(p, 22);
   assert.equal(event.id, 'abroad-remediation');
-  assert.ok(event.text.includes('60 triệu') && event.text.includes('90 triệu'));
+  assert.ok(event.text.includes('18 triệu') && event.text.includes('24 triệu'));
   assert.ok(event.choices.every(c => !c.playerUpdates.overseasEducation));
   assert.notEqual(createInterviewResult(p, true, 22).updates.employmentStatus, 'employed');
   delete p.abroadProgress.language;
@@ -42,7 +42,7 @@ test('Remediation is priced, charged once per year and eventually permits gradua
     const before = p.money;
     year(p, age, event.choices[0].playerUpdates);
      
-    assert.equal(p.money, before - 150e6 - getDebtInterest(age, before));
+    assert.equal(p.money, before - 42e6 - getDebtInterest(age, before));
     assert.equal(p.money, forecast.after);
     assert.equal(getPlayerAnnualSalary(p), 0);
   }
@@ -51,7 +51,7 @@ test('Remediation is priced, charged once per year and eventually permits gradua
   assert.equal(graduation.kind, 'study-abroad-graduation');
   const before = p.money;
   year(p, 24, { ...graduation.choices[0].playerUpdates, employmentStatus: 'unemployed' });
-  assert.equal(p.money, before - 90e6 - getDebtInterest(24, before));
+  assert.equal(p.money, before - 36e6 - getDebtInterest(24, before));
   assert.equal(getStudyAbroadTuition(p, 25), 0);
 });
 test('Country wages, living costs, forecast and pension use the same configuration', () => {
@@ -61,7 +61,8 @@ test('Country wages, living costs, forecast and pension use the same configurati
     Object.assign(p, { age: 30, employmentStatus: 'employed', careerLevel: 3, employedSince: 25, job: 'Test worker' });
     assert.equal(getPlayerAnnualSalary(p), country.salaries[2]);
     const forecast = forecastNextYear(p);
-    assert.ok(forecast.living >= country.living);
+    assert.equal(forecast.living, 0);
+    assert.equal(forecast.rent, 36e6);
     year(p, 31); assert.equal(p.money, forecast.after);
     p.age = 61; const retiring = forecastNextYear(p); const result = year(p, 62);
     assert.equal(result.salary.amount, country.salaries[2] / 2);

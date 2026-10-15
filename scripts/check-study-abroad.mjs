@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { getAnnualEconomy, OVERSEAS_ANNUAL_RENT } from '../js/core/economy.js';
 import { createInitialState } from '../js/core/state.js';
 import { studyAbroadCountries, getStudyAbroadLivingCost, createStudyAbroadMajorEvent, createStudyAbroadYearEvent, createStudyAbroadDramaStep, getOverseasJobBlocker } from '../js/education/study-abroad.js';
 import { getInterviewChance } from '../js/stats/intellect-rules.js';
@@ -55,17 +56,17 @@ test('Every country charges precisely four years, forecast matches, debt is pres
     const restored = JSON.parse(JSON.stringify(p));
     assert.equal(restored.careerPath.school.countryName, country.name);
     const before = restored.money; year(restored, 22);
-    assert.equal(restored.money, before - country.living);
-    assert.equal(getStudyAbroadLivingCost(restored.careerPath, 22), country.living);
+    assert.equal(restored.money, before - OVERSEAS_ANNUAL_RENT);
+    assert.equal(getStudyAbroadLivingCost(restored.careerPath, 22), 0);
   }
 });
 test('Scholarship discounts tuition only and is reevaluated annually', () => {
   const p = player(); p.intelligence = 80;
   const choice = createSchoolEvent(path, p).choices[0];
   year(p, 18, { careerPath: choice.careerPath });
-  assert.equal(p.money, -150_000_000);
+  assert.equal(p.money, -42_000_000);
   p.intelligence = 50; const forecast = forecastNextYear(p);
-  year(p, 19); assert.equal(p.money, -360_000_000); assert.equal(p.money, forecast.after);
+  year(p, 19); assert.equal(p.money, -102_000_000); assert.equal(p.money, forecast.after);
 });
 test('Graduation opens paid work, promotions use international ranks and achievements', () => {
   const p = player(); p.careerPath = createSchoolEvent(path, p).choices[0].careerPath;
@@ -73,7 +74,7 @@ test('Graduation opens paid work, promotions use international ranks and achieve
   assert.ok(hasCareerMilestone(p));
   const hire = createInterviewResult(p, true, 22);
   year(p, 22, hire.updates);
-  assert.equal(p.money, 126_000_000);
+  assert.equal(p.money, 168_000_000 - getAnnualEconomy(p, 22, { salary: 168_000_000 }).total);
   assert.equal(p.job, getCareerProfile(path.id, p.careerPath).ranks[0]);
   const promotion = createMilestonePromotionEvent(p, 4, 27, () => 0.99);
   assert.ok(promotion.choices.some(c => c.careerLevel === 2));
@@ -108,7 +109,7 @@ test('International workers lose salary on quitting and receive only pension at 
   assert.ok(!a.salary);
   const b = year(retired, 62);
   assert.equal(retired.employmentStatus, 'retired');
-  assert.equal(b.salary.amount, 324e6);
+  assert.equal(b.salary.amount, 252e6);
   assert.ok(!b.tuition);
 });
 test('Four separate majors persist; student progress changes recruitment chances', () => {
@@ -133,7 +134,7 @@ test('Student work earns once on settling the result and drama has meaningful re
   const work = createStudyAbroadYearEvent(p, 19).choices[1];
   assert.equal(p.money, before);
   year(p, 19, { ...work.playerUpdates, money: before + work.money });
-  assert.equal(p.money, before + 24e6 - 210e6);
+  assert.equal(p.money, before + 24e6 - 60e6);
   const good = createStudyAbroadDramaStep(p, 20, 3, ['listen', 'listen']).choices[0];
   const bad = createStudyAbroadDramaStep(p, 20, 3, ['blame', 'blame']).choices[1];
   assert.ok(good.playerUpdates.abroadProgress.integration > bad.playerUpdates.abroadProgress.integration);
@@ -146,7 +147,7 @@ test('Graduation separates staying and returning without duplicate fees or rewar
       assert.ok(getOverseasJobBlocker(p, 22));
       const event = createStudyAbroadYearEvent(p, 22);
       const stay = structuredClone(p); year(stay, 22, { ...event.choices[0].playerUpdates, employmentStatus: 'unemployed' });
-      assert.equal(stay.money, p.money - getStudyAbroadLivingCost(p.careerPath, 22)); assert.equal(getOverseasJobBlocker(stay), '');
+      assert.equal(stay.money, p.money - OVERSEAS_ANNUAL_RENT); assert.equal(getOverseasJobBlocker(stay), '');
       assert.equal(createStudyAbroadYearEvent(stay, 23), null);
       const hire = createInterviewResult(stay, true, 22);
       assert.equal(hire.updates.workCountryId, p.careerPath.school.countryId);
@@ -162,7 +163,7 @@ test('Graduation separates staying and returning without duplicate fees or rewar
       year(returning, 22, { ...back.playerUpdates, careerPath: back.careerPath, employmentStatus: 'unemployed' });
       assert.notEqual(returning.careerPath.id, path.id);
       assert.equal(returning.overseasEducation.countryId, p.careerPath.school.countryId);
-      assert.equal(returning.money, p.money);
+      assert.equal(returning.money, p.money - 24_000_000);
       const domesticHire = createInterviewResult(returning, true, 22);
       assert.equal(domesticHire.updates.workCountryId, 'vietnam');
       assert.equal(domesticHire.updates.workCountryName, 'Việt Nam');

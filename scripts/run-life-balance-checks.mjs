@@ -19,7 +19,16 @@ const server = http.createServer(async (req, res) => {
   } catch { res.writeHead(404).end(); }
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const base = `http://127.0.0.1:${server.address().port}`;
+const useFileRoutes = process.env.BALANCE_FILE_ROUTES === '1';
+const base = useFileRoutes ? 'https://game.test' : `http://127.0.0.1:${server.address().port}`;
+async function routeLocalFile(route) {
+  const url = new URL(route.request().url());
+  if (url.origin !== base) return route.abort();
+  const file = path.resolve(root, '.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
+  if (!file.startsWith(root) || !types[path.extname(file)]) return route.fulfill({ status: 404, body: '' });
+  try { return await route.fulfill({ body: await fs.readFile(file), contentType: types[path.extname(file)] }); }
+  catch { return route.fulfill({ status: 404, body: '' }); }
+}
 const rows = [];
 let browser;
 try {
@@ -27,6 +36,7 @@ try {
   const cases = process.argv.slice(2);
   for (const name of cases.length ? cases : ['check-crime.html', 'check-job-applications.html', 'check-career-salary.html', 'check-career-milestones.html', 'check-side-jobs.html', 'check-family.html', 'check-adult-life.html']) {
     const context = await browser.newContext();
+    if (useFileRoutes) await context.route('**/*', routeLocalFile);
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -42,6 +52,7 @@ try {
   }
   // Exercise the newly added controls through the actual game and save/reload.
   const page = await browser.newPage();
+  if (useFileRoutes) await page.route('**/*', routeLocalFile);
   const { achievements } = await import('../js/achievements/achievements-data.js');
   await page.addInitScript(ids => {
     localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(ids.map(id => [id, { unlockedAt: '2026-01-01' }]))));

@@ -222,15 +222,13 @@ export const stage26To32 = [
   },
   {
     id: 'ls28-mua-nha', age: 28, needs: ['married'],
-    title: 'Hợp đồng vay mười lăm năm',
-    text: '{tenBanDoi} muốn vay mua nhà, trả góp mười lăm năm. Tôi xem kỹ giá nhà, tiền trả trước và khoản phải trả hằng năm. Tôi sợ nợ, vì ba mẹ tôi từng khổ nhiều năm vì một khoản vay.',
+    title: 'Hợp đồng vay hai mươi năm',
+    text: '{tenBanDoi} muốn vay mua nhà, trả góp hai mươi năm. Tôi xem kỹ giá nhà, tiền trả trước và khoản phải trả hằng năm. Tôi sợ nợ, vì ba mẹ tôi từng khổ nhiều năm vì một khoản vay.',
     choices: [
       { label: 'Đồng ý vay', home: 'story-home', effects: { happiness: 1, health: -1 }, flags: ['vay_mua_nha'],
         text: 'Ngày nhận nhà, {tenBanDoi} đứng giữa phòng trống cười mãi. Đêm đó tôi nằm tính lại khoản trả góp tới gần sáng. Từ đó tôi không dám nghỉ việc ngày nào.' },
       { label: 'Thuê thêm vài năm', effects: { happiness: -1 }, flags: ['thue_them'],
         text: '{tenBanDoi} đồng ý, giọng hụt hẫng. Hai năm sau giá nhà tăng thêm một phần ba. {tenBanDoi} không nhắc chuyện cũ, nhưng xem tin bất động sản rất lâu.' },
-      { label: 'Mua căn nhỏ hơn, xa hơn', home: 'story-small-home', effects: { intelligence: 1 }, flags: ['nha_nho_xa'],
-        text: 'Căn nhà nhỏ ở rìa thành phố, khoản góp vừa sức. Mỗi ngày hai đứa đi làm thêm bốn mươi phút. Tối về, có ban công nhỏ để ngồi.' },
     ],
   },
   {
@@ -249,7 +247,7 @@ export const stage26To32 = [
     title: 'Căn nhà cho một người',
     text: 'Tôi dành dụm đủ tiền trả trước một căn hộ nhỏ. Người nhà khuyên đợi lập gia đình rồi hãy mua, mua một mình người ta lại nghĩ mình không định lấy ai. Tôi muốn có một chỗ của riêng mình. Ngân hàng hẹn ký hợp đồng thứ hai tới.',
     choices: [
-      { label: 'Ký hợp đồng', home: 'story-small-home', effects: { happiness: 2, health: -1 }, flags: ['nha_rieng'],
+      { label: 'Ký hợp đồng', home: 'story-home', effects: { happiness: 2, health: -1 }, flags: ['nha_rieng'],
         text: 'Tôi tự sơn lại tường, tự lắp cái kệ sách. Đêm đầu ngủ ở nhà mới, phòng im tới mức nghe rõ tiếng tủ lạnh. Tôi để đèn hành lang sáng tới sáng.' },
       { label: 'Hoãn lại', effects: { happiness: -1 },
         text: 'Tôi gửi tiền vào ngân hàng, tiếp tục thuê. Mỗi lần dọn nhà trọ, tôi lại nhìn mấy thùng sách chất đống, tự hỏi lần này phải chờ ai.' },

@@ -43213,7 +43213,7 @@
     "step": null,
     "slot": "scene",
     "title": "🎓 Tuổi 18 – Chọn hướng đi của bạn",
-    "text": "Bạn đã bước sang tuổi 18! Hãy chọn ngành học hoặc hướng nghề nghiệp bạn muốn theo đuổi. Mỗi lựa chọn là bước khởi đầu để phấn đấu tới mục tiêu của mình.",
+    "text": "Bạn đã bước sang tuổi 18! Hãy chọn ngành học hoặc hướng nghề nghiệp bạn muốn theo đuổi.",
     "code": "1F9ED",
     "subject": "OpenMoji: Chọn hướng ngành học và nghề nghiệp",
     "kind": "animated-openmoji",
@@ -43226,7 +43226,7 @@
       "reviewed": true,
       "key": "openmoji-1F9ED",
       "reviewRevision": 3,
-      "reviewText": "Bạn đã bước sang tuổi 18! Hãy chọn ngành học hoặc hướng nghề nghiệp bạn muốn theo đuổi. Mỗi lựa chọn là bước khởi đầu để phấn đấu tới mục tiêu của mình."
+      "reviewText": "Bạn đã bước sang tuổi 18! Hãy chọn ngành học hoặc hướng nghề nghiệp bạn muốn theo đuổi."
     },
     "image": "js/img/events/openmoji/animated/svg/1F9ED.svg",
     "fallback": "js/img/events/openmoji/color/svg/1F9ED.svg",

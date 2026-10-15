@@ -4,6 +4,7 @@ import { state, createInitialState } from "./core/state.js";
 import { initLobby } from "./ui/lobby.js";
 import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCache } from "./core/module-refresh.js";
 import { initMusic } from "./ui/music.js";
+import { initCommunity } from "./ui/community.js";
 import { moveCloseButtonsOutside } from "./ui/dialog-close.js";
 import { initOffline } from "./core/offline.js";
 import { saveGame } from "./core/save-store.js";
@@ -11,6 +12,7 @@ import { saveGame } from "./core/save-store.js";
  
 moveCloseButtonsOutside();
 initMusic();
+initCommunity();
  
 initOffline(() => !document.getElementById("lobby-screen").hidden && !document.querySelector("dialog[open]"), {
   beforeUpdate() {

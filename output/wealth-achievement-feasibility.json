@@ -1,0 +1,8049 @@
+{
+  "assumptions": "Controlled financial feasibility, not survival probabilities. Start with four years of actual tuition debt (plus overseas student costs), no initial wealth, jackpots or gifts; pay real progressive personal tax, insurance, asset/property taxes, rent, debt interest and family costs. Reserve 12m/year for care/activities; maintain health to isolate money. Entry/rank-2/rank-3 trajectories assume employment and successful eligible promotions at 27/37. Each expensive purchase is tested in a separate life. Investments follow catalog limits and renew four-year leases.",
+  "careers": 29,
+  "financialLives": 174,
+  "assetLives": 2436,
+  "moneyGoals": [
+    {
+      "id": "money-1m",
+      "amount": 1000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 22,
+      "medianAge": 23
+    },
+    {
+      "id": "money-10m",
+      "amount": 10000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 22,
+      "medianAge": 23
+    },
+    {
+      "id": "money-100m",
+      "amount": 100000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 23,
+      "medianAge": 24
+    },
+    {
+      "id": "millionaire",
+      "amount": 500000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 27,
+      "medianAge": 28
+    },
+    {
+      "id": "billionaire",
+      "amount": 1000000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 172,
+      "routesBeforeRetirement": 172,
+      "earliestAge": 29,
+      "medianAge": 32
+    },
+    {
+      "id": "money-5b",
+      "amount": 5000000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 120,
+      "routesBeforeRetirement": 98,
+      "earliestAge": 42,
+      "medianAge": 50
+    },
+    {
+      "id": "money-10b",
+      "amount": 10000000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 74,
+      "routesBeforeRetirement": 38,
+      "earliestAge": 53,
+      "medianAge": 61
+    }
+  ],
+  "assets": [
+    {
+      "id": "own-motorbike",
+      "item": "motorbike",
+      "price": 30000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "military",
+        "path": "entry",
+        "invest": false,
+        "family": false,
+        "achievedAt": 22,
+        "moneyMilestones": {
+          "money-1m": 22,
+          "money-10m": 22
+        },
+        "balances": {},
+        "deductions": 33600000
+      },
+      "routesBeforeRetirement": 174,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 22
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 22
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 22
+        }
+      ]
+    },
+    {
+      "id": "own-big-bike",
+      "item": "big-bike",
+      "price": 400000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "entry",
+        "invest": false,
+        "family": false,
+        "achievedAt": 26,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24
+        },
+        "balances": {},
+        "deductions": 203400000
+      },
+      "routesBeforeRetirement": 174,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 26
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 26
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 26
+        }
+      ]
+    },
+    {
+      "id": "own-car",
+      "item": "car",
+      "price": 800000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-2",
+        "invest": false,
+        "family": false,
+        "achievedAt": 28,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27
+        },
+        "balances": {},
+        "deductions": 304680000
+      },
+      "routesBeforeRetirement": 174,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 29
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 28
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 28
+        }
+      ]
+    },
+    {
+      "id": "own-porsche",
+      "item": "porsche",
+      "price": 8000000000,
+      "reachableRoutes": 131,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 48,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29,
+          "money-5b": 42
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4300119000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 2093520000
+      },
+      "routesBeforeRetirement": 50,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 74
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 56
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 48
+        }
+      ]
+    },
+    {
+      "id": "own-lamborghini",
+      "item": "lamborghini",
+      "price": 10000000000,
+      "reachableRoutes": 106,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 53,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29,
+          "money-5b": 42,
+          "money-10b": 53
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4300119000,
+            "grossAssets": 0
+          },
+          "50": {
+            "cash": 9049719000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 2658720000
+      },
+      "routesBeforeRetirement": 20,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 83
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 67
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 53
+        }
+      ]
+    },
+    {
+      "id": "own-rolls-royce",
+      "item": "rolls-royce",
+      "price": 12000000000,
+      "reachableRoutes": 99,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 57,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29,
+          "money-5b": 42,
+          "money-10b": 53
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4300119000,
+            "grossAssets": 0
+          },
+          "50": {
+            "cash": 9049719000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 3110880000
+      },
+      "routesBeforeRetirement": 13,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 83
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 72
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 57
+        }
+      ]
+    },
+    {
+      "id": "own-private-jet",
+      "item": "private-jet",
+      "price": 15000000000,
+      "reachableRoutes": 85,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 64,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29,
+          "money-5b": 42,
+          "money-10b": 53
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4300119000,
+            "grossAssets": 0
+          },
+          "50": {
+            "cash": 9049719000,
+            "grossAssets": 0
+          },
+          "62": {
+            "cash": 14538279000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 3635040000
+      },
+      "routesBeforeRetirement": 0,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 85
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 74
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 64
+        }
+      ]
+    },
+    {
+      "id": "first-home-financial-goal",
+      "item": "starter-apartment",
+      "price": 800000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-2",
+        "invest": false,
+        "family": false,
+        "achievedAt": 28,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27
+        },
+        "balances": {},
+        "deductions": 304680000
+      },
+      "routesBeforeRetirement": 174,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 29
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 28
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 28
+        }
+      ]
+    },
+    {
+      "id": "own-house",
+      "item": "house",
+      "price": 5000000000,
+      "reachableRoutes": 150,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "australia",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 42,
+        "moneyMilestones": {
+          "money-1m": 24,
+          "money-10m": 24,
+          "money-100m": 25,
+          "millionaire": 28,
+          "billionaire": 30,
+          "money-5b": 42
+        },
+        "balances": {
+          "30": {
+            "cash": 1151606000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4241126000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 1726080000
+      },
+      "routesBeforeRetirement": 123,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 53
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 45
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 42
+        }
+      ]
+    },
+    {
+      "id": "own-restaurant",
+      "item": "restaurant",
+      "price": 8000000000,
+      "reachableRoutes": 131,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 48,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29,
+          "money-5b": 42
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4300119000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 2093520000
+      },
+      "routesBeforeRetirement": 50,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 74
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 56
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 48
+        }
+      ]
+    },
+    {
+      "id": "own-hotel",
+      "item": "hotel",
+      "price": 15000000000,
+      "reachableRoutes": 85,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": false,
+        "family": false,
+        "achievedAt": 64,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29,
+          "money-5b": 42,
+          "money-10b": 53
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          },
+          "40": {
+            "cash": 4300119000,
+            "grossAssets": 0
+          },
+          "50": {
+            "cash": 9049719000,
+            "grossAssets": 0
+          },
+          "62": {
+            "cash": 14538279000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 3635040000
+      },
+      "routesBeforeRetirement": 0,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 85
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 74
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 64
+        }
+      ]
+    },
+    {
+      "id": "own-resort",
+      "item": "resort",
+      "price": 30000000000,
+      "reachableRoutes": 38,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-3",
+        "invest": true,
+        "family": false,
+        "achievedAt": 78,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 29,
+          "billionaire": 30,
+          "money-5b": 43,
+          "money-10b": 65
+        },
+        "balances": {
+          "30": {
+            "cash": 1030187000,
+            "grossAssets": 482350000
+          },
+          "40": {
+            "cash": 2879097000,
+            "grossAssets": 3482350000
+          },
+          "50": {
+            "cash": 2892927000,
+            "grossAssets": 13482350000
+          },
+          "62": {
+            "cash": 3794563000,
+            "grossAssets": 34482350000
+          },
+          "75": {
+            "cash": 17394062000,
+            "grossAssets": 64482350000
+          }
+        },
+        "deductions": 9014063000
+      },
+      "routesBeforeRetirement": 0,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": null
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 86
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 78
+        }
+      ]
+    },
+    {
+      "id": "own-noodle-cart",
+      "item": "noodle-cart",
+      "price": 30000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "military",
+        "path": "entry",
+        "invest": false,
+        "family": false,
+        "achievedAt": 22,
+        "moneyMilestones": {
+          "money-1m": 22,
+          "money-10m": 22
+        },
+        "balances": {},
+        "deductions": 33600000
+      },
+      "routesBeforeRetirement": 174,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 22
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 22
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 22
+        }
+      ]
+    },
+    {
+      "id": "own-cafe",
+      "item": "cafe",
+      "price": 1500000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "earliest": {
+        "career": "medicine",
+        "path": "rank-2",
+        "invest": false,
+        "family": false,
+        "achievedAt": 31,
+        "moneyMilestones": {
+          "money-1m": 23,
+          "money-10m": 23,
+          "money-100m": 24,
+          "millionaire": 27,
+          "billionaire": 29
+        },
+        "balances": {
+          "30": {
+            "cash": 1283439000,
+            "grossAssets": 0
+          }
+        },
+        "deductions": 486480000
+      },
+      "routesBeforeRetirement": 174,
+      "paths": [
+        {
+          "path": "entry",
+          "earliestAge": 35
+        },
+        {
+          "path": "rank-2",
+          "earliestAge": 31
+        },
+        {
+          "path": "rank-3",
+          "earliestAge": 31
+        }
+      ]
+    }
+  ],
+  "lives": [
+    {
+      "career": "japan",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 33
+      },
+      "balances": {
+        "30": {
+          "cash": 691588000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1739908000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2788228000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3977380000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4445380000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4985380000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3090720000
+    },
+    {
+      "career": "japan",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 34
+      },
+      "balances": {
+        "30": {
+          "cash": 681316000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1416916000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1951060000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3100212000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3568212000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4108212000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3057888000
+    },
+    {
+      "career": "japan",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 46,
+        "money-10b": 72
+      },
+      "balances": {
+        "30": {
+          "cash": 1111348000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3558868000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6006388000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8818660000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10378660000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12178660000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4045440000
+    },
+    {
+      "career": "japan",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 50,
+        "money-10b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 1103404000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3261484000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5213452000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7985724000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9545724000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11345724000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3968376000
+    },
+    {
+      "career": "japan",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 43,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 1111348000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3982372000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7841572000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12290692000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14942692000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18002692000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4689408000
+    },
+    {
+      "career": "japan",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 44,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 1103404000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3689020000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7063420000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11472540000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14124540000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 17184540000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4597560000
+    },
+    {
+      "career": "korea",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 35
+      },
+      "balances": {
+        "30": {
+          "cash": 622237000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1565677000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2509117000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3576901000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3966901000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4416901000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3030240000
+    },
+    {
+      "career": "korea",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 611413000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1236613000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1661461000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2689245000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3079245000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3529245000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3007896000
+    },
+    {
+      "career": "korea",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 48,
+        "money-10b": 80
+      },
+      "balances": {
+        "30": {
+          "cash": 1015213000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3268573000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5521933000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8108629000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9512629000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11132629000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3880512000
+    },
+    {
+      "career": "korea",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 52,
+        "money-10b": 88
+      },
+      "balances": {
+        "30": {
+          "cash": 1006813000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2966173000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4720333000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7267029000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 8671029000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 10291029000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3812112000
+    },
+    {
+      "career": "korea",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 44,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 1015213000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3658525000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7211725000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11306245000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13724245000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16514245000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4504896000
+    },
+    {
+      "career": "korea",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 46,
+        "money-10b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 1006813000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3361525000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6429925000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10484445000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 12902445000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 15692445000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4416696000
+    },
+    {
+      "career": "china",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 30,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 579852000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1418412000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2256972000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3203388000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3515388000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3875388000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2969760000
+    },
+    {
+      "career": "china",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 30,
+        "billionaire": 38
+      },
+      "balances": {
+        "30": {
+          "cash": 568476000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1083276000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1398828000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2305244000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2617244000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2977244000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2957904000
+    },
+    {
+      "career": "china",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 50,
+        "money-10b": 89
+      },
+      "balances": {
+        "30": {
+          "cash": 944676000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2999316000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5053956000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7410060000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 8658060000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 10098060000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3731088000
+    },
+    {
+      "career": "china",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 936276000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2696916000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4252356000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6568460000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7816460000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 9256460000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3662688000
+    },
+    {
+      "career": "china",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 46,
+        "money-10b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 944676000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3357084000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6604284000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10344204000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 12528204000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 15048204000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4324944000
+    },
+    {
+      "career": "china",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 48,
+        "money-10b": 65
+      },
+      "balances": {
+        "30": {
+          "cash": 936276000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3060084000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5822484000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9522404000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11706404000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 14226404000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4236744000
+    },
+    {
+      "career": "usa",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 25,
+        "money-10m": 25,
+        "money-100m": 26,
+        "millionaire": 29,
+        "billionaire": 34,
+        "money-5b": 81
+      },
+      "balances": {
+        "30": {
+          "cash": 621438000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1774638000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2927838000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4238358000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4784358000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5414358000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3151200000
+    },
+    {
+      "career": "usa",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 25,
+        "money-10m": 25,
+        "money-100m": 26,
+        "millionaire": 29,
+        "billionaire": 34
+      },
+      "balances": {
+        "30": {
+          "cash": 611238000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1452438000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2092038000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3362558000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3908558000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4538558000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3117000000
+    },
+    {
+      "career": "usa",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 25,
+        "money-10m": 25,
+        "money-100m": 26,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 45,
+        "money-10b": 67
+      },
+      "balances": {
+        "30": {
+          "cash": 1066038000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3701238000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6336438000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9367158000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11083158000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 13063158000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4232400000
+    },
+    {
+      "career": "usa",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 25,
+        "money-10m": 25,
+        "money-100m": 26,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 48,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 1059198000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3415998000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5564478000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8555198000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10271198000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12251198000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4134360000
+    },
+    {
+      "career": "usa",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 25,
+        "money-10m": 25,
+        "money-100m": 26,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 43,
+        "money-10b": 55
+      },
+      "balances": {
+        "30": {
+          "cash": 1066038000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 4155558000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8305158000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13091718000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15977718000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 19307718000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4917840000
+    },
+    {
+      "career": "usa",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 25,
+        "money-10m": 25,
+        "money-100m": 26,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 44,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 1059198000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3875718000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7552998000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12299558000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15185558000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18515558000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4800000000
+    },
+    {
+      "career": "australia",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 707006000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1860206000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3013406000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4323926000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4869926000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5499926000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3151200000
+    },
+    {
+      "career": "australia",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 33
+      },
+      "balances": {
+        "30": {
+          "cash": 696806000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1538006000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2177606000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3448126000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3994126000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4624126000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3117000000
+    },
+    {
+      "career": "australia",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 45,
+        "money-10b": 67
+      },
+      "balances": {
+        "30": {
+          "cash": 1151606000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3786806000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6422006000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9452726000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11168726000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 13148726000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4232400000
+    },
+    {
+      "career": "australia",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 48,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 1144766000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3501566000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5650046000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8640766000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10356766000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12336766000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4134360000
+    },
+    {
+      "career": "australia",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 42,
+        "money-10b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 1151606000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 4241126000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8390726000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13177286000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 16063286000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 19393286000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4917840000
+    },
+    {
+      "career": "australia",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 43,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 1144766000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3961286000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7638566000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12385126000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15271126000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18601126000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4800000000
+    },
+    {
+      "career": "germany",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 33,
+        "money-5b": 90
+      },
+      "balances": {
+        "30": {
+          "cash": 718554000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1766874000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2815194000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4004346000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4472346000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5012346000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3090720000
+    },
+    {
+      "career": "germany",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 34
+      },
+      "balances": {
+        "30": {
+          "cash": 708282000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1443882000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1978026000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3127178000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3595178000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4135178000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3057888000
+    },
+    {
+      "career": "germany",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 46,
+        "money-10b": 72
+      },
+      "balances": {
+        "30": {
+          "cash": 1138314000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3585834000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6033354000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8845626000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10405626000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12205626000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4045440000
+    },
+    {
+      "career": "germany",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 49,
+        "money-10b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 1130370000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3288450000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5240418000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8012690000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9572690000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11372690000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3968376000
+    },
+    {
+      "career": "germany",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 43,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 1138314000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 4009338000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7868538000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12317658000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14969658000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18029658000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4689408000
+    },
+    {
+      "career": "germany",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 24,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 44,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 1130370000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3715986000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7090386000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11499506000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14151506000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 17211506000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4597560000
+    },
+    {
+      "career": "canada",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 25,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 34
+      },
+      "balances": {
+        "30": {
+          "cash": 637455000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1685775000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2734095000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3923247000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4391247000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4931247000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3090720000
+    },
+    {
+      "career": "canada",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 25,
+        "money-100m": 25,
+        "millionaire": 29,
+        "billionaire": 35
+      },
+      "balances": {
+        "30": {
+          "cash": 627183000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1362783000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1896927000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3046079000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3514079000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4054079000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3057888000
+    },
+    {
+      "career": "canada",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 25,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 47,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 1057215000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3504735000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5952255000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8764527000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10324527000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12124527000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4045440000
+    },
+    {
+      "career": "canada",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 25,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 50,
+        "money-10b": 80
+      },
+      "balances": {
+        "30": {
+          "cash": 1049271000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3207351000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5159319000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7931591000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9491591000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11291591000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3968376000
+    },
+    {
+      "career": "canada",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 25,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 43,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 1057215000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3928239000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7787439000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12236559000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14888559000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 17948559000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4689408000
+    },
+    {
+      "career": "canada",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 24,
+        "money-10m": 25,
+        "money-100m": 25,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 45,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 1049271000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3634887000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7009287000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11418407000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14070407000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 17130407000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4597560000
+    },
+    {
+      "career": "acting",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "acting",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "acting",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2675704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4452904000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6491824000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7583824000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8843824000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2607120000
+    },
+    {
+      "career": "acting",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2373304000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3651304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5650224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6742224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8002224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2538720000
+    },
+    {
+      "career": "acting",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 44,
+        "money-10b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3567424000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8317024000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13805584000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 17237584000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 21197584000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4113360000
+    },
+    {
+      "career": "acting",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3275824000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7555024000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13003584000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 16435584000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 20395584000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4005360000
+    },
+    {
+      "career": "military",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 35
+      },
+      "balances": {
+        "30": {
+          "cash": 669600000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1413600000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2157600000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3000000000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3312000000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3672000000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "military",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 38
+      },
+      "balances": {
+        "30": {
+          "cash": 657600000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1071600000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1287600000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2090000000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2402000000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2762000000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "military",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 74
+      },
+      "balances": {
+        "30": {
+          "cash": 796896000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1965216000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3133536000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4466688000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5090688000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5810688000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2229312000
+    },
+    {
+      "career": "military",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 33
+      },
+      "balances": {
+        "30": {
+          "cash": 786624000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1642224000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2296368000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3589520000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4213520000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4933520000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2196480000
+    },
+    {
+      "career": "military",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 50,
+        "money-10b": 74
+      },
+      "balances": {
+        "30": {
+          "cash": 796896000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2441280000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5196480000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8371200000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10243200000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12403200000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3028800000
+    },
+    {
+      "career": "military",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 33,
+        "money-5b": 53,
+        "money-10b": 80
+      },
+      "balances": {
+        "30": {
+          "cash": 786624000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2128584000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4397064000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7531784000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9403784000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11563784000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2958216000
+    },
+    {
+      "career": "singing",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "singing",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "singing",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2675704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4452904000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6491824000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7583824000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8843824000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2607120000
+    },
+    {
+      "career": "singing",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2373304000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3651304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5650224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6742224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8002224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2538720000
+    },
+    {
+      "career": "singing",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 44,
+        "money-10b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3567424000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8317024000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13805584000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 17237584000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 21197584000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4113360000
+    },
+    {
+      "career": "singing",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3275824000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7555024000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13003584000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 16435584000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 20395584000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4005360000
+    },
+    {
+      "career": "painting",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "painting",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "painting",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 32,
+        "money-5b": 67
+      },
+      "balances": {
+        "30": {
+          "cash": 747304000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2020504000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3293704000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4748224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5450224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6260224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2280720000
+    },
+    {
+      "career": "painting",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 83
+      },
+      "balances": {
+        "30": {
+          "cash": 737104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1698304000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2457904000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3872424000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4574424000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5384424000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2246520000
+    },
+    {
+      "career": "painting",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 32,
+        "money-5b": 48,
+        "money-10b": 65
+      },
+      "balances": {
+        "30": {
+          "cash": 747304000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2618104000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5883304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9649024000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11911024000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 14521024000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3259920000
+    },
+    {
+      "career": "painting",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 50,
+        "money-10b": 69
+      },
+      "balances": {
+        "30": {
+          "cash": 737104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2306704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5087104000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8812824000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11074824000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 13684824000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3186120000
+    },
+    {
+      "career": "medicine",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 27,
+        "billionaire": 31,
+        "money-5b": 63
+      },
+      "balances": {
+        "30": {
+          "cash": 983199000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2256399000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3529599000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4984119000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5686119000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6496119000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2323200000
+    },
+    {
+      "career": "medicine",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 27,
+        "billionaire": 31,
+        "money-5b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 972999000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1934199000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2693799000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4108319000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4810319000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5620319000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2289000000
+    },
+    {
+      "career": "medicine",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 27,
+        "billionaire": 29,
+        "money-5b": 47,
+        "money-10b": 76
+      },
+      "balances": {
+        "30": {
+          "cash": 1283439000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3557439000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5831439000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8446839000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9928839000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11638839000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3000480000
+    },
+    {
+      "career": "medicine",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 27,
+        "billionaire": 29,
+        "money-5b": 50,
+        "money-10b": 84
+      },
+      "balances": {
+        "30": {
+          "cash": 1275039000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3255039000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5029839000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7605239000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9087239000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 10797239000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2932080000
+    },
+    {
+      "career": "medicine",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 27,
+        "billionaire": 29,
+        "money-5b": 42,
+        "money-10b": 53
+      },
+      "balances": {
+        "30": {
+          "cash": 1283439000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 4300119000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 9049719000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 14538279000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 17970279000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 21930279000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4259040000
+    },
+    {
+      "career": "medicine",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 27,
+        "billionaire": 29,
+        "money-5b": 43,
+        "money-10b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 1275039000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 4008519000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8287719000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13736279000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 17168279000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 21128279000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4151040000
+    },
+    {
+      "career": "programming",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "programming",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "programming",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2675704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4452904000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6491824000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7583824000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8843824000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2607120000
+    },
+    {
+      "career": "programming",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2373304000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3651304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5650224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6742224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8002224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2538720000
+    },
+    {
+      "career": "programming",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3275104000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7050304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11407024000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14059024000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 17119024000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3571920000
+    },
+    {
+      "career": "programming",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 47,
+        "money-10b": 60
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2978104000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6268504000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10585224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13237224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16297224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3483720000
+    },
+    {
+      "career": "accounting",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "accounting",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "accounting",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2156848000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3534928000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5110816000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5890816000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6790816000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2332128000
+    },
+    {
+      "career": "accounting",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 75
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1834648000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2699128000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4235016000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5015016000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5915016000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2297928000
+    },
+    {
+      "career": "accounting",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 49,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2569984000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5325184000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8499904000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10371904000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12531904000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3059040000
+    },
+    {
+      "career": "accounting",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 52,
+        "money-10b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2257864000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4526344000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7661064000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9533064000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11693064000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2987880000
+    },
+    {
+      "career": "law",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "law",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "law",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 51
+      },
+      "balances": {
+        "30": {
+          "cash": 958120000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2934040000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4909960000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7179472000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 8427472000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 9867472000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2747472000
+    },
+    {
+      "career": "law",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 55
+      },
+      "balances": {
+        "30": {
+          "cash": 949720000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2631640000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4108360000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6337872000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7585872000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 9025872000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2679072000
+    },
+    {
+      "career": "law",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 44,
+        "money-10b": 55
+      },
+      "balances": {
+        "30": {
+          "cash": 958120000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3622144000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7891744000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12822304000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15864304000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 19374304000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3866640000
+    },
+    {
+      "career": "law",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 57
+      },
+      "balances": {
+        "30": {
+          "cash": 949720000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3329824000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7127104000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12017664000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15059664000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18569664000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3761280000
+    },
+    {
+      "career": "teaching",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "teaching",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "teaching",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 75
+      },
+      "balances": {
+        "30": {
+          "cash": 715840000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1884160000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3052480000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4385632000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5009632000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5729632000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2229312000
+    },
+    {
+      "career": "teaching",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33
+      },
+      "balances": {
+        "30": {
+          "cash": 705568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1561168000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2215312000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3508464000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4132464000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4852464000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2196480000
+    },
+    {
+      "career": "teaching",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 50,
+        "money-10b": 74
+      },
+      "balances": {
+        "30": {
+          "cash": 715840000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2360224000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5115424000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8290144000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10162144000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12322144000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3028800000
+    },
+    {
+      "career": "teaching",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 53,
+        "money-10b": 80
+      },
+      "balances": {
+        "30": {
+          "cash": 705568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2047528000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4316008000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7450728000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9322728000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11482728000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2958216000
+    },
+    {
+      "career": "football",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 37
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1111744000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1414144000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 1746784000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 1746784000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 1746784000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 1940160000
+    },
+    {
+      "career": "football",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 769744000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 544144000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 836784000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 836784000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 836784000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 1940160000
+    },
+    {
+      "career": "football",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 1047544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2821144000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4094344000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5548864000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6250864000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 7060864000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2440080000
+    },
+    {
+      "career": "football",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 68
+      },
+      "balances": {
+        "30": {
+          "cash": 1039144000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2509744000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3269344000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4683864000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5385864000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6195864000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2395080000
+    },
+    {
+      "career": "football",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 45,
+        "money-10b": 60
+      },
+      "balances": {
+        "30": {
+          "cash": 1047544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3449344000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6816544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10700464000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13040464000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 15740464000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3462480000
+    },
+    {
+      "career": "football",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 47,
+        "money-10b": 63
+      },
+      "balances": {
+        "30": {
+          "cash": 1039144000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3148744000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6031144000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9875064000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 12215064000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 14915064000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3377880000
+    },
+    {
+      "career": "psychology",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "psychology",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "psychology",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2156848000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3534928000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5110816000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5890816000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6790816000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2332128000
+    },
+    {
+      "career": "psychology",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 75
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1834648000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2699128000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4235016000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5015016000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5915016000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2297928000
+    },
+    {
+      "career": "psychology",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 49,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2569984000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5325184000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8499904000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10371904000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12531904000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3059040000
+    },
+    {
+      "career": "psychology",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 52,
+        "money-10b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2257864000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4526344000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7661064000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9533064000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11693064000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2987880000
+    },
+    {
+      "career": "esports",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 35
+      },
+      "balances": {
+        "30": {
+          "cash": 669600000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1192800000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1495200000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 1827840000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 1827840000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 1827840000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 1940160000
+    },
+    {
+      "career": "esports",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28
+      },
+      "balances": {
+        "30": {
+          "cash": 657600000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 850800000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 625200000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 917840000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 917840000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 917840000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 1940160000
+    },
+    {
+      "career": "esports",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 65
+      },
+      "balances": {
+        "30": {
+          "cash": 1039176000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2569346000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3653766000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4889828000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5451428000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6099428000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2319772000
+    },
+    {
+      "career": "esports",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 85
+      },
+      "balances": {
+        "30": {
+          "cash": 1030776000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2255376000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2822084000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4018146000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4579746000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5227746000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2281454000
+    },
+    {
+      "career": "esports",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 47,
+        "money-10b": 64
+      },
+      "balances": {
+        "30": {
+          "cash": 1039176000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3162380000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6223580000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9752900000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11858900000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 14288900000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3277900000
+    },
+    {
+      "career": "esports",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 30,
+        "money-5b": 49,
+        "money-10b": 69
+      },
+      "balances": {
+        "30": {
+          "cash": 1030776000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2860752000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5437152000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8926472000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11032472000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 13462472000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3194328000
+    },
+    {
+      "career": "tiktok",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "tiktok",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "tiktok",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 57
+      },
+      "balances": {
+        "30": {
+          "cash": 838888000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2417368000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3995848000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5804176000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6740176000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 7820176000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2466768000
+    },
+    {
+      "career": "tiktok",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 63
+      },
+      "balances": {
+        "30": {
+          "cash": 829624000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2105464000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3177832000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4946160000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5882160000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6962160000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2414784000
+    },
+    {
+      "career": "tiktok",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 45,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 838888000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3224704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7494304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12424864000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15466864000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18976864000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3784080000
+    },
+    {
+      "career": "tiktok",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 46,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 829624000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2925472000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6722752000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11613312000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14655312000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18165312000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3685632000
+    },
+    {
+      "career": "youtube",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "youtube",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "youtube",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 51
+      },
+      "balances": {
+        "30": {
+          "cash": 958120000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2934040000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4909960000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7179472000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 8427472000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 9867472000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2747472000
+    },
+    {
+      "career": "youtube",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 55
+      },
+      "balances": {
+        "30": {
+          "cash": 949720000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2631640000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4108360000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6337872000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7585872000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 9025872000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2679072000
+    },
+    {
+      "career": "youtube",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 43,
+        "money-10b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 958120000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3766144000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8515744000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 14004304000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 17436304000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 21396304000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4154640000
+    },
+    {
+      "career": "youtube",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 44,
+        "money-10b": 55
+      },
+      "balances": {
+        "30": {
+          "cash": 949720000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3474544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7753744000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13202304000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 16634304000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 20594304000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4046640000
+    },
+    {
+      "career": "business",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 34
+      },
+      "balances": {
+        "30": {
+          "cash": 687914000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1541594000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2395274000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3364322000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3754322000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4204322000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2081280000
+    },
+    {
+      "career": "business",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 35
+      },
+      "balances": {
+        "30": {
+          "cash": 675986000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1200386000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1526642000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2455690000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2845690000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3295690000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2079912000
+    },
+    {
+      "career": "business",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 905354000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2483834000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4062314000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5870642000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6806642000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 7886642000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2472960000
+    },
+    {
+      "career": "business",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 62
+      },
+      "balances": {
+        "30": {
+          "cash": 896090000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2171930000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3244298000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5012626000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5948626000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 7028626000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2420976000
+    },
+    {
+      "career": "business",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 59
+      },
+      "balances": {
+        "30": {
+          "cash": 905354000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3142850000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6918050000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11274770000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13926770000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16986770000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3536832000
+    },
+    {
+      "career": "business",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 47,
+        "money-10b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 896090000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2838938000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6129338000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10446058000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13098058000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16158058000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3455544000
+    },
+    {
+      "career": "finance",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 27,
+        "billionaire": 32,
+        "money-5b": 81
+      },
+      "balances": {
+        "30": {
+          "cash": 877096000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1940536000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3003976000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4215760000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4761760000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5391760000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2202240000
+    },
+    {
+      "career": "finance",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 27,
+        "billionaire": 32
+      },
+      "balances": {
+        "30": {
+          "cash": 866272000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1611472000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2156320000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3328104000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3874104000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4504104000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2179896000
+    },
+    {
+      "career": "finance",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 27,
+        "billionaire": 30,
+        "money-5b": 50,
+        "money-10b": 90
+      },
+      "balances": {
+        "30": {
+          "cash": 1150840000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3126760000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5102680000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7372192000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 8620192000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 10060192000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2771808000
+    },
+    {
+      "career": "finance",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 27,
+        "billionaire": 30,
+        "money-5b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 1142440000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2824360000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4301080000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6530592000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7778592000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 9218592000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2703408000
+    },
+    {
+      "career": "finance",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 27,
+        "billionaire": 30,
+        "money-5b": 43,
+        "money-10b": 53
+      },
+      "balances": {
+        "30": {
+          "cash": 1150840000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3958864000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 8708464000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 14197024000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 17629024000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 21589024000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4178976000
+    },
+    {
+      "career": "finance",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 27,
+        "billionaire": 30,
+        "money-5b": 44,
+        "money-10b": 55
+      },
+      "balances": {
+        "30": {
+          "cash": 1142440000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3667264000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7946464000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 13395024000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 16827024000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 20787024000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 4070976000
+    },
+    {
+      "career": "mechanical",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "mechanical",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "mechanical",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2156848000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3534928000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5110816000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5890816000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6790816000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2332128000
+    },
+    {
+      "career": "mechanical",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 75
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1834648000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2699128000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4235016000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5015016000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5915016000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2297928000
+    },
+    {
+      "career": "mechanical",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 49,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2569984000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5325184000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8499904000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10371904000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12531904000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3059040000
+    },
+    {
+      "career": "mechanical",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 52,
+        "money-10b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2257864000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4526344000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7661064000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9533064000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11693064000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2987880000
+    },
+    {
+      "career": "architecture",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "architecture",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "architecture",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 54
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2675704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4452904000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6491824000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7583824000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8843824000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2607120000
+    },
+    {
+      "career": "architecture",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2373304000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3651304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5650224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6742224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8002224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2538720000
+    },
+    {
+      "career": "architecture",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 898504000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3275104000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7050304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11407024000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14059024000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 17119024000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3571920000
+    },
+    {
+      "career": "architecture",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 47,
+        "money-10b": 60
+      },
+      "balances": {
+        "30": {
+          "cash": 890104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2978104000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6268504000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10585224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13237224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16297224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3483720000
+    },
+    {
+      "career": "fashion",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "fashion",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "fashion",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 57
+      },
+      "balances": {
+        "30": {
+          "cash": 838888000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2417368000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3995848000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5804176000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6740176000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 7820176000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2466768000
+    },
+    {
+      "career": "fashion",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 63
+      },
+      "balances": {
+        "30": {
+          "cash": 829624000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2105464000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3177832000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4946160000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5882160000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6962160000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2414784000
+    },
+    {
+      "career": "fashion",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 46,
+        "money-10b": 59
+      },
+      "balances": {
+        "30": {
+          "cash": 838888000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3076384000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6851584000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11208304000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13860304000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16920304000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3530640000
+    },
+    {
+      "career": "fashion",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 47,
+        "money-10b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 829624000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2772472000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6062872000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 10379592000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 13031592000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 16091592000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3449352000
+    },
+    {
+      "career": "marketing",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 34
+      },
+      "balances": {
+        "30": {
+          "cash": 687914000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1541594000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2395274000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3364322000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3754322000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 4204322000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2081280000
+    },
+    {
+      "career": "marketing",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 35
+      },
+      "balances": {
+        "30": {
+          "cash": 675986000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1200386000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1526642000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2455690000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2845690000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3295690000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2079912000
+    },
+    {
+      "career": "marketing",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 53
+      },
+      "balances": {
+        "30": {
+          "cash": 964970000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2742170000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4519370000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 6558290000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 7650290000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8910290000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2613312000
+    },
+    {
+      "career": "marketing",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 956570000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2439770000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3717770000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5716690000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 6808690000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 8068690000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2544912000
+    },
+    {
+      "career": "marketing",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 44,
+        "money-10b": 56
+      },
+      "balances": {
+        "30": {
+          "cash": 964970000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3489890000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 7759490000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 12690050000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 15732050000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 19242050000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3831552000
+    },
+    {
+      "career": "marketing",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 22,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 31,
+        "money-5b": 45,
+        "money-10b": 58
+      },
+      "balances": {
+        "30": {
+          "cash": 956570000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 3197570000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 6994850000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 11885410000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 14927410000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 18437410000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3726192000
+    },
+    {
+      "career": "tourism",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "tourism",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "tourism",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 61
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2156848000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3534928000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 5110816000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5890816000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6790816000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2332128000
+    },
+    {
+      "career": "tourism",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 75
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1834648000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2699128000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4235016000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5015016000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5915016000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2297928000
+    },
+    {
+      "career": "tourism",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 49,
+        "money-10b": 73
+      },
+      "balances": {
+        "30": {
+          "cash": 778768000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2569984000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5325184000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8499904000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 10371904000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 12531904000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3059040000
+    },
+    {
+      "career": "tourism",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 52,
+        "money-10b": 79
+      },
+      "balances": {
+        "30": {
+          "cash": 768568000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2257864000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 4526344000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 7661064000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 9533064000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 11693064000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2987880000
+    },
+    {
+      "career": "culinary",
+      "path": "entry",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 36
+      },
+      "balances": {
+        "30": {
+          "cash": 588544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1332544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2076544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2918944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 3230944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 3590944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "culinary",
+      "path": "entry",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 41
+      },
+      "balances": {
+        "30": {
+          "cash": 576544000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 990544000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 1206544000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 2008944000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 2320944000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 2680944000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2040000000
+    },
+    {
+      "career": "culinary",
+      "path": "rank-2",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 32,
+        "money-5b": 67
+      },
+      "balances": {
+        "30": {
+          "cash": 747304000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2020504000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 3293704000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 4748224000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 5450224000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 6260224000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2280720000
+    },
+    {
+      "career": "culinary",
+      "path": "rank-2",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 83
+      },
+      "balances": {
+        "30": {
+          "cash": 737104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 1698304000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 2457904000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 3872424000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 4574424000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 5384424000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 2246520000
+    },
+    {
+      "career": "culinary",
+      "path": "rank-3",
+      "invest": false,
+      "family": false,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 32,
+        "money-5b": 48,
+        "money-10b": 65
+      },
+      "balances": {
+        "30": {
+          "cash": 747304000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2618104000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5883304000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 9649024000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11911024000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 14521024000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3259920000
+    },
+    {
+      "career": "culinary",
+      "path": "rank-3",
+      "invest": false,
+      "family": true,
+      "achievedAt": null,
+      "moneyMilestones": {
+        "money-1m": 23,
+        "money-10m": 23,
+        "money-100m": 24,
+        "millionaire": 29,
+        "billionaire": 33,
+        "money-5b": 50,
+        "money-10b": 69
+      },
+      "balances": {
+        "30": {
+          "cash": 737104000,
+          "grossAssets": 0
+        },
+        "40": {
+          "cash": 2306704000,
+          "grossAssets": 0
+        },
+        "50": {
+          "cash": 5087104000,
+          "grossAssets": 0
+        },
+        "62": {
+          "cash": 8812824000,
+          "grossAssets": 0
+        },
+        "75": {
+          "cash": 11074824000,
+          "grossAssets": 0
+        },
+        "90": {
+          "cash": 13684824000,
+          "grossAssets": 0
+        }
+      },
+      "deductions": 3186120000
+    }
+  ]
+}

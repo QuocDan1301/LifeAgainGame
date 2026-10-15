@@ -1,0 +1,98 @@
+{
+  "assumptions": "Choice-tree reachability under an eligible living player profile, with required inventory carried between steps. Survival to the trigger age and relationship prerequisites are conditional, not guaranteed.",
+  "achievements": [
+    {
+      "id": "story-diamond",
+      "title": "Tìm thấy mỏ kim cương",
+      "chains": [
+        "age-20"
+      ]
+    },
+    {
+      "id": "story-alien",
+      "title": "Thực thể ngoài vũ trụ",
+      "chains": [
+        "age-30"
+      ]
+    },
+    {
+      "id": "story-save-life",
+      "title": "Giữ lấy một mạng người",
+      "chains": [
+        "age-35 khỏe",
+        "age-35 yếu"
+      ]
+    },
+    {
+      "id": "story-reincarnation",
+      "title": "Lời hẹn âm dương",
+      "chains": [
+        "age-40"
+      ]
+    },
+    {
+      "id": "story-last-train",
+      "title": "Chuyến tàu âm giới",
+      "chains": [
+        "age-45 chưa gặp bà cụ",
+        "age-45 đã đoàn tụ"
+      ]
+    },
+    {
+      "id": "story-hero",
+      "title": "Vinh danh người hùng",
+      "chains": [
+        "age-50"
+      ]
+    },
+    {
+      "id": "story-luggage",
+      "title": "Tỉnh táo tuổi năm mươi lăm",
+      "chains": [
+        "age-55"
+      ]
+    },
+    {
+      "id": "story-reward",
+      "title": "Phần thưởng xứng đáng",
+      "chains": [
+        "later-60"
+      ]
+    },
+    {
+      "id": "story-fraud",
+      "title": "Triệt phá lừa đảo",
+      "chains": [
+        "later-70"
+      ]
+    },
+    {
+      "id": "story-lucky",
+      "title": "Thần may mắn",
+      "chains": [
+        "later-80"
+      ]
+    },
+    {
+      "id": "story-final-happiness",
+      "title": "Hạnh phúc cuối đời",
+      "chains": [
+        "later-90"
+      ]
+    },
+    {
+      "id": "story-old-together",
+      "title": "Răng long đầu bạc",
+      "chains": [
+        "later-100"
+      ]
+    },
+    {
+      "id": "ending-fulfilled",
+      "title": "Kết thúc viên mãn",
+      "chains": [
+        "later-105"
+      ]
+    }
+  ]
+}

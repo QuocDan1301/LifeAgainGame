@@ -30,7 +30,7 @@ export const detectiveTiers = [
 export const detectiveRanks = [
   { min: 0, name: "Thám tử tập sự" },
   { min: 4, name: "Thám tử có tiếng" },
-  { min: 10, name: "Thám tử lành nghề" },
+  { min: 24, name: "Thám tử lành nghề" },
 ];
 
  

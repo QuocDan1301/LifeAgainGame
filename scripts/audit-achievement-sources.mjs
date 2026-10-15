@@ -37,7 +37,7 @@ for (let i = 0; i < 78; i++) {
 const oldStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: { getItem: () => JSON.stringify(collection) } });
 let tarot;
-try { tarot = tarotAchievementIds(); assert.equal(tarot.length, 4); }
+try { tarot = tarotAchievementIds(); assert.equal(tarot.length, 6); }
 finally {
   if (oldStorage) Object.defineProperty(globalThis, 'localStorage', oldStorage);
   else delete globalThis.localStorage;

@@ -82,7 +82,7 @@
      
     const strongStep = createSaveLifeSpecialStep(3, { health: 80 });
     const weakStep = createSaveLifeSpecialStep(3, { health: 20 });
-    assert(strongStep.choices.some(c => c.label.includes("dìu") && c.nextStep === 4), "Healthy characters can carry the victim out");
+    assert(strongStep.choices.some(c => c.nextStep === 4 && !c.label.includes("cứu hộ")), "Healthy characters can help the victim leave by the safe route");
     assert(weakStep.choices.some(c => c.label.includes("cứu hộ") && c.nextStep === 4) && !weakStep.choices.some(c => c.label.includes("tôi dìu")),
       "Weak characters call the rescue team instead");
     assert(strongStep.choices.some(c => c.death) && weakStep.choices.some(c => c.death), "High health does not protect from the collapsing scaffold");

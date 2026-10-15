@@ -98,7 +98,7 @@
     open();
     assert(body().querySelector(".job-answer") && state.player.jobInterview.text === question, "Reopening resumes the same question");
     answer(false);
-    assert(state.player.employmentStatus === "unemployed" && !state.player.jobInterview && state.player.money === 0, "Failing leaves the player unemployed");
+    assert(state.player.employmentStatus === "unemployed" && !state.player.jobInterview && state.player.money === -24_000_000, "Failing leaves the player unemployed; graduation rent remains payable");
     open();
     assert(careerButton("programming").disabled && body().textContent.includes("Năm nay"), "One application per year");
 
@@ -115,7 +115,7 @@
     answer(true);
     Math.random = interviewRandom;
     const salary = getCareerAnnualSalary("programming", 1);
-    assert(state.player.employmentStatus === "employed" && state.player.careerLevel === 1 && state.player.money === before + salary,
+    assert(state.player.employmentStatus === "employed" && state.player.careerLevel === 1 && state.player.money === before + salary * 0.92,
       "Passing hires the player and pays the first year's salary");
     assert(state.player.lastSalaryAge === 23 && state.player.nextPromotionAge === 27, "Salary and first promotion are scheduled");
     assert(body().textContent.includes("Vượt qua") && state.logs.at(-1).content.includes("bắt đầu làm việc"), "Result and diary");

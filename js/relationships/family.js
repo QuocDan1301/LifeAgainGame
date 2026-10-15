@@ -17,7 +17,7 @@ import { createSchoolEntryReward } from "../education/school-rewards.js";
 import { createGraduationNotice } from "../career/job-applications.js";
 import { getStudyAbroadTuition, getStudyAbroadCountry, getStudyAbroadLivingCost } from "../education/study-abroad.js";
 import { collectStatWearYear } from "../core/stat-budget.js";
-import { getLivingShare, describeLivingShare } from "../core/living-share.js";
+import { getAnnualEconomy } from "../core/economy.js";
 
 import { collectReformationYear } from '../events/crime-consequences.js';
 import { getFamilyBudget, collectFamilyBudget } from './family-budget.js';
@@ -108,8 +108,8 @@ export function getChildcareExpenses(player, age, updates = {}) {
  
  
 export const LIVING_COST_MIN_AGE = 23;
-export const LIVING_COST_RATE = 0.4;
-export const LIVING_COST_FLOOR = 24_000_000;
+export const LIVING_COST_RATE = 0;
+export const LIVING_COST_FLOOR = 0;
  
 export const LIVING_SHORTFALL_HAPPINESS = 3;
 
@@ -127,31 +127,27 @@ export function getAnnualTuition(careerPath) {
  
 export const LIVING_MODES = {
   normal: { label: "Bình thường", floor: LIVING_COST_FLOOR, rate: LIVING_COST_RATE, happiness: 0 },
-  frugal: { label: "Tiết kiệm", floor: 16_000_000, rate: 0.3, happiness: -1 },
+  frugal: { label: "Cơ bản", floor: 0, rate: 0, happiness: 0 },
   comfortable: { label: "Tiện nghi", extra: 36_000_000, happiness: 1 },
   luxury: { label: "Cao cấp", extra: 120_000_000, happiness: 2 },
 };
 export function describeYearLivingCost(careerPath, age) {
   const country = getStudyAbroadCountry(careerPath);
   if (country && age >= 18 && age <= 21) return `${formatSalary(country.living)}/năm trong thời gian học`;
-  const floor = country && age >= 22 ? country.living : LIVING_COST_FLOOR;
-  const rate = country && age >= 22 ? 0.3 : LIVING_COST_RATE;
-  return `${describeLivingShare(rate)}; sàn ${formatSalary(floor)}/năm`;
+  return "Không thu sinh hoạt phí theo thu nhập; thuế, bảo hiểm và thuê nhà được tách riêng";
 }
 
 export function getLivingCost(age, income, mode = "normal") {
-  if (!Number.isInteger(age) || age < LIVING_COST_MIN_AGE) return 0;
-  const config = LIVING_MODES[mode] ?? LIVING_MODES.normal;
-  return Math.max(config.floor ?? LIVING_COST_FLOOR, getLivingShare(income, config.rate ?? LIVING_COST_RATE)) + (config.extra ?? 0);
+  if (!Number.isInteger(age) || age < 22) return 0;
+  return LIVING_MODES[mode]?.extra ?? 0;
 }
  
  
-export const FRUGAL_MAX_SAVING = 12_000_000;
-export function getYearLivingCost(careerPath, age, income, mode = "normal") {
-  const cost = (living) => getStudyAbroadLivingCost(careerPath, age, income, living) || getLivingCost(age, income, living);
-  const normal = cost("normal");
-  return mode === "frugal" ? Math.max(cost("frugal"), normal - FRUGAL_MAX_SAVING)
-    : normal + (age >= LIVING_COST_MIN_AGE ? LIVING_MODES[mode]?.extra ?? 0 : 0);
+export const FRUGAL_MAX_SAVING = 0;
+export function getYearLivingCost(careerPath, age, income, mode = "normal", player = null) {
+  const extendedStudy = player && age >= 22 && getStudyAbroadTuition(player, age) > 0;
+  const studentCost = extendedStudy ? getStudyAbroadCountry(careerPath)?.living ?? 0 : getStudyAbroadLivingCost(careerPath, age);
+  return studentCost + getLivingCost(age, income, mode);
 }
 
  
@@ -314,12 +310,36 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
     player.money -= tuition.amount;
     if (player.money < 0) tuition.content += ` Ví còn thiếu ${formatSalary(-player.money)}: đây là nợ học phí, thu nhập về sau sẽ trả dần. Bạn vẫn tiếp tục học.`;
   }
-  const livingAmount = getYearLivingCost(player.careerPath, age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0) + (assetIncome?.recurringIncome ?? 0), player.livingMode);
+  const livingAmount = getYearLivingCost(player.careerPath, age, (salary?.amount ?? 0) + (sideJobs?.amount ?? 0) + (assetIncome?.recurringIncome ?? 0), player.livingMode, player);
+  const previousIncome = player.economyIncomeYear?.age === age ? player.economyIncomeYear : null;
+  const economyIncome = {
+    salary: (salary?.amount ?? 0) + (previousIncome?.salary ?? 0),
+    sideIncome: (sideJobs?.amount ?? 0) + (previousIncome?.sideIncome ?? 0),
+    assetIncome: (assetIncome?.recurringIncome ?? 0) + (previousIncome?.assetIncome ?? 0),
+    retired: salary?.retired === true,
+  };
+  const economy = getAnnualEconomy(player, age, economyIncome);
+  const economyAlreadyPaid = player.economyPaidAge >= age;
+  if (!economyAlreadyPaid) {
+    // Hiring may already have withheld salary deductions earlier this year.
+    player.money -= economy.total - (previousIncome?.paidIncomeTax ?? 0) - (previousIncome?.paidInsurance ?? 0);
+    player.economyPaidAge = age;
+    player.economyIncomeYear = { age, ...economyIncome, paidIncomeTax: economy.incomeTax, paidInsurance: economy.insurance };
+  }
   const familyBudget = collectFamilyBudget(player, age, budget);
-  const living = livingAmount || interestAmount || familyBudget
-    ? { amount: livingAmount, content: livingAmount ? `🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -${formatSalary(livingAmount)}.` : "" }
+  const living = livingAmount || interestAmount || familyBudget || (!economyAlreadyPaid && economy.total)
+    ? { amount: livingAmount, content: livingAmount ? `🧺 Chi phí học xa nhà hoặc tiện nghi tự chọn: -${formatSalary(livingAmount)}.` : "" }
     : null;
-  if (living) player.money -= living.amount;
+  if (living) {
+    player.money -= living.amount;
+    if (!economyAlreadyPaid && economy.content) {
+      const paidEarlier = (previousIncome?.paidIncomeTax ?? 0) + (previousIncome?.paidInsurance ?? 0);
+      living.content = [living.content, economy.content,
+        paidEarlier ? `🧾 Trong tổng thuế và bảo hiểm năm nay, ${formatSalary(paidEarlier)} đã khấu trừ khi nhận việc nên không thu lại.` : "",
+      ].filter(Boolean).join("\n");
+    }
+    living.economy = economyAlreadyPaid ? null : economy;
+  }
   if (familyBudget) living.content = [living.content, familyBudget.content].filter(Boolean).join("\n");
   if (interestAmount) {
     player.money -= interestAmount;
@@ -332,14 +352,11 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
       ? { ...child, lastCarePaidAtAge: age } : child);
   }
    
-  if (livingAmount && player.money < 0) {
+  if (living && player.money < 0) {
     player.happiness = Math.max(0, (player.happiness ?? 0) - LIVING_SHORTFALL_HAPPINESS);
     living.content += ` Ví đang âm ${formatSalary(-player.money)} nên phải sống tằn tiện (Hạnh phúc -${LIVING_SHORTFALL_HAPPINESS}).`;
   }
-  if (livingAmount && player.livingMode === "frugal") {
-    player.happiness = Math.max(0, (player.happiness ?? 0) + LIVING_MODES.frugal.happiness);
-    living.content += ` Đang sống tiết kiệm (Hạnh phúc ${LIVING_MODES.frugal.happiness}).`;
-  }
+
   const comfort = LIVING_MODES[player.livingMode]?.happiness ?? 0;
   if (livingAmount && comfort > 0 && player.money >= 0) {
     const gained = applyActivityGain(player, 'happiness', comfort);
@@ -362,7 +379,7 @@ export function forecastNextYear(player) {
   if (player.prison && player.prison.releaseAge > (player.age ?? 0)) {
     const interest = getDebtInterest(age, player.money ?? 0);
     const childcare = getChildcareExpenses(player, age).amount ?? 0;
-    return { age, income: 0, costs: interest + childcare + familyBudget, living: 0, interest, childcare, familyBudget, dating, tuition: 0, mortgage: 0, upkeep: 0,
+    return { age, income: 0, costs: interest + childcare + familyBudget, living: 0, rent: 0, tax: 0, insurance: 0, economy: getAnnualEconomy(player, age), interest, childcare, familyBudget, dating, tuition: 0, mortgage: 0, upkeep: 0,
       assets: 0, repayments: 0, after: (player.money ?? 0) - interest - childcare - familyBudget };
   }
   const forecastWorker = { ...player };
@@ -379,13 +396,14 @@ export function forecastNextYear(player) {
   }, 0);
   const recurringIncome = salary + sideJobs + getStreetIncome(player, age) + assets.recurringIncome;
   const income = recurringIncome + repayments;
-  const living = getYearLivingCost(player.careerPath, age, recurringIncome, player.livingMode);
+  const living = getYearLivingCost(player.careerPath, age, recurringIncome, player.livingMode, player);
   const interest = getDebtInterest(age, player.money ?? 0);
   const childcare = getChildcareExpenses(player, age).amount ?? 0;
   const baseTuition = player.careerPath?.id === 'study-abroad' ? getStudyAbroadTuition(player, age) : age >= TUITION_FIRST_AGE && age <= TUITION_LAST_AGE ? getAnnualTuition(player.careerPath) : 0;
   const tuition = (player.intelligence ?? 0) >= SCHOLARSHIP.minIntellect ? Math.round((baseTuition * (1 - SCHOLARSHIP.rate)) / 1000) * 1000 : baseTuition;
   const mortgage = (player.homeLoans ?? []).reduce((sum, loan) => sum +
     (loan.outstanding > 0 && age > loan.lastPaidAge ? Math.min(loan.outstanding, loan.annualPayment) : 0), 0);
-  const costs = living + interest + childcare + tuition + mortgage + assets.upkeep + familyBudget;
-  return { age, income, costs, living, interest, childcare, familyBudget, dating, tuition, mortgage, upkeep: assets.upkeep, assets: assets.recurringIncome, repayments, after: (player.money ?? 0) + income - costs };
+  const economy = getAnnualEconomy(player, age, { salary, sideIncome: sideJobs + getStreetIncome(player, age), assetIncome: assets.recurringIncome, retired: forecastWorker.employmentStatus === "retired" });
+  const costs = living + economy.total + interest + childcare + tuition + mortgage + assets.upkeep + familyBudget;
+  return { age, income, costs, living, economy, rent: economy.rent, tax: economy.tax, insurance: economy.insurance, interest, childcare, familyBudget, dating, tuition, mortgage, upkeep: assets.upkeep, assets: assets.recurringIncome, repayments, after: (player.money ?? 0) + income - costs };
 }

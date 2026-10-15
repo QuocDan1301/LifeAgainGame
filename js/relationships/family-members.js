@@ -50,14 +50,59 @@ const art = (code, alt) => openMojiArt(code, alt);
 const between = ([min, max], random) => min + Math.floor(random() * (max - min + 1));
 
  
+const parentJobs = [
+  "Giáo viên", "Nhân viên văn phòng", "Công nhân", "Nông dân",
+  "Tiểu thương", "Đầu bếp", "Nhân viên bán hàng", "Nhân viên y tế",
+  "Thợ may", "Nhân viên kế toán", "Bán hàng rong", "Bán vé số",
+];
+
+export function ensureBirthFamilyLog(state, random = Math.random) {
+  let changed = !Array.isArray(state.player.relatives);
+  const parents = ensureRelatives(state.player, random);
+  const usedJobs = new Set();
+  for (const parent of parents) {
+    if (!["father", "mother"].includes(parent.id)) continue;
+    if (!parent.job || usedJobs.has(parent.job)) {
+      const availableJobs = parentJobs.filter((job) => !usedJobs.has(job));
+      parent.job = availableJobs[Math.floor(random() * availableJobs.length)];
+      changed = true;
+    }
+    usedJobs.add(parent.job);
+  }
+  const birth = state.logs.find((entry) => entry.age === 0 && /chào đời/u.test(entry.content ?? ""));
+  if (!birth) return changed;
+  const introduction = parents
+    .filter((parent) => ["father", "mother"].includes(parent.id))
+    .map((parent) => `${parent.id === "father" ? "👨" : "👩"} ${parent.role}: ${parent.name} · Nghề nghiệp: ${parent.job}.`)
+    .join("\n");
+  const birthText = birth.content.split("\n")
+    .filter((line) => !/^[👨👩] (?:Bố|Mẹ): .* · Nghề nghiệp: /u.test(line))
+    .join("\n").trimEnd();
+  const content = introduction ? `${birthText}\n${introduction}` : birthText;
+  if (birth.content !== content) {
+    birth.content = content;
+    changed = true;
+  }
+  if (birth.summary !== birth.content) {
+    birth.summary = birth.content;
+    changed = true;
+  }
+  return changed;
+}
+
 export function ensureRelatives(player, random = Math.random) {
   if (Array.isArray(player.relatives)) return player.relatives;
+  const usedJobs = new Set();
   const parent = (id, role, names, range) => {
+    const availableJobs = parentJobs.filter((job) => !usedJobs.has(job));
+    const job = availableJobs[Math.floor(random() * availableJobs.length)];
+    usedJobs.add(job);
     const ageAtPlayerBirth = between(range, random);
     const alive = ageAtPlayerBirth + (player.age ?? 0) <= PARENT_MAX_TRACKED_AGE;
     return {
       id, role, name: names[Math.floor(random() * names.length)], ageAtPlayerBirth, alive,
       diedAtAge: alive ? null : undefined, passedBeforeTracking: !alive, bond: 70, condition: "healthy",
+      job,
       trackedFrom: player.age ?? 0, interactions: { calls: 0, visits: 0, cares: 0, helpers: 0, treatments: 0 },
       done: {}, promise: null,
     };

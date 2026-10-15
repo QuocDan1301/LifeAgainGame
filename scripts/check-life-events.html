@@ -92,7 +92,7 @@
     assert(J.createContractNoticeEvent(silent, 34, () => 0.99), "The postponed contract gets its notice on the next birthday");
 
      
-    assert(getLivingCost(30, 0) === 24_000_000 && getLivingCost(30, 0, "frugal") === 16_000_000, "Living cost floor even with no income");
+    assert(getLivingCost(30, 0) === 0 && getLivingCost(30, 0, "frugal") === 0, "No legacy mandatory living fee, including old frugal saves");
     const forecast = forecastNextYear(worker({ employmentStatus: "unemployed", money: 5_000_000 }));
     assert(forecast.income === 0 && forecast.costs === 24_000_000 && forecast.after === -19_000_000, "Forecast shows income, costs and wallet");
 

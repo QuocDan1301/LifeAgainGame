@@ -53,12 +53,12 @@
     const ids = (filter) => T.tarotAchievementIds(Object.fromEntries(T.tarotCards.filter(filter).map(c => [c.id, 1])));
     assert(ids(() => false).length === 0, "No card, no Tarot achievement");
     assert(JSON.stringify(ids(c => c.id === "cups-3")) === '["tarot-first"]', "First card");
-    assert(JSON.stringify(ids(c => c.group === "major")) === '["tarot-first","tarot-major"]', "All 22 major arcana");
+    assert(JSON.stringify(ids(c => c.group === "major")) === '["tarot-first","tarot-ten","tarot-major"]', "All 22 major arcana");
     assert(!ids(c => c.group === "major" && c.id !== "major-0").includes("tarot-major"), "21 major arcana is not enough");
     const fivePerSuit = c => c.group !== "major" && Number(c.id.split("-")[1]) <= 5;
-    assert(JSON.stringify(ids(fivePerSuit)) === '["tarot-first","tarot-suits"]', "5 cards in every suit");
+    assert(JSON.stringify(ids(fivePerSuit)) === '["tarot-first","tarot-ten","tarot-suits"]', "5 cards in every suit");
     assert(!ids(c => fivePerSuit(c) && c.id !== "swords-5").includes("tarot-suits"), "4 swords is not enough");
-    assert(JSON.stringify(ids(() => true)) === '["tarot-first","tarot-major","tarot-suits","tarot-all"]', "All 78 cards");
+    assert(JSON.stringify(ids(() => true)) === '["tarot-first","tarot-ten","tarot-half","tarot-major","tarot-suits","tarot-all"]', "All 78 cards");
 
     localStorage.removeItem("lifeAgainTarotCollection");
     const { createInitialState, state } = await import("../js/core/state.js");
@@ -131,7 +131,7 @@
     state.player.age = 31;
     open();
     assert(body().textContent.includes("1/1 lượt") && !body().querySelector(".tarot-topic").disabled, "New turn next year");
-    result.textContent = "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 4 Tarot achievements";
+    result.textContent = "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 6 Tarot achievements";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {

@@ -20,41 +20,41 @@ const ending = (label, text, extra = {}) => ({
 const steps = {
   1: {
     title: "🌳 Tiếng khóc ngoài công viên",
-    text: "Tôi đang chơi ngoài công viên thì thấy một cậu bé đứng cạnh cầu trượt, vừa khóc vừa gọi mẹ. Mọi người đi ngang, cậu cứ ngơ ngác nhìn theo. Có vẻ cậu bé đã bị lạc.",
+    text: "Tôi đang chơi ngoài công viên thì thấy một cậu bé vừa khóc vừa gọi mẹ. Có vẻ cậu bé đã bị lạc.",
     choices: [
-      next("Để tui đây lo!", 2),
+      next("Đến lúc thể hiện", 2),
       ending(
         "Nhờ bác bảo vệ giúp!",
         "Tôi báo bác bảo vệ rồi quay lại chơi. Cậu bé được hỗ trợ.",
       ),
       ending(
-        "Chắc mẹ em ở gần thôi…",
+        "Chắc mẹ em ở gần thôi",
         "Tôi tiếp tục chơi nhưng vẫn hơi băn khoăn.",
       ),
     ],
   },
   2: {
     title: "😭 Nhiệm vụ khó hơn bài toán đố",
-    text: "Tôi đến hỏi tên và người nhà, nhưng cậu bé chỉ đáp lại bằng một tràng “oa oa”. Tôi dỗ đến khô cả cổ, làm mặt hề đến mỏi cả má mà em vẫn khóc.\n\nĐúng lúc tôi định hỏi thêm, em quệt nước mũi vào tay áo tôi. Tuyệt vời, áo mới giặt sáng nay…",
+    text: "Tôi đến hỏi thăm, nhưng cậu bé cứ “oa oa”. Tôi dỗ đến khô cả cổ mà em vẫn khóc.\n\nĐúng lúc tôi định hỏi thêm, em quệt nước mũi vào tay áo tôi. Tuyệt vời, áo mới giặt sáng nay…",
     choices: [
       next(
-        "Nín đi, anh/chị vẫn ở đây!",
+        "Tới đâu hay tới đó quá",
         3,
-        "Tôi kiên nhẫn ngồi cạnh, rồi nhờ bác bảo vệ đến giúp.\n\n",
+        "Tôi dắt cậu bé đến chốt bảo vệ rồi kiên nhẫn ngồi cạnh.\n\n",
       ),
       ending(
-        "Bác ơi, cháu hết phép rồi!",
-        "Tôi bàn giao cho bác bảo vệ rồi về. Cậu bé được giúp đỡ, nhưng chuỗi đặc biệt kết thúc.",
+        "Đành nhờ bác bảo vệ vậy",
+        "Cuối cùng cậu bé đã gặp lại mẹ, mẹ cậu bé hỏi thông tin của tôi để trả ơn nhưng không ai biết",
       ),
     ],
   },
   3: {
     title: "👨‍👩‍👦 Cuộc đoàn tụ bất ngờ",
-    text: "Tôi ở lại cùng cậu bé tại chốt bảo vệ, đợi thông báo tìm người thân. Một lúc sau, một đôi vợ chồng hớt hải chạy đến. Cậu bé lập tức lao vào lòng mẹ.\n\nNghe bác bảo vệ kể chuyện, họ cảm ơn tôi liên tục. Hóa ra họ là chủ một ngôi trường tiểu học xịn xò, có cả hồ bơi, sân bóng và thư viện rộng đến mức tôi chắc mình cũng có thể lạc trong đó.",
+    text: "Tôi ở lại cùng cậu bé và đợi thông báo tìm người thân. Một lúc sau, một đôi vợ chồng hớt hải chạy đến. Cậu bé lập tức lao vào lòng mẹ.\n\nQua lời bác bảo vệ, họ cảm ơn tôi liên tục. Hóa ra họ là chủ một ngôi trường tiểu học xịn xò ở trung tâm thành phố",
     choices: [
-      next("Em tìm được mẹ là vui rồi!", 4),
+      next("Thật là mừng", 4),
       next(
-        "Dạ… cứu được em, dơ cái áo!",
+        "Giúp được em nhưng áo tôi...",
         4,
         "Cả nhà bật cười, mẹ cậu bé đưa khăn giúp tôi lau tay áo.\n\n",
       ),
@@ -62,11 +62,11 @@ const steps = {
   },
   4: {
     title: "✉️ Lời mời ngoài dự kiến",
-    text: "Sau khi liên hệ với ba mẹ tôi, gia đình cậu bé ngỏ ý tặng tôi một năm học miễn phí tại trường, bao gồm học phí, bữa ăn và các lớp ngoại khóa.\n\nBa mẹ hỏi tôi có muốn chuyển trường không. Tôi nghe đến hồ bơi thì thích lắm, nhưng nghĩ đến việc xa đám bạn lại hơi chần chừ.",
+    text: "Sau hôm đó, gia đình cậu bé ngỏ ý tặng tôi một năm học miễn phí tại trường.\n\nBa mẹ hỏi tôi có muốn chuyển trường không. Tôi thích lắm, nhưng nghĩ đến việc xa đám bạn lại hơi chần chừ.",
     choices: [
       ending(
-        "Dạ học! Con tự soạn cặp!",
-        "Gia đình đồng ý nhận lời. Tôi bắt đầu một năm học ở trường mới; khi 11 tuổi, tôi sẽ nhìn lại những điều mình đã học được.",
+        "Dạ được!",
+        "Gia đình đồng ý nhận lời. Tôi bắt đầu một năm học ở trường mới",
         { schoolYearDueAge: 11, title: "🎒 Bắt đầu năm học mới" },
       ),
       ending(
@@ -77,7 +77,7 @@ const steps = {
   },
   5: {
     title: "🌟 Một năm học thay đổi bản thân",
-    text: "Một năm ở trường mới trôi qua với biết bao trải nghiệm. Tôi được thầy cô hướng dẫn tận tình, học bơi, chơi thể thao và làm quen với những người bạn tốt. Tôi còn biết chăm sóc bản thân, ăn ngủ điều độ và tự tin hơn trước.\n\nNgày đầu vào trường, tôi còn đứng nhầm lớp. Cuối năm, tôi đã tự tin lên sân khấu nhận giấy khen. Ba mẹ ngồi dưới vỗ tay, còn cậu bé năm nào hét to: “Anh chị cứu con kìa!” khiến cả hội trường quay lại nhìn.",
+    text: "Một năm ở trường mới đầy niềm vui trôi qua. Tôi được thầy cô hướng dẫn tận tình, học bơi, chơi thể thao và làm quen với những người bạn tốt. Tôi còn biết chăm sóc bản thân, ăn ngủ điều độ và tự tin hơn trước.",
     choices: [
       ending(
         "Giúp người, mình cũng lớn lên!",

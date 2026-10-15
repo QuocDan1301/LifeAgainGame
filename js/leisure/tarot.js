@@ -38,6 +38,8 @@ export function tarotAchievementIds(collection = readTarotCollection()) {
   const count = (group) => known.filter((card) => card.group === group).length;
   const ids = [];
   if (known.length) ids.push("tarot-first");
+  if (known.length >= 10) ids.push("tarot-ten");
+  if (known.length >= 39) ids.push("tarot-half");
   if (count("major") === 22) ids.push("tarot-major");
   if (["wands", "cups", "swords", "pentacles"].every((group) => count(group) >= 5)) ids.push("tarot-suits");
   if (known.length === tarotCards.length) ids.push("tarot-all");

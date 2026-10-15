@@ -1,0 +1,43 @@
+{
+  "assumptions": "Constructive legal activity actions with an explicit 5m garden budget from employment; favorable nonzero weather and solved detective puzzles. This proves paths exist, not that random play always wins. Tarot collection persists across lives.",
+  "garden": {
+    "flags": [
+      "garden-first-harvest",
+      "garden-five-crops",
+      "garden-all-crops",
+      "cook-three-recipes",
+      "cook-complex-first",
+      "cook-all-complex",
+      "cook-all-recipes"
+    ],
+    "completedAtAge": 25,
+    "spent": 1550000,
+    "actions": "Only buy in-season seeds, plant up to three plots, water with three seasonal care points, harvest, buy cooking staples, cook recipes in tier order. No stock or cooking counters injected."
+  },
+  "detective": {
+    "flags": [
+      "detective-first",
+      "detective-streak",
+      "detective-ten",
+      "detective-hard-clean",
+      "detective-top-rank"
+    ],
+    "completedAtAge": 27,
+    "solved": 18,
+    "earnings": 81000000,
+    "assumptions": "Player solves the evidence puzzle; test uses the solver to choose valid clues within normal hours, rather than assigning solved/reputation counters."
+  },
+  "tarot": {
+    "flags": [
+      "tarot-first",
+      "tarot-ten",
+      "tarot-half",
+      "tarot-major",
+      "tarot-suits",
+      "tarot-all"
+    ],
+    "readings": 78,
+    "totalCost": 39000000,
+    "condition": "One selected card per yearly reading; 78 readings minimum across one or several lives. Collection persists across lives; reaching it in one life also requires survival."
+  }
+}

@@ -2,12 +2,10 @@ import { getReformationUpdates } from '../events/crime-consequences.js';
 import { getPlayerAnnualSalary } from '../career/career-salary.js';
 import { getJobLossUpdates } from '../career/job-loss.js';
 import { formatMoney } from './money-format.js';
+import { getHomeFinancing, prepareHomePurchase } from './housing.js';
+import { getHomePurchasePreview } from './housing-preview.js';
+export { HOME_TERMS } from './housing.js';
 
-// Gameplay prices, shared by preview, confirmation and annual accounting.
-export const HOME_TERMS = {
-  'story-home': { price: 1_500_000_000, deposit: 300_000_000, years: 15, rate: 0.06 },
-  'story-small-home': { price: 900_000_000, deposit: 180_000_000, years: 15, rate: 0.06 },
-};
 
 export function prepareStoryChoice(choice, player, age) {
   const prepared = { ...choice };
@@ -25,17 +23,15 @@ export function prepareStoryChoice(choice, player, age) {
     prepared.playerUpdates.storyLoans = (player.storyLoans ?? []).map(item => item === loan ? { ...item, outstanding: 0, repaidAtAge: age } : item);
   }
   if (choice.home) {
-    const terms = HOME_TERMS[choice.home];
-    const principal = terms.price - terms.deposit;
-    const total = Math.round(principal * (1 + terms.rate * terms.years));
-    const uid = `${choice.home}-${age}`;
-    prepared.money = -terms.deposit;
-    prepared.playerUpdates.purchases = [...(player.purchases ?? []), { id: choice.home, uid, boughtAtAge: age, purchasePrice: terms.price }];
-    prepared.playerUpdates.homeLoans = [...(player.homeLoans ?? []), {
-      id: uid, assetUid: uid, principal, outstanding: total, annualPayment: Math.ceil(total / terms.years),
-      years: terms.years, startedAtAge: age, lastPaidAge: age, paymentsMade: 0,
-    }];
-    prepared.label += ` (giá ${formatMoney(terms.price)}; trả trước ${formatMoney(terms.deposit)}; vay ${formatMoney(principal)}; lãi đơn ${terms.rate * 100}%/năm; ${formatMoney(Math.ceil(total / terms.years))}/năm × ${terms.years} năm, từ tuổi ${age + 1})`;
+    const terms = getHomeFinancing(choice.home);
+    const home = prepareHomePurchase(player, choice.home, age);
+    prepared.home = terms.id;
+    prepared.money = home.money;
+    Object.assign(prepared.playerUpdates, home.playerUpdates);
+    const principal = terms.principal;
+    const total = terms.total;
+    const preview = getHomePurchasePreview(player, choice.home, age);
+    prepared.label += ` (giá ${formatMoney(terms.price)}; trả trước ${formatMoney(terms.deposit)}; vay ${formatMoney(principal)}; lãi đơn ${terms.rate * 100}%/năm; ${formatMoney(Math.ceil(total / terms.years))}/năm × ${terms.years} năm, từ tuổi ${age + 1}; dự kiến ${preview.cashFlowText}${preview.warning ? '; ⚠️ cần tiền dự phòng' : ''})`;
   } else if (prepared.money < 0) prepared.label += ` (chi ${formatMoney(-prepared.money)})`;
   return prepared;
 }

@@ -1,5 +1,5 @@
 {
-  "total": 89,
+  "total": 96,
   "missingSources": [],
   "verifiedCareerBranches": {
     "career-study-abroad": "study-abroad",
@@ -28,6 +28,8 @@
   },
   "verifiedTarot": [
     "tarot-first",
+    "tarot-ten",
+    "tarot-half",
     "tarot-major",
     "tarot-suits",
     "tarot-all"
