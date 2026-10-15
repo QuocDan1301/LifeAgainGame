@@ -2,8 +2,8 @@ import { saveGame } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { NO_SLOT_LABEL, applyActivityGain, describeActivityRoom, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
-// Ăn uống: trả tiền để tăng chỉ số. Mỗi món ăn được một lần mỗi năm để chỉ số
-// không bị đẩy lên tối đa chỉ bằng cách mua liên tục.
+ 
+ 
 export const dishes = [
   { id: "banh-mi", icon: "🥖", name: "Bánh mì", price: 25_000, effects: { happiness: 1 },
     description: "Giòn rụm, nóng hổi, ăn vội mà vẫn vui." },
@@ -18,7 +18,7 @@ export const dishes = [
 ];
 
 export const statLabels = { health: "Sức khỏe", intelligence: "Trí tuệ", happiness: "Hạnh phúc", appearance: "Ngoại hình" };
-// Điểm thực nhận (đã tính mức 100 và giới hạn tăng mỗi năm) hiện trước khi trả tiền.
+ 
 const effectText = (player, effects) => Object.entries(effects).map(([stat, value]) => {
   const real = previewActivityGain(player, stat, value);
   return `${statLabels[stat]} +${real}${real < value ? ` (tối đa +${value})` : ""}`;

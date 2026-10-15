@@ -1,13 +1,13 @@
 import { applyActivityGain, getActivitySlotsLeft, useActivitySlot } from "../core/stat-budget.js";
 
-// Vườn nhà: luống đất, mùa vụ, chợ, bếp và món ăn tự nấu (không đụng giao diện).
-// Mỗi năm tuổi có 4 mùa; người chơi tự bấm sang mùa. Mỗi mùa có thời tiết riêng (biết trước một mùa nhờ
-// dự báo) và một số công chăm. Tưới, bắt sâu, bón phân đều tốn 1 công cho từng luống, nên công không đủ
-// làm hết mọi việc: phải chọn chăm luống nào. Dành 1 lượt thời gian rảnh để chăm kỹ thì mỗi mùa trong
-// năm có thêm công. Sang Đông xong thì vườn nghỉ tới năm sau.
-// Ăn món tự nấu dùng chung lượt thời gian rảnh với Ăn uống; mỗi món ăn được một lần mỗi năm.
-// Vườn chủ yếu để nấu ăn; bán nông sản chỉ là tiền chợ thêm.
-// Các con số là thông số gameplay.
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 export const GARDEN_MIN_AGE = 11;
 export const START_PLOTS = 4;
 export const PLOT_PRICES = [500_000, 1_000_000, 1_500_000, 2_000_000];
@@ -17,7 +17,7 @@ export const DILIGENT_CARE_BONUS = 3;
 export const PEST_CHANCE = 0.2;
 export const MAX_FERTILIZER = 2;
 export const REST_SEASON = 4;
-// Gói hạt tặng khi mới mở vườn: nhân vật nhỏ tuổi thường chưa có tiền, bán lứa rau đầu là đủ mua hạt lứa sau.
+ 
 export const STARTER_SEEDS = { "rau-muong": 2, "hanh-la": 2 };
 
 export const seasons = [
@@ -31,10 +31,10 @@ export const weathers = {
   rain: { icon: "🌧️", name: "Mưa thuận", note: "Mưa đều, mọi luống tự được tưới trong mùa này." },
   drought: { icon: "🔥", name: "Nắng hạn", note: "Luống nào không được tưới sẽ héo khi hết mùa." },
 };
-// Tỉ lệ thời tiết theo mùa: [ôn hòa, mưa thuận, nắng hạn].
+ 
 const WEATHER_ODDS = [[0.55, 0.35, 0.1], [0.4, 0.2, 0.4], [0.45, 0.45, 0.1], [0.7, 0.1, 0.2]];
 
-// grow: số mùa từ lúc gieo tới lúc thu · plant: các mùa gieo được · yield: số phần thu được.
+ 
 export const crops = [
   { id: "rau-muong", icon: "🥬", name: "Rau muống", seed: 20_000, grow: 1, plant: [0, 1, 2], yield: 4, price: 12_000 },
   { id: "hanh-la", icon: "🧅", name: "Hành lá", seed: 15_000, grow: 1, plant: [0, 1, 2, 3], yield: 3, price: 10_000 },
@@ -47,7 +47,7 @@ export const crops = [
   { id: "bi-do", icon: "🎃", name: "Bí đỏ", seed: 60_000, grow: 3, plant: [0, 2], yield: 3, price: 60_000 },
   { id: "dau-tay", icon: "🍓", name: "Dâu tây", seed: 150_000, grow: 3, plant: [2, 3], yield: 3, price: 120_000 },
 ];
-// Nguyên liệu mua ở chợ (không trồng được) và phân bón.
+ 
 export const groceries = [
   { id: "trung", icon: "🥚", name: "Trứng", price: 30_000 },
   { id: "thit", icon: "🥩", name: "Thịt heo", price: 90_000 },
@@ -113,8 +113,8 @@ function rollWeather(season, random) {
   const roll = random();
   return roll < odds[0] ? "fair" : roll < odds[0] + odds[1] ? "rain" : "drought";
 }
-// Đầu mỗi mùa: thời tiết (đúng như dự báo mùa trước), dự báo cho mùa sau, sâu bệnh và giá chợ mới;
-// công chăm và nước tưới bắt đầu lại. Mùa đông không có dự báo vì sau đó vườn nghỉ.
+ 
+ 
 function startSeason(garden, random) {
   garden.care = 0;
   garden.weather = garden.forecast ?? rollWeather(garden.season, random);
@@ -135,8 +135,8 @@ export function gardenOf(player, random = Math.random) {
     startSeason(player.garden, random);
   }
   const garden = player.garden;
-  // Sang tuổi mới: vườn bắt đầu lại từ mùa xuân, món nấu năm cũ không để được nữa.
-  // Dự báo cũ (nếu năm trước chưa đi hết bốn mùa) là của mùa khác nên bỏ đi.
+   
+   
   if (garden.year !== player.age) {
     garden.year = player.age;
     garden.season = 0;
@@ -144,12 +144,12 @@ export function gardenOf(player, random = Math.random) {
     garden.forecast = null;
     startSeason(garden, random);
   }
-  // Bản lưu cũ chưa có dự báo.
+   
   if (garden.forecast === undefined) garden.forecast = garden.season < 3 ? rollWeather(garden.season + 1, random) : null;
   return garden;
 }
 
-// ---------- Vườn ----------
+ 
 export function getPlantBlocker(garden, plotIndex, cropId) {
   const crop = cropOf(cropId);
   if (!crop || plotIndex >= garden.plotsOwned) return "Không có luống này.";
@@ -168,7 +168,7 @@ export function plant(garden, plotIndex, cropId) {
 const isGrowing = (plot) => Boolean(plot && !plot.withered && !isReady(plot));
 const dryPlots = (garden) => garden.plots.filter((plot) => isGrowing(plot) && !plot.watered);
 export const dryCount = (garden) => dryPlots(garden).length;
-// Mỗi luống tưới tốn 1 công. Tưới cả vườn chỉ được khi đủ công cho mọi luống khô; không đủ thì chọn từng luống.
+ 
 export const canWaterPlot = (garden, plotIndex) => {
   const plot = garden.plots[plotIndex];
   return isGrowing(plot) && !plot.watered && careLeft(garden) > 0;
@@ -198,7 +198,7 @@ export const canFertilize = (garden, plotIndex) => {
   const plot = garden.plots[plotIndex];
   return isGrowing(plot) && plot.fert < MAX_FERTILIZER && careLeft(garden) > 0 && garden.goods.phan > 0;
 };
-// Chăm kỹ: dành 1 lượt thời gian rảnh của năm, mỗi mùa còn lại trong năm có thêm DILIGENT_CARE_BONUS công.
+ 
 export function getDiligentBlocker(player) {
   const garden = player.garden;
   if (isResting(garden)) return "Vườn đang nghỉ đông tới năm sau.";
@@ -233,7 +233,7 @@ export function clearPlot(garden, plotIndex) {
   return true;
 }
 
-// Hết mùa: luống được tưới lớn thêm, sâu chưa bắt làm giảm sản lượng, nắng hạn làm héo luống khô.
+ 
 export function advanceSeason(garden, random = Math.random) {
   if (isResting(garden)) return null;
   const report = { season: garden.season, weather: garden.weather, grown: 0, ready: 0, withered: 0, pests: 0 };
@@ -261,7 +261,7 @@ export function advanceSeason(garden, random = Math.random) {
   return report;
 }
 
-// ---------- Chợ ----------
+ 
 export function buyPlot(player) {
   const garden = player.garden;
   const price = plotPrice(garden);
@@ -292,7 +292,7 @@ export function sell(player, cropId, amount) {
   return income;
 }
 
-// ---------- Bếp ----------
+ 
 export const missingFor = (garden, recipe) =>
   Object.entries(recipe.needs).filter(([id, count]) => (garden.goods[id] ?? 0) < count);
 export function getCookBlocker(garden, recipe) {
@@ -308,7 +308,7 @@ export function cook(garden, recipeId) {
   garden.cooked[recipeId] = (garden.cooked[recipeId] ?? 0) + 1;
   return true;
 }
-// Ăn một phần món đã nấu: dùng 1 lượt thời gian rảnh; trả về điểm thực nhận theo chỉ số, hoặc null.
+ 
 export function eat(player, recipeId) {
   const garden = player.garden;
   const recipe = recipeOf(recipeId);

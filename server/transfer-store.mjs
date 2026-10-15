@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto';
 
-// Mã chuyển thiết bị: dữ liệu chỉ nằm trong bộ nhớ máy chủ 10 phút và bị xóa ngay khi máy mới nhận.
-// Máy chủ khởi động lại thì mã mất; người chơi chỉ cần tạo mã mới.
+ 
+ 
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 export const TRANSFER_TTL_MS = 10 * 60 * 1000;
 export const MAX_TRANSFER_BYTES = 4 * 1024 * 1024;
@@ -13,7 +13,7 @@ export function normalizeTransferCode(value) {
   return code.length === 6 && [...code].every(ch => ALPHABET.includes(ch)) ? code : null;
 }
 
-// Gói dữ liệu hợp lệ: { app: "life-again", v: 1, data: { lifeAgain…: chuỗi } }.
+ 
 export function isTransferPackage(value) {
   if (!value || value.app !== 'life-again' || value.v !== 1) return false;
   const { data } = value;
@@ -54,7 +54,7 @@ export function createTransferStore({ now = Date.now } = {}) {
   };
 }
 
-// Giới hạn số lần gọi theo IP trong một khung thời gian, chống dò mã.
+ 
 export function createRateLimiter(limit, windowMs, now = Date.now) {
   const hits = new Map();
   return key => {

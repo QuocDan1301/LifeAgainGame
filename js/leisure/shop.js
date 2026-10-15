@@ -7,13 +7,13 @@ import { applyActivityGain } from "../core/stat-budget.js";
 import { isInPrison } from "../events/crime.js";
 import { crimeTools } from "../events/crime-tools.js";
 
-// Cửa hàng dùng chung cho "Mua vật nuôi" và "Mua sắm". Giá và lãi tính bằng VNĐ;
-// món có profit sinh lãi mỗi năm, mọi món đều bán lại được một nửa giá mua.
-// limit: số lượng tối đa được sở hữu cùng lúc, để lãi không nhân lên vô hạn.
+ 
+ 
+ 
 export const shopCatalog = [
   ...crimeTools,
-  // Thú cưng: không sinh lãi; mỗi năm vuốt ve mỗi con một lần để được cộng hạnh phúc.
-  // food, vaccine: tiền thức ăn và tiêm ngừa trả mỗi năm từ năm sau khi mua (không có vaccine = không cần tiêm).
+   
+   
   { id: "hamster", shop: "pets", group: "companion", icon: "🐹", name: "Chuột hamster", price: 300_000, happiness: 1, limit: 1,
     food: 600_000, description: "Nhỏ xíu, má phồng, chạy vòng quay lách cách suốt đêm." },
   { id: "cat", shop: "pets", group: "companion", icon: "🐱", name: "Mèo", price: 2_500_000, happiness: 2, limit: 1,
@@ -22,7 +22,7 @@ export const shopCatalog = [
     food: 5_000_000, vaccine: 600_000, description: "Trung thành, lần nào bạn về nhà cũng vẫy đuôi chạy ra đón." },
   { id: "capybara", shop: "pets", group: "companion", icon: "🦫", name: "Capybara", price: 30_000_000, happiness: 4, limit: 1,
     food: 8_000_000, description: "Chuột lang nước điềm tĩnh nhất thế giới, ngồi cạnh thôi cũng thấy bình yên." },
-  // Vật nuôi lấy lãi
+   
   { id: "pigeon", shop: "pets", group: "poultry", icon: "🕊️", name: "Bồ câu", price: 100_000, profit: 10_000, limit: 5,
     description: "Nhỏ gọn, sinh sản nhanh, chỉ cần một chiếc chuồng nhỏ trên mái nhà." },
   { id: "duck", shop: "pets", group: "poultry", icon: "🦆", name: "Vịt", price: 120_000, profit: 12_000, limit: 5,
@@ -43,8 +43,8 @@ export const shopCatalog = [
     description: "Khỏe mạnh, bền bỉ, người bạn của đồng ruộng." },
   { id: "horse", shop: "pets", group: "cattle", icon: "🐎", name: "Ngựa", price: 40_000_000, profit: 4_000_000, limit: 5,
     description: "Nhanh nhẹn, được thuê kéo xe và phục vụ du lịch." },
-  // Phương tiện: chỉ có giá mua, không sinh lãi.
-  // license: loại bằng lái cần có trong Tài sản mới được mua.
+   
+   
   { id: "motorbike", shop: "shopping", group: "vehicles", icon: "🛵", name: "Xe máy", price: 30_000_000, license: "motorbike",
     achievement: "own-motorbike", description: "Chiếc xe máy đầu tiên, tự do đi khắp phố phường." },
   { id: "big-bike", shop: "shopping", group: "vehicles", icon: "🏍️", name: "Xe phân khối lớn", price: 400_000_000, license: "motorbike",
@@ -59,7 +59,7 @@ export const shopCatalog = [
     achievement: "own-rolls-royce", description: "Biểu tượng của sự sang trọng bậc nhất." },
   { id: "private-jet", shop: "shopping", group: "vehicles", icon: "✈️", name: "Máy bay riêng", price: 15_000_000_000,
     achievement: "own-private-jet", description: "Bầu trời là của riêng bạn, bay đi đâu tùy thích." },
-  // Lợi nhuận ròng sau vận hành: bất động sản 6–8%/năm, giới hạn số lượng để tránh tích lũy vô hạn.
+   
   { id: "story-home", shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà trả góp", price: 1_500_000_000, description: "Căn nhà mua qua câu chuyện, dùng để ở." },
   { id: "story-small-home", shop: "shopping", group: "realestate", icon: "🏠", name: "Căn hộ nhỏ trả góp", price: 900_000_000, description: "Căn hộ mua qua câu chuyện, dùng để ở." },
   { id: "house", shop: "shopping", group: "realestate", icon: "🏠", name: "Nhà lầu", price: 5_000_000_000, profit: 300_000_000, limit: 3,
@@ -70,7 +70,7 @@ export const shopCatalog = [
     achievement: "own-hotel", description: "Khách sạn trung tâm, phòng kín khách quanh năm." },
   { id: "resort", shop: "shopping", group: "realestate", icon: "🏝️", name: "Resort", price: 200_000_000_000, profit: 12_000_000_000, limit: 1,
     achievement: "own-resort", description: "Khu nghỉ dưỡng ven biển, sóng vỗ rì rào." },
-  // Kinh doanh: tự có lãi mỗi năm, không cần cho thuê.
+   
   { id: "noodle-cart", shop: "shopping", group: "business", icon: "🍜", name: "Xe hủ tiếu", price: 30_000_000, limit: 3,
     achievement: "own-noodle-cart", description: "Phương tiện để nhận nghề Bán hủ tiếu trong Hoạt động → Làm thêm. Không tự sinh lãi hoặc cho thuê." },
   { id: "cafe", shop: "shopping", group: "business", icon: "☕", name: "Quán cafe", price: 1_500_000_000, profit: 120_000_000, limit: 2,
@@ -99,7 +99,7 @@ export const shops = {
   },
 };
 
-// Thứ tự các thẻ trong popup Tài sản.
+ 
 export const ownedSections = [
   { list: "life-livestock", groups: ["companion", "cattle", "poultry"] },
   { list: "life-realestate", groups: ["realestate", "business"] },
@@ -110,18 +110,18 @@ export const ownedSections = [
 export const getShopItem = (id) => shopCatalog.find((item) => item.id === id);
 export const getSellPrice = (item) => Math.floor(item.price / 2);
 
-// Bất động sản chỉ có lãi khi người chơi cho thuê trong Tài sản; mỗi hợp đồng kéo dài 4 năm.
+ 
 export const LEASE_YEARS = 4;
 export const isRental = (item) => item?.group === "realestate";
 export const getLeaseEndAge = (owned) => Number.isInteger(owned.rentedAtAge) ? owned.rentedAtAge + LEASE_YEARS : null;
 export const isLeased = (owned, age) => getLeaseEndAge(owned) !== null && age < getLeaseEndAge(owned);
 
-// Thú cưng được vuốt ve một lần mỗi năm (mỗi con), lưu tuổi lần cuối vào pettedAtAge.
+ 
 export const isCompanion = (item) => item?.group === "companion";
 export const hasPettedThisYear = (owned, age) => owned.pettedAtAge === age;
 
-// Tài sản gộp các món cùng loại thành một dòng (×N) để danh sách không dài ra.
-// Nhà cho thuê chỉ gộp các căn cùng trạng thái: chưa cho thuê, hoặc cùng tuổi hết hạn.
+ 
+ 
 export function groupOwned(entries, age) {
   const groups = new Map();
   for (const owned of entries) {
@@ -130,7 +130,7 @@ export function groupOwned(entries, age) {
   }
   return [...groups.values()];
 }
-// "25 tuổi", "25, 27 tuổi", hoặc "25–40 tuổi" khi có nhiều mốc.
+ 
 export function describeAges(ages) {
   const unique = [...new Set(ages)].sort((a, b) => a - b);
   return unique.length > 3 ? `${unique[0]}–${unique.at(-1)} tuổi` : `${unique.join(", ")} tuổi`;
@@ -139,19 +139,19 @@ export function describeAges(ages) {
 const ownedOf = (player) => [...(player.livestock ?? []), ...(player.purchases ?? [])];
 export const countOwned = (player, id) => ownedOf(player).filter((entry) => entry.id === id).length;
 export const isAtLimit = (player, item) => Boolean(item.limit) && countOwned(player, item.id) >= item.limit;
-// Số món còn mua được một lần: không vượt giới hạn sở hữu và số tiền trong ví.
+ 
 export const maxBuyable = (player, item) =>
   Math.max(0, Math.min(item.limit - countOwned(player, item.id), Math.floor(player.money / item.price)));
 
 export const getPetUpkeep = (item) => (item.food ?? 0) + (item.vaccine ?? 0);
 const describeUpkeep = (item) => item.vaccine ? "thức ăn và tiêm ngừa" : "thức ăn";
 
-// Lãi trả khi sang tuổi mới, cho mỗi món đã sở hữu ít nhất từ năm trước.
-// Thú cưng nuôi từ năm trước thì trừ tiền thức ăn và tiêm ngừa.
+ 
+ 
 export function getAssetYearProjection(player, age) {
   const companions = ownedOf(player).filter((entry) => isCompanion(getShopItem(entry.id)) && entry.boughtAtAge < age);
   const owned = ownedOf(player).filter((entry) => getShopItem(entry.id)?.profit);
-  // Bất động sản: trả tiền thuê cho các năm nằm trong hợp đồng 4 năm.
+   
   const earning = owned.filter((entry) => isRental(getShopItem(entry.id))
     ? Number.isInteger(entry.rentedAtAge) && entry.rentedAtAge < age && age <= getLeaseEndAge(entry)
     : entry.boughtAtAge < age);
@@ -306,7 +306,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
     ));
     const figureText = element("p", "shop-figures", figures.join("\n"));
     card.append(element("h4", "", `${item.icon} ${item.name}`), element("p", "", item.description), figureText, buy);
-    // Vật nuôi lấy lãi: mua một lần đủ số con còn được phép mà ví trả nổi.
+     
     if (item.shop === "pets" && item.limit > 1) {
       const count = maxBuyable(state.player, item);
       const buyMax = element("button", "shop-buy shop-buy-max", count ? `⏫ Mua tối đa · ${count} con` : "⏫ Mua tối đa");
@@ -327,7 +327,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
     return card;
   }
 
-  // Kiểm tra lại khi xác nhận: chỉ mua khi ví, giới hạn sở hữu và giấy phép còn đủ cho cả count món.
+   
   function purchase(item, count) {
     const player = state.player;
     if (count < 1 || player.isAlive === false || isInPrison(player) || (item.minAge && player.age < item.minAge) || player.money < item.price * count ||
@@ -371,7 +371,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
     shopList.append(back, wallet, section);
   }
 
-  // units: các căn cùng loại, cùng trạng thái thuê (một dòng trong Tài sản); nút chỉ cho thuê một căn.
+   
   function renderLease(item, units) {
     const age = state.player.age;
     const owned = units[0];
@@ -402,7 +402,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
       for (const units of groupOwned(ownedOf(state.player), age)) {
         const item = getShopItem(units[0].id);
         if (!item || !groups.includes(item.group)) continue;
-        // Bán món mua sau cùng trong nhóm.
+         
         const owned = units.at(-1);
         const many = units.length > 1;
         const row = element("li", "shop-owned");
@@ -454,6 +454,6 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
   $("activity-pets").addEventListener("click", () => open("pets"));
   $("activity-shopping").addEventListener("click", () => open("shopping"));
   $("close-shop").addEventListener("click", () => shopDialog.close());
-  // Popup Tài sản tự mở trong life-profile.js; ở đây chỉ vẽ các tài sản đã mua.
+   
   $("assets").addEventListener("click", renderOwned);
 }

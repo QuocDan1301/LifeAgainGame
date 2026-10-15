@@ -69,7 +69,7 @@ const steps = {
   },
 };
 
-// Bước 3: chỉ người đủ sức khỏe mới tự dìu người bị nạn ra; người yếu gọi đội cứu hộ vào khiêng.
+ 
 const callRescueTeam = next("Tôi không đủ sức dìu. Gọi cứu hộ vào khiêng ông ra!", 4,
   "Tôi khuyên ông buông túi tài liệu, rồi gọi to chỉ lối nền khô cho đội cứu hộ vừa tới. Họ vào khiêng ông ra khỏi khu vực.\n\n");
 

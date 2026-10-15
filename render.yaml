@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: npm ci --include=dev && npm run build && npm run test:server && npm run test:auction && npm run test:work && npm run test:game-center
+    buildCommand: npm ci --include=dev && npm run build && npm run test:offline && npm run test:family && npm run test:dating && npm run test:detective && npm run test:server && npm run test:auction && npm run test:work && npm run test:game-center
     startCommand: npm start
     healthCheckPath: /health
     envVars:

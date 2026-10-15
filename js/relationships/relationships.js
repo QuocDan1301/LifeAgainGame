@@ -1,3 +1,5 @@
+import { getDatingExpenses } from "./dating-expenses.js";
+import { createFamilyConversation, rememberFamilyConversation } from "./family-conversations.js";
 import { getDatingPartners, addDatingPartnerUpdates, selectDatingPartnerUpdates, removeDatingPartnerUpdates } from './concurrent-dating.js';
 import { maleNames, femaleNames } from "../core/character-data.js";
 import { getEmploymentContext } from "../career/career-jobs.js";
@@ -13,8 +15,8 @@ import { isInPrison } from "../events/crime.js";
 import { getRomanceChance } from "../stats/appearance-rules.js";
 import { getCasualRomanceNote } from "./casual-romance.js";
 
-// Đang thụ án: chỉ giữ liên lạc từ xa (gọi điện, trò chuyện khi được thăm, nhờ người khác chăm sóc),
-// không làm được việc cần có mặt bên ngoài.
+ 
+ 
 const PRISON_BLOCKED_RELATIVE = ["visit", "care"];
 const PRISON_BLOCKED_PARTNER = ["together", "care"];
 const PRISON_NOTE = "Đang thụ án: chưa thể làm việc này.";
@@ -48,7 +50,7 @@ export function createAdmirer(player, age, random = Math.random) {
     pansexual: ["male", "female"],
   };
   const eligibleGenders = gendersByOrientation[player.orientation] ?? ["male", "female"];
-  // Song tính / toàn tính: mỗi lần ngỏ lời chọn nam hoặc nữ với xác suất 50/50.
+   
   const gender = eligibleGenders.length === 1
     ? eligibleGenders[0]
     : pick(eligibleGenders, random);
@@ -239,6 +241,7 @@ export function getBreakupUpdates(player) {
     ? `Tôi và ${person.name} kết thúc hôn nhân.` : `Tôi chủ động chia tay ${person.name}.`;
   const grief = MOOD_EFFECTS.breakup;
   return { partner: null, marriedAtAge: null, relationshipStartedAtAge: null, partnerPromise: null,
+    affair: null,
     happiness: Math.max(0, (player.happiness ?? 0) - grief.immediate),
     moodEffects: addMoodEffect(player, "breakup", player.age),
     nextMarriageProposalAge: null, marriageProposalDeclines: 0,
@@ -252,7 +255,7 @@ export function getBreakupUpdates(player) {
 export function initRelationships(state, save = () => {}, onChange = () => {}) {
   const button = document.getElementById("relationships");
   const dialog = document.getElementById("relationships-dialog");
-  // Mỗi mục một tab như popup Tài sản, để popup không dài ra khi có nhiều con hay nhiều mốc tình cảm.
+   
   const selectTab = initPanelTabs(dialog, document.getElementById("relationship-tabs"));
   const current = document.getElementById("relationship-current");
   const history = document.getElementById("relationship-history");
@@ -263,8 +266,8 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
   actions.className = "shop-groups relationship-actions";
   current.after(actions);
 
-  // Trò chuyện và dành thời gian cùng nhau: mỗi lựa chọn một lần mỗi năm. Xin không gian riêng
-  // kèm lời hẹn trò chuyện sau; giữ lời hẹn thì không bị trừ quan hệ.
+   
+   
   function act(type) {
     const player = state.player;
     const partner = player.partner;
@@ -348,14 +351,109 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
   }
 
   const family = document.getElementById("relationship-family");
-  function relativeAction(id, type) {
+  const conversationDialog = document.getElementById("family-conversation-dialog");
+  const conversationBody = document.getElementById("family-conversation-body");
+  let conversationDraft = null;
+  const conversationText = (text, className) => {
+    const paragraph = document.createElement("p");
+    paragraph.textContent = text;
+    if (className) paragraph.className = className;
+    return paragraph;
+  };
+  function openFamilyConversation(relative, type) {
+    if (conversationDialog.open) return;
+    const scene = createFamilyConversation(state.player, relative, type);
+    if (!scene) return;
+    conversationDraft = scene;
+    document.getElementById("family-conversation-title").textContent = scene.title;
+    conversationBody.replaceChildren(conversationText(scene.greeting));
+    if (scene.recall) conversationBody.append(conversationText(scene.recall, "family-conversation-recall"));
+    const prompt = conversationText(scene.prompt);
+    prompt.id = "family-conversation-prompt";
+    conversationBody.append(prompt);
+    const choices = document.createElement("div");
+    choices.className = "family-conversation-choices";
+    for (const choice of scene.choices) {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "shop-group";
+      option.dataset.familyChoice = choice.id;
+      option.textContent = choice.label;
+      option.addEventListener("click", () => {
+        if (!conversationDialog.open || conversationDraft !== scene) return;
+        const result = relativeAction(relative.id, type, { sceneId: scene.id, age: scene.age, choiceId: choice.id });
+        conversationDraft = null;
+        if (!result) {
+          conversationDialog.close();
+          return;
+        }
+        conversationBody.replaceChildren(conversationText(`Bạn: “${choice.label}”`));
+        const reply = conversationText(result.reply);
+        reply.id = "family-conversation-prompt";
+        conversationBody.append(reply, conversationText("Câu chuyện đã được lưu trong kỷ niệm chung.", "side-job-note"));
+        const back = document.createElement("button");
+        back.type = "button";
+        back.className = "shop-group";
+        back.textContent = "Về với gia đình";
+        back.addEventListener("click", () => conversationDialog.close());
+        conversationBody.append(back);
+        back.focus();
+      });
+      choices.append(option);
+    }
+    const cost = getRelativeActionConfig(state.player, type).cost;
+    conversationBody.append(choices, conversationText(cost
+      ? `Chuyến thăm tốn ${formatMoney(cost)}. Chỉ tính khi bạn chọn câu trả lời; đóng lại để quay về.`
+      : "Chọn cách đáp lời để tiếp tục. Đóng lại sẽ chưa tính lượt tương tác.", "side-job-note"));
+    conversationDialog.showModal();
+    conversationDialog.scrollTop = 0;
+  }
+  document.getElementById("close-family-conversation").addEventListener("click", () => conversationDialog.close());
+  conversationDialog.addEventListener("close", () => {
+    if (conversationDialog.open) return;
+    conversationDraft = null;
+    if (dialog.open) {
+      const heading = document.getElementById("relationship-family-title");
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    }
+  });
+  dialog.addEventListener("close", () => {
+    if (conversationDialog.open) conversationDialog.close();
+  });
+  function renderSharedMemories(card, relative) {
+    const memories = relative.conversationMemories;
+    if (!Array.isArray(memories) || !memories.length) return;
+    const details = document.createElement("details");
+    details.className = "family-shared-memories";
+    const heading = document.createElement("summary");
+    heading.textContent = `Kỷ niệm chung · ${memories.length} câu chuyện gần đây`;
+    const list = document.createElement("ol");
+    for (const memory of [...memories].reverse()) {
+      const item = document.createElement("li");
+      item.textContent = `${memory.age} tuổi · ${memory.memory} ${memory.reply}`;
+      list.append(item);
+    }
+    details.append(heading, list);
+    card.append(details);
+  }
+  function relativeAction(id, type, conversationAnswer = null) {
     const player = state.player;
     const relative = (player.relatives ?? []).find((entry) => entry.id === id);
     const config = getRelativeActionConfig(player, type);
     if (!relative?.alive || !config || player.isAlive === false || relative.done?.[type] === player.age) return;
     if (isInPrison(player) && PRISON_BLOCKED_RELATIVE.includes(type)) return;
     if (config.cost && player.money < config.cost) return;
+    let conversation = null;
+    if (["call", "visit"].includes(type)) {
+      if (!conversationAnswer) return openFamilyConversation(relative, type);
+      const scene = createFamilyConversation(player, relative, type);
+      if (!scene || conversationAnswer.age !== player.age || scene.id !== conversationAnswer.sceneId) return;
+      conversation = rememberFamilyConversation(relative, scene, conversationAnswer.choiceId);
+      if (!conversation) return;
+    }
     const next = { ...relative, done: { ...(relative.done ?? {}), [type]: player.age }, interactions: { ...(relative.interactions ?? {}) } };
+    if (conversation) next.conversationMemories = conversation.memories;
     const who = `${relative.role.toLowerCase()} ${relative.name}`;
     const count = (key) => { next.interactions[key] = (next.interactions[key] ?? 0) + 1; };
     let text;
@@ -364,8 +462,17 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       text = `🗓️ Tôi xin ${who} hẹn lần sau vì đang bận, hứa sẽ gọi hoặc về thăm trước sinh nhật ${player.age + 2} tuổi.`;
     } else {
       player.money -= config.cost;
-      next.bond = Math.min(100, (next.bond ?? 70) + config.bond);
-      const happinessGain = config.happiness ? applyActivityGain(player, "happiness", config.happiness) : 0;
+      const oldBond = next.bond ?? 70;
+      next.bond = Math.max(0, Math.min(100, oldBond + config.bond + (conversation?.choice.bond ?? 0)));
+      const bondGain = next.bond - oldBond;
+      const happiness = (config.happiness ?? 0) + (conversation?.choice.happiness ?? 0);
+      let happinessGain = 0;
+      if (happiness > 0) happinessGain = applyActivityGain(player, "happiness", happiness);
+      else if (happiness < 0) {
+        const before = player.happiness ?? 0;
+        player.happiness = Math.max(0, before + happiness);
+        happinessGain = player.happiness - before;
+      }
       if (config.health) player.health = Math.max(1, (player.health ?? 0) + config.health);
       const kept = next.promise && ["call", "visit"].includes(type);
       if (kept) next.promise = null;
@@ -379,8 +486,9 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         next.condition = "weak";
         text = `💊 Tôi tìm nơi điều trị cho ${who}; bệnh tình đã đỡ hơn (còn yếu, cần tiếp tục chăm sóc).`;
       }
-      const parts = [config.cost ? `Tiền -${formatMoney(config.cost)}` : "", `Gắn kết +${config.bond}`,
-        happinessGain ? `Hạnh phúc +${happinessGain}` : "", config.health ? `Sức khỏe ${config.health}` : "", kept ? "giữ lời hẹn" : ""];
+      if (conversation) text += ` Tôi chọn: “${conversation.choice.label}”. ${conversation.choice.reply}`;
+      const parts = [config.cost ? `Tiền -${formatMoney(config.cost)}` : "", `Gắn kết ${bondGain >= 0 ? "+" : ""}${bondGain}`,
+        happinessGain ? `Hạnh phúc ${happinessGain >= 0 ? "+" : ""}${happinessGain}` : "", config.health ? `Sức khỏe ${config.health}` : "", kept ? "giữ lời hẹn" : ""];
       text += ` ${parts.filter(Boolean).join(" · ")}.`;
     }
     player.relatives = player.relatives.map((entry) => (entry.id === id ? next : entry));
@@ -389,6 +497,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     save();
     render();
     onChange(log);
+    return conversation ? { reply: conversation.choice.reply } : null;
   }
   function renderFamily() {
     if (!family) return;
@@ -404,6 +513,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         title.textContent = `🕯️ ${relative.role} ${relative.name}`;
         info.textContent = relative.passedBeforeTracking ? "Đã mất từ trước." : `Đã mất khi bạn ${relative.diedAtAge} tuổi, hưởng thọ ${getRelativeAge(relative, player.age)}.`;
         card.append(title, info);
+        renderSharedMemories(card, relative);
         family.append(card);
         continue;
       }
@@ -431,7 +541,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         note.className = "side-job-note";
         const jailed = isInPrison(player) && PRISON_BLOCKED_RELATIVE.includes(type);
         note.textContent = done ? "Đã làm năm nay." : jailed ? PRISON_NOTE : short ? `Cần ${formatMoney(config.cost)}. Gọi điện vẫn miễn phí.`
-          : [config.cost ? formatMoney(config.cost) : "Miễn phí", config.bond ? `Gắn kết +${config.bond}` : "",
+          : [config.cost ? formatMoney(config.cost) : "Miễn phí", ["call", "visit"].includes(type) ? "Trò chuyện có lựa chọn · lưu kỷ niệm chung" : config.bond ? `Gắn kết +${config.bond}` : "",
             type === "care" ? "Sức khỏe của bạn -2" : "", type === "postpone" ? "Không bị trừ nếu giữ lời hẹn" : "",
             config.needsCare ? "Giúp ích nhưng không bảo đảm khỏi bệnh" : ""].filter(Boolean).join(" · ");
         button.append(note);
@@ -440,6 +550,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         actions.append(button);
       }
       card.append(title, info, actions);
+      renderSharedMemories(card, relative);
       family.append(card);
     }
     if (player.partner) {
@@ -454,7 +565,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       card.append(title, info);
       family.append(card);
     }
-    // Bạn bè từ những lời làm quen, và cách chủ động kết nối (không phụ thuộc ngoại hình).
+     
     const friends = document.createElement("article");
     friends.className = "family-member";
     const friendsTitle = document.createElement("h4");
@@ -463,7 +574,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     friendsInfo.textContent = (player.friends ?? []).length
       ? "Trò chuyện mỗi năm một lần để giữ tình bạn: thân thiết +3%, Hạnh phúc +1."
       : "Chưa có người bạn mới nào được ghi lại.";
-    // Mỗi người bạn: độ thân thiết và lượt trò chuyện một lần mỗi năm.
+     
     const friendButtons = (player.friends ?? []).map((friend) => {
       const talked = friend.talkedAt === player.age;
       const button = document.createElement("button");
@@ -563,6 +674,13 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         : state.player.datingActivitiesOnly
         ? "Bạn đang độc thân sau chia tay."
         : "Bạn chưa hẹn hò với ai. Mọi cuộc gặp gỡ đều có thời điểm riêng!";
+    if (state.player.marriedAtAge != null && state.player.affair?.spouseId === state.player.partner?.id) {
+      current.textContent += `\n🤫 Quan hệ bí mật: ${state.player.affair.person.name} · từ tuổi ${state.player.affair.startedAtAge}. Nguy cơ bị phát hiện: 50% mỗi lần xét năm mới.`;
+    }
+    const datingExpenses = getDatingExpenses(state.player, (state.player.age ?? 0) + 1);
+    if (datingExpenses.length) {
+      current.textContent += `\n💸 Hẹn hò năm tới: ${datingExpenses.map(charge => `${charge.name}: ${formatMoney(charge.amount)}`).join(" · ")}.\nMỗi năm dao động 6–24 triệu/người, tự trừ khi sang tuổi mới; quà tặng và hoạt động riêng tính thêm. Dừng khi chia tay hoặc kết hôn.`;
+    }
     history.replaceChildren();
     breakup.hidden = !state.player.partner || state.player.isAlive === false;
     confirmation.hidden = true;
@@ -579,6 +697,7 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       const item = document.createElement("li");
       const title = document.createElement("strong");
       title.textContent = `${({ dating: "💞", married: "💍", "marriage-postponed": "💬", breakup: "💔",
+        affair: "🤫", "affair-ended": "💔", "affair-discovered": "💔", divorced: "💔",
         "child-born": "👶", "adopted-child": "🧸", "child-discussion": "💬", widowed: "🕯️", farewell: "🕯️" })[entry.type] ?? "🍂"} ${entry.age} tuổi`;
       const content = document.createElement("p");
       content.textContent = entry.text + (entry.type === "dating" ? `\n${describePerson(entry.person, entry.age)}` : "");

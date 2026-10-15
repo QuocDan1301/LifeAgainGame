@@ -1,9 +1,9 @@
-// May rủi của sự kiện thường ngày. Thứ tự lựa chọn được xoay vòng trong js/events/life-stories.js
-// và độ lớn điểm do tác giả viết (xem docs/su-kien-doi-thuong/SO-TAY.md).
-// May rủi khi chọn: chỉ số mà lựa chọn hướng tới (chỉ số được cộng nhiều nhất) càng cao thì
-// càng dễ suôn sẻ. Suôn sẻ: phần được cộng thêm một nửa, cái giá giảm một nửa.
-// Không trọn vẹn: phần được cộng còn một nửa. Lựa chọn chỉ có mất mát thì không đổi.
-// Lời kể không thêm câu giải thích may rủi (LUCK_NOTES để trống có chủ ý); người chơi thấy qua điểm số.
+ 
+ 
+ 
+ 
+ 
+ 
 export const LUCK_NOTES = {
   poor: "",
 };

@@ -8,11 +8,11 @@ import { createRateLimiter, createTransferStore, isTransferPackage, MAX_TRANSFER
 const SOURCE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST_ROOT = path.join(SOURCE_ROOT, 'dist');
 
-// Trên Render (hoặc khi chạy với --dist) chỉ phục vụ bản đã nén trong dist/, không bao giờ phục vụ code gốc.
+ 
 function defaultRoot() {
   if (!process.env.RENDER && !process.argv.includes('--dist')) return SOURCE_ROOT;
   const built = () => fs.existsSync(path.join(DIST_ROOT, 'index.html'));
-  // Lệnh build trong dashboard Render có thể khác render.yaml: thiếu dist/ thì tự build một lần lúc khởi động.
+   
   if (!built() && process.env.RENDER) execFileSync(process.execPath, ['scripts/build.mjs'], { cwd: SOURCE_ROOT, stdio: 'inherit' });
   if (!built()) throw new Error('Chưa có dist/: chạy npm run build trước.');
   return DIST_ROOT;
@@ -42,13 +42,13 @@ function readBody(req, limit) {
 }
 
 function clientIp(req) {
-  // Render đứng sau proxy: IP thật nằm đầu X-Forwarded-For.
+   
   if (process.env.RENDER) return String(req.headers['x-forwarded-for'] ?? '').split(',')[0].trim() || 'unknown';
   return req.socket.remoteAddress ?? 'unknown';
 }
 
-// Chuyển thiết bị: máy cũ gửi gói dữ liệu, nhận mã 6 ký tự; máy mới nhập mã để lấy về (một lần, trong 10 phút).
-// Bản cũ trên GitHub Pages gọi sang đây để tạo mã chuyển nhà; thêm địa chỉ khác qua TRANSFER_ORIGINS.
+ 
+ 
 const CORS_ORIGINS = new Set((process.env.TRANSFER_ORIGINS ?? 'https://quocdan1301.github.io').split(',').map(origin => origin.trim()).filter(Boolean));
 
 function createTransferApi() {
@@ -89,7 +89,7 @@ function createTransferApi() {
   };
 }
 
-// Phục vụ game và trang giới thiệu; không có tài khoản hay cơ sở dữ liệu.
+ 
 export function createGameServer({ root = defaultRoot() } = {}) {
   const transferApi = createTransferApi();
   return http.createServer((req, res) => {
@@ -112,8 +112,9 @@ export function createGameServer({ root = defaultRoot() } = {}) {
       const data = fs.readFileSync(file);
       const ext = path.extname(file);
       const headers = { 'Content-Type': TYPES[ext] ?? 'application/octet-stream', 'X-Content-Type-Options': 'nosniff' };
-      // Trang và service worker luôn hỏi lại máy chủ để bản cập nhật tới ngay.
-      if (ext === '.html' || relative === '/sw.js') headers['Cache-Control'] = 'no-cache';
+       
+       
+      headers['Cache-Control'] = 'no-cache';
       res.writeHead(200, headers);
       res.end(req.method === 'HEAD' ? undefined : data);
     } catch { res.writeHead(404); res.end(); }

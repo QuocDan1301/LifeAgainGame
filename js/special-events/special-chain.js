@@ -9,11 +9,11 @@ import { createLuggageSpecialStep } from "./special-event-55.js";
 import { createLaterSpecialStep } from "./special-later-life.js";
 import { lifeRandom } from "../core/life-seed.js";
 
-// Dữ liệu chuỗi đặc biệt luôn viết lựa chọn đúng ở ô đầu. Thứ tự hiển thị được xáo theo
-// đời chơi + specialId + bước: tải lại trang không đổi, nhưng mỗi đời một khác.
-// Mọi logic dựa vào vị trí phải dùng sourceIndex (chỉ số tác giả viết), không dùng vị trí hiển thị.
+ 
+ 
+ 
 
-// Gắn chỉ số tác giả cho lựa chọn chưa có (bước đã tự gắn trước khi lọc thì giữ nguyên).
+ 
 export function tagSourceIndex(event) {
   if (!event?.choices) return event;
   return { ...event, choices: event.choices.map((choice, index) => ({ ...choice, sourceIndex: choice.sourceIndex ?? index })) };
@@ -33,7 +33,7 @@ export function orderSpecialChoices(event, player) {
 
 export const isOrderedSpecialChain = event => event?.kind === "special-chain" || event?.kind === "lost-child-chain";
 
-// Bước tiếp theo của chuỗi đặc biệt theo thứ tự tác giả (chưa xáo).
+ 
 export function createAuthoredSpecialStep(kind, specialId, stepNumber, inventory = {}, player = {}) {
   if (kind === "lost-child-chain") return createLostChildSpecialStep(stepNumber);
   if (specialId?.startsWith("later-")) return createLaterSpecialStep(Number(specialId.slice(6)), stepNumber, inventory);
@@ -46,7 +46,7 @@ export function createAuthoredSpecialStep(kind, specialId, stepNumber, inventory
   return createDiamondSpecialStep(stepNumber, inventory);
 }
 
-// Túi đồ sau khi chọn một nhánh đi tiếp (vật phẩm nhận được, thay đổi do nhánh ghi sẵn).
+ 
 export function applySpecialInventory(inventory, choice) {
   const next = { ...(inventory ?? {}) };
   if (choice.grants) next[choice.grants] = true;

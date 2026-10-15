@@ -4,17 +4,17 @@ import { openMojiArt } from "../media/event-art.js";
 import { formatMoney } from "../core/money-format.js";
 import { addMoodEffect } from "../stats/mood-rules.js";
 
-// Người thân có danh tính và tuổi: cha mẹ (tạo cho mọi cuộc đời) và bạn đời (dùng lại người yêu hiện có).
-// Mỗi người có tên, vai trò, tuổi, còn sống/đã mất, mức gắn kết và tình trạng sức khỏe.
-// Các con số là thông số gameplay, không phải mô phỏng y khoa.
+ 
+ 
+ 
 export const PARENT_AGE_AT_BIRTH = { father: [24, 36], mother: [21, 33] };
-// Bản lưu cũ: cha mẹ đã quá tuổi này được ghi là đã mất từ trước, không tạo sự kiện qua đời.
+ 
 export const PARENT_MAX_TRACKED_AGE = 92;
-// Vừa bổ sung cha mẹ cho cuộc đời đang chơi thì vài năm đầu chưa có nguy cơ qua đời.
+ 
 export const TRACKING_GRACE_YEARS = 2;
 
-// Tình trạng: khỏe → yếu → bệnh nặng. Chỉ người đang yếu hoặc bệnh nặng mới có nguy cơ qua đời
-// (trừ tuổi rất cao), nên luôn có dấu hiệu báo trước.
+ 
+ 
 export const CONDITIONS = {
   healthy: { label: "Khỏe", icon: "🙂" },
   weak: { label: "Yếu", icon: "🥀" },
@@ -27,10 +27,10 @@ const DEATH_BASE = [{ from: 100, chance: 0.4 }, { from: 90, chance: 0.15 }, { fr
 const DEATH_CONDITION = { healthy: 0, weak: 1, severe: 3 };
 export const SUDDEN_DEATH_AGE = 95;
 export const MAX_RELATIVE_AGE = 110;
-// Chăm sóc trong năm giảm nguy cơ (không bảo đảm cứu sống); nhờ người khác hỗ trợ cũng giúp một phần.
+ 
 export const CARE_RISK_RATE = { self: 0.7, helper: 0.85, treatment: 0.6 };
 
-// Tương tác: giới hạn lượt mỗi năm, luôn có cách kết nối miễn phí (gọi điện).
+ 
 export const RELATIVE_ACTIONS = {
   call: { label: "📞 Gọi điện, trò chuyện", cost: 0, bond: 2, happiness: 1 },
   visit: { label: "🏠 Về thăm, dành thời gian cùng nhau", cost: 2_000_000, bond: 4, happiness: 2 },
@@ -40,16 +40,16 @@ export const RELATIVE_ACTIONS = {
   postpone: { label: "🗓️ Xin hoãn, hẹn lần sau", cost: 0, bond: 0 },
 };
 export const BROKEN_FAMILY_PROMISE = 3;
-// Hỗ trợ tài chính từ cha mẹ khi gặp khó khăn: cần ít nhất một người còn sống, gắn kết từ 40, 3 năm một lần.
+ 
 export const FAMILY_SUPPORT = { amount: 10_000_000, minBond: 40, everyYears: 3, maxParentAge: 85 };
 
-// Đau buồn: mức trừ ngay theo gắn kết (<40: 5, 40–79: 10, từ 80: 15), sau đó −3, −2, −1 (MOOD_EFFECTS.bereavement).
+ 
 export const getGriefLoss = (bond) => (bond >= 80 ? 15 : bond >= 40 ? 10 : 5);
 
 const art = (code, alt) => openMojiArt(code, alt);
 const between = ([min, max], random) => min + Math.floor(random() * (max - min + 1));
 
-// Bổ sung cha mẹ (một lần). Cuộc đời đang chơi: tuổi hợp lý theo tuổi nhân vật, chưa có nguy cơ qua đời ngay.
+ 
 export function ensureRelatives(player, random = Math.random) {
   if (Array.isArray(player.relatives)) return player.relatives;
   const parent = (id, role, names, range) => {
@@ -73,7 +73,7 @@ export const getRelativeAge = (relative, playerAge) =>
   relative.ageAtPlayerBirth + (relative.alive ? playerAge : relative.diedAtAge ?? playerAge);
 export const getPartnerAge = (partner, playerAge) => partner.ageAtMeeting + Math.max(0, playerAge - partner.metAtAge);
 
-// Danh sách người thân đang theo dõi: cha mẹ còn sống và bạn đời (nếu có), dạng thống nhất.
+ 
 export function getRelativeActionConfig(player, type) {
   const config = RELATIVE_ACTIONS[type];
   if (!config) return null;
@@ -109,7 +109,7 @@ export function getDeathChance(member, age, caredWith = null) {
   return Math.min(0.9, base * factor * (caredWith ? CARE_RISK_RATE[caredWith] : 1));
 }
 
-// Mỗi sinh nhật: người thân già đi, tình trạng sức khỏe thay đổi (có thông báo), lời hẹn được kiểm tra.
+ 
 export function collectFamilyYear(player, age, random = Math.random) {
   ensureRelatives(player);
   const lines = [];
@@ -131,7 +131,7 @@ export function collectFamilyYear(player, age, random = Math.random) {
     const next = { ...relative };
     const member = { role: next.role, name: next.name, age: getRelativeAge(next, age), condition: next.condition ?? "healthy" };
     progress(member, (condition) => { next.condition = condition; }, next.caredAt === age - 1);
-    // Xin hoãn mà không giữ lời hẹn (không gọi, không thăm trước hạn) thì gắn kết giảm nhẹ.
+     
     if (next.promise && age > next.promise.dueAge) {
       next.bond = Math.max(0, next.bond - BROKEN_FAMILY_PROMISE);
       lines.push(`🤐 Tôi đã hẹn gọi lại cho ${next.role.toLowerCase()} ${next.name} nhưng chưa giữ lời: Gắn kết -${BROKEN_FAMILY_PROMISE}.`);
@@ -160,7 +160,7 @@ export function collectFamilyYear(player, age, random = Math.random) {
   return lines.length ? { content: lines.join("\n") } : null;
 }
 
-// Kỷ niệm chỉ dựng từ những tương tác đã thật sự xảy ra.
+ 
 function describeMemories(interactions = {}, role) {
   const parts = [
     interactions.calls ? `${interactions.calls} cuộc gọi` : "",
@@ -174,9 +174,9 @@ function describeMemories(interactions = {}, role) {
   return parts.length ? `Kỷ niệm còn lưu: ${parts.join(", ")}.` : `Những năm tháng có ${role.toLowerCase()} bên cạnh vẫn ở lại trong ký ức.`;
 }
 
-// Người thân qua đời (tuổi già, bệnh nặng): quyết định khi sang tuổi, hiện thành sự kiện ưu tiên.
-// Chỉ một người mỗi năm; người đã mất không còn tham gia tương tác hay lời mời.
-// Chỉ xét người thân đã có (không tạo mới ở đây để không tốn lượt ngẫu nhiên khi chọn sự kiện).
+ 
+ 
+ 
 export function createRelativeDeathEvent(player, age, random = Math.random) {
   for (const member of getLivingFamily(player)) {
     const atAge = { ...member, age: member.age + 1 };
@@ -207,9 +207,9 @@ function buildDeathEvent(player, member, memberAge, age) {
     familyMemories: [...(player.familyMemories ?? []), { age, role: member.role, name: member.name, memberAge, text: memory }],
   };
   if (isPartner) {
-    // Góa: giữ lịch sử hôn nhân, không tự mở hẹn hò mới.
+     
     Object.assign(updates, { ...(person.id === player.partner?.id ? { partner: null, widowedAtAge: player.marriedAtAge != null ? age : player.widowedAtAge ?? null, marriedAtAge: null,
-      relationshipStartedAtAge: null, nextMarriageProposalAge: null, nextChildProposalAge: null, partnerPromise: null,
+      relationshipStartedAtAge: null, nextMarriageProposalAge: null, nextChildProposalAge: null, partnerPromise: null, affair: null,
       datingActivitiesOnly: true } : {}),
       ...removeDatingPartnerUpdates(player, person.id) });
   } else {
@@ -236,7 +236,7 @@ function buildDeathEvent(player, member, memberAge, age) {
   };
 }
 
-// Có thể nhận hỗ trợ tài chính từ cha mẹ không.
+ 
 export function canGetFamilySupport(player) {
   const helpers = (player.relatives ?? []).filter((relative) => relative.alive && relative.bond >= FAMILY_SUPPORT.minBond &&
     getRelativeAge(relative, player.age) <= FAMILY_SUPPORT.maxParentAge);

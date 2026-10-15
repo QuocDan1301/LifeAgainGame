@@ -1,6 +1,6 @@
 import { collectReformationYear } from '../js/events/crime-consequences.js';
-// Kiểm tra bộ sự kiện đời thường mới và sinh sổ dấu.
-//   node scripts/check-life-stories.mjs              → kiểm tra + mô phỏng
+ 
+ 
 //   node scripts/check-life-stories.mjs --registry   → ghi docs/su-kien-doi-thuong/SO-DAU.md
 import { canAffordChoice } from '../js/core/story-transactions.js';
 import assert from 'node:assert/strict';
@@ -13,7 +13,7 @@ import {
 const words = value => String(value).match(/[\p{L}\p{N}]+/gu)?.length ?? 0;
 const allowedStats = new Set(['health', 'happiness', 'intelligence', 'appearance']);
 const allowedNeeds = new Set(Object.keys(NEEDS));
-// Lối viết của AI cần tránh (xem SO-TAY.md).
+ 
 const banned = [/vô cùng/iu, /bỗng nhiên/iu, /bạn cảm thấy/iu, /(^|[.?…]s+)thật là/iu, /!/u, /[\p{Extended_Pictographic}]/u, /(rút ra|một|là) bài học|bài học (quý|đắt|lớn|cuộc|cho tôi)/iu];
 const LIMITS = { text: 60, result: 55, label: 12 };
 
@@ -73,7 +73,7 @@ for (const story of lifeStoryCatalog) {
   }
 }
 
-// Dấu bắt buộc phải được gieo trước tuổi bắt đầu của sự kiện dùng nó; dấu chặn chỉ cần tồn tại.
+ 
 for (const [flag, uses] of consumers) {
   const made = producers.get(flag) ?? [];
   for (const use of uses) {
@@ -82,7 +82,7 @@ for (const [flag, uses] of consumers) {
   }
 }
 
-// Mỗi hoàn cảnh hợp lý ở mỗi tuổi phải nhận được ít nhất 3 sự kiện cố định (mục tiêu 4).
+ 
 const coveredAges = [];
 const thinSpots = [];
 function profilesFor(age) {
@@ -108,7 +108,7 @@ function profilesFor(age) {
                 partner: partner === 'dating' || partner === 'married' ? { id: 'p', name: 'Lê Minh Thư' } : null,
                 marriedAtAge: partner === 'married' ? Math.max(20, age - 10) : null,
                 widowedAtAge: partner === 'widowed' ? age - 1 : null,
-                // Con nhỏ: khoảng 3 tuổi; con lớn: sinh khi mình 27 tuổi.
+                 
                 children: kids ? [{ id: 'c', name: 'Phạm Gia Bảo', initialAge: 0, joinedAtAge: kids === 'young' ? Math.max(25, age - 3) : 27 }] : [],
               });
             }
@@ -126,7 +126,7 @@ for (let age = 1; age <= 104; age++) {
   }
 }
 
-// Mô phỏng nhiều cuộc đời: pool không rỗng, không lặp sự kiện, đo tỉ lệ chuyện cũ quay lại.
+ 
 const runs = process.argv.includes('--quick') ? 100 : 4000;
 let chainShown = 0, chainEligibleYears = 0;
 const shownCount = new Map();
@@ -136,7 +136,7 @@ for (let run = 0; run < runs; run++) {
     relatives: [{ id: 'father', name: 'Nguyễn Quốc Dân', alive: true }, { id: 'mother', name: 'Trần Thu Hà', alive: true }],
   };
   for (const age of coveredAges) {
-    // Hoàn cảnh ngẫu nhiên theo tuổi (gia đình, tiền, việc làm), giữ nguyên dấu đã có.
+     
     const options = profilesFor(age);
     const { storyFlags, name, ...circumstance } = options[Math.floor(Math.random() * options.length)];
     Object.assign(player, circumstance, { age: age - 1 });
@@ -147,7 +147,7 @@ for (let run = 0; run < runs; run++) {
     collectReformationYear(player, age);
     const pool = createLifeStoryEvents(age, player);
     check(pool.length >= 2, `Tuổi ${age}: chỉ còn ${pool.length} sự kiện trong một lần mô phỏng`);
-    if (Math.random() >= 0.8 || !pool.length) continue; // 20% năm không có sự kiện, như main.js
+    if (Math.random() >= 0.8 || !pool.length) continue;  
     if (pool.some(e => e.chain)) chainEligibleYears++;
     const event = pickWeightedStory(pool);
     if (event.chain) chainShown++;
@@ -157,7 +157,7 @@ for (let run = 0; run < runs; run++) {
     Object.assign(player, choice.playerUpdates);
   }
 }
-// Trong game ba mẹ chỉ có thể mất khi nhân vật đã trưởng thành.
+ 
 const noParents = { isAlive: true, money: 0, health: 70, storyFlags: [], relatives: [] };
 for (const age of coveredAges.filter(age => age >= 20)) {
   check(createLifeStoryEvents(age, noParents).length >= 1, `Tuổi ${age}: không còn sự kiện nào khi ba mẹ đã mất`);

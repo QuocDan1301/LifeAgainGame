@@ -3,9 +3,9 @@ import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { NO_SLOT_LABEL, applyActivityGain, describeActivitySlots, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
-// Làm đẹp: làm nail (an toàn, mỗi năm một lần) và phẫu thuật thẩm mỹ (từ 18 tuổi,
-// mỗi năm một lần). Gói càng đắt thì tỉ lệ thành công càng cao và chỉ số tăng càng
-// nhiều, nhưng khi thất bại thì mức trừ cũng nặng tương ứng.
+ 
+ 
+ 
 export const NAIL = { id: "nail", icon: "💅", name: "Làm nail", price: 300_000, effects: { appearance: 1, happiness: 2 } };
 
 export const SURGERY_MIN_AGE = 18;
@@ -22,14 +22,14 @@ export const surgeryPackages = [
 ];
 
 export const statLabels = { health: "Sức khỏe", intelligence: "Trí tuệ", happiness: "Hạnh phúc", appearance: "Ngoại hình" };
-// Mức tăng thực nhận khi chỉ số đã gần 100 hoặc đã gần đủ mức tăng trong năm.
+ 
 const realGains = (player, stats) => Object.fromEntries(Object.entries(stats)
   .map(([stat, value]) => [stat, previewActivityGain(player, stat, value)]));
 const listText = (stats, sign) => Object.entries(stats).map(([stat, value]) => `${statLabels[stat]} ${sign}${value}`).join(" · ");
 export const hasNailThisYear = (player) => (player.nailAge ?? -1) === player.age;
 export const hasSurgeryThisYear = (player) => (player.surgeryAge ?? -1) === player.age;
 
-// Cộng/trừ chỉ số trong khoảng 0–100 (sức khỏe tối thiểu 1 để phẫu thuật không gây tử vong ngay).
+ 
 function applyStats(player, stats, sign) {
   const changes = [];
   for (const [stat, value] of Object.entries(stats)) {

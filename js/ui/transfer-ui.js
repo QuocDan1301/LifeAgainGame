@@ -9,7 +9,7 @@ import {
   uploadTransferPackage,
 } from "../core/transfer.js";
 
-// Popup Chuyển thiết bị ở bến xe: tab Gửi đi (tạo mã, lưu tệp) và tab Nhận về (nhập mã, mở tệp).
+ 
 export function initTransfer() {
   const get = id => document.getElementById(id);
   const dialog = get("transfer-dialog");
@@ -90,7 +90,7 @@ export function initTransfer() {
   get("transfer-download").addEventListener("click", event => run(event.currentTarget, sendStatus, async () => {
     if (!hasSaveData()) throw new Error("Máy này chưa có dữ liệu game để lưu.");
     const file = new File([JSON.stringify(createTransferPackage())], backupFileName(), { type: "application/json" });
-    // App đã cài trên iPhone không tải tệp trực tiếp được: dùng bảng chia sẻ để lưu vào Tệp.
+     
     if (navigator.standalone && navigator.canShare?.({ files: [file] })) {
       try {
         await navigator.share({ files: [file], title: "Sao lưu Life Again" });
@@ -142,7 +142,7 @@ export function initTransfer() {
     location.reload();
   }));
 
-  // Đến từ nút Chuyển sang nhà mới ở bản cũ: mở sẵn tab Nhận về và lấy dữ liệu bằng mã trong địa chỉ.
+   
   const incoming = new URLSearchParams(location.search).get("nhan");
   if (incoming) {
     history.replaceState(null, "", location.pathname + location.hash);

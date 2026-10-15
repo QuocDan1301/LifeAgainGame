@@ -1,4 +1,4 @@
-/* Chỉ tác động đến hai hộp thành tựu. Nạp file này SAU CSS chính. */
+ 
 .achievement-confetti {
   position: fixed;
   inset: 0;
@@ -40,7 +40,7 @@
 #achievement-unlock-dialog::backdrop {
   background: rgb(9 24 40 / 60%);
 }
-/* Tiêu đề dạng dải xanh giống các popup khác (nút ✕ đã được đưa ra góc khung). */
+ 
 #achievements-dialog .achievements-heading {
   display: flex;
   align-items: center;

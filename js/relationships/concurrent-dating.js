@@ -1,7 +1,7 @@
 import { createDatingDramaStep } from './dating-drama.js';
 
 export const MAX_DATING_PARTNERS = 2;
-export const DATING_DISCOVERY_CHANCE = 0.25;
+export const DATING_DISCOVERY_CHANCE = 0.5;
 const contextKeys = ['relationshipStartedAtAge', 'nextMarriageProposalAge', 'marriageProposalDeclines',
   'partnerActions', 'partnerPromise'];
 

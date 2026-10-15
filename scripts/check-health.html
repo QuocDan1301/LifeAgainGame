@@ -20,24 +20,24 @@
       appearance: 50, money: 0, illnessPlan: [], illnesses: [], ...extra });
     const job = (shift = "full-time") => [{ storeId: "gs25", shift, startedAtAge: 20 }];
 
-    // 1. Ngưỡng sức khỏe trong cấu hình tập trung.
+     
     assert(["good", "fair", "weak", "critical", "empty"].join() === [100, 69, 39, 19, 0].map(h => H.getHealthBand(h).id).join(), "Health bands");
     assert(H.getHealthBand(70).id === "good" && H.getHealthBand(40).id === "fair" && H.getHealthBand(20).id === "weak" && H.getHealthBand(1).id === "critical",
       "Band edges 70/40/20/1");
-    // 2. Nhận việc theo sức khỏe.
+     
     assert(H.getJobHealthRule(player({ health: 80, sideJobs: job() })).allowed && !H.getJobHealthRule(player({ health: 80, sideJobs: job() })).warning, "Healthy: normal");
     assert(H.getJobHealthRule(player({ health: 50, sideJobs: job() })).warning, "40–69: warning when taking more work");
     assert(!H.getJobHealthRule(player({ health: 30, sideJobs: job() })).allowed && H.getJobHealthRule(player({ health: 30 })).allowed,
       "20–39: no extra work when already working");
     assert(!H.getJobHealthRule(player({ health: 10 })).allowed, "1–19: no new work");
-    // Nghỉ ốm khi yếu: mất một nửa lương ca và hao sức của các ca đó; khỏe thì không.
+     
     const sickWorker = player({ health: 30, sideJobs: job() });
     assert(collectSideJobYear(sickWorker, 31, () => 0).content.includes("nghỉ ốm") && sickWorker.money === 36_000_000 && sickWorker.health === 25,
       "Weak health: sick leave halves shift pay and strain");
     const fit = player({ health: 80, sideJobs: job() });
     collectSideJobYear(fit, 31, () => 0);
     assert(fit.money === 72_000_000 && fit.health === 70, "Healthy workers do not take sick leave");
-    // Cấp cứu lặp lại có nguy cơ tử vong; lần đầu thì không.
+     
     const exhausted = player({ health: 5, sideJobs: job(), emergencyAges: [29] });
     collectSideJobYear(exhausted, 31, () => 0.99);
     assert(exhausted.isAlive !== false && H.getEmergencyDeathChance(exhausted, 32) === 0.5, "Repeated emergencies raise the death risk");
@@ -45,7 +45,7 @@
     collectSideJobYear(doomed, 31, () => 0.1);
     assert(doomed.isAlive === false && doomed.deathCause === "exhaustion", "Working to exhaustion again can be fatal");
 
-    // Nghỉ dưỡng: không lương ca, không hao sức ca, hồi phục nhiều hơn khi yếu; công việc chính giữ lương, lùi xét nâng bậc.
+     
     const rester = player({ age: 30, health: 15, restYear: 31, sideJobs: job(), employmentStatus: "employed", careerLevel: 1,
       careerPath: { id: "programming" }, lastSalaryAge: 30, nextPromotionAge: 32 });
     const restYear = completeLifeYear(rester, 31);
@@ -54,17 +54,17 @@
     assert(rester.nextPromotionAge === 33, "Rest delays the next promotion review by a year");
     assert(H.REST_RECOVERY.critical > H.REST_RECOVERY.fair && H.REST_RECOVERY.fair > H.REST_RECOVERY.good, "Rest helps more when health is low");
 
-    // Sự kiện tử vong: không ghi lương, sinh hoạt phí sau dòng tử vong.
+     
     const victim = player({ age: 34, money: 5_000_000, employmentStatus: "employed", careerLevel: 1, careerPath: { id: "programming" }, lastSalaryAge: 34 });
     const death = completeLifeYear(victim, 35, { age: 35, isAlive: false, health: 0 });
     assert(victim.money === 5_000_000 && !death.salary && !death.living && victim.age === 35, "Event death settles nothing after the death line");
-    // Biến cố không phải lựa chọn tử vong mà làm sức khỏe về 0: cấp cứu, không tự động tử vong.
+     
     const injured = player({ age: 40, health: 3, money: 0 });
     const injury = completeLifeYear(injured, 41, { age: 41, health: 0 });
     assert(injured.isAlive !== false && injured.health === H.EMERGENCY.healthAfter && injury.health.content.includes("cấp cứu"),
       "An ordinary event that empties health leads to an emergency, not death");
 
-    // 5. Tuổi già: xét tuổi, sức khỏe và bệnh, không có một xác suất cố định cho mọi lứa tuổi.
+     
     assert(H.getOldAgeDeathChance(65, 80) === 0 && H.getOldAgeDeathChance(85, 80) > 0, "Risk starts in old age");
     assert(H.getOldAgeDeathChance(85, 90) < H.getOldAgeDeathChance(85, 30), "Low health raises the old-age risk");
     assert(H.getOldAgeDeathChance(85, 60, ["critical"]) > H.getOldAgeDeathChance(85, 60), "Untreated illness raises the old-age risk");
@@ -72,14 +72,14 @@
     const elder = player({ age: 79, health: 50 });
     assert(completeLifeYear(elder, 80).health.content.includes("Tuổi cao") && elder.health === 49, "Health declines with age");
 
-    // 6. Bóng đá: phỏng vấn cần thể lực.
+     
     const footballer = extra => player({ age: 21, careerPath: { id: "football", field: "Bóng đá", school: { name: "Học viện" } }, ...extra });
     const unfit = createInterviewResult(footballer({ health: 50 }), true, 22);
     assert(unfit.updates.employmentStatus === "unemployed" && unfit.content.includes("thể lực"), "A correct answer fails without fitness");
     assert(createInterviewResult(footballer({ health: H.FOOTBALL_MIN_HEALTH }), true, 22).updates.employmentStatus === "employed", "Fit players pass");
     assert(createInterviewResult(player({ health: 30, careerPath: { id: "law", field: "Luật" } }), true, 22).updates.employmentStatus === "employed",
       "Other careers do not need fitness");
-    // Sự kiện cứu người: khỏe thì tự dìu, yếu thì gọi cứu hộ; lựa chọn chắc chắn nguy hiểm vẫn tử vong.
+     
     const strongStep = createSaveLifeSpecialStep(3, { health: 80 });
     const weakStep = createSaveLifeSpecialStep(3, { health: 20 });
     assert(strongStep.choices.some(c => c.label.includes("dìu") && c.nextStep === 4), "Healthy characters can carry the victim out");
@@ -87,7 +87,7 @@
       "Weak characters call the rescue team instead");
     assert(strongStep.choices.some(c => c.death) && weakStep.choices.some(c => c.death), "High health does not protect from the collapsing scaffold");
 
-    // Giao diện.
+     
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());
@@ -106,16 +106,16 @@
     const closeAll = () => document.querySelectorAll("dialog[open]").forEach(d => d.close());
     const buttonWith = (root, text) => [...root.querySelectorAll("button")].find(b => b.textContent.includes(text));
 
-    // Thẻ cảnh báo khi sức khỏe nguy kịch.
+     
     assert(!$("health-alert").hidden && $("health-alert").textContent.includes("Nguy kịch"), "Low-health card is visible");
-    // Không nhận thêm việc làm thêm khi nguy kịch.
+     
     $("activities").click();
     $("activity-part-time").click();
     assert([...$("side-job-body").querySelectorAll(".side-job-shift")].every(b => b.disabled) && $("side-job-body").textContent.includes("nguy kịch"),
       "Critical health blocks new side jobs");
     closeAll();
 
-    // Hồi phục miễn phí: có giới hạn mỗi năm, không tốn tiền.
+     
     $("activities").click();
     $("activity-self-development").click();
     $("self-development-body").querySelector('.shop-group[data-stat="health"]').click();
@@ -124,7 +124,7 @@
     assert(state.player.health === 17 && state.player.money === 1_000_000 && recover("rest").disabled, "Free rest: +5 when critical, once per year");
     recover("walk").click();
     assert(state.player.health === 20 && recover("walk").disabled, "Free light walk once per year");
-    // Gym khi yếu: cảnh báo và hiệu quả còn một nửa; yoga được cộng thêm.
+     
     const gymCard = $("self-development-body").querySelector('.dev-activity[data-activity="gym"]');
     assert(gymCard.textContent.includes("hiệu quả chỉ còn một nửa"), "Heavy gym warns when weak");
     $("self-development-body").querySelector('.dev-buy[data-activity="gym"][data-tier="basic"]').click();
@@ -135,7 +135,7 @@
     assert(!premium, "Health page only lists health activities");
     closeAll();
 
-    // Hộp thoại trước sinh nhật khi nguy kịch và đang làm thêm.
+     
     state.player.health = 12;
     state.player.developmentDone = {};
     $("age-up").click();

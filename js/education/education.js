@@ -25,7 +25,7 @@ function getBaseEducationStatus(player) {
   if (player.employmentStatus === "retired") return { text: "Nghỉ hưu", icon: "🌅" };
   if (player.casualService) return { text: "Đang thực hiện nghĩa vụ quân sự", icon: "🪖" };
   if (player.casualLife && player.age >= 62 && !(player.streetJobs ?? []).length) return { text: "Nghỉ mưu sinh", icon: "🌅" };
-  // Chưa có công việc chính thì hiện cửa hàng làm thêm đầu tiên.
+   
   const sideJob = getSideJobTitle(player);
   if (sideJob && !(player.employmentStatus === "employed" && player.job)) return { text: sideJob, icon: "🏪" };
   if (player.employmentStatus === "unemployed" || player.job === "Thất nghiệp") {
@@ -37,7 +37,7 @@ function getBaseEducationStatus(player) {
       icon: careerIcons[player.careerPath?.id] ?? "💼" };
   }
   const career = player.careerPath;
-  // Học xong mà chưa có việc (chưa nộp hồ sơ hoặc chưa đậu) thì không còn là sinh viên.
+   
   if (career && player.age >= 22) return { text: "Chưa có việc làm", icon: "🔎" };
   if (career) {
     return { text: career.status || `Học ${career.field}`,
@@ -62,7 +62,7 @@ export function updateEducationHistory(state) {
       [15, "🏫", "Bắt đầu học THPT"],
     ].filter(([age]) => age <= player.age)
       .map(([age, icon, text]) => ({ age, icon, text }));
-    // Bổ sung những mốc đã ghi trong nhật ký của bản lưu cũ.
+     
     for (const log of state.logs ?? []) {
       if (!/(Chọn khối |Hành trình học tập của bạn bắt đầu|bắt đầu hành trình nhập ngũ|gia nhập .*Academy|bắt đầu làm việc tại|chính thức được đưa lên đội 1|bạn được nâng lên bậc|thất nghiệp|bắt đầu một năm học ở trường mới|một năm học đáng nhớ)/iu.test(log.content ?? "")) continue;
       state.educationHistory.push({ age: log.age, icon: "📖", text: log.summary || log.content });
@@ -91,8 +91,8 @@ export function initEducation(state, save) {
   const icon = document.getElementById("education-icon");
   const dialog = document.getElementById("education-dialog");
   const history = document.getElementById("education-history");
-  // Đếm số dòng thật của chữ. Không dùng scrollHeight: nét chữ Sriracha cao hơn chiều cao
-  // dòng nên luôn "tràn" vài px, khiến chữ bị thu nhỏ tới mức tối thiểu dù vẫn đủ chỗ.
+   
+   
   function lineCount() {
     const range = document.createRange();
     range.selectNodeContents(label);
@@ -105,7 +105,7 @@ export function initEducation(state, save) {
     const maxHeight = parseFloat(style.maxHeight);
     const lineRatio = parseFloat(style.lineHeight) / parseFloat(style.fontSize);
     let size = parseFloat(style.fontSize);
-    // Chênh lệch 1px có thể do trình duyệt làm tròn kích thước chữ.
+     
     while (size > 10 && (label.scrollWidth > label.clientWidth + 1 || lineCount() * size * lineRatio > maxHeight + 0.5)) {
       size -= 0.5;
       label.style.fontSize = `${size}px`;
@@ -119,7 +119,7 @@ export function initEducation(state, save) {
     const salaryDetails = document.getElementById("career-salary-details");
     const salaryRanks = document.getElementById("career-salary-ranks");
     const annualSalary = getPlayerAnnualSalary(state.player);
-    // Hồ sơ nghề: hiện danh sách cấp bậc khi đã chọn ngành, kèm khóa bậc 3 và lý do.
+     
     const lock = getRankLock(state.player);
     salaryDetails.hidden = !state.player.careerPath;
     salaryRanks.replaceChildren();

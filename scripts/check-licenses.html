@@ -40,7 +40,7 @@
       return [...body().querySelectorAll(".license-answer")].find(b => b.textContent.endsWith(wanted));
     };
 
-    // Dưới 18 tuổi: chưa được học.
+     
     state.player.age = 17;
     $("activities").click();
     $("activity-degrees").click();
@@ -53,7 +53,7 @@
     $("activity-degrees").click();
     assert(typeButton("motorbike") && typeButton("car") && !typeButton("motorbike").disabled, "Two licence buttons");
 
-    // Trả lời sai: không có bằng, không lộ đáp án.
+     
     typeButton("motorbike").click();
     assert(body().querySelectorAll(".license-answer").length === 2 && currentQuestion("motorbike"), "One random motorbike question with two answers");
     assert(!/đáp án đúng/i.test(body().textContent), "The correct answer is never labelled");
@@ -62,7 +62,7 @@
     assert(!(state.player.licenses ?? []).length && body().textContent.includes("Chưa đạt"), "A wrong answer gives no licence");
     assert(!body().textContent.includes(question.answers[question.correct]), "A wrong answer does not reveal the right one");
 
-    // Thử lại và trả lời đúng.
+     
     [...body().querySelectorAll("button")].find(b => b.textContent.includes("Thử lại")).click();
     answerButton("motorbike", true).click();
     assert(state.player.licenses.length === 1 && state.player.licenses[0].id === "motorbike", "A correct answer grants the licence");
@@ -71,13 +71,13 @@
     [...body().querySelectorAll("button")].find(b => b.textContent.includes("chọn bằng")).click();
     assert(typeButton("motorbike").disabled && typeButton("motorbike").textContent.includes("Đã có"), "Owned licence is marked");
 
-    // Bằng ô tô dùng bộ câu hỏi riêng.
+     
     typeButton("car").click();
     assert(currentQuestion("car"), "Car licence asks a car question");
     answerButton("car", true).click();
     assert(state.player.licenses.map(l => l.id).join() === "motorbike,car", "Both licences can be earned");
 
-    // Hiện trong Tài sản.
+     
     $("close-license").click();
     $("assets").click();
     assert($("life-licenses").children.length === 2 && $("life-licenses").textContent.includes("Bằng lái ô tô"), "Licences appear in assets");

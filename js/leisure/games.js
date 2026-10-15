@@ -6,10 +6,10 @@ import { describeAges } from "./shop.js";
 import { hasActiveTienLen, initTienLen } from "./tien-len.js";
 import { initAuction } from "./auction.js";
 
-// Trò chơi may rủi. Mọi hệ số là tổng tiền nhận về (đã gồm vốn): trừ tiền cược khi
-// bắt đầu, cộng tiền thưởng một lần khi kết thúc. Kết quả được quyết định và lưu
-// ngay khi bắt đầu lượt nên tải lại trang không tạo kết quả mới. Riêng hộp bí ẩn:
-// vật phẩm được cất vào Tài sản (giá trị = giá hộp × hệ số) và bán lại được.
+ 
+ 
+ 
+ 
 export const GAMES_MIN_AGE = 18;
 export const GAMES_PER_YEAR = 5;
 export const BET_MIN = 10_000;
@@ -23,7 +23,7 @@ export const games = [
   { id: "box", icon: "🎁", name: "Hộp bí ẩn", tagline: "Mở hộp hay mở nỗi buồn?" },
   { id: "tower", icon: "🪜", name: "Leo tháp tài lộc", tagline: "Dừng đúng lúc" },
   { id: "blackjack", icon: "🃏", name: "Xì dách", tagline: "Thêm lá nữa hay thôi?" },
-  // Tiến lên miền Nam có giao diện riêng (tien-len.js), mỗi ván tính 1 lượt trong năm.
+   
   { id: "tienlen", icon: "♠️", name: "Tiến lên miền Nam", tagline: "Ai hết bài trước, người đó ăn cả bàn!" },
 ];
 
@@ -34,7 +34,7 @@ export const boxTypes = [
   { id: "fancy", icon: "🎀", name: "Hộp sang", price: 500_000 },
   { id: "rich", icon: "💎", name: "Hộp đại gia", price: 5_000_000 },
 ];
-// Bậc độ hiếm theo hệ số giá trị (giá trị vật phẩm = giá hộp × hệ số).
+ 
 export const boxTiers = [
   { multiplier: 0, id: "miss", name: "Hụt" },
   { multiplier: 0.5, id: "common", name: "Thường" },
@@ -44,7 +44,7 @@ export const boxTiers = [
   { multiplier: 25, id: "legend", name: "Huyền thoại" },
 ];
 export const getBoxTier = (multiplier) => boxTiers.find((tier) => tier.multiplier === multiplier) ?? boxTiers[0];
-// Tổng xác suất 100%; tỷ lệ hoàn trả = Σ xác suất × hệ số ≈ 89,8%. Món hiếm nhất đứng cuối bảng.
+ 
 export const boxPrizes = [
   { icon: "🧦", label: "Đôi tất lạc chiếc", chance: 0.14, multiplier: 0 },
   { icon: "🔑", label: "Chìa khóa không biết mở gì", chance: 0.1, multiplier: 0 },
@@ -76,7 +76,7 @@ const pickWeighted = (entries, random) => {
 };
 export const payout = (bet, multiplier) => Math.floor(bet * multiplier);
 
-// ---------- Xì dách ----------
+ 
 export function createDeck(random = Math.random) {
   const deck = [];
   for (const suit of ["♠", "♥", "♦", "♣"]) for (let rank = 1; rank <= 13; rank += 1) deck.push({ rank, suit });
@@ -93,7 +93,7 @@ export function handPoints(cards) {
     sum += card.rank === 1 ? 1 : Math.min(10, card.rank);
     if (card.rank === 1) hasAce = true;
   }
-  // Một lá Át được tính 11 nếu không làm tổng vượt 21.
+   
   return hasAce && sum + 10 <= 21 ? sum + 10 : sum;
 }
 export function handType(cards) {
@@ -104,7 +104,7 @@ export function handType(cards) {
   return "normal";
 }
 const typeRank = { doubleAce: 4, blackjack: 3, five: 2, normal: 1 };
-// Trả về kết quả của người chơi: "lose", "draw" hoặc kiểu bài thắng.
+ 
 export function compareHands(player, dealer) {
   const own = handType(player);
   const other = handType(dealer);
@@ -115,7 +115,7 @@ export function compareHands(player, dealer) {
   const a = handPoints(player);
   const b = handPoints(dealer);
   if (a === b) return "draw";
-  // Hai bên cùng ngũ linh: ít điểm hơn thắng; bài thường: nhiều điểm hơn thắng.
+   
   return (own === "five" ? a < b : a > b) ? own : "lose";
 }
 export const isNaturalHand = (cards) => ["doubleAce", "blackjack"].includes(handType(cards));
@@ -125,7 +125,7 @@ export function playDealer(data) {
   while (handPoints(data.dealer) < 17 && data.dealer.length < 5) data.dealer.push(data.deck[data.next++]);
 }
 
-// ---------- Tạo lượt chơi (quyết định kết quả ngay) ----------
+ 
 export function createRound(gameId, bet, choice, random = Math.random) {
   const round = { game: gameId, bet, choice };
   if (gameId === "coin") {
@@ -141,7 +141,7 @@ export function createRound(gameId, bet, choice, random = Math.random) {
     round.prize = pickWeighted(boxPrizes, random);
     round.payout = payout(bet, boxPrizes[round.prize].multiplier);
   } else if (gameId === "tower") {
-    // Cửa an toàn của từng tầng được chọn sẵn: mỗi lần chọn có 50% đi tiếp.
+     
     round.safeDoors = Array.from({ length: TOWER_MULTIPLIERS.length }, () => (random() < 0.5 ? 0 : 1));
     round.floor = 0;
     round.phase = "choose";
@@ -156,7 +156,7 @@ export function createRound(gameId, bet, choice, random = Math.random) {
   return round;
 }
 
-// ---------- Giao diện ----------
+ 
 export function initGames(state, { renderMoney, renderLogEntry, checkAchievements = () => {} }) {
   const $ = (id) => document.getElementById(id);
   const dialog = $("games-dialog");
@@ -177,7 +177,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     node.addEventListener("click", onClick);
     return node;
   };
-  // Mặt đồng xu: Ngửa khắc mặt trời, Sấp khắc trăng khuyết (vẽ bằng CSS, không dùng emoji mặt cười).
+   
   const COIN_FACES = { heads: { symbol: "☀\uFE0E", label: "NGỬA", name: "Ngửa" }, tails: { symbol: "☾\uFE0E", label: "SẤP", name: "Sấp" } };
   const coinFace = (side, className) => {
     const face = element("span", `${className} is-${side}`);
@@ -207,7 +207,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     onExit: renderPicker,
   });
 
-  // Ghi kết quả vào ví và nhật ký; giao diện chỉ cập nhật sau khi hoạt ảnh kết thúc.
+   
   function settle(round, payoutAmount, detail) {
     if (isSavePaused() || state.player.isAlive === false || round.settled ||
         !Number.isFinite(payoutAmount) || payoutAmount < 0) return false;
@@ -249,7 +249,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     return round;
   }
 
-  // ---------- Danh sách trò ----------
+   
   function renderPicker() {
     flushReveal();
     const back = button("shop-back", "← Quay lại Hoạt động", () => {
@@ -274,7 +274,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     body.append(list);
   }
 
-  // ---------- Màn chọn cược ----------
+   
   function renderSetup(gameId, previous = {}) {
     flushReveal();
     const game = gameOf(gameId);
@@ -306,7 +306,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       return group;
     };
 
-    // Tiền có thể nhận (tổng gồm vốn) cho lựa chọn hiện tại.
+     
     let maxMultiplier = () => 0;
     if (gameId === "coin") {
       card.classList.add("game-setup-coin");
@@ -381,7 +381,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       choice = "deal";
     }
 
-    // Chọn tiền cược (hộp bí ẩn dùng giá hộp).
+     
     const betInput = element("input", "game-bet-input");
     if (gameId !== "box") {
       const quick = element("div", "game-options game-quick-bets");
@@ -394,7 +394,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
         option.dataset.bet = String(amount);
         quick.append(option);
       }
-      // All in: cược toàn bộ ví (không vượt mức cược tối đa).
+       
       const allIn = button("game-option game-all-in", "💥 All in", () => {
         bet = allInBet();
         betInput.value = String(bet);
@@ -439,7 +439,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     focusFirst();
   }
 
-  // ---------- Màn kết quả ----------
+   
   function renderResult(round, win, title, quote) {
     flushReveal();
     const card = element("section", `dialog-card game-result ${win ? "is-win" : "is-lose"}`);
@@ -469,8 +469,8 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     focusFirst();
   };
 
-  // ---------- Hoạt ảnh từng trò ----------
-  // Vị trí chấm trên lưới 3×3 (hàng, cột) của từng mặt.
+   
+   
   const PIPS = { 1: [[2, 2]], 2: [[1, 1], [3, 3]], 3: [[1, 1], [2, 2], [3, 3]], 4: [[1, 1], [1, 3], [3, 1], [3, 3]],
     5: [[1, 1], [1, 3], [2, 2], [3, 1], [3, 3]], 6: [[1, 1], [2, 1], [3, 1], [1, 3], [2, 3], [3, 3]] };
   const dieFace = (value, className = "die-face") => {
@@ -538,7 +538,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     });
   }
 
-  // Góc quay khối lập phương để mặt kết quả hướng về người chơi (mặt 1 trước, 6 sau, 3 phải, 4 trái, 2 trên, 5 dưới).
+   
   const DIE_ORIENTATION = { 1: [0, 0], 2: [-90, 0], 3: [0, -90], 4: [0, 90], 5: [90, 0], 6: [0, 180] };
   function playDice(stage, round) {
     const table = element("div", "dice-table");
@@ -577,7 +577,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     });
   }
 
-  // Phần thưởng gom theo bậc độ hiếm (không hiện xác suất).
+   
   function prizeList(prizes) {
     const list = element("ul", "box-tier-list");
     for (const tier of boxTiers) {
@@ -638,7 +638,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     });
   }
 
-  // ---------- Leo tháp ----------
+   
   function playTower(stage, round) {
     stage.classList.add("tower-stage");
     const live = element("p", "game-hint game-live tower-status");
@@ -749,9 +749,9 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     }
   }
 
-  // ---------- Xì dách ----------
+   
   const rankLabel = (rank) => ({ 1: "A", 11: "J", 12: "Q", 13: "K" })[rank] ?? String(rank);
-  // Hình trên lá J, Q, K: quân cờ vua theo màu chất bài.
+   
   const faceMarks = { 11: "♞", 12: "♛", 13: "♚" };
   function cardView(card, hidden = false) {
     const node = element("div", `game-card${hidden ? " is-hidden" : ""}${["♥", "♦"].includes(card.suit) ? " is-red" : ""}`);
@@ -759,7 +759,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     node.setAttribute("aria-label", hidden ? "Lá bài đang úp" : `${rankLabel(card.rank)}${card.suit}`);
     const inner = element("div", "game-card-inner");
     const front = element("div", "game-card-face game-card-front");
-    // Lá úp không ghi giá trị vào DOM để không lộ bài.
+     
     if (!hidden) {
       const corner = (place) => {
         const node = element("span", `game-card-corner ${place}`);
@@ -793,7 +793,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     const player = seat("🙋 Bạn", "is-player");
     const shoe = element("div", "bj-shoe");
     shoe.setAttribute("aria-hidden", "true");
-    // Sấp tiền polymer Việt Nam, tờ mệnh giá lớn nằm trên cùng.
+     
     const cash = element("div", "bj-cash");
     cash.setAttribute("aria-hidden", "true");
     for (const value of ["100000", "200000", "500000"]) {
@@ -819,7 +819,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       spot.score.className = `bj-score${hidden ? "" : type === "bust" ? " is-bust" : handNames[type] ? " is-special" : ""}`;
       spot.info.textContent = hidden ? "Một lá đang úp" : describe(cards);
     };
-    // Lá bài bay từ hộp bài tới chỗ của nó, vừa bay vừa lật mặt.
+     
     const dealIn = (node, delay, staysHidden) => {
       const from = shoe.getBoundingClientRect();
       const to = node.getBoundingClientRect();
@@ -843,7 +843,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       });
     };
     let dealerShown = false;
-    // deal: chia ván mới, lá lần lượt cho bạn và nhà cái. player/dealer: chỉ số lá đầu tiên cần bay vào.
+     
     const render = (revealDealer, motion = {}) => {
       const deal = motion.deal === true;
       const dealerFrom = deal ? 0 : motion.dealer ?? Infinity;
@@ -854,7 +854,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
         flipOpen(dealer.row.children[1], motion.revealDelay ?? 0);
       }
       dealerShown = revealDealer;
-      // Điểm nhà cái chỉ hiện khi lá cuối đã nằm yên, tránh lộ kết quả trước hoạt ảnh.
+       
       if (motion.scoreDelay) setTimeout(() => showHand(dealer, round.dealer, !revealDealer), time(motion.scoreDelay));
       else showHand(dealer, round.dealer, !revealDealer);
       showHand(player, round.player, false);
@@ -877,11 +877,11 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       };
       const [title, quote] = texts[outcome];
       if (!settle(round, payout(round.bet, multiplier), `${title.replace(/^\S+\s/u, "")} (bạn ${handPoints(round.player)} điểm, nhà cái ${handPoints(round.dealer)} điểm)`)) return;
-      // Chip trượt về phía người thắng sau khi lá cuối đã nằm yên.
+       
       setTimeout(() => felt.classList.add(multiplier > 1 ? "is-win" : multiplier === 1 ? "is-draw" : "is-lose"), time(wait));
       setTimeout(() => showResult(stage, round, multiplier > 1, title, quote), time(wait + 700));
     };
-    // fromHit: lá bạn vừa rút vẫn đang bay, nhà cái chờ lá đó tới rồi mới lật bài.
+     
     const dealerTurn = (fromHit = false) => {
       actions.replaceChildren();
       const lastPlayerCard = fromHit ? round.player.length - 1 : Infinity;
@@ -914,7 +914,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     };
 
     const freshDeal = round.phase === "player" && round.player.length === 2;
-    // Xì bàn hoặc xì dách ngay khi chia: mở bài và phân thắng thua luôn.
+     
     if (isNaturalHand(round.player) || isNaturalHand(round.dealer)) {
       render(true, { deal: freshDeal });
       return finish({ rendered: true, wait: freshDeal ? 4 * 170 + 600 : 600 });
@@ -924,7 +924,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     controls();
   }
 
-  // ---------- Vật phẩm hộp bí ẩn trong Tài sản ----------
+   
   function storeBoxItem(round) {
     const prize = boxPrizes[round.prize];
     state.player.boxItems = [...(state.player.boxItems ?? []), {
@@ -936,7 +936,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
   function renderBoxItems() {
     const list = $("life-box-items");
     list.replaceChildren();
-    // Gộp các vật phẩm giống nhau thành một dòng (×N); mỗi lần bán hoặc bỏ một món, món nhận sau cùng.
+     
     const groups = new Map();
     for (const entry of state.player.boxItems ?? []) {
       const key = `${entry.icon}|${entry.label}|${entry.value}`;
@@ -976,20 +976,39 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       list.append(row);
     }
   }
-  // Popup Tài sản tự mở trong life-profile.js; ở đây chỉ vẽ vật phẩm hộp bí ẩn.
+   
   $("assets").addEventListener("click", renderBoxItems);
 
-  // ---------- Mở popup ----------
-  $("activity-games").addEventListener("click", () => {
+   
+  const gamesNotice = $("games-notice-dialog");
+  function openGames() {
     if (state.player.isAlive === false) return;
-    $("activities-dialog").close();
-    // Đang ngồi bàn Tiến lên (kể cả ván đang dở sau khi tải lại trang) thì quay lại đúng bàn đó.
+     
     if (state.player.tienLen) return tienLen.open();
     const active = state.player.gameRound;
     if (active && ["tower", "blackjack"].includes(active.game)) renderPlay(active);
     else renderPicker();
     dialog.showModal();
     focusFirst();
+  }
+  function dismissGamesNotice() {
+    gamesNotice.close();
+    if (state.player.isAlive !== false) $("activities-dialog").showModal();
+  }
+  $("activity-games").addEventListener("click", () => {
+    if (state.player.isAlive === false) return;
+    $("activities-dialog").close();
+    gamesNotice.showModal();
+  });
+  $("confirm-games-notice").addEventListener("click", () => {
+    if (!gamesNotice.open) return;
+    gamesNotice.close();
+    openGames();
+  });
+  $("close-games-notice").addEventListener("click", dismissGamesNotice);
+  gamesNotice.addEventListener("cancel", event => {
+    event.preventDefault();
+    dismissGamesNotice();
   });
   $("close-games").addEventListener("click", () => {
     flushReveal();

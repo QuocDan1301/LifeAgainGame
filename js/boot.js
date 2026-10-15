@@ -1,5 +1,5 @@
-// Bến xe chỉ tải phần nhỏ cần cho nó. Phần chơi (dữ liệu và ảnh sự kiện...) nặng hơn nhiều
-// nên chỉ tải khi người chơi vào game, lúc đó màn hình tải sẽ che.
+ 
+ 
 import { state, createInitialState } from "./core/state.js";
 import { initLobby } from "./ui/lobby.js";
 import { canRetryModuleLoad, clearModuleRetry, refreshModuleCache, warmModuleCache } from "./core/module-refresh.js";
@@ -7,18 +7,18 @@ import { initMusic } from "./ui/music.js";
 import { moveCloseButtonsOutside } from "./ui/dialog-close.js";
 import { initOffline } from "./core/offline.js";
 
-// Nút ✕ của mọi popup nằm ngoài khung, ở góc trên bên phải.
+ 
 moveCloseButtonsOutside();
 initMusic();
-// Chơi không cần mạng; chỉ đổi sang bản mới khi đang ở bến xe và không mở popup nào.
+ 
 initOffline(() => !document.getElementById("lobby-screen").hidden && !document.querySelector("dialog[open]"));
 
-// Khi bến xe đã hiện, tải sẵn phần chơi vào bộ nhớ đệm lúc máy rảnh để bấm vào game nhanh hơn.
+ 
 const warmGame = () => warmModuleCache([new URL("./main.js", import.meta.url).href]);
 if ("requestIdleCallback" in window) requestIdleCallback(warmGame, { timeout: 4000 });
 else setTimeout(warmGame, 1500);
 
-// File JS cũ trong bộ nhớ đệm không khớp bản mới: tải lại toàn bộ rồi mở lại trang (một lần mỗi phiên).
+ 
 async function recoverFromStaleFiles() {
   if (!canRetryModuleLoad()) return false;
   document.getElementById("game-screen").hidden = true;
@@ -34,7 +34,7 @@ let entering = false;
 initLobby(async saved => {
   if (entering) return;
   entering = true;
-  // Màn hình tải che lúc tải phần chơi (khoảng 70 file JS ở lần đầu).
+   
   window.appLoader?.show("Đang chuẩn bị cuộc đời");
   let modules;
   try {
@@ -58,7 +58,7 @@ initLobby(async saved => {
   Object.assign(state, initial, saved);
   state.player = { ...initial.player, ...saved.player };
   restoreMarriageSchedule(state.player, saved.player.marriageScheduleVersion ?? 1);
-  // Khôi phục tuổi nâng bậc lần đầu từ nhật ký của bản lưu cũ.
+   
   if (saved.player.nextPromotionAge === undefined && state.player.careerLevel >= 2) {
     const firstPromotion = state.logs?.find(log =>
       Number.isInteger(log.age) && log.content?.includes("bạn được nâng lên bậc"));
@@ -66,7 +66,7 @@ initLobby(async saved => {
     state.player.nextPromotionAge = state.player.careerLevel === 2 &&
       finalAge !== null && finalAge <= 39 ? finalAge : null;
   }
-  // Đồng bộ tên bậc nghề trong bản lưu cũ với danh sách hiện tại.
+   
   if (state.player.employmentStatus === "employed" &&
       Number.isInteger(state.player.careerLevel) &&
       state.player.careerLevel >= 1 && state.player.careerLevel <= 3) {
@@ -98,7 +98,7 @@ initLobby(async saved => {
     window.appLoader?.hide();
     document.getElementById("game-screen").hidden = true;
     document.getElementById("lobby-screen").hidden = false;
-    // Không khởi tạo lại module đã chạy dở và gắn trùng sự kiện.
+     
     document.getElementById("new-life-button").disabled = true;
     document.getElementById("continue-button").disabled = true;
     throw new Error("Không tải được phần chơi. Vé và cuộc đời đã lưu; sửa lỗi Console rồi tải lại trang để Chơi tiếp. " + error.message);

@@ -1,7 +1,7 @@
-// Giai đoạn 1–10 tuổi. Mỗi tuổi 4 sự kiện cố định (age), sự kiện chuỗi dùng khoảng tuổi (ages).
-// Quy tắc viết và danh sách tuyến: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage01To10 = [
-  // ───────────── 1 tuổi ─────────────
+   
   {
     id: 'ls01-trao-tay', age: 1, needs: ['mother'],
     title: 'Ở cổng buổi sáng',
@@ -49,7 +49,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 2 tuổi ─────────────
+   
   {
     id: 'ls02-xe-do-choi', age: 2,
     title: 'Chiếc xe của tôi',
@@ -97,7 +97,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 3 tuổi ─────────────
+   
   {
     id: 'ls03-ao-moi', age: 3, needs: ['mother'],
     title: 'Bộ đồ đi đám cưới',
@@ -145,7 +145,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 4 tuổi ─────────────
+   
   {
     id: 'ls04-nhanh-xoai', age: 4, needs: ['father'],
     title: 'Nhánh xoài gãy',
@@ -191,7 +191,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 5 tuổi ─────────────
+   
   {
     id: 'ls05-li-xi', age: 5, needs: ['mother'],
     title: 'Tiền lì xì',
@@ -239,7 +239,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 6 tuổi ─────────────
+   
   {
     id: 'ls06-cay-but', age: 6,
     title: 'Cây bút chì duy nhất',
@@ -289,7 +289,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 7 tuổi ─────────────
+   
   {
     id: 'ls07-tien-ba-cho', age: 7, needs: ['mother'],
     title: 'Tờ tiền bà dúi vào tay',
@@ -339,7 +339,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 8 tuổi ─────────────
+   
   {
     id: 'ls08-binh-hoa', age: 8,
     title: 'Bình hoa trên bàn cô',
@@ -389,7 +389,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 9 tuổi ─────────────
+   
   {
     id: 'ls09-lop-dan', age: 9, needs: ['mother'],
     title: 'Lớp đàn cuối tuần',
@@ -437,7 +437,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── 10 tuổi ─────────────
+   
   {
     id: 'ls10-heo-dat', age: 10, needs: ['mother'],
     title: 'Đập heo đất',
@@ -487,7 +487,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── Chuỗi: bạn thân Tú ─────────────
+   
   {
     id: 'ls-tu-gap', ages: [4, 6],
     title: 'Đứa nhỏ nhà bên',
@@ -528,7 +528,7 @@ export const stage01To10 = [
     ],
   },
 
-  // ───────────── Chuỗi: cây xoài ─────────────
+   
   {
     id: 'ls-xoai-lua-dau', ages: [8, 10], requires: ['cay_xoai', 'giau_chuyen'], blocks: ['chuyen_nha'],
     title: 'Lứa xoài đầu',

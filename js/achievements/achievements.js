@@ -56,7 +56,7 @@ function persist() {
 
 export function initAchievements(state) {
   gameState = state;
-  // Ngăn gắn sự kiện trùng nếu vô tình gọi khởi tạo lần thứ hai.
+   
   if (initialized) {
     renderAchievements();
     return;
@@ -98,20 +98,20 @@ export function initAchievements(state) {
 
     if (!confirmed) return;
 
-    // Đặt lại thành tựu và thông báo đang chờ.
+     
     unlocked = {};
     queue = [];
     activeId = null;
     stopConfetti();
 
-    // Xóa dấu ghi nhận thành tựu của nhân vật.
+     
     gameState.player.achievementFlags = {};
 
-    // Lưu dữ liệu sau khi reset.
+     
     persist();
     saveGame(gameState);
 
-    // Hiển thị lại các thẻ mờ và bộ đếm thành tựu.
+     
     renderAchievements();
   });
   document.addEventListener(
@@ -125,7 +125,7 @@ export function initAchievements(state) {
         persist();
         document.dispatchEvent(new CustomEvent("achievement-closed", { detail: closedId }));
       }
-      // Nhường cho code xác nhận sự kiện hoàn tất trước khi mở thông báo tiếp.
+       
       queueMicrotask(showNextAchievement);
     },
     true,
@@ -228,7 +228,7 @@ function showNextAchievement() {
     document.dispatchEvent(new Event("achievement-flow-idle"));
   }
   if (!initialized || queue.length === 0 || activeId) return;
-  // Sự kiện đang chờ phải được giải quyết trước; không mở chồng hộp thoại.
+   
   if (gameState.pendingEvent || document.querySelector("dialog[open]")) return;
   const achievement = achievements.find((entry) => entry.id === queue[0]);
   if (!achievement) return;

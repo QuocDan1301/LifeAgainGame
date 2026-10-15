@@ -7,7 +7,7 @@ import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { canStartRelationship, describePerson, getDatingUpdates, getZodiac } from "./relationships.js";
 
-// Trung tâm mai mối: phí càng cao, chỉ số càng cao và chênh lệch tuổi (maxAgeGap) càng nhỏ.
+ 
 export const matchmakingCenters = [
   { id: "basic", icon: "💌", name: "Mai mối Bình Dân", fee: 2_000_000, minStat: 30, maxStat: 70, maxAgeGap: 30 },
   { id: "kind", icon: "💐", name: "Duyên Lành", fee: 10_000_000, minStat: 45, maxStat: 85, maxAgeGap: 20 },
@@ -24,7 +24,7 @@ const integer = (min, max, random) => min + Math.floor(random() * (max - min + 1
 
 export const getCenter = (id) => matchmakingCenters.find((center) => center.id === id);
 
-// Tạo người được giới thiệu theo giới tính người chơi chọn và mức chỉ số của trung tâm.
+ 
 export function createMatch(player, center, gender, random = Math.random) {
   const age = player.age;
   const month = integer(1, 12, random);
@@ -36,7 +36,7 @@ export function createMatch(player, center, gender, random = Math.random) {
     id: `match-${center.id}-${age}-${Math.floor(random() * 1e9)}`,
     name: `${pick(surnames, random)} ${pick(gender === "female" ? femaleNames : maleNames, random)}`,
     gender, birthDay: day, birthMonth: month, zodiac: getZodiac(day, month),
-    // Lớn hoặc nhỏ hơn nhân vật tối đa maxAgeGap tuổi, nhưng không dưới 18 tuổi.
+     
     ageAtMeeting: integer(Math.max(DATING_MIN_AGE, age - center.maxAgeGap), age + center.maxAgeGap, random), metAtAge: age,
     personality: `${firstTrait}, ${secondTrait}`,
     reason: `được ${center.name} giới thiệu và thấy hợp với tôi ngay buổi gặp đầu`,
@@ -124,7 +124,7 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
     focusFirst();
   }
 
-  // Trả phí rồi nhận hồ sơ một người ngẫu nhiên.
+   
   function introduce(center, gender) {
     askConfirm(
       `${center.icon} Nhờ ${center.name} giới thiệu?`,
@@ -135,8 +135,8 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
             state.player.age < DATING_MIN_AGE || state.player.isAlive === false) return;
         state.player.money -= center.fee;
         const person = createMatch(state.player, center, gender);
-        // Chốt luôn việc người ấy có nhận lời hay không và lưu hồ sơ cùng lúc trừ phí: đóng hộp thoại
-        // hoặc tải lại trang vẫn gặp đúng người đã trả tiền, không tung lại.
+         
+         
         if (state.player.casualLife) person.casualRomanceAccepted = Math.random() < getRomanceChance(state.player);
         state.player.pendingMatch = { centerId: center.id, gender, person, age: state.player.age };
         record(`💌 Trả phí cho ${center.name} để được giới thiệu người hẹn hò: Tiền -${formatMoneyAmount(center.fee)} VNĐ.`);
@@ -191,7 +191,7 @@ export function initMatchmaking(state, { renderMoney, renderStats, renderLogEntr
   $("activity-love").addEventListener("click", () => {
     if (state.player.isAlive === false) return;
     $("activities-dialog").close();
-    // Hồ sơ đã trả phí trong năm nay mà chưa trả lời: mở lại đúng hồ sơ ấy.
+     
     const pending = state.player.pendingMatch;
     if (pending && pending.age !== state.player.age) { state.player.pendingMatch = null; save(); }
     if (pending && pending.age === state.player.age && getCenter(pending.centerId) && canStartRelationship(state.player)) {

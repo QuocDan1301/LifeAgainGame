@@ -17,6 +17,9 @@
     "test:detective": "node scripts/check-detective.mjs",
     "test:garden": "node scripts/check-garden.mjs",
     "test:server": "node scripts/check-server.mjs",
+    "test:offline": "node scripts/check-offline-updates.mjs",
+    "test:family": "node scripts/check-family-conversations.mjs",
+    "test:dating": "node scripts/check-dating-expenses.mjs",
     "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
-// Chuyển thiết bị: đóng gói mọi dữ liệu lưu của game (các khóa lifeAgain… trong localStorage)
-// để mang sang máy khác bằng mã 6 ký tự (qua máy chủ, 10 phút) hoặc bằng tệp sao lưu.
+ 
+ 
 import { withSaveLock } from "./save-store.js";
 
-// Nhà mới của game. Bản cũ trên GitHub Pages không có máy chủ nên tạo mã qua đây.
+ 
 export const HOME_URL = "https://life-again-game.onrender.com/";
 export const isOldHome = () => location.hostname.endsWith("github.io");
 const apiUrl = path => (isOldHome() ? HOME_URL : "./") + path;
@@ -46,7 +46,7 @@ export function parseTransferPackage(value) {
 
 const readJson = text => { try { return JSON.parse(text); } catch { return null; } };
 
-// Tóm tắt ngắn để người chơi biết mình sắp nhận gì trước khi thay dữ liệu.
+ 
 export function describeTransferPackage(pack) {
   const { data } = pack;
   const parts = [];
@@ -67,7 +67,7 @@ export function describeTransferPackage(pack) {
   return parts.length ? parts.join("; ") + "." : "Dữ liệu cài đặt của game.";
 }
 
-// Thay toàn bộ dữ liệu game trên máy này. Ghi lỗi giữa chừng (hết dung lượng) thì trả lại dữ liệu cũ.
+ 
 export async function applyTransferPackage(pack, storage = localStorage) {
   await withSaveLock(() => {
     const previous = createTransferPackage(storage).data;
@@ -93,7 +93,7 @@ async function postJson(url, body) {
     throw new Error("Không kết nối được máy chủ. Hãy kiểm tra mạng rồi thử lại, hoặc dùng tệp sao lưu.");
   }
   const result = await response.json().catch(() => null);
-  // Máy chủ tĩnh (GitHub Pages, Live Server…) không có API mã chuyển: trả về trang lỗi thay vì JSON.
+   
   if (!result) throw new Error("Bản game ở địa chỉ này không có máy chủ tạo mã chuyển. Hãy dùng tệp sao lưu: bấm Lưu tệp sao lưu, gửi tệp sang máy mới rồi mở ở tab Nhận về.");
   if (!response.ok) throw new Error(result.error ?? "Máy chủ đang gặp sự cố. Hãy thử lại sau ít phút.");
   return result;

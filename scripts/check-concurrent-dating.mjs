@@ -93,8 +93,8 @@ test('Wedding with the second person closes the first relationship and uses the 
 test('Discovery probability, preview purity, reload, choosing either person and ending both', () => {
   const p = couple(); const before = JSON.stringify(p);
   assert.equal(createConcurrentDatingEvent(p, 26, () => 0), null);
-  assert.equal(createConcurrentDatingEvent(p, 27, () => 0.25), null);
-  const event = createConcurrentDatingEvent(p, 27, () => 0.24);
+  assert.equal(createConcurrentDatingEvent(p, 27, () => 0.5), null);
+  const event = createConcurrentDatingEvent(p, 27, () => 0.49);
   assert.equal(JSON.stringify(p), before); assert.equal(event.choices.length, 3);
   for (let i = 0; i < 3; i++) {
     const q = JSON.parse(before);
@@ -172,7 +172,7 @@ test('Actual game choice handler resolves discovery exactly once after reload', 
   const random = Math.random; Math.random = () => 0.99;
   try { completeLifeYear(p, 27, state.pendingEvent.updates); } finally { Math.random = random; }
   assert.equal(p.partner.id, 'B'); assert.equal(p.partner.relationship, 60);
-  // Hạnh phúc 75 sau sự kiện, rồi hao mòn cuối năm của chỉ số trên 70.
+   
   assert.equal(p.happiness, 75 - getStatWear(75)); assert.equal(p.otherPartners.length, 0);
 });
 test('Drama branches: denial, blame, trying to keep both and weak trust can lose both partners', () => {

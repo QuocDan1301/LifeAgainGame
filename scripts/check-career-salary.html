@@ -75,7 +75,7 @@
     const mainSource = await (await fetch("../js/main.js")).text();
     const ageStep = Number(mainSource.match(/const nextAge = state\.player\.age \+ (\d+)/)?.[1] ?? 1);
     birthday.click();
-    // Lương 120 triệu/năm trừ 40% chi phí sinh hoạt (48 triệu).
+     
     assert(state.player.age === 30 + ageStep && state.player.money === 120_000_000 + 72_000_000 * ageStep, "A birthday must pay salary (minus living costs) for every elapsed year");
     assert(state.logs.at(-1).content.includes("Chi phí sinh hoạt"), "Diary records living costs");
     assert(document.getElementById("money-value").textContent === formatMoneyAmount(state.player.money), "Wallet refreshes immediately");
@@ -84,7 +84,7 @@
     assert(document.getElementById("career-salary-ranks").children.length === 3, "Career dialog shows every salary tier");
     document.getElementById("close-education").click();
     Object.assign(state.player, { age: 27 - ageStep, money: 0, lastSalaryAge: null, nextPromotionAge: 27 });
-    // Khả năng được chọn khi xử lý đúng tung lúc sự kiện xuất hiện; cố định để kiểm tra luồng lương sau thăng chức.
+     
     const promotionRandom = Math.random;
     Math.random = () => 0;
     birthday.click();

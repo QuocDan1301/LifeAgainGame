@@ -1,7 +1,7 @@
 import { openMojiArt } from "../media/event-art.js";
 import { ensureEventOpenMoji } from "../media/event-openmoji.js";
 import { EXAM_HINT_INTELLECT, EXAM_PREP, EXAM_RETAKES, formatPercent, getExamOverallChance } from "../stats/intellect-rules.js";
-// Mỗi ngành có ba câu nhập môn, mỗi câu có ba đáp án và một đáp án đúng.
+ 
 const question = (text, answers, correct) => ({ text, answers, correct });
 export const careerTests = {
   "study-abroad": [
@@ -111,7 +111,7 @@ export const careerTests = {
   ],
 };
 
-// Trước bài test: chọn cách chuẩn bị (ôn đều, học nhóm, học dồn, không chuẩn bị).
+ 
 export function createExamPrepEvent(careerPath, player, retakesLeft = EXAM_RETAKES) {
   if (!createCareerTest(careerPath)) return null;
   return {
@@ -131,10 +131,10 @@ export function createExamPrepEvent(careerPath, player, retakesLeft = EXAM_RETAK
   };
 }
 
-// Bài test: đáp án đúng luôn đỗ. Đáp án sai vẫn có thể đỗ nhờ phần thi tổng thể (tung một lần khi tạo bài).
-// Trí tuệ từ 80 hoặc học nhóm có gợi ý: loại sẵn một đáp án chắc chắn sai (không đổi đáp án đúng).
+ 
+ 
 export function createCareerTest(careerPath, random = Math.random, options = {}) {
-  // Nhập ngũ tự nguyện đi thẳng tới hướng huấn luyện.
+   
   if (["military", "tiktok", "youtube"].includes(careerPath.id)) return null;
   const bank = careerTests[careerPath.id];
   if (!bank) return null;
@@ -159,7 +159,7 @@ export function createCareerTest(careerPath, random = Math.random, options = {})
   };
 }
 
-// Chưa đạt: không khóa ngành. Học bổ sung rồi thi lại (một lần), chọn ngành khác hoặc nhập ngũ.
+ 
 export function createFailedTestEvent(testedCareer = null, retakesLeft = 0) {
   const choices = [];
   if (testedCareer && retakesLeft > 0) {

@@ -151,7 +151,7 @@ export function createDiamondSpecialStep(stepNumber, inventory = {}) {
     kind: "special-chain",
     specialId: "diamond-mine",
     specialStep: stepNumber,
-    // Giữ chỉ số tác giả trước khi lọc, để thứ tự xáo về sau vẫn biết lựa chọn gốc.
+     
     choices: step.choices
       .map((choice, sourceIndex) => ({ ...choice, sourceIndex }))
       .filter((choice) => !choice.requires || inventory[choice.requires] === true),

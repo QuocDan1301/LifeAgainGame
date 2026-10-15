@@ -2,8 +2,8 @@ import { openMojiArt } from "../media/event-art.js";
 import { createAdmirer, getDatingUpdates, canStartRelationship } from "./relationships.js";
 import { getAcquaintanceChance, getRomanceChance, getSocialContext, getStartingBond } from "../stats/appearance-rules.js";
 
-// Lời làm quen (tối đa một lần mỗi năm): có thể thành tình bạn hoặc tình cảm, không mặc định là hẹn hò.
-// Dưới 18 tuổi chỉ có tình bạn; lời mời tìm hiểu tôn trọng xu hướng tình cảm và luôn có thể bị từ chối.
+ 
+ 
 const CONTEXT_TEXT = {
   school: { place: "lớp học", who: "một bạn cùng trường", icon: "1F3EB" },
   work: { place: "nơi làm việc", who: "một đồng nghiệp ở bộ phận bên cạnh", icon: "1F3E2" },

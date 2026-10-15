@@ -138,7 +138,7 @@ test('Record penalties apply to actual interviews, with partial and full rehabil
   assert.match(rollInterview(p, 'good', () => clean - 0.15).note, /Tiền án/);
   assert.equal(rollInterview(p, 'good', () => clean - 0.15).passed, false);
   p.lifePath = 'reformed';
-  // Cải tạo tốt trong trại chưa giảm trở ngại: chỉ tính sau khi ra tù.
+   
   assert.equal(getRecordPenalty({ ...p, prison: { enteredAge: 18, releaseAge: 20 } }), 0.2);
   assert.equal(getRecordPenalty(p), 0.1);
   assert.equal(rollInterview(p, 'good', () => clean - 0.15).passed, true);

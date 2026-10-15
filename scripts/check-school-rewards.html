@@ -32,7 +32,7 @@
     const reward = createSchoolEntryReward(freshman,18,{careerPath:path});
     assert(reward.updates.money === 2000000 && !reward.updates.health, 'University awards cash only');
     completeLifeYear(freshman,18,{careerPath:path},reward);
-    // Năm nhập học cũng trừ học phí năm nhất (ví có thể âm).
+     
     const { getAnnualTuition } = await import('../js/relationships/family.js');
     assert(freshman.money === 2000000 - getAnnualTuition(path) && !createSchoolEntryReward(freshman,19,{careerPath:path}), 'University cash (minus first-year tuition) only once per life');
     for (const careerPath of [{id:'military',school:null}, {id:'military',school:{name:'Học viện Quân sự'}},
@@ -57,20 +57,20 @@
     const birthday = document.getElementById('age-up');
     const confirm = document.getElementById('event-confirm');
     const choose = i => { document.querySelectorAll('#event-choices button')[i].click();
-      // Bước giữa (chọn ngành, bài test) có màn "Kết quả lựa chọn" trước bước tiếp theo.
+       
       if (state.pendingEvent?.mediaTransition) confirm.click(); };
-    // Chuẩn bị trước bài test (nếu có) rồi trả lời bài test.
+     
     const takeTest = passed => {
       if (state.pendingEvent.kind === 'exam-prep') choose(state.pendingEvent.choices.findIndex(c => c.examPrep === 'steady'));
       choose(state.pendingEvent.choices.findIndex(c => passed ? c.correct : !c.correct));
     };
-    // May rủi của sự kiện thường ngày ở mức trung tính để kết quả đúng bằng điểm tác giả viết.
+     
     birthday.click(); Math.random = () => 0.5;
-    // Năm 6 tuổi là một chuyện đời thường bất kỳ; lấy lựa chọn đầu tiên và cộng điểm của chính nó.
+     
     const firstChoice = state.pendingEvent.choices[0];
     choose(0); Math.random = () => 0;
     const savedReward = JSON.stringify(state.pendingEvent.schoolReward);
-    // Phần thưởng nhập học được tính chồng lên chỉ số sau lựa chọn (điểm thưởng 1–2 mỗi chỉ số).
+     
     const expectedStat = stat => JSON.parse(savedReward).updates[stat];
     assert(stats.every(stat => expectedStat(stat) >= 50 + (firstChoice.effects?.[stat] ?? 0) + 1), 'Reward is stacked on top of the choice effects');
     assert(state.player.age === 5 && state.player.health === 50, 'Result preview does not mutate stats');

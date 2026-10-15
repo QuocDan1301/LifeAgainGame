@@ -152,7 +152,7 @@ def run_size(p, w, h, report):
                 try: t.click(timeout=2000)
                 except Exception: continue
                 measure(f'{scene}~{label}', page.evaluate(TOP))
-    # Quét sâu: từng mục trong danh sách rồi nút bắt đầu (nếu có).
+     
     drills = [('games', ['#activities', '#activity-games'], '#games-body .game-pick', ['.game-start', '.auction-start']),
               ('gc', ['#activities', '#activity-game-center'], '#game-center-body .gc-game', ['.gc-start']),
               ('tarot', ['#activities', '#activity-tarot'], '#tarot-body .tarot-topic, #tarot-body .tarot-collection-open', ['.tarot-confirm', '.tarot-back-card']),

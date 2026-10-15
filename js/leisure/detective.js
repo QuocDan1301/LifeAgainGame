@@ -1,3 +1,4 @@
+import { detectiveBriefOf, evidenceNoteOf, notedReasons, setEvidenceNote, solutionSteps } from "./detective-reasoning.js";
 import { saveGame } from "../core/save-store.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
@@ -13,10 +14,12 @@ const AVATAR_COLORS = ["#e07a3f", "#2a9d8f", "#c0504d", "#5f9a48", "#4d7cc7", "#
 const TABS = [
   { id: "file", icon: "📄", name: "Hồ sơ" },
   { id: "leads", icon: "🔎", name: "Điều tra" },
-  { id: "people", icon: "👥", name: "Nghi phạm" },
+  { id: "people", icon: "👥", name: "Người liên quan" },
+  { id: "notes", icon: "🧩", name: "Suy luận" },
 ];
 const percent = (rate) => `${Math.round(rate * 100)}%`;
 const lower = (text) => text.toLocaleLowerCase("vi-VN");
+const knownClues = (file) => [...file.revealed].sort((a, b) => a - b);
 
 export function initDetective(state, { renderMoney, renderStats, renderLogEntry, checkAchievements }) {
   const $ = (id) => document.getElementById(id);
@@ -24,7 +27,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
   const body = $("detective-body");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let activeTab = "file";
-  // Lập luận đang soạn (chưa lưu): người bị chỉ ra và manh mối loại trừ từng người còn lại.
+   
   let draft = null;
 
   const element = (tag, className, text) => {
@@ -55,12 +58,12 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     return node;
   }
   const clueTag = (file, clueIndex) =>
-    `${sourceOf(file.clues[clueIndex]).chip} #${file.revealed.indexOf(clueIndex) + 1}`;
+    `${sourceOf(file.clues[clueIndex]).chip} #${clueIndex + 1}`;
   function tierBadge(tier) {
     return element("span", `detective-tier-badge tier-${tier.id}`, `${tier.icon} ${tier.name}`);
   }
 
-  // ---------- Văn phòng và bảng hồ sơ ----------
+   
   function renderHome() {
     const player = state.player;
     const detective = detectiveOf(player);
@@ -148,6 +151,8 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
       "Manh mối không có sẵn: mỗi nguồn điều tra tốn 1 giờ và cho một manh mối về người cần tìm. Hãy xem thẻ nghi phạm trước để chọn nguồn giúp loại được nhiều người nhất.",
       `Hết giờ vẫn điều tra thêm được, mỗi giờ thêm làm thù lao giảm ${percent(EXTRA_HOUR_RATE)}, tối đa ${MAX_EXTRA_HOURS} giờ. Trí tuệ từ ${SHARP_INTELLECT} có thêm 1 giờ mỗi vụ.`,
       "Có mặt vào bất kỳ lúc nào trong khoảng xảy ra việc thì chưa loại được người đó.",
+      "Vụ vừa có điều kiện ít nhất một trong hai dấu hiệu đúng (có thể cả hai). Vụ khó thêm điều kiện chỉ một dấu hiệu đúng (không được cả hai hoặc thiếu cả hai).",
+      "Tab Suy luận là bảng ghi chú do bạn tự điền; ghi chú vẫn còn khi đóng hoặc tải lại game. Ghi Khớp không có nghĩa đã tìm được người cần tìm.",
       `Khi chỉ ra một người, bạn phải nêu manh mối cho thấy từng người còn lại vô can. Mỗi người chưa loại được bằng căn cứ đúng làm thù lao giảm ${percent(UNPROVEN_RATE)}.`,
       `Chứng minh trọn vẹn: đủ thù lao, tăng danh tiếng, Trí tuệ +1. Chỉ sai người: không có thù lao, danh tiếng −${WRONG_REPUTATION}, Hạnh phúc −${WRONG_HAPPINESS}.`,
       "Danh tiếng 4 mở vụ vừa, danh tiếng 10 mở vụ khó.",
@@ -156,7 +161,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     return rules;
   }
 
-  // ---------- Hồ sơ đang mở ----------
+   
   function caseHeader(file) {
     const tier = detectiveTiers[file.tier];
     const scene = getDetectiveScene(file.scene);
@@ -184,7 +189,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     return head;
   }
 
-  // scroll: "top" khi mở hồ sơ, "keep" khi điều tra/đánh dấu, "tabs" khi đổi tab (giữ thanh tab trong tầm nhìn).
+   
   function renderCase(focusSelector, scroll = "top") {
     const file = currentFile();
     const tabs = element("div", "detective-tabs");
@@ -217,7 +222,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     panel.id = "detective-panel";
     panel.setAttribute("role", "tabpanel");
     panel.setAttribute("aria-labelledby", `detective-tab-${activeTab}`);
-    panel.append(...({ file: filePanel, leads: leadsPanel, people: peoplePanel }[activeTab])(file));
+    panel.append(...({ file: filePanel, leads: leadsPanel, people: peoplePanel, notes: notesPanel }[activeTab])(file));
 
     const drop = button("shop-back detective-drop", "Trả lại hồ sơ", () => askConfirm("Trả lại hồ sơ?",
       "Bạn sẽ không nhận thù lao, và hồ sơ này không quay lại bảng trong năm nay. Danh tiếng không thay đổi.",
@@ -235,9 +240,21 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
 
   function filePanel(file) {
     const scene = getDetectiveScene(file.scene);
+    const brief = detectiveBriefOf(file);
     const paper = element("div", "detective-paper");
     paper.append(element("p", "", scene.intro(file.suspects.length)));
-    return [paper, timeline(file)];
+    const guide = element("section", "dialog-card detective-brief");
+    guide.append(element("h3", "", "Việc cần làm"), element("p", "detective-panel-note", brief.stakes));
+    const steps = element("ol", "detective-workflow");
+    for (const text of ["Đọc hồ sơ và giờ có mặt của từng người.", "Chọn nguồn điều tra, ghi lại điều đã được xác minh.", "Đối chiếu trong tab Suy luận, tìm mâu thuẫn để loại trừ.", "Chọn người cần tìm và nêu căn cứ loại từng người còn lại."]) {
+      steps.append(element("li", "", text));
+    }
+    guide.append(steps, element("p", "detective-warning", brief.caution));
+    const facts = element("details", "dialog-card detective-rules");
+    const list = element("ul");
+    for (const fact of brief.verified) list.append(element("li", "", fact));
+    facts.append(element("summary", "", "Dữ kiện nào có thể tin cậy?"), list);
+    return [paper, guide, timeline(file), facts];
   }
 
   function timeline(file) {
@@ -353,7 +370,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
         renderCase(`[data-suspect="${index}"] .detective-cross`, "keep");
       });
       const point = button("shop-buy detective-accuse", "☝️ Chỉ ra", () => {
-        if (draft?.accused !== index) draft = { accused: index, reasons: {} };
+        if (draft?.accused !== index) draft = { accused: index, reasons: notedReasons(file, index) };
         renderConclusion();
       });
       actions.append(cross, point);
@@ -363,7 +380,92 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     return [element("p", "detective-panel-note", "Bấm ✕ Loại trừ để tự đánh dấu người bạn đã chắc vô can. Đánh dấu chỉ để ghi nhớ, không ảnh hưởng kết quả."), grid];
   }
 
-  // ---------- Lập luận buộc tội ----------
+  function notesPanel(file) {
+    const intro = element("p", "detective-panel-note",
+      "Đây là ghi chú của bạn, chưa phải đáp án. Bấm mỗi ô để đổi: Chưa xét → Khớp → Mâu thuẫn. Khớp một dấu hiệu chỉ có nghĩa chưa loại được người đó.");
+    if (!file.revealed.length) return [intro, button("shop-buy", "Mở nguồn điều tra trước", () => {
+      activeTab = "leads";
+      renderCase();
+    })];
+    const reference = element("details", "dialog-card detective-rules");
+    reference.open = file.revealed.length <= 2;
+    reference.append(element("summary", "", "Manh mối đã kiểm chứng"));
+    const list = element("ul", "detective-clue-list");
+    for (const clueIndex of knownClues(file)) {
+      const item = element("li");
+      item.append(element("span", "detective-clue-tag", clueTag(file, clueIndex)),
+        document.createTextNode(describeClue(file, file.clues[clueIndex])));
+      list.append(item);
+    }
+    reference.append(list);
+    const scroll = element("div", "detective-notebook-scroll");
+    scroll.tabIndex = 0;
+    scroll.setAttribute("role", "region");
+    scroll.setAttribute("aria-label", "Bảng suy luận; cuộn ngang để xem các manh mối");
+    const table = element("table", "detective-notebook");
+    table.append(element("caption", "", "Bảng đối chiếu của bạn"));
+    const head = element("thead");
+    const headings = element("tr");
+    const first = element("th", "", "Người liên quan");
+    first.scope = "col";
+    headings.append(first);
+    for (const clueIndex of knownClues(file)) {
+      const cell = element("th", "", clueTag(file, clueIndex));
+      cell.scope = "col";
+      cell.title = describeClue(file, file.clues[clueIndex]);
+      headings.append(cell);
+    }
+    head.append(headings);
+    const rows = element("tbody");
+    const labels = { unknown: "? Chưa xét", fits: "✓ Khớp", conflict: "✕ Mâu thuẫn" };
+    for (let personIndex = 0; personIndex < file.suspects.length; personIndex++) {
+      const suspect = file.suspects[personIndex];
+      const row = element("tr");
+      const name = element("th");
+      name.scope = "row";
+      const select = button("detective-notebook-person", suspect.name, () => {
+        draft = { accused: personIndex, reasons: notedReasons(file, personIndex) };
+        renderConclusion();
+      });
+      select.setAttribute("aria-label", `Soạn kết luận về ${suspect.name}`);
+      name.append(select);
+      row.append(name);
+      for (const clueIndex of knownClues(file)) {
+        const cell = element("td");
+        const mark = button("detective-note", "", () => {
+          const order = ["unknown", "fits", "conflict"];
+          const value = order[(order.indexOf(evidenceNoteOf(file, personIndex, clueIndex)) + 1) % order.length];
+          if (!setEvidenceNote(file, personIndex, clueIndex, value)) return;
+          save();
+          update();
+        });
+        mark.dataset.person = personIndex;
+        mark.dataset.clue = clueIndex;
+        function update() {
+          const value = evidenceNoteOf(file, personIndex, clueIndex);
+          mark.dataset.note = value;
+          mark.textContent = labels[value];
+          mark.setAttribute("aria-label", `${suspect.name}, manh mối #${clueIndex + 1}: ${labels[value]}. Bấm để đổi ghi chú.`);
+        }
+        update();
+        cell.append(mark);
+        row.append(cell);
+      }
+      rows.append(row);
+    }
+    table.append(head, rows);
+    scroll.append(table);
+    const help = element("p", "detective-panel-note",
+      "Bấm tên để soạn kết luận. Ghi chú “Mâu thuẫn” sẽ điền vào phần căn cứ; bạn có thể sửa trước khi nộp. Ghi chú không tự xác nhận ai đúng hay sai.");
+    const facts = element("details", "dialog-card detective-rules detective-notebook-facts");
+    facts.append(element("summary", "", "Xem nhanh dữ kiện từng người"));
+    file.suspects.forEach(suspect => {
+      facts.append(element("h4", "", suspect.name), suspectFacts(file, suspect));
+    });
+    return [intro, reference, scroll, help, facts];
+  }
+
+   
   function renderConclusion() {
     const file = currentFile();
     const scene = getDetectiveScene(file.scene);
@@ -378,7 +480,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     clues.append(element("h3", "", "🗒️ Manh mối đã có"));
     if (file.revealed.length) {
       const list = element("ul", "detective-clue-list");
-      for (const clueIndex of file.revealed) {
+      for (const clueIndex of knownClues(file)) {
         const row = element("li");
         row.append(element("span", "detective-clue-tag", clueTag(file, clueIndex)), document.createTextNode(describeClue(file, file.clues[clueIndex])));
         list.append(row);
@@ -399,16 +501,27 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
       const options = element("div", "detective-reason-options");
       options.setAttribute("role", "group");
       options.setAttribute("aria-label", `Căn cứ loại ${suspect.name}`);
-      const choices = [...file.revealed.map((clueIndex) => [clueIndex, clueTag(file, clueIndex)]), [null, "Chưa loại được"]];
+      const evidence = element("p", "detective-reason-evidence");
+      function showEvidence() {
+        const selected = draft.reasons[index];
+        evidence.textContent = Number.isInteger(selected) && file.revealed.includes(selected)
+          ? `Căn cứ bạn chọn #${selected + 1}: ${describeClue(file, file.clues[selected])}`
+          : "Chưa chọn căn cứ cho người này.";
+      }
+      showEvidence();
+      const choices = [...knownClues(file).map((clueIndex) => [clueIndex, clueTag(file, clueIndex)]), [null, "Chưa loại được"]];
       for (const [clueIndex, label] of choices) {
         const chip = button("detective-chip", label, () => {
           draft.reasons[index] = clueIndex;
+          showEvidence();
           options.querySelectorAll(".detective-chip").forEach((other) => other.setAttribute("aria-pressed", String(other === chip)));
         });
         chip.setAttribute("aria-pressed", String((draft.reasons[index] ?? null) === clueIndex));
+        chip.title = clueIndex === null ? "Chưa có căn cứ loại trừ" : describeClue(file, file.clues[clueIndex]);
+        chip.setAttribute("aria-label", clueIndex === null ? "Chưa loại được" : `Manh mối #${clueIndex + 1}: ${describeClue(file, file.clues[clueIndex])}`);
         options.append(chip);
       }
-      row.append(name, options);
+      row.append(name, suspectFacts(file, suspect), options, evidence);
       reasoning.append(row);
     });
 
@@ -443,7 +556,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
     renderResult(true);
   }
 
-  // ---------- Kết quả và lời giải ----------
+   
   function renderResult(animate = false) {
     const file = currentFile();
     const { result } = file;
@@ -457,7 +570,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
         { transform: "rotate(-8deg) scale(1)", opacity: 1 }], { duration: 520, easing: "cubic-bezier(0.2, 0.9, 0.3, 1.2)" });
     }
     const story = {
-      solved: `${culprit.name} không còn chối được khi bạn đặt từng manh mối cạnh nhau. ${scene.outcome}`,
+      solved: `Các dữ kiện cùng chỉ ra ${culprit.name} (${lower(culprit.role)}) là ${scene.taker}. ${scene.outcome}`,
       partial: `Bạn chỉ đúng ${culprit.name}, nhưng chưa chứng minh được ${result.unproven} người còn lại vô can. ${scene.client} vẫn trả thù lao, có điều bớt đi phần tương ứng. ${scene.outcome}`,
       wrong: `${accused.name} có đủ căn cứ cho thấy mình vô can. Người cần tìm là ${culprit.name} (${lower(culprit.role)}). ${scene.client} không trả thù lao, và chuyện kết luận vội vàng khiến người ta e dè khi tìm đến bạn.`,
     }[outcome];
@@ -484,24 +597,49 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
         text.append(element("p", "", `☝️ Người cần tìm: khớp với mọi manh mối.${index === result.accused ? "" : " Bạn đã bỏ sót người này."}`));
       } else {
         const clueIndex = clearingClue(file, index);
-        text.append(element("p", "", `✕ Loại nhờ ${lower(sourceOf(file.clues[clueIndex]).label)}: ${describeMismatch(file, index, clueIndex)}.`));
+        text.append(element("p", "", `✕ Loại nhờ manh mối #${clueIndex + 1} (${lower(sourceOf(file.clues[clueIndex]).label)}): ${describeMismatch(file, index, clueIndex)}.`));
         if (index === result.accused) text.append(element("p", "detective-verdict is-bad", "Bạn đã chỉ ra người này."));
         else if (result.correct) {
           text.append(element("p", `detective-verdict ${result.proofs[index] ? "is-good" : "is-bad"}`,
             result.proofs[index] ? "✓ Lập luận của bạn đúng." : "✗ Lập luận của bạn chưa loại được người này."));
+          const chosen = result.reasons[index];
+          if (!result.proofs[index] && Number.isInteger(chosen) && file.clues[chosen]) {
+            text.append(element("p", "", file.revealed.includes(chosen)
+              ? `Manh mối #${chosen + 1} bạn chọn vẫn phù hợp với dữ kiện của ${suspect.name}, nên không thể dùng để loại người này.`
+              : `Bạn chọn manh mối #${chosen + 1} nhưng chưa điều tra nguồn đó.`));
+          }
         }
       }
       row.append(avatar(suspect, index), text);
       rows.append(row);
     });
     solution.append(rows);
+    const chain = element("section", "dialog-card detective-deduction");
+    chain.append(element("h3", "", "Chuỗi suy luận từng bước"));
+    const deductions = element("ol", "detective-deduction-steps");
+    for (const step of solutionSteps(file)) {
+      const item = element("li");
+      item.append(element("strong", "", `Manh mối #${step.clueIndex + 1}${file.revealed.includes(step.clueIndex) ? "" : " · bạn chưa điều tra"}`),
+        element("p", "", describeClue(file, file.clues[step.clueIndex])));
+      if (step.removed.length) {
+        const removals = element("ul");
+        for (const index of step.removed) {
+          removals.append(element("li", "", `Loại ${file.suspects[index].name}: ${describeMismatch(file, index, step.clueIndex)}.`));
+        }
+        item.append(removals);
+      }
+      item.append(element("p", "detective-deduction-left",
+        `Còn ${step.remaining.length} người: ${step.remaining.map(index => file.suspects[index].name).join(", ")}.`));
+      deductions.append(item);
+    }
+    chain.append(deductions);
 
     const all = element("section", "dialog-card");
     all.append(element("h3", "", "🗒️ Toàn bộ manh mối"));
     const list = element("ul", "detective-clue-list");
     file.clues.forEach((clue, index) => {
       const row = element("li", file.revealed.includes(index) ? "" : "is-hidden");
-      row.append(element("span", "detective-clue-tag", sourceOf(clue).chip),
+      row.append(element("span", "detective-clue-tag", clueTag(file, index)),
         document.createTextNode(`${describeClue(file, clue)}${file.revealed.includes(index) ? "" : " (chưa điều tra)"}`));
       list.append(row);
     });
@@ -512,7 +650,7 @@ export function initDetective(state, { renderMoney, renderStats, renderLogEntry,
       save();
       renderHome();
     });
-    show(stamp, summary, solution, all, done);
+    show(stamp, summary, chain, solution, all, done);
     focusFirst();
   }
 

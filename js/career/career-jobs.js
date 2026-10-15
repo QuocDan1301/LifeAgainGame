@@ -345,7 +345,7 @@ const fallbackEmploymentContext = {
   apply: "gửi hồ sơ ứng tuyển",
 };
 
-// Tình huống nghề nghiệp riêng của từng ngành (dùng cho phỏng vấn và sự cố công việc).
+ 
 export const getCareerTopic = (careerId) => careerInterviewTopics[careerId] ?? null;
 
 export function getEmploymentContext(careerId, careerPath = null) {
@@ -496,7 +496,7 @@ function shuffledAnswers(question, random) {
   const answers = question.answers.map((label, index) => ({
     label,
     correct: index < 2,
-    // Đáp án gốc theo thứ tự: tốt, chấp nhận được, chưa phù hợp.
+     
     quality: ["good", "acceptable", "weak"][index],
   }));
   for (let index = answers.length - 1; index > 0; index -= 1) {
@@ -507,8 +507,8 @@ function shuffledAnswers(question, random) {
 }
 
 const capitalize = (text) => `${text[0].toLocaleUpperCase("vi-VN")}${text.slice(1)}`;
-// Phỏng vấn nhận việc của người hoàn thành chuỗi tuổi 16 đúng ngành là phần tiếp nối của chuỗi ấy:
-// người hướng dẫn năm xưa giữ lời hẹn, mời phỏng vấn, báo kết quả và hẹn thử lại.
+ 
+ 
 function getMilestoneMentor(player) {
   if (!hasCareerMilestone(player)) return null;
   const data = careerMilestones[player.careerPath.id];
@@ -547,9 +547,9 @@ export function createJobInterview(player, random = Math.random) {
   };
 }
 
-// Kết quả phỏng vấn. \`passed\` là kết quả tổng thể đã tung (chất lượng câu trả lời, trí tuệ, chuẩn bị — xem
-// intellect-rules.js); \`assessment\` ghi lại cách tính để người chơi thấy. Câu trả lời tốt luôn được ghi nhận là tốt,
-// kể cả khi lần này chưa được nhận. Bóng đá còn cần thể lực: thiếu thể lực thì không đậu.
+ 
+ 
+ 
 export function createInterviewResult(player, passed, age, assessment = null) {
   const unfit = failsFootballFitness(player.careerPath?.id, player.health);
   const overseasBlocker = getOverseasJobBlocker(player, age);
@@ -615,7 +615,7 @@ function createAnsweredInterviewResult(player, passed, age) {
       title: "📋 Lời hẹn chưa trọn",
       content: `${mentor.Name} khẽ lắc đầu: “Câu trả lời này chưa giống người tôi gặp năm 16 tuổi.” ${capitalize(context.place)} chưa thể nhận bạn lần này, nhưng ${mentor.name} vẫn để ngỏ cánh cửa: năm sau có thể dự buổi ${context.round} lại.`,
       confirmText: "Năm sau thử lại!",
-      // Tuyển thủ Liên Quân trượt vẫn tập ở academy như trước.
+       
       updates: { age, job: isEsports ? `🎮 Tuyển thủ ${academy}` : "Thất nghiệp", employmentStatus: "unemployed", careerLevel: 0 },
       achievementIds: [],
       logSummary: `Chưa vượt qua buổi ${context.round} do ${mentor.name} mời.\nTạm thời thất nghiệp; có thể thử lại vào năm sau.`,
@@ -715,7 +715,7 @@ export function createInterviewRetryPrompt(player) {
   };
 }
 
-// Lần đầu ở tuổi 27; lần cuối cách lần nâng bậc thành công đầu tiên 10 năm.
+ 
 export function getPromotionUpdates(player, age, correct) {
   const level = Number(player.careerLevel) || 1;
   if (!correct) {
@@ -728,9 +728,9 @@ export function getPromotionUpdates(player, age, correct) {
   return { nextPromotionAge: level === 1 && finalAge <= lastAge ? finalAge : null };
 }
 
-// Mỗi tình huống có ba cách làm hợp lý, khác nhau ở cái giá phải trả: dốc sức thì dễ được chọn hơn
-// nhưng hao sức khỏe, tinh thần; giữ cân bằng thì an toàn cho bản thân nhưng ít cơ hội hơn.
-// bonus cộng vào khả năng được chọn; effects là cái giá (hoặc phần được) dù kết quả thế nào.
+ 
+ 
+ 
 const promotionScenarios = {
   1: [
     {
@@ -802,8 +802,8 @@ function promotionRetryText(player, age) {
     : `Cách xử lý chưa phù hợp nên bạn giữ nguyên bậc nghề. Bạn sẽ được thử lại sau 2 năm, ở tuổi ${retryAge}.`;
 }
 
-// Thay thế lượt nâng bậc 1 → 2 khi dấu mốc tuổi 16 có hiệu lực: 4 tình huống,
-// chọn sai ở bất kỳ bước nào thì giữ bậc 1 và thử lại sau 2 năm, không mất dấu mốc.
+ 
+ 
 export function createMilestonePromotionEvent(player, step = 1, age = player.age + 1, random = Math.random) {
   const career = player.careerPath;
   const data = careerMilestones[career?.id];
@@ -864,9 +864,9 @@ export function createPromotionEvent(player, random = Math.random, age = player.
     ? milestone.finalScenario
     : Math.floor(random() * scenarios.length);
   const scenario = scenarios[scenarioIndex];
-  // Kinh nghiệm, trí tuệ (theo nghề) và thành tích đặt khả năng cơ bản; cách làm cộng hoặc trừ thêm.
-  // Một lần tung khi sự kiện xuất hiện (tải lại không đổi); cách làm có khả năng cao hơn luôn đậu khi cách
-  // thấp hơn đậu. Không tăng lương chỉ vì chỉ số cao.
+   
+   
+   
   const chance = getPromotionChance(player, age);
   const roll = random();
   const options = scenario.approaches.map((approach) => {
@@ -905,7 +905,7 @@ Lương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel, care
     id: `career-promotion-${career.id}-${level}-${scenarioIndex + 1}`,
     kind: "career-promotion",
     title: scenario.title,
-    // Công khai khả năng được chọn nếu xử lý đúng (kinh nghiệm, trí tuệ theo nghề, thành tích).
+     
     text: (finalPromotion && milestone
       ? `${capitalize(milestone.mentor)}${hasCareerMilestone(player) ? " — người đồng hành từ năm 16 tuổi —" : ", cố vấn hành trình du học,"} giới thiệu bạn vào vòng xét bậc ${profile.ranks[2]}: ${milestone.finalHook}\n${hasCareerMilestone(player) ? "Dấu mốc năm xưa chỉ mở cánh cửa;" : "Kinh nghiệm làm việc mở cơ hội này;"} bước qua được hay không là ở cách bạn xử lý.\n\n${scenario.text.replace("{field}", career.field)}`
       : scenario.text.replace("{field}", career.field)) +
@@ -918,10 +918,10 @@ Lương mới: ${formatSalary(getCareerAnnualSalary(career.id, targetLevel, care
 }
 
 export function createEmploymentEvent(player, age) {
-  // Đã đến tuổi nghỉ hưu thì không còn phỏng vấn lại hay xét nâng bậc.
+   
   if (!player.careerPath || player.careerPath.id === "casual" || age >= RETIREMENT_AGE) return null;
-  // Chỉ người hoàn thành chuỗi tuổi 16 và học đúng ngành đó mới được tự động phỏng vấn ở tuổi 22
-  // (và được hỏi thử lại mỗi năm). Những người khác tự nộp hồ sơ ở Hoạt động → Xin việc.
+   
+   
   const milestone = hasCareerMilestone(player);
   const overseas = Boolean(getStudyAbroadCountry(player.careerPath));
   const internationalGraduate = hasInternationalDegreeForCareer(player);
@@ -936,8 +936,8 @@ export function createEmploymentEvent(player, age) {
   const dueAge = player.nextPromotionAge === undefined
     ? (level === 1 ? 27 : null)
     : player.nextPromotionAge;
-  // Bậc 3 chỉ được xét khi dấu mốc tuổi 16 có hiệu lực cho đúng ngành.
-  // Đang trong diện cảnh báo thì chưa xét nâng bậc.
+   
+   
   if (player.employmentStatus === "employed" && !player.jobWarning && level >= 1 && level < 3 &&
       Number.isInteger(dueAge) && age >= 27 && age >= dueAge &&
       (level === 1 || ((overseas || internationalGraduate || age <= 39) && getRankLock(player).unlocked))) {

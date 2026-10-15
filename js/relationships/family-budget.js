@@ -1,3 +1,4 @@
+import { getDatingExpenses } from './dating-expenses.js';
 import { getRelativeAge } from './family-members.js';
 import { formatMoney } from '../core/money-format.js';
 
@@ -9,20 +10,21 @@ export const EDUCATION_PLANS = {
 export const PARENT_PLANS = {
   none: { label: 'Tự thu xếp, chưa gửi thêm', annual: 0, bond: 0 },
   support: { label: 'Góp chi phí sinh hoạt', annual: 12_000_000, bond: 1 },
-  // Tính như nhờ người chăm sóc (careBy 'helper') cho năm kế tiếp.
+   
   care: { label: 'Hỗ trợ chăm sóc thường xuyên', annual: 36_000_000, bond: 3, care: true },
 };
-// Con 6–22 tuổi không có gói học thêm hay hỗ trợ đại học: gắn kết giảm mỗi năm.
-// Đủ để con chỉ học cơ bản suốt 6–22 tuổi rơi dưới mốc 60 của chuyện tuổi già.
+ 
+ 
 export const CHILD_NEGLECT_LOSS = 2;
 export const childAgeAt = (child, age) => child.initialAge + Math.max(0, age - child.joinedAtAge);
 export const eligibleParent = (parent, age) => ['father', 'mother'].includes(parent.id) && parent.alive === true &&
   (getRelativeAge(parent, age) >= 65 || ['weak', 'severe'].includes(parent.condition));
 
-// Explicit, reversible annual commitments. Old saves opt into no additional costs.
-export function getFamilyBudget(player, age) {
+ 
+export function getFamilyBudget(player, age, { skipDating = false } = {}) {
   const charges = [];
   if (age < 18 || player.isAlive === false || player.familyBudgetPaidAge >= age) return { amount: 0, charges };
+  if (!skipDating) charges.push(...getDatingExpenses(player, age));
   for (const child of player.children ?? []) {
     const years = childAgeAt(child, age);
     const plan = EDUCATION_PLANS[child.educationPlan] ?? EDUCATION_PLANS.basic;
@@ -41,6 +43,7 @@ export function collectFamilyBudget(player, age, budget = getFamilyBudget(player
   player.familyBudgetPaidAge = age;
   player.money -= budget.amount;
   const paidCharges = budget.charges.map(charge => {
+    if (charge.kind === 'dating') return { ...charge, bond: 0, applied: false, cared: false };
     const items = charge.kind === 'child' ? player.children : player.relatives;
     const person = items?.find(item => item.id === charge.id);
     let gained = 0;
@@ -54,8 +57,8 @@ export function collectFamilyBudget(player, age, budget = getFamilyBudget(player
       const before = Math.max(0, Math.min(100, old));
       person[field] = Math.min(100, before + charge.bond);
       gained = person[field] - before;
-      // Người chăm sóc được trả tiền: giảm nguy cơ bệnh nặng/qua đời ở sinh nhật sau như hành động "Nhờ người hỗ trợ".
-      // Không hạ mức khi năm nay đã tự tay chăm sóc.
+       
+       
       if (charge.care && !(person.caredAt === age && person.careBy === 'self')) Object.assign(person, { caredAt: age, careBy: 'helper' });
     }
     return { ...charge, bond: gained, applied, cared: charge.care && applied };

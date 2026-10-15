@@ -1,6 +1,6 @@
-// Tiến lên miền Nam: luật bài thuần (không đụng giao diện, không đụng tiền).
-// Lá bài là số 0–51: giá trị = Math.floor(lá / 4) (0 là lá 3 … 11 là A, 12 là 2 – heo),
-// chất = lá % 4 (0 ♠ < 1 ♣ < 2 ♦ < 3 ♥). Nhờ vậy so lá chỉ cần so số.
+ 
+ 
+ 
 export const RANKS = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2"];
 export const SUITS = ["♠", "♣", "♦", "♥"];
 export const TWO = 12;
@@ -30,15 +30,15 @@ export function shuffledDeck(random = Math.random) {
   }
   return deck;
 }
-// Chia lần lượt từng lá cho 4 người, mỗi người 13 lá.
+ 
 export function dealHands(random = Math.random) {
   const deck = shuffledDeck(random);
   return Array.from({ length: SEATS }, (_, seat) => sortCards(deck.filter((_, index) => index % SEATS === seat)));
 }
 
-// ---------- Nhận dạng và so sánh bộ ----------
+ 
 const makeCombo = (type, cards, key) => ({ type, cards, key, length: cards.length });
-// key: lá cao nhất (lẻ, đôi, sảnh, đôi thông) hoặc giá trị (sám cô, tứ quý). Cùng loại thì key lớn hơn là mạnh hơn.
+ 
 export function classify(cards) {
   const sorted = sortCards(cards);
   const count = sorted.length;
@@ -52,7 +52,7 @@ export function classify(cards) {
     if (count === 4) return makeCombo("quad", sorted, ranks[0]);
     return null;
   }
-  // Lá 2 không nằm trong sảnh hay đôi thông; A đứng sau K, không nối với 3.
+   
   if (ranks.includes(TWO)) return null;
   if (count >= 3 && ranks.every((rank, index) => index === 0 || rank === ranks[index - 1] + 1)) {
     return makeCombo("straight", sorted, top);
@@ -69,7 +69,7 @@ export function classify(cards) {
 
 const isTwoSingle = (combo) => combo.type === "single" && rankOf(combo.key) === TWO;
 const isTwoPair = (combo) => combo.type === "pair" && rankOf(combo.key) === TWO;
-// Luật chặt đặc biệt (khác loại với bộ trên bàn, hoặc bộ chặt cùng loại lớn hơn).
+ 
 export function isChop(play, current) {
   if (!play || !current) return false;
   if (play.type === "pairs3") return isTwoSingle(current) || (current.type === "pairs3" && play.key > current.key);
@@ -89,8 +89,8 @@ export function beats(play, current) {
   return isChop(play, current);
 }
 
-// ---------- Trạng thái ván ----------
-// turn: ghế đang tới lượt (0 là người chơi, đánh ngược chiều kim đồng hồ: 0 → 1 phải → 2 trên → 3 trái).
+ 
+ 
 export function createGame(hands, { starter = null, requireThreeSpades = false } = {}) {
   const first = starter ?? hands.findIndex((hand) => hand.includes(THREE_SPADES));
   return {
@@ -100,7 +100,7 @@ export function createGame(hands, { starter = null, requireThreeSpades = false }
 }
 
 const fail = (reason) => ({ ok: false, reason });
-// Kiểm tra một nước đánh. Bốn đôi thông được chặt ngoài lượt, kể cả khi đã bỏ vòng.
+ 
 export function checkPlay(game, seat, cards) {
   if (game.winner !== null || game.over) return fail("Ván đã kết thúc.");
   const hand = game.hands[seat];
@@ -131,7 +131,7 @@ function newRound(game, seat) {
   game.turn = seat;
   game.history.push({ seat, kind: "round" });
 }
-// Chuyển lượt sang người kế tiếp chưa bỏ vòng; nếu vòng quay về người đánh cuối thì người đó mở vòng mới.
+ 
 function advance(game, from) {
   for (let step = 1; step <= SEATS; step += 1) {
     const seat = (from + step) % SEATS;
@@ -142,7 +142,7 @@ function advance(game, from) {
     }
   }
 }
-// Gọi sau checkPlay. Trả về true nếu người này vừa hết bài (thắng).
+ 
 export function applyPlay(game, seat, cards) {
   const check = checkPlay(game, seat, cards);
   if (!check.ok) throw new Error(check.reason);
@@ -170,7 +170,7 @@ export function applyPass(game, seat) {
   advance(game, seat);
 }
 
-// ---------- Liệt kê các bộ có thể đánh ----------
+ 
 function groupByRank(hand) {
   const groups = Array.from({ length: 13 }, () => []);
   for (const card of sortCards(hand)) groups[rankOf(card)].push(card);
@@ -182,8 +182,8 @@ function subsets(cards, size) {
   const [first, ...rest] = cards;
   return [...subsets(rest, size - 1).map((subset) => [first, ...subset]), ...subsets(rest, size)];
 }
-// Mọi bộ hợp lệ có thể tạo từ bài trên tay (lá thấp được dùng cho phần dưới của sảnh/đôi thông,
-// lá cao nhất được thử đủ các chất để có đủ lựa chọn khi so).
+ 
+ 
 export function listCombos(hand) {
   const groups = groupByRank(hand);
   const combos = [];
@@ -211,9 +211,9 @@ export function listCombos(hand) {
 export const legalPlays = (game, seat) =>
   listCombos(game.hands[seat]).filter((combo) => checkPlay(game, seat, combo.cards).ok);
 
-// ---------- Máy chơi ----------
-// Ước lượng số nước cần để đánh hết bài: tách tham lam thành đôi thông, sảnh, sám cô, đôi, lẻ.
-// Bộ chặt (tứ quý, đôi thông) và heo được giữ riêng vì có giá trị đặc biệt.
+ 
+ 
+ 
 export function planHand(hand) {
   const groups = groupByRank(hand);
   const counts = groups.map((cards) => cards.length);
@@ -230,7 +230,7 @@ export function planHand(hand) {
       plan.push({ type: end - start >= 4 ? "pairs4" : "pairs3", rank: end - 1 });
     }
   }
-  // Sảnh: ưu tiên các giá trị chỉ có 1 lá để khỏi phá đôi.
+   
   for (let start = 0; start <= ACE - 2; start += 1) {
     let end = start;
     while (end <= ACE && counts[end] >= 1) end += 1;
@@ -254,8 +254,8 @@ const isBomb = (combo) => ["quad", "pairs3", "pairs4"].includes(combo.type);
 const hasTwo = (combo) => combo.cards.some((card) => rankOf(card) === TWO);
 const topRank = (combo) => rankOf(combo.cards.at(-1));
 
-// Chi phí một nước: càng thấp càng nên đánh. Dựa trên số nước còn lại sau khi đánh,
-// độ cao của bộ và việc phải dùng heo / bộ chặt.
+ 
+ 
 function moveCost(hand, combo, { danger, opening, current }) {
   const after = hand.filter((card) => !combo.cards.includes(card));
   if (!after.length) return -1000;
@@ -267,19 +267,19 @@ function moveCost(hand, combo, { danger, opening, current }) {
     if (!worthIt && !danger) cost += 40;
   }
   if (opening) {
-    // Mở vòng: ưu tiên bộ nhiều lá để rút bài nhanh.
+     
     cost -= combo.length * 1.5;
-    // Đối thủ còn 1 lá thì tránh mở bài lẻ nhỏ; còn 2 lá thì tránh mở đôi nhỏ.
+     
     if (danger === 1 && combo.type === "single") cost += 30 - topRank(combo) * 2;
     if (danger === 2 && combo.type === "pair") cost += 20 - topRank(combo);
   }
   return cost;
 }
-// Ít bài nhất trong các đối thủ (máy chỉ biết số lá, không biết lá gì).
+ 
 const fewestOpponentCards = (game, seat) =>
   Math.min(...game.hands.map((hand, other) => (other === seat ? Infinity : hand.length)));
 
-// Trả về các lá sẽ đánh, hoặc null nếu bỏ lượt.
+ 
 export function chooseAiMove(game, seat) {
   const hand = game.hands[seat];
   if (game.turn !== seat) return null;
@@ -294,14 +294,14 @@ export function chooseAiMove(game, seat) {
   const ranked = plays.map((combo) => ({ combo, cost: moveCost(hand, combo, context) })).sort((a, b) => a.cost - b.cost);
   const best = ranked[0];
   if (opening) return best.combo.cards;
-  // Đối thủ sắp hết bài: không bỏ lượt, đánh bộ mạnh nhất để giành quyền đánh
-  // (bộ chặt chỉ dùng khi bàn đang có heo hoặc bộ chặt, trừ khi không còn cách nào khác).
+   
+   
   if (danger) {
     const normal = plays.filter((combo) => !isBomb(combo) || hasTwo(game.current) || isBomb(game.current));
     const strength = (combo) => topRank(combo) * 100 + suitOf(combo.cards.at(-1)) * 10 + combo.length;
     return (normal.length ? normal : plays).reduce((a, b) => (strength(b) > strength(a) ? b : a)).cards;
   }
-  // Không gấp: bỏ lượt nếu phải phá bộ, dùng heo hoặc bộ chặt cho một bộ nhỏ.
+   
   const before = movesLeft(hand);
   const after = movesLeft(hand.filter((card) => !best.combo.cards.includes(card)));
   const breaksPlan = after >= before;
@@ -311,7 +311,7 @@ export function chooseAiMove(game, seat) {
   if (costly && !hasTwo(game.current) && !isBomb(game.current) && hand.length > 6) return null;
   return best.combo.cards;
 }
-// Máy có bốn đôi thông muốn chặt ngoài lượt không (chỉ chặt heo, bộ chặt, hoặc khi đối thủ sắp hết bài).
+ 
 export function chooseAiOutOfTurnChop(game, seat) {
   if (!game.current || game.current.by === seat || game.turn === seat || game.winner !== null) return null;
   const chops = listCombos(game.hands[seat]).filter((combo) => combo.type === "pairs4" && checkPlay(game, seat, combo.cards).ok);
@@ -319,7 +319,7 @@ export function chooseAiOutOfTurnChop(game, seat) {
   const worth = hasTwo(game.current) || isBomb(game.current) || fewestOpponentCards(game, seat) <= 2;
   return worth ? chops[0].cards : null;
 }
-// Gợi ý cho người chơi: một nước hợp lệ có chi phí thấp nhất (không tự đánh).
+ 
 export function suggestPlay(game, seat) {
   const hand = game.hands[seat];
   const plays = legalPlays(game, seat);
@@ -328,7 +328,7 @@ export function suggestPlay(game, seat) {
   const context = { danger: fewest <= 2 ? fewest : 0, opening: !game.current, current: game.current };
   return plays.map((combo) => ({ combo, cost: moveCost(hand, combo, context) })).sort((a, b) => a.cost - b.cost)[0].combo.cards;
 }
-// Xếp bài theo bộ: bộ chặt, đôi thông, sảnh, sám cô, đôi rồi lẻ (mỗi nhóm từ thấp đến cao).
+ 
 export function arrangeByGroups(hand) {
   const remaining = new Set(hand);
   const order = [];

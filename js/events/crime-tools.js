@@ -1,4 +1,4 @@
-// Đạo cụ và giá là quy tắc của game; sở hữu trong player.purchases.
+ 
 export const crimeTools = [
   { id: 'crime-gloves', crime: 'theft', shop: 'shopping', group: 'items', icon: '🧤', name: 'Găng tay đen', price: 200_000, limit: 1, minAge: 18,
     description: 'Đạo cụ cần có cho lựa chọn Trộm cắp trong Sống khác. Dùng lại được, không sinh lãi.' },

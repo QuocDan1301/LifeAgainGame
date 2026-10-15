@@ -31,7 +31,7 @@ export const femaleNames = [
   "Tú Uyên",
   "Lan Anh",
 ];
-// Danh sách quê quán dùng cho lựa chọn ngẫu nhiên và gợi ý khi nhập.
+ 
 export const provinces = [
   "Hà Nội",
   "Cao Bằng",

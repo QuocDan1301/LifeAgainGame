@@ -1,8 +1,8 @@
-// Giai đoạn 80–89 tuổi. Mỗi tuổi: 3 sự kiện chung + phiên bản theo hoàn cảnh (có bạn đời / một mình).
-// Ở tuổi này lựa chọn chủ yếu là phản ứng thế nào: chấp nhận, nói ra, trao lại.
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
+ 
 export const stage80To89 = [
-  // ───────────── 80 tuổi ─────────────
+   
   {
     id: 'ls80-tam-muoi-tuoi', age: 80,
     title: 'Tám mươi',
@@ -59,7 +59,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 81 tuổi ─────────────
+   
   {
     id: 'ls81-an-kem', age: 81,
     title: 'Cây kem cuối hè',
@@ -116,7 +116,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 82 tuổi ─────────────
+   
   {
     id: 'ls82-giac-mo', age: 82,
     title: 'Giấc mơ về nhà cũ',
@@ -173,7 +173,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 83 tuổi ─────────────
+   
   {
     id: 'ls83-quen-ten-nguoi', age: 83,
     title: 'Khuôn mặt quen',
@@ -230,7 +230,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 84 tuổi ─────────────
+   
   {
     id: 'ls84-an-com-cung-con-chau', age: 84,
     title: 'Mâm cơm đông người',
@@ -287,7 +287,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 85 tuổi ─────────────
+   
   {
     id: 'ls85-dem-dai', age: 85,
     title: 'Đêm dài',
@@ -344,7 +344,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 86 tuổi ─────────────
+   
   {
     id: 'ls86-te-nga-dem', age: 86,
     title: 'Chiếc nút báo động',
@@ -401,7 +401,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 87 tuổi ─────────────
+   
   {
     id: 'ls87-ngoi-ben-cua-so', age: 87,
     title: 'Ô cửa sổ',
@@ -458,7 +458,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 88 tuổi ─────────────
+   
   {
     id: 'ls88-ban-tay', age: 88,
     title: 'Bàn tay',
@@ -515,7 +515,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── 89 tuổi ─────────────
+   
   {
     id: 'ls89-nguoi-gia-nhat-xom', age: 89,
     title: 'Người già nhất xóm',
@@ -572,7 +572,7 @@ export const stage80To89 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-goi-nham-ten-chau', ages: [82, 100], requiresAny: ['ba_lan', 'nghe_chuyen_ba', 'ke_chuyen_ba_nghe'], needs: ['children'],
     title: 'Tên của con',

@@ -1,4 +1,4 @@
-// Mỗi lần tạo nhân vật dùng một object mới, tránh mang dữ liệu đời trước sang.
+ 
 export function createInitialState() {
   return {
     player: {
@@ -7,6 +7,8 @@ export function createInitialState() {
       orientation: null,
       partner: null,
       otherPartners: [],
+      affair: null,
+      affairLastEventAge: null,
       concurrentDatingStartedAtAge: null,
       concurrentDatingLastEventAge: null,
       relationshipStartedAtAge: null,

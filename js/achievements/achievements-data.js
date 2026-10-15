@@ -1,4 +1,4 @@
-// Giữ nguyên id sau khi phát hành để không mất thành tựu đã mở khóa.
+ 
 export const achievementGroups = [
   {
     id: "milestones",
@@ -64,7 +64,7 @@ export const achievements = [
     "🎒",
     "Ngày đầu đến trường",
     "Bắt đầu hành trình học tập tại trường tiểu học.",
-    // Tự mở khi vào cấp 1 lúc 6 tuổi, giống Lên cấp 2 (11 tuổi) và Lên cấp 3 (15 tuổi).
+     
     number("age", 6),
   ),
   item(
@@ -828,8 +828,8 @@ export function meetsAchievement(achievement, player = {}) {
   );
 }
 
-// Chỉ gọi khi hành động đã thành công, sau khi tuổi mới được áp dụng.
-// Hàm này ghi nhận kết quả, không tự kiểm tra/áp dụng việc mua tài sản hay thăng chức.
+ 
+ 
 export function recordAchievementFlags(state, ids = []) {
   if (!state?.player || !Array.isArray(ids)) return;
   const oldFlags = state.player.achievementFlags;

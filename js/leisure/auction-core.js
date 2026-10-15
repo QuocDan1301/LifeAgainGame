@@ -29,8 +29,8 @@ export function createAuction(random = Math.random) {
     [1, 1.8, 3][rarity] * [0.45, 1, 1.25][condition] * (0.8 + random() * 0.4));
   const age = authenticity === 'genuine' ? 80 + Math.floor(random() * 220) : 1 + Math.floor(random() * 30);
   const provenance = choose(['Từ một căn nhà cũ được dọn lại.', 'Do một người sưu tầm gửi bán.', 'Thu mua tại một chợ đồ cũ.', 'Có trong một lô đồ gia đình để lại.'], random);
-  // Mỗi câu manh mối xuất hiện ở đúng hai trong ba kết quả: một manh mối chỉ loại trừ được một khả năng,
-  // không bao giờ tự chứng minh thật hay giả. Thẩm định và giá ước tính mới thu hẹp thêm.
+   
+   
   const clues = {
     fake: ['Hoa văn có nét không đồng nhất.', 'Lớp phủ có chỗ đậm, chỗ nhạt.', 'Bề mặt có vết mòn không đều.', 'Một số chi tiết trông khá mới.'],
     replica: ['Hoa văn có nét không đồng nhất.', 'Lớp phủ có chỗ đậm, chỗ nhạt.', 'Các đường nét được làm khá kỹ.', 'Có dấu sửa chữa ở phần khuất.'],

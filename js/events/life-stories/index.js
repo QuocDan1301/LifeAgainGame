@@ -1,4 +1,4 @@
-// Gom các giai đoạn. Thêm giai đoạn mới: import rồi nối vào lifeStoryCatalog.
+ 
 import { stage01To10 } from './stage-01-10.js';
 import { stage11To23 } from './stage-11-23.js';
 import { stage01To14Extra } from './stage-01-14-them.js';
@@ -15,7 +15,7 @@ import { studyAbroadStories } from './study-abroad.js';
 import { afterPrisonStories } from './after-prison.js';
 export const lifeStoryCatalog = [
   ...studyAbroadStories,
-  // Sau chuỗi du học: chỉ lấy 2 chuỗi đầu danh mục mỗi năm, chuyện ở tù không nên chiếm chỗ của du học.
+   
   ...afterPrisonStories,
   ...stage01To10,
   ...stage11To23,

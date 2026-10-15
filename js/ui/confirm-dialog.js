@@ -1,4 +1,4 @@
-// Hộp xác nhận dùng chung cho mua, bán, nhận việc và nghỉ việc.
+ 
 let pendingAction = null;
 let initialized = false;
 

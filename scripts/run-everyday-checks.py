@@ -28,7 +28,7 @@ try:
         page = browser.new_page(viewport={'width': 390, 'height': 844})
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
-        # Cố định may rủi ở mức giữa để kết quả đúng bằng điểm tác giả viết.
+         
         page.add_init_script('Math.random = () => 0.5;')
         page.goto(base + '/index.html')
         cases = page.evaluate("""async () => {

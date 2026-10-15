@@ -16,7 +16,7 @@
     const I = await import("../js/stats/intellect-rules.js");
     const near = (a, b) => Math.abs(a - b) < 1e-9;
 
-    // 2. Cơ hội làm quen: 15% + (NH − 50) × 0,2 + 10% giao tiếp, 5–35%.
+     
     const chance = (appearance, social = false) => A.getAcquaintanceChance({ appearance, developmentDone: {}, reachOutAge: social ? 29 : null }, 30);
     assert(near(chance(20), 0.09) && near(chance(80), 0.21), "Examples: 9% at 20, 21% at 80");
     assert(near(chance(50, true), 0.25) && near(chance(100, true), 0.35) && near(chance(0), 0.05), "Social bonus +10, bounds 5–35%");
@@ -31,14 +31,14 @@
     assert(date && date.playerUpdates.partner.gender === "male", "Romance respects orientation");
     assert(romance.choices.some(c => c.playerUpdates?.friends) && romance.choices.some(c => c.title.includes("lời chào")), "Friendship and a polite no are always there");
     assert(!createAcquaintanceEvent(adult({ partner: { id: "x" } }), 30, () => 0).choices.some(c => c.playerUpdates?.partner), "No romance offer while in a relationship");
-    // 3. Ấn tượng ban đầu chỉ là lợi thế nhỏ.
+     
     assert(A.getRomanceChance({ appearance: 100 }) <= 0.75 && A.getRomanceChance({ appearance: 0 }) >= 0.35, "Looks never guarantee or doom a date");
     assert(Math.abs(A.getStartingBond({ appearance: 100 }) - A.getStartingBond({ appearance: 0 })) <= 6, "Starting bond differs by at most ±3");
     let first = true;
     const declined = createAcquaintanceEvent(adult({ appearance: 100 }), 30, () => (first ? ((first = false), 0) : 0.99));
     assert(declined.choices.some(c => c.title.includes("Làm bạn trước")), "A refusal is respected even at high appearance");
 
-    // 4. Nghề hình ảnh: điểm cộng nhỏ; nghề khác không có.
+     
     const looks = (careerId, appearance) => I.getInterviewChance({ intelligence: 50, appearance }, "good", careerId).chance;
     assert(looks("acting", 90) > looks("acting", 50) && looks("acting", 90) - looks("acting", 50) <= 0.04 + 1e-9, "Small appearance bonus for acting");
     assert(looks("programming", 90) === looks("programming", 50) && looks("mechanical", 10) === looks("mechanical", 50), "No appearance bonus for IT or mechanics");
@@ -50,13 +50,13 @@
     assert(casting.choices.every(c => !c.label.includes("chuyên nghiệp")) && casting.choices.length >= 2, "Unaffordable paid prep is not offered; free options remain");
     assert(!Object.values(A.OCCASION_PREP).some(p => p.appearance), "Occasion prep never adds permanent appearance");
 
-    // 6. Tuổi tác: biến động nhẹ, chăm sóc giữ phong cách; không trừ vì sức khỏe hay hạnh phúc.
+     
     assert(!A.collectAppearanceYear({ age: 50, appearance: 60 }, 51, () => 0), "No change before 60");
     assert(A.collectAppearanceYear({ age: 70, appearance: 60, developmentDone: {} }, 71, () => 0)?.content.includes("-1"), "Mild change in old age");
     assert(!A.collectAppearanceYear({ age: 70, appearance: 60, developmentDone: { "home-care": 70 } }, 71, () => 0), "Self-care keeps the style");
     assert(!A.collectAppearanceYear({ age: 70, appearance: 60, developmentDone: {} }, 71, () => 0.5), "Not everyone changes");
 
-    // Giao diện.
+     
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());
@@ -74,20 +74,20 @@
     const $ = id => document.getElementById(id);
     const closeAll = () => document.querySelectorAll("dialog[open]").forEach(d => d.close());
     closeAll();
-    // Chủ động kết nối: miễn phí, mỗi năm một lần, tạo bối cảnh giao tiếp.
+     
     $("relationships").click();
     const reach = () => $("relationship-family").querySelector('[data-action="reach-out"]');
     reach().click();
     assert(state.player.reachOutAge === 31 && state.player.happiness === 61 && reach().disabled, "Reaching out is free and once per year");
     closeAll();
-    // Năm sau: lời làm quen thay cho chuyện đời thường (ngoại hình thấp vẫn có cơ hội).
+     
     Math.random = () => 0;
     $("age-up").click();
     assert(state.pendingEvent?.kind === "acquaintance", "An acquaintance appears in an ordinary year");
     [...$("event-choices").querySelectorAll("button")].find(b => b.textContent.includes("làm bạn")).click();
     $("event-confirm").click();
     assert(state.player.friends?.length === 1 && state.player.age === 32, "Friendship is recorded");
-    // Chăm sóc cá nhân miễn phí và học phong cách (mở lựa chọn chuẩn bị theo phong cách riêng).
+     
     closeAll();
     Object.assign(state.player, { money: 0, appearance: 99, developmentDone: {} });
     $("activities").click();

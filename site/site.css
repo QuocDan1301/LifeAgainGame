@@ -1,5 +1,5 @@
-/* Trang giới thiệu Life Again: cùng màu và phông với game (xanh trời, vàng bơ, xanh chanh, chữ xanh than).
-   Điểm nhấn duy nhất là tuyến xe cuộc đời ở đầu trang; phần còn lại giữ yên và dễ đọc. */
+
+
 :root {
   --ink: #16364c;
   --ink-soft: #4b6878;
@@ -16,7 +16,7 @@
   --up: #2f8a3a;
   --down: #c2412f;
   --gutter: clamp(16px, 5vw, 48px);
-  /* Lề hai bên: tối thiểu --gutter, màn rộng thì nội dung nằm giữa trong khung 1120px. */
+   
   --inline: max(var(--gutter), calc((100% - 1120px) / 2));
   color-scheme: light;
 }
@@ -82,7 +82,7 @@ img {
   top: 12px;
 }
 
-/* ----- Nút: khối nổi, ấn xuống khi chạm, giống nút trong game ----- */
+ 
 .button {
   display: inline-flex;
   align-items: center;
@@ -114,7 +114,7 @@ img {
   box-shadow: 0 2px 0 #9fb8c4;
 }
 
-/* ----- Đầu trang ----- */
+ 
 .site-header {
   display: flex;
   align-items: center;
@@ -150,7 +150,7 @@ img {
   .site-header nav a:not(.nav-play) { display: none; }
 }
 
-/* ----- Mở đầu: lời giới thiệu và tuyến xe cuộc đời ----- */
+ 
 .hero {
   padding: clamp(24px, 6vw, 64px) var(--inline) clamp(40px, 7vw, 72px);
   background: linear-gradient(180deg, #bfefff 0%, var(--sky-pale) 62%, var(--paper) 100%);
@@ -210,7 +210,7 @@ img {
   padding: 0;
   list-style: none;
 }
-/* Con đường: dải nhựa xanh than có vạch kẻ vàng ở giữa, chạy qua tâm các trạm. */
+ 
 .route-stops::before {
   content: "";
   position: absolute;
@@ -247,7 +247,7 @@ img {
   font: 400 clamp(13px, 2.6vw, 18px)/1.5 "Sriracha", cursive;
   white-space: nowrap;
 }
-/* Một chuyển động duy nhất: các trạm hiện lần lượt dọc con đường khi mở trang. */
+ 
 @media (prefers-reduced-motion: no-preference) {
   .route-stops li {
     animation: stop-in 420ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
@@ -263,7 +263,7 @@ img {
   }
 }
 
-/* ----- Các phần nội dung ----- */
+ 
 .band {
   padding: clamp(48px, 8vw, 88px) var(--inline);
 }
@@ -304,7 +304,7 @@ img {
   width: 100%;
   border-radius: clamp(14px, 4vw, 26px);
 }
-/* Hai màn hình cạnh nhau: nhật ký và một lựa chọn; màn thứ hai lệch xuống như đang xếp chồng. */
+ 
 .phones {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -384,7 +384,7 @@ img {
   margin-top: 24px;
 }
 
-/* ----- Cài đặt ----- */
+ 
 .band-install {
   background: var(--mint);
 }
@@ -496,7 +496,7 @@ img {
   font-size: 18px;
 }
 
-/* ----- Offline: dải tối như chuyến xe đêm ----- */
+ 
 .band-offline {
   background: var(--ink);
   color: #f4f8fb;
@@ -531,7 +531,7 @@ img {
   color: #fff;
 }
 
-/* ----- Chuyển máy ----- */
+ 
 .transfer-flow {
   display: grid;
   gap: 20px;
@@ -569,7 +569,7 @@ img {
   margin-top: 24px;
 }
 
-/* ----- Câu hỏi thường gặp ----- */
+ 
 .band-faq {
   background: var(--paper);
 }
@@ -589,7 +589,7 @@ details p {
   color: var(--ink-soft);
 }
 
-/* ----- Cuối trang ----- */
+ 
 .site-footer {
   display: grid;
   justify-items: center;

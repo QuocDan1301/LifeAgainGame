@@ -1,4 +1,4 @@
-// Điều chỉnh gameplay theo hoàn cảnh hiện tại, không dựa vào số tiền trong ví.
+ 
 export function getCasualRomanceAdjustment(player) {
   if (!player.casualLife || player.age >= 62) return 0;
   if (player.employmentStatus === 'employed') return 0;

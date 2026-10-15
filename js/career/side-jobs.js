@@ -8,7 +8,7 @@ import { SICK_LEAVE, getHealthBand, getJobHealthRule } from "../stats/health-rul
 import { applyEmergency } from "../stats/hospital.js";
 import { describeJobLossCause, getJobLossUpdates } from "./job-loss.js";
 
-// Làm thêm ở cửa hàng tiện lợi. Lương và sức khỏe tính cho mỗi cửa hàng, mỗi năm.
+ 
 export const convenienceStores = [
   { id: "circle-k", name: "Circle K" },
   { id: "gs25", name: "GS25" },
@@ -25,12 +25,12 @@ export const shiftTypes = {
 };
 
 export const ALL_STORES_ACHIEVEMENT = "side-job-all-stores";
-// Chỉ được nhận việc làm thêm khi nhân vật đủ 16 tuổi.
+ 
 export const SIDE_JOB_MIN_AGE = 16;
-// Từ tuổi nghỉ hưu không nhận ca làm thêm nữa; ca đang làm kết thúc ở sinh nhật nghỉ hưu (như nghề tự do).
+ 
 
-// Đang đi học (dưới 18 tuổi, hoặc 18–21 tuổi đang theo học ở trường): chỉ làm part-time, tối đa
-// STUDENT_MAX_STORES cửa hàng và chưa nhận nghề tự do, để việc làm thêm không vượt cả lương chính thức.
+ 
+ 
 export const STUDENT_MAX_STORES = 2;
 export const isStudying = (player, age = player.age) =>
   age < 18 || (age <= 21 && Boolean(player.careerPath?.school) && player.careerPath.id !== "casual");
@@ -44,16 +44,16 @@ export const getStore = (id) => convenienceStores.find((store) => store.id === i
 const jobsOf = (player) => player.sideJobs ?? [];
 export const getSideJobShift = (player) => jobsOf(player)[0]?.shift ?? null;
 
-// Tên hiển thị khi chưa có công việc chính: chỉ lấy cửa hàng đầu tiên.
+ 
 export function getSideJobTitle(player) {
   const first = getStore(jobsOf(player)[0]?.storeId);
   return first ? `Nhân viên ${first.name}` : streetJobs.find(job => (player.streetJobs ?? []).some(entry => entry.id === job.id))?.name ?? null;
 }
 
-// Trả lương và trừ sức khỏe khi sang tuổi mới, cho mỗi việc đã làm từ năm trước (trả theo ca).
-// Sức khỏe yếu: có thể phải nghỉ ốm một phần ca (mất lương và hao sức của các ca đó).
-// Năm nghỉ dưỡng: tạm nghỉ mọi ca, không lương ca, không hao sức.
-// Làm đến kiệt sức (sức khỏe về 0): nhập viện cấp cứu, không tự động tử vong.
+ 
+ 
+ 
+ 
 export function collectSideJobYear(player, age, random = Math.random) {
   const street = collectStreetYear(player, age, random);
   if (age >= RETIREMENT_AGE && jobsOf(player).length) {
@@ -89,7 +89,7 @@ export function collectSideJobYear(player, age, random = Math.random) {
   return { amount: amount + (street?.amount ?? 0), content: [content, street?.content].filter(Boolean).join("\n") };
 }
 
-// Giảm ca khi sức khỏe nguy hiểm: chỉ giữ một ca part-time (ca full-time chuyển thành part-time).
+ 
 export function reduceSideJobs(player) {
   const [first] = jobsOf(player);
   if (!first) return false;
@@ -240,7 +240,7 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
     }), card);
   }
 
-  // Thẻ "Công việc hiện tại" trong Tài sản: công việc chính và các việc làm thêm.
+   
   function renderCurrentJobs() {
     const list = $("life-jobs");
     list.replaceChildren();
@@ -308,8 +308,8 @@ export function initSideJobs(state, { renderMoney, renderStats, renderLogEntry, 
     focusFirst();
   });
   $("close-side-job").addEventListener("click", () => dialog.close());
-  // Popup Tài sản tự mở trong life-profile.js; ở đây chỉ vẽ thẻ công việc.
-  // Thẻ Công việc: việc hiện tại và lịch sử công việc chính đã mất hoặc đã nghỉ.
+   
+   
   function renderJobsPanel() {
     renderCurrentJobs();
     renderJobHistory();

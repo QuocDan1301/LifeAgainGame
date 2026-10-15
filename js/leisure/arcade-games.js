@@ -4,12 +4,12 @@ import {
   clawTargets, cowTypes, formatPercent, gameOf, LASSO_FLIGHT, pickWeighted, plushOf, plushRarities, whackTargets,
 } from "./game-center-data.js";
 
-// Các trò chơi trong Game Center. Kéo bò có giao diện riêng (xem playCow); các trò khác nhận
+ 
 // { stage, session, decide, progress, finish }:
-// - decide(outcome): kết quả đã chốt (kéo bò, gắp thú) — lưu ngay để tải lại trang không đổi được.
-// - progress(score): điểm hiện tại của trò tính giờ (bóng rổ, đập chuột).
-// - finish(): hoạt ảnh kết thúc, Game Center tính thưởng.
-// Hàm trả về stop() để dừng vòng lặp và gỡ sự kiện khi đóng popup giữa chừng.
+ 
+ 
+ 
+ 
 const EMOJI_FONT = '"Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif';
 
 const element = (tag, className, text) => {
@@ -30,7 +30,7 @@ const liveText = (text) => {
   return node;
 };
 
-// Canvas sắc nét trên màn hình mật độ cao; vẽ theo tọa độ logic width × height.
+ 
 function makeCanvas(width, height, label) {
   const canvas = element("canvas", "gc-canvas");
   const ratio = Math.min(2, window.devicePixelRatio || 1);
@@ -46,7 +46,7 @@ function drawEmoji(ctx, char, x, y, size, flip = false) {
   ctx.save();
   ctx.translate(x, y);
   if (flip) ctx.scale(-1, 1);
-  // Emoji màu vẫn lấy độ trong suốt của fillStyle: dùng màu đặc để không bị mờ.
+   
   ctx.fillStyle = "#000";
   ctx.font = `${size}px ${EMOJI_FONT}`;
   ctx.textAlign = "center";
@@ -60,7 +60,7 @@ function strokeLine(ctx, x1, y1, x2, y2) {
   ctx.lineTo(x2, y2);
   ctx.stroke();
 }
-// Vòng lặp khung hình; step trả về false để dừng. dt bị chặn để tab ẩn lâu không làm vật thể "nhảy cóc".
+ 
 function runLoop(step) {
   let last = performance.now();
   let frame = requestAnimationFrame(function tick(now) {
@@ -71,10 +71,10 @@ function runLoop(step) {
   });
   return () => cancelAnimationFrame(frame);
 }
-// Phím cách/Enter trên một nút đang focus để trình duyệt tự bấm nút đó; các phím khác do trò chơi xử lý.
+ 
 function listenKeys(onDown, onUp) {
   const down = (event) => {
-    // Giữ phím không được tính là bấm liên tục.
+     
     if (event.repeat && [" ", "Enter"].includes(event.key)) {
       event.preventDefault();
       return;
@@ -100,9 +100,9 @@ export function playArcadeGame(gameId, hooks) {
   return { cow: playCow, claw: playClaw, basketball: playBasketball, whack: playWhack }[gameId](hooks);
 }
 
-// ---------- Kéo bò ----------
-// Sân chơi liên tục: mỗi lần thả dây là một lượt riêng. begin() trừ 1 xu và bốc sẵn kết quả
-// (session.outcome); phần còn lại chỉ diễn hoạt ảnh theo kết quả đó, resolve() cộng thưởng một lần.
+ 
+ 
+ 
 function playCow({ stage, coins, begin, progress, resolve, exit }) {
   const W = 320, H = 400;
   const HAND = { x: 160, y: 344 };
@@ -137,13 +137,13 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   }
   stage.append(canvas, status, pullInfo, pullButton, throwButton, leave, legend);
 
-  // Ba làn có phối cảnh: làn xa nhỏ và chậm hơn.
+   
   const lanes = [
     { y: 152, dir: -1, scale: 0.78, speed: 34, wait: 0 },
     { y: 220, dir: 1, scale: 0.9, speed: 46, wait: 0.8 },
     { y: 288, dir: -1, scale: 1, speed: 40, wait: 1.6 },
   ];
-  // Hoa rải cố định trên cỏ (giả ngẫu nhiên để không thành hàng).
+   
   const noise = (n) => Math.abs(Math.sin(n * 12.9898) * 43758.5453) % 1;
   const flowers = Array.from({ length: 26 }, (_, i) => ({
     x: noise(i + 1) * W, y: 124 + noise(i + 101) * (H - 170), color: ["#ffffff", "#ffd6e7", "#fff2a8"][i % 3],
@@ -164,7 +164,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     const width = type.size * lane.scale;
     const entry = lane.dir > 0 ? -width : W + width;
     const last = cows.filter((cow) => cow.lane === lane && !cow.caught).at(-1);
-    // Không cho bò mới chồng lên con vừa vào sân.
+     
     if (last && Math.abs(last.x - entry) < (last.width + width) / 2 + 70) {
       lane.wait = 0.2;
       return;
@@ -187,7 +187,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       if (lane.wait <= 0) spawn(lane);
     }
   }
-  // Cho đàn bò đi trước vài giây để đồng cỏ đã có bò ngay khi vào sân.
+   
   for (let t = 0; t < 8; t += 1 / 30) moveCows(1 / 30);
 
   const selectable = (cow) => !cow.caught && !cow.fleeing && cow.x > 24 && cow.x < W - 24;
@@ -222,7 +222,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       .sort((a, b) => Math.hypot(a.x - x, a.y - y) - Math.hypot(b.x - x, b.y - y));
     if (near.length) select(near[0]);
   });
-  // Phím mũi tên: chuyển mục tiêu theo vị trí từ trái sang phải.
+   
   function cycle(step) {
     const options = cows.filter(selectable).sort((a, b) => a.x - b.x);
     if (!options.length) return;
@@ -243,21 +243,21 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     phase = "throw";
     phaseTime = 0;
     selected = null;
-    // Dây bay tới chỗ bò sẽ có mặt sau LASSO_FLIGHT giây; kết quả đã bốc là trượt thì rơi lệch sang cạnh bò.
+     
     const miss = session.outcome.result === "miss" ? (Math.random() < 0.5 ? -1 : 1) * target.width * 0.8 : 0;
     lasso = { from: { ...HAND }, to: { x: target.x + target.lane.dir * target.speed * LASSO_FLIGHT + miss, y: target.y }, target };
     status.textContent = "Dây đang bay…";
     updateButtons();
   }
-  // Dây chạm đất: diễn theo kết quả đã bốc khi thả.
+   
   function land() {
     const target = lasso.target;
     if (session.outcome.result !== "miss") {
       target.caught = true;
       phase = "pull";
       phaseTime = 0;
-      // Thanh kéo chạy theo kịch bản: bắt được thì đầy thanh sau 2,5–5 giây; bò thoát thì lên tới
-      // 55–85% rồi tụt về 0 và đứt dây sau 3–5 giây.
+       
+       
       const caught = session.outcome.result === "caught";
       pull = { cow: target, start: { x: target.x, y: target.y }, progress: 0, t: 0, caught,
         end: caught ? 2.5 + Math.random() * 2.5 : 3 + Math.random() * 2, peak: 55 + Math.random() * 30,
@@ -287,7 +287,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   function tap() {
     if (phase !== "pull") return;
     const { cow } = pull;
-    // Nhấn chỉ làm bò nhích lên một chút cho vui; kết quả đã chốt khi thả dây.
+     
     pull.bump = Math.min(8, pull.bump + 2.5);
     pull.tension = 1;
     pull.lean = 1;
@@ -306,7 +306,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     const { type } = pull.cow;
     pull.t += dt;
     pull.nextStruggle -= dt;
-    // Bò giãy theo từng đợt, loại thưởng cao giãy mạnh hơn.
+     
     if (pull.nextStruggle <= 0) {
       pull.jerk = 0.4 + type.struggle * 0.6;
       pull.nextStruggle = 0.6 + Math.random() * 0.6;
@@ -320,7 +320,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     pull.jerk = Math.max(0, pull.jerk - dt * 3);
     pull.tension = Math.max(0.15, pull.tension - dt * 2.2);
     pull.lean = Math.max(0, pull.lean - dt * 5);
-    // Bò trượt dần từ chỗ bị bắt về phía người chơi theo thanh tiến độ.
+     
     const p = 1 - (1 - pull.progress / 100) ** 2;
     pull.cow.x = pull.start.x + (HOME.x - pull.start.x) * p;
     pull.cow.y = pull.start.y + (HOME.y - pull.start.y) * p;
@@ -394,7 +394,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     draw();
   }
 
-  // ---------- Vẽ ----------
+   
   function drawScenery() {
     const sky = ctx.createLinearGradient(0, 0, 0, 110);
     sky.addColorStop(0, "#8fd3ff");
@@ -437,7 +437,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     ctx.strokeStyle = "rgb(60 130 40 / 55%)";
     ctx.lineWidth = 1.5;
     for (const flower of flowers) {
-      // Bụi cỏ nhỏ cạnh mỗi bông hoa cho đồng cỏ có chiều sâu.
+       
       strokeLine(ctx, flower.x + 5, flower.y + 3, flower.x + 3, flower.y - 3);
       strokeLine(ctx, flower.x + 7, flower.y + 3, flower.x + 8, flower.y - 4);
     }
@@ -454,7 +454,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       ctx.fill();
     }
   }
-  // Chuồng bò: thân đỏ, mái tối, cửa chéo trắng.
+   
   function drawBarn(x, y) {
     ctx.fillStyle = "#c0392b";
     ctx.fillRect(x - 18, y - 6, 36, 22);
@@ -508,7 +508,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       ctx.fill();
       ctx.restore();
     }
-    // Biểu tượng bò quay mặt sang trái; lật lại khi bò đi sang phải.
+     
     drawEmoji(ctx, icon, x, y, size, cow.lane.dir > 0);
     if (crown) drawEmoji(ctx, "👑", x, y - size * 0.5, size * 0.42);
     drawCoinTag(cow, x, y);
@@ -520,7 +520,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     ctx.beginPath();
     ctx.moveTo(from.x, from.y);
     if (tension > 0.45) {
-      // Dây căng: thẳng và rung nhẹ.
+       
       const dx = to.x - from.x, dy = to.y - from.y;
       const length = Math.hypot(dx, dy) || 1;
       const nx = -dy / length, ny = dx / length;
@@ -530,7 +530,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
         ctx.lineTo(from.x + dx * k + nx * wave, from.y + dy * k + ny * wave);
       }
     } else {
-      // Dây chùng: võng xuống.
+       
       ctx.quadraticCurveTo((from.x + to.x) / 2, Math.max(from.y, to.y) + 24 * (1 - tension), to.x, to.y);
     }
     ctx.stroke();
@@ -564,7 +564,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       drawCow(cow, { y: cow.y + (cow.fleeing ? 0 : Math.sin(clock * 9 + cow.bob) * 1.2) });
       ctx.restore();
     }
-    // Mũi tên nhún nhảy trên con bò đang chọn.
+     
     if (selected && phase === "aim") {
       drawEmoji(ctx, "👇", selected.x, selected.y - selected.width * 0.62 - 34 + Math.sin(clock * 6) * 3, 20);
     }
@@ -594,7 +594,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
       drawRope(HAND, { x, y }, 0);
       drawLoop(x, y);
     }
-    // Người chơi ở dưới cùng, ngả người khi kéo.
+     
     ctx.fillStyle = "#a0703f";
     ctx.beginPath();
     ctx.ellipse(HAND.x, H - 14, 46, 10, 0, 0, Math.PI * 2);
@@ -628,7 +628,7 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
     }
   }
 
-  // Nhấn kéo: chạm/nhấn chuột tính ngay ở pointerdown; bàn phím (Enter/phím cách trên nút) qua click.
+   
   pullButton.addEventListener("pointerdown", (event) => {
     event.preventDefault();
     tap();
@@ -653,10 +653,10 @@ function playCow({ stage, coins, begin, progress, resolve, exit }) {
   };
 }
 
-// ---------- Gắp thú ----------
-// Máy nhìn từ trên xuống, dùng chung giữa các lượt. Mỗi lượt: begin() trừ 3 xu; lockIn() chốt kết quả
-// khi bắt đầu hạ càng; finish() cộng quà / trả thú về máy đúng một lần. Lượt đang chơi (vị trí càng,
-// thời gian còn lại, giai đoạn, kết quả) nằm trong session nên đóng hay tải lại vẫn chơi tiếp được.
+ 
+ 
+ 
+ 
 function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn, finish, exit }) {
   const W = 320, H = 320, LIFT = 26, SPEED = 140;
   const { canvas, ctx } = makeCanvas(W, H, "Máy gắp thú nhìn từ trên xuống: bóng tròn là vùng gắp, cửa nhận quà ở góc dưới trái");
@@ -692,13 +692,13 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
   let wiggle = null;
   let saveClock = 0;
   let sway = 0;
-  // Càng lắc lư khi đang căn (tới 11px ngang, 9px dọc, nhịp không đều); vị trí gắp thật là chỗ bóng tròn nằm lúc bấm GẮP.
+   
   const aimPoint = () => (phase === "aim"
     ? clampClaw(claw.x + 8 * Math.sin(sway * 2.8) + 3 * Math.sin(sway * 5.3 + 2), claw.y + 7 * Math.sin(sway * 2.1 + 1) + 2 * Math.sin(sway * 4.4))
     : { x: claw.x, y: claw.y });
   const items = () => machine().items;
   const itemOf = (uid) => items().find((item) => item.uid === uid) ?? null;
-  // Thú ở cửa / rơi lại: chỉ là hình vẽ, dữ liệu máy được cập nhật trong finish().
+   
   const pellets = Array.from({ length: 70 }, (_, i) => ({
     x: CLAW_BOX.left + ((i * 71) % (CLAW_BOX.right - CLAW_BOX.left)), y: CLAW_BOX.top + ((i * 113) % (CLAW_BOX.bottom - CLAW_BOX.top)),
     color: ["#ffd1e1", "#cfe8ff", "#fff1a8", "#d6f5c6", "#e6d8ff"][i % 5],
@@ -746,7 +746,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
     updateUi();
     grabButton.focus({ preventScroll: true });
   }
-  // Bắt đầu hạ càng: khóa điều khiển và chốt kết quả (lưu ngay).
+   
   function grab() {
     if (phase !== "aim") return;
     pressed.clear();
@@ -787,7 +787,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
     updateUi();
     startButton.focus({ preventScroll: true });
   }
-  // Di chuyển càng tới đích với tốc độ cố định; trả về true khi tới nơi.
+   
   function moveClaw(target, dt, speed = 130) {
     const dx = target.x - claw.x, dy = target.y - claw.y;
     const distance = Math.hypot(dx, dy);
@@ -817,7 +817,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
       }
     } else if (anim.step === "lift") {
       claw.h = Math.min(1, anim.t / 0.8);
-      // Càng quệt qua thú nhưng không giữ được: thú lắc nhẹ tại chỗ.
+       
       wiggle = outcome.result === "missed" && item && anim.t < 0.35 ? { uid: item.uid, dx: Math.sin(anim.t * 40) * 3 } : null;
       if (claw.h === 1) {
         if (outcome.result === "caught") Object.assign(anim, { step: "carry", t: 0 });
@@ -827,7 +827,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
     } else if (anim.step === "carry") {
       if (moveClaw(clawChuteCenter(), dt)) Object.assign(anim, { step: "release", t: 0 });
     } else if (anim.step === "toSlip") {
-      // Tuột giữa đường: khi càng tới phía trên điểm rơi thì thú rơi lại vào máy.
+       
       if (!carried) {
         Object.assign(anim, { step: "end", t: 0 });
       } else if (moveClaw(outcome.slipTo, dt)) {
@@ -843,7 +843,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
         falling.push({ item: carried.item, x: claw.x, y: claw.y, t: 0, chute: true });
         carried = null;
       }
-      // Chỉ nhận quà khi thú đã rơi vào cửa.
+       
       if (anim.t >= 0.9) return done();
     } else if (anim.step === "end") {
       if (anim.t >= 0.9) return done();
@@ -869,7 +869,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
       current.claw = { x: Math.round(claw.x), y: Math.round(claw.y) };
       info.set(0, `⏱️ ${Math.max(0, Math.ceil(current.timeLeft))} giây`);
       const [target] = clawTargets(items(), aimPoint());
-      // Chỉ báo đang chạm con nào, không lộ tỉ lệ: người chơi phải tự căn cho chuẩn.
+       
       info.set(1, target ? `🎯 Đang chạm ${plushOf(target.item.id).icon}` : "🎯 Chưa chạm thú");
       saveClock += dt;
       if (saveClock >= 1) {
@@ -888,7 +888,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
     draw();
   }
 
-  // ---------- Vẽ ----------
+   
   function drawPlush(plush, x, y, scale = 1, lifted = 0) {
     const size = plush.radius * 2.1 * scale;
     ctx.fillStyle = `rgb(60 30 70 / ${0.18 + 0.1 * (1 - lifted)})`;
@@ -946,7 +946,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
     ctx.strokeStyle = "#b9a3e8";
     ctx.lineWidth = 4;
     ctx.strokeRect(CLAW_BOX.left - 6, CLAW_BOX.top - 6, CLAW_BOX.right - CLAW_BOX.left + 12, CLAW_BOX.bottom - CLAW_BOX.top + 12);
-    // Cửa nhận quà
+     
     const chute = ctx.createRadialGradient(clawChuteCenter().x, clawChuteCenter().y, 6, clawChuteCenter().x, clawChuteCenter().y, CLAW_CHUTE.size * 0.7);
     chute.addColorStop(0, "#1b1530");
     chute.addColorStop(1, "#4b3a8a");
@@ -969,7 +969,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
       const plush = plushOf(drop.item.id);
       const k = Math.min(1, drop.t / 0.5);
       if (drop.chute) {
-        // Thú rơi vào cửa: nhỏ dần và mờ đi.
+         
         ctx.globalAlpha = 1 - k;
         drawPlush(plush, drop.x, drop.y + 6 * k, 1 - 0.6 * k);
         ctx.globalAlpha = 1;
@@ -977,7 +977,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
         drawPlush(plush, drop.x, drop.y - (1 - k) * LIFT, 1 + 0.2 * (1 - k), 1 - k);
       }
     }
-    // Bóng tròn dưới càng = vùng gắp.
+     
     ctx.fillStyle = "rgb(40 20 60 / 22%)";
     ctx.strokeStyle = phase === "aim" ? "rgb(255 255 255 / 90%)" : "rgb(255 255 255 / 50%)";
     ctx.lineWidth = 2;
@@ -1003,7 +1003,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
     drawClaw();
   }
 
-  // Giữ nút / phím để di chuyển; nhả ra thì dừng.
+   
   for (const [key, { node }] of Object.entries(arrows)) {
     node.addEventListener("pointerdown", (event) => {
       event.preventDefault();
@@ -1016,7 +1016,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
         if (pressed.delete(key)) persist();
       });
     }
-    // Bấm bằng bàn phím trên nút: nhích một đoạn.
+     
     node.addEventListener("click", (event) => {
       if (event.detail !== 0 || phase !== "aim") return;
       Object.assign(claw, clampClaw(claw.x + arrows[key].dx * 10, claw.y + arrows[key].dy * 10));
@@ -1049,7 +1049,7 @@ function playClaw({ stage, machine, session, coins, cost, begin, persist, lockIn
   };
 }
 
-// ---------- Bóng rổ ----------
+ 
 function playBasketball({ stage, progress, finish }) {
   const W = 320, H = 300, HOOP_Y = 86, BALL_Y = 262, CENTER = W / 2;
   const FLIGHT = 0.55, COOLDOWN = 0.7, TOLERANCE = 18, DURATION = gameOf("basketball").duration;
@@ -1144,7 +1144,7 @@ function playBasketball({ stage, progress, finish }) {
     ctx.strokeStyle = "rgb(23 57 75 / 25%)";
     strokeLine(ctx, CENTER, HOOP_Y + 6, CENTER, BALL_Y - 18);
     ctx.restore();
-    // Bảng rổ và lưới đi theo rổ.
+     
     ctx.fillStyle = "#ffffff";
     ctx.strokeStyle = "#5a6b78";
     ctx.lineWidth = 2;
@@ -1211,7 +1211,7 @@ function playBasketball({ stage, progress, finish }) {
   };
 }
 
-// ---------- Đập chuột ----------
+ 
 function playWhack({ stage, progress, finish }) {
   const DURATION = gameOf("whack").duration;
   const info = hud(`⏱️ ${DURATION} giây`, "🔨 0 điểm");

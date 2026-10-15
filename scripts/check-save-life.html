@@ -40,10 +40,10 @@
     Math.random=()=>0.99;
     await import('../js/main.js');
     const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
-    // Chỉ số trong check là chỉ số tác giả viết; lựa chọn chuỗi đặc biệt hiển thị đã được xáo theo đời chơi.
+     
     const shownIndex=i=>{const at=state.pendingEvent?.choices?.findIndex(c=>c.sourceIndex===i)??-1;return at>=0?at:i;};
     const choose=i=>{ console.log('CHECK_TRACE choose',state.pendingEvent?.id,state.pendingEvent?.stage,i); document.querySelectorAll('#event-choices button')[shownIndex(i)].click();
-      // Bước giữa chuỗi có màn "Kết quả lựa chọn" trước tình huống tiếp theo.
+       
       if(state.pendingEvent?.mediaTransition)document.getElementById('event-confirm').click(); };
     const reset=()=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());
@@ -62,8 +62,8 @@
     };
     for(const age of [30,35,40,45,50,55]) for(const index of [0,1,2]) {
       reset();state.player.age=age-1;let roll=0;
-      // Tính trước: getAgeEvents cũng gọi Math.random, gọi bên trong hàm giả sẽ đệ quy vô hạn.
-      // index 0, 1: hai chuyện đời thường; index 2: chuyện đặc biệt của tuổi đó.
+       
+       
       const pool=getAgeEvents(age,null,state.player);
       const target=index===2?pool.findIndex(e=>e.specialId):pool.map((e,i)=>e.specialId?-1:i).filter(i=>i>=0)[index];
       Math.random=()=>roll++===0?0.1:(target+0.1)/pool.length;

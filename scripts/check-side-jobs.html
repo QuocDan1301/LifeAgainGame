@@ -26,7 +26,7 @@
     assert(getEducationStatus({ age: 20, sideJobs: sample.sideJobs }).text === "Nhân viên GS25", "No main job shows the store");
     assert(getEducationStatus({ age: 25, employmentStatus: "employed", job: "💻 Lập trình viên tập sự", sideJobs: sample.sideJobs }).text
       .includes("Lập trình viên"), "Main job takes priority");
-    // Không còn kẹp sức khỏe ở 1: làm đến kiệt sức thì phải cấp cứu (lần đầu không tử vong).
+     
     const weak = { money: 0, health: 3, sideJobs: [{ storeId: "gs25", shift: "full-time", startedAtAge: 1 }] };
     const collapse = collectSideJobYear(weak, 30, () => 0.99);
     assert(weak.health === 10 && weak.isAlive !== false && weak.money === 62_000_000 && collapse.content.includes("cấp cứu"),
@@ -53,7 +53,7 @@
     const closeOthers = () => document.querySelectorAll("dialog[open]").forEach(d => d !== $("side-job-dialog") && d.close());
     const hire = id => { applyButton(id).click(); $("shop-confirm").click(); closeOthers(); };
 
-    // Dưới 16 tuổi chưa được làm thêm.
+     
     state.player.age = 15;
     $("activities").click();
     $("activity-part-time").click();
@@ -66,7 +66,7 @@
     assert($("side-job-dialog").open && shiftButton("part-time") && !shiftButton("part-time").disabled, "Part-time and full-time buttons from 16");
     assert(shiftButton("full-time").disabled && body().textContent.includes("chỉ nhận part-time"), "Students under 18 only take part-time");
 
-    // Part-time ở nhiều cửa hàng.
+     
     shiftButton("part-time").click();
     assert(body().querySelectorAll(".side-job-apply").length === 5, "Five stores listed");
     applyButton("gs25").click();
@@ -81,10 +81,10 @@
     shiftButton("part-time").click();
     assert(applyButton("ministop").disabled && applyButton("ministop").textContent.includes("đi học"), "Students take at most two part-time stores");
     body().querySelector(".shop-back").click();
-    // Thôi đi học (18 tuổi, không theo trường nào) thì làm được cả 5 cửa hàng.
+     
     state.player.age = 18;
 
-    // Đủ 5 cửa hàng thì mở thành tựu.
+     
     shiftButton("part-time").click();
     for (const id of ["ministop", "familymart", "7-eleven"]) hire(id);
     assert(state.player.achievementFlags["side-job-all-stores"] &&
@@ -92,7 +92,7 @@
     $("close-side-job").click();
     closeOthers();
 
-    // Lương và sức khỏe mỗi năm.
+     
     const health = state.player.health;
     $("age-up").click();
     if (state.pendingEvent) {
@@ -102,7 +102,7 @@
     assert(state.logs.at(-1).content.includes("Lương làm thêm Part-time"), "Yearly side-job pay in the diary");
     closeOthers();
 
-    // Công việc hiện tại trong Tài sản, nghỉ việc.
+     
     $("assets").click();
     assert($("life-jobs").querySelectorAll(".shop-sell").length === 5, "Current jobs listed in assets with quit buttons");
     for (let i = 0; i < 5; i++) {
@@ -113,7 +113,7 @@
     $("close-life-profile").click();
     closeOthers();
 
-    // Full-time chỉ 1 cửa hàng và chặn part-time.
+     
     $("activities").click();
     $("activity-part-time").click();
     shiftButton("full-time").click();
@@ -125,14 +125,14 @@
     $("close-side-job").click();
     closeOthers();
 
-    // Công việc chính đứng đầu và có thể nghỉ.
+     
     Object.assign(state.player, { employmentStatus: "employed", careerLevel: 1, job: "💻 Lập trình viên tập sự",
       careerPath: { id: "programming", field: "Công nghệ thông tin" } });
     $("assets").click();
     assert($("life-jobs").children.length === 2 && $("life-jobs").children[0].textContent.includes("Công việc chính"), "Main job is listed first");
     $("life-jobs").querySelector(".shop-sell").click();
     $("shop-confirm").click();
-    // Nghỉ công việc chính: ghi lịch sử (chức danh, thời điểm, nguyên nhân), giữ việc làm thêm và kinh nghiệm.
+     
     assert(state.player.employmentStatus !== "employed" && state.player.jobHistory.at(-1)?.cause === "quit" && state.player.sideJobs.length > 0 &&
       state.player.careerExperience?.level >= 1 && $("life-jobs").textContent.includes("chủ động nghỉ việc"), "Quitting the main job");
     assert($("education-status").textContent === "Nhân viên 7-Eleven", "Without a main job the store shows again");

@@ -142,8 +142,8 @@ export function initLobby(enterGame) {
     get("character-options").hidden = false;
     error.textContent = "";
   });
-  // Chỉ số khởi đầu: mỗi chỉ số từ 25 đến 80, tổng luôn bằng 200, để nhân vật nào cũng có
-  // điểm mạnh, điểm yếu nhưng không ai khởi đầu quá thiệt thòi.
+   
+   
   function rollStartingStats(random = Math.random) {
     const keys = ["health", "intelligence", "happiness", "appearance"];
     const stats = Object.fromEntries(keys.map((key) => [key, 25]));
@@ -176,7 +176,7 @@ export function initLobby(enterGame) {
         name: values.name,
         province: values.province,
         gender: gender === "female" ? "female" : "male",
-        // Hạt giống riêng của đời này: cố định thứ tự lựa chọn chuỗi đặc biệt khi tải lại.
+         
         lifeSeed: Math.floor(Math.random() * 2 ** 32),
         lifeId: globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         lifeUnlockedAchievementIds: [],

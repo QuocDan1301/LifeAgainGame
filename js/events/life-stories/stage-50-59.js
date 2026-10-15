@@ -1,7 +1,7 @@
-// Giai đoạn 50–59 tuổi. Mỗi tuổi: 3 sự kiện chung (cặp có việc / chưa có việc tính là một) + phiên bản theo hoàn cảnh.
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage50To59 = [
-  // ───────────── 50 tuổi ─────────────
+   
   {
     id: 'ls50-kham-tong-quat', age: 50,
     title: 'Năm mươi tuổi',
@@ -80,7 +80,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 51 tuổi ─────────────
+   
   {
     id: 'ls51-dien-thoai-thong-minh', age: 51,
     title: 'Mạng xã hội',
@@ -170,7 +170,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 52 tuổi ─────────────
+   
   {
     id: 'ls52-nguoi-than-noi-doi', age: 52,
     title: 'Bản di chúc',
@@ -249,7 +249,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 53 tuổi ─────────────
+   
   {
     id: 'ls53-lop-hoc-may-tinh', age: 53,
     title: 'Lớp học cho người lớn tuổi',
@@ -328,7 +328,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 54 tuổi ─────────────
+   
   {
     id: 'ls54-ban-cu-mat-tri-nho', age: 54,
     title: 'Người bạn không nhớ',
@@ -407,7 +407,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 55 tuổi ─────────────
+   
   {
     id: 'ls55-tai-nan-nho', age: 55,
     title: 'Cú ngã trong nhà tắm',
@@ -475,7 +475,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 56 tuổi ─────────────
+   
   {
     id: 'ls56-di-hien-tang', age: 56,
     title: 'Thẻ hiến tạng',
@@ -554,7 +554,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 57 tuổi ─────────────
+   
   {
     id: 'ls57-tro-lai-truong', age: 57,
     title: 'Lớp học tiếng nước ngoài',
@@ -633,7 +633,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 58 tuổi ─────────────
+   
   {
     id: 'ls58-di-thi-the-thao', age: 58,
     title: 'Giải cầu lông người cao tuổi',
@@ -712,7 +712,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── 59 tuổi ─────────────
+   
   {
     id: 'ls59-ky-niem-60', age: 59,
     title: 'Sắp sáu mươi',
@@ -791,7 +791,7 @@ export const stage50To59 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-cay-xoai-nha-cu', ages: [50, 70], requires: ['cay_xoai'], blocks: ['chuyen_nha'],
     title: 'Cây xoài trong sân cũ',

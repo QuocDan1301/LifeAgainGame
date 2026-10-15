@@ -20,8 +20,8 @@ const node = (tag, text) => {
   return element;
 };
 
-// Trang tổng kết khi nhân vật qua đời: chân dung, nguyên nhân, chỉ số cuối đời,
-// sự nghiệp, tài sản để lại, gia đình và những dấu ấn trong đời.
+ 
+ 
 export function describeDeathCause(player) {
   const disease = getDisease(player.deathCause);
   if (disease) return `🩺 Ra đi vì ${disease.name} chuyển nặng đến mức nguy kịch khi chưa được điều trị.`;
@@ -38,7 +38,7 @@ export function describeDeathCause(player) {
   return "🍂 Sức khỏe cạn dần rồi khép lại hành trình.";
 }
 
-// Bảng "nhãn — giá trị"; bỏ qua dòng không có giá trị.
+ 
 function factList(rows) {
   const list = node("dl");
   list.className = "death-facts";
@@ -67,7 +67,7 @@ export function renderLifeSummary(state) {
   const container = document.getElementById("death-summary");
   container.replaceChildren();
 
-  // Chân dung và thông tin chính.
+   
   const hero = node("div");
   hero.className = "death-hero";
   const portrait = node("img");
@@ -87,7 +87,7 @@ export function renderLifeSummary(state) {
   if (titles.secondary.length) identity.append(node("p", titles.secondary.map(title => title.label).join(" · ")));
   hero.append(portrait, identity);
 
-  // Chỉ số cuối đời.
+   
   const stats = node("div");
   stats.className = "death-stats";
   for (const [icon, label, value] of [["💪", "Sức khỏe", player.health], ["🧠", "Trí tuệ", player.intelligence],
@@ -101,10 +101,10 @@ export function renderLifeSummary(state) {
     stats.append(tile);
   }
 
-  // Sự nghiệp và học vấn.
+   
   const jobName = player.job && player.job !== "Thất nghiệp"
     ? player.job.replace(/^\p{Extended_Pictographic}\S*\s+/u, "") : "";
-  // Tên công việc chính là tên bậc nghề, nên chỉ ghi thêm bậc hiện tại trên tổng số bậc.
+   
   const ranks = getCareerProfile(player.careerPath?.id)?.ranks ?? [];
   const rank = player.careerLevel > 0 && ranks.length ? `Bậc ${player.careerLevel}/${ranks.length}` : "";
   const licenses = (player.licenses ?? []).map((license) => getLicenseType(license.id))
@@ -127,7 +127,7 @@ export function renderLifeSummary(state) {
     ["Người đăng ký YouTube", player.youtubeSubscribers ? player.youtubeSubscribers.toLocaleString("vi-VN") : ""],
   ]);
 
-  // Tài sản để lại (giá trị tính theo giá mua).
+   
   const owned = [...(player.livestock ?? []), ...(player.purchases ?? [])];
   const counts = new Map();
   for (const entry of owned) counts.set(entry.id, (counts.get(entry.id) ?? 0) + 1);
@@ -143,7 +143,7 @@ export function renderLifeSummary(state) {
     ["Giá trị tài sản", assetValue ? `${formatMoney(assetValue)} (theo giá mua)` : ""],
   ]);
 
-  // Gia đình.
+   
   const children = player.children ?? [];
   const widowed = [...(player.relationshipHistory ?? [])].reverse().find((entry) => entry.type === "widowed");
   const lateSpouse = widowed?.person?.name;
@@ -166,7 +166,7 @@ export function renderLifeSummary(state) {
   ]);
   if (!player.partner && !pastLoves.length && !lateSpouse) family.prepend(node("dt", "Tình duyên"), node("dd", "Sống một mình, tự do theo cách riêng"));
 
-  // Dấu ấn trong đời.
+   
   const trips = Object.keys(player.tripsTaken ?? {}).map((id) => destinations.find((place) => place.id === id))
     .filter(Boolean).map((place) => `${place.icon} ${place.name}`);
   const plushes = Object.values(player.arcade?.plushes ?? {}).reduce((sum, entry) => sum + (entry.count ?? 0), 0);
@@ -194,7 +194,7 @@ export function renderLifeSummary(state) {
 export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements }) {
   const dialog = document.getElementById("life-profile-dialog");
 
-  // Thanh tab: mỗi loại tài sản một tab kèm số món, chỉ hiện thẻ đang chọn để popup không dài ra.
+   
   const selectTab = initPanelTabs(dialog, document.getElementById("life-tabs"));
 
   document.getElementById("assets").addEventListener("click", () => {

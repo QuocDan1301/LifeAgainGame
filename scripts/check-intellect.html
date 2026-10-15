@@ -17,11 +17,11 @@
     const { completeLifeYear } = await import("../js/relationships/family.js");
     const near = (a, b) => Math.abs(a - b) < 1e-9;
 
-    // 1. Các mức trí tuệ.
+     
     assert(["sharp", "steady", "developing", "struggling"].join() === [80, 79, 49, 29].map(v => I.getIntellectBand(v).id).join() &&
       I.getIntellectBand(50).id === "steady" && I.getIntellectBand(30).id === "developing", "Bands 80/50/30");
 
-    // 3. Phỏng vấn: thông số khởi đầu, ví dụ trong yêu cầu.
+     
     const chance = (intelligence, quality, extra = {}) => I.getInterviewChance({ age: 22, intelligence, ...extra }, quality, "programming").chance;
     assert(near(chance(30, "good"), 0.52) && near(chance(80, "good"), 0.72), "Good answer, unprepared: 52% at 30, 72% at 80");
     assert(near(chance(50, "acceptable"), 0.35) && near(chance(50, "weak"), 0.10), "Acceptable 35%, weak 10% at 50");
@@ -38,7 +38,7 @@
     assert(createInterviewResult(player({ interviewPrepAge: 21 }), true, 22, I.rollInterview(player(), "good", () => 0)).updates.interviewPrepAge === null,
       "Preparation is used up by the interview");
 
-    // 2. Thi cử: đáp án đúng luôn đỗ; đáp án sai phụ thuộc chuẩn bị và trí tuệ; có gợi ý, thi lại, đổi ngành.
+     
     const career = { id: "law", field: "Luật" };
     const prep = T.createExamPrepEvent(career, { intelligence: 35 });
     assert(prep.choices.length === 4 && ["Ôn tập", "Học cùng", "Học dồn", "Không chuẩn bị"].every(word => prep.choices.some(c => c.label.includes(word))),
@@ -58,12 +58,12 @@
       "Failing never locks every career: retake, choose again or enlist");
     assert(!T.createFailedTestEvent(career, 0).choices.some(c => c.retakeTest), "One retake");
 
-    // Học bổng khuyến khích.
+     
     const scholar = { ...player({ age: 18, intelligence: 85, money: 0, illnessPlan: [], illnesses: [], relatives: [] }), careerPath: { id: "law", school: { name: "Đại học Luật" } } };
     const year = completeLifeYear(scholar, 19);
     assert(year.tuition.amount === 10_000_000 && year.tuition.content.includes("học bổng"), "Scholarship halves tuition at 80+");
 
-    // 4. Thăng chức: xử lý đúng là điều kiện cần, kết quả còn tùy kinh nghiệm, trí tuệ, thành tích.
+     
     const worker = extra => ({ ...createInitialState().player, age: 30, intelligence: 50, employmentStatus: "employed", careerLevel: 1,
       careerPath: { id: "programming", field: "CNTT" }, employedSince: 25, nextPromotionAge: 31, ...extra });
     assert(I.getPromotionChance(worker({ intelligence: 80 }), 31) > I.getPromotionChance(worker({ intelligence: 30 }), 31), "Intellect helps promotion");
@@ -80,7 +80,7 @@
       "Pushing harder raises the odds but costs health: every approach is a trade-off");
     rolls = [0, 0];
     assert(createPromotionEvent(worker(), () => rolls.shift() ?? 0, 31).choices.some(c => c.careerLevel === 2), "Selected promotions raise the rank");
-    // Sự cố dự án: trí tuệ cao mở phân tích; trí tuệ thấp vẫn có cách tốt; giấu lỗi có hậu quả.
+     
     const bugSharp = I.createProjectBugEvent(worker({ intelligence: 85 }), 31, () => 0);
     const bugLow = I.createProjectBugEvent(worker({ intelligence: 20 }), 31, () => 0);
     assert(bugSharp.choices.some(c => c.label.includes("Phân tích")) && !bugLow.choices.some(c => c.label.includes("Phân tích")), "Analysis only for high intellect");
@@ -89,7 +89,7 @@
       bugSharp.choices.find(c => c.label.includes("Ôm hết")).effects.health < 0, "Hiding or overworking has consequences even at high intellect");
     assert(!I.createProjectBugEvent(worker({ careerPath: { id: "acting" } }), 31, () => 0), "Not every career gets technical bugs");
 
-    // 5. Nhận diện rủi ro: trí tuệ cao thấy dấu hiệu; ai cũng có thể từ chối, kiểm tra; chấp nhận thì mất tiền.
+     
     const offerSharp = I.createRiskOfferEvent({ money: 100_000_000, intelligence: 85 }, 30, () => 0);
     const offerLow = I.createRiskOfferEvent({ money: 100_000_000, intelligence: 30 }, 30, () => 0);
     assert(offerSharp.text.includes("🚩") && offerSharp.choices.some(c => c.label.includes("điều khoản")), "High intellect spots red flags");
@@ -98,7 +98,7 @@
     assert(offerLow.choices.find(c => c.label.includes("tham gia ngay")).money === -30_000_000, "Accepting without checking loses money");
     assert(!offerSharp.choices.some(c => c.money > 0), "No guaranteed profit from intellect");
 
-    // 7. Tuổi già: suy giảm nhẹ khác nhau; hoạt động trí óc giúp duy trì; không chẩn đoán bệnh.
+     
     const elder = { age: 75, intelligence: 60, developmentDone: {} };
     const decline = I.collectCognitiveYear({ ...elder }, 76, () => 0.2);
     assert(decline && decline.content.includes("Trí tuệ -1") && !/bệnh|sa sút trí tuệ|Alzheimer/u.test(decline.content), "Mild decline, no diagnosis");
@@ -106,7 +106,7 @@
     assert(!I.collectCognitiveYear({ ...elder }, 76, () => 0.9), "Not everyone declines");
     assert(!I.collectCognitiveYear({ age: 50, intelligence: 60 }, 51, () => 0), "No decline before old age");
 
-    // Giao diện.
+     
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());
@@ -126,7 +126,7 @@
     const $ = id => document.getElementById(id);
     const choose = text => [...$("event-choices").querySelectorAll("button")].find(b => b.textContent.includes(text)).click();
     const next = () => $("event-confirm").click();
-    // Chọn ngành → chuẩn bị → bài test.
+     
     choose("Luật");
     if (state.pendingEvent.stage === "result") next();
     assert(state.pendingEvent.kind === "exam-prep" && state.pendingEvent.stage === "choice", "Choosing a career opens exam preparation");
@@ -147,7 +147,7 @@
     next();
     assert(/trường|huấn luyện/u.test(state.pendingEvent.title ?? "") && state.pendingEvent.stage === "choice", "A correct answer passes on the retake");
     document.querySelectorAll("dialog[open]").forEach(d => d.close());
-    // Rèn luyện: học miễn phí có giới hạn, khóa học tăng chậm khi đã cao.
+     
     state.pendingEvent = null;
     Object.assign(state.player, { age: 30, intelligence: 85, money: 10_000_000, employmentStatus: "declined", developmentDone: {} });
     $("activities").click();

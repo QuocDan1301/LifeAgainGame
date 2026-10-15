@@ -35,15 +35,15 @@
     localStorage.setItem('lifeAgainAchievements',JSON.stringify(Object.fromEntries(achievements.map(e=>[e.id,true]))));
     localStorage.setItem('lifeAgainAchievementQueue','[]');await import('../js/main.js');
     const birthday=document.getElementById('age-up'),confirm=document.getElementById('event-confirm');
-    // Chỉ số trong check là chỉ số tác giả viết; lựa chọn chuỗi đặc biệt hiển thị đã được xáo theo đời chơi.
+     
     const shownIndex=i=>{const at=state.pendingEvent?.choices?.findIndex(c=>c.sourceIndex===i)??-1;return at>=0?at:i;};
     const choose=i=>{ console.log('CHECK_TRACE choose',state.pendingEvent?.id,state.pendingEvent?.stage,i); document.querySelectorAll('#event-choices button')[shownIndex(i)].click();
-      // Bước giữa chuỗi có màn "Kết quả lựa chọn" trước tình huống tiếp theo.
+       
       if(state.pendingEvent?.mediaTransition)document.getElementById('event-confirm').click(); };
     const resume=()=>{state.pendingEvent=JSON.parse(localStorage.getItem('lifeAgainSave')).pendingEvent;};
     const start=(age,health=80,working=false)=>{
       document.querySelectorAll('dialog[open]').forEach(d=>d.close());Object.assign(state,createInitialState());
-      // healthCheckAge: người chơi đã xem cảnh báo sức khỏe năm nay và chọn tiếp tục.
+       
       Object.assign(state.player,{age:age-1,healthCheckAge:age-1,health,intelligence:50,happiness:50,appearance:50,studyBlock:'A00',nextPromotionAge:null,
         employmentStatus:working?'employed':'declined',careerLevel:working?1:0,lastSalaryAge:age-1,
         careerPath:working?{id:'programming',field:'Công nghệ thông tin'}:null,

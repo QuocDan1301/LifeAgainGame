@@ -19,14 +19,14 @@
     const path = { id: "programming", field: "Công nghệ thông tin", school: { id: "test", name: "Đại học Thử nghiệm" } };
     const student = extra => ({ ...createInitialState().player, age: 21, health: 80, careerPath: path, ...extra });
 
-    // Tự động phỏng vấn ở tuổi 22 chỉ dành cho người có dấu mốc tuổi 16 đúng ngành.
+     
     assert(!createEmploymentEvent(student(), 22), "No automatic interview without the age-16 milestone");
     assert(!createEmploymentEvent(student({ careerSpark: "acting" }), 22), "A milestone in another career does not count");
     assert(createEmploymentEvent(student({ careerSpark: "programming" }), 22)?.kind === "job-interview", "Milestone keeps the automatic interview");
     assert(!createEmploymentEvent(student({ age: 24, employmentStatus: "unemployed" }), 25), "No yearly retry prompt without the milestone");
     assert(createEmploymentEvent(student({ age: 24, employmentStatus: "unemployed", careerSpark: "programming" }), 25)?.kind === "job-interview-retry",
       "Milestone keeps the yearly retry prompt");
-    // Phỏng vấn tự động là phần tiếp nối của chuỗi tuổi 16: cùng người hướng dẫn, nhắc lại thử thách năm ấy.
+     
     const { careerMilestones } = await import("../js/career/career-milestones-data.js");
     const { createInterviewResult, createInterviewRetryPrompt } = await import("../js/career/career-jobs.js");
     for (const [id, data] of Object.entries(careerMilestones).filter(([id]) => id !== 'study-abroad')) {
@@ -41,7 +41,7 @@
       assert(interview.choices.filter(c => c.correct).length === 2 && interview.choices.length === 3, `Interview keeps its answers: ${id}`);
     }
     assert(!createJobInterview(student({ age: 22 })).text.includes("16 tuổi"), "Applicants without the milestone get the normal interview");
-    // Điều kiện nộp hồ sơ.
+     
     assert(getJobApplicationBlocker(student()).includes("Học xong"), "Cannot apply before graduating");
     assert(getJobApplicationBlocker(student({ age: GRADUATION_AGE })) === "", "Graduates can apply");
     assert(getJobApplicationBlocker(student({ age: 30, employmentStatus: "employed", job: "x" })).includes("đang làm"), "Workers cannot apply");
@@ -73,25 +73,25 @@
     const careerButton = id => body().querySelector(`.job-career[data-career="${id}"]`);
     const answer = correct => [...body().querySelectorAll(".job-answer")][state.player.jobInterview.choices.findIndex(c => c.correct === correct)].click();
 
-    // Chưa học xong: danh sách hiện đủ ngành nhưng chưa nộp được.
+     
     open();
     assert($("job-dialog").open && body().querySelectorAll(".job-career").length === careerPaths.length, "Lists every career");
     assert(careerButton("programming").disabled && body().textContent.includes("Học xong"), "Students cannot apply yet");
 
-    // Sinh nhật 22 tuổi: không tự phỏng vấn, nhật ký nhắc vào Xin việc.
+     
     closeAll();
     $("age-up").click();
     assert(state.player.age === 22 && !state.pendingEvent, "No interview popup at 22 without the milestone");
     assert(state.logs.at(-1).content.includes("Xin việc"), "Year-22 log points to Xin việc");
 
-    // Chỉ ngành đã học mới nộp được; ngành đã học đứng đầu.
+     
     open();
     const first = body().querySelector(".job-career");
     assert(first.dataset.career === "programming" && !first.disabled, "Studied career first and enabled");
     assert([...body().querySelectorAll(".job-career")].filter(b => !b.disabled).length === 1, "Only the studied career is open");
     assert(careerButton("law").textContent.includes("Cần bằng ngành"), "Other careers need their degree");
 
-    // Trượt: thất nghiệp, năm nay không nộp lại được; câu hỏi được lưu khi đóng popup.
+     
     careerButton("programming").click();
     assert(state.player.jobInterview && JSON.parse(localStorage.getItem("lifeAgainSave")).player.jobInterview, "Interview is saved");
     const question = state.player.jobInterview.text;
@@ -102,14 +102,14 @@
     open();
     assert(careerButton("programming").disabled && body().textContent.includes("Năm nay"), "One application per year");
 
-    // Năm sau không có popup hỏi thử lại; tự nộp lại và đậu.
+     
     closeAll();
     $("age-up").click();
     assert(state.player.age === 23 && !state.pendingEvent, "No retry popup without the milestone");
     const before = state.player.money;
     open();
     careerButton("programming").click();
-    // Câu trả lời tốt có khoảng 60% ± trí tuệ; cố định lượt tung ở mức đỗ để kiểm tra luồng nhận việc.
+     
     const interviewRandom = Math.random;
     Math.random = () => 0;
     answer(true);
@@ -121,7 +121,7 @@
     assert(body().textContent.includes("Vượt qua") && state.logs.at(-1).content.includes("bắt đầu làm việc"), "Result and diary");
     open();
     assert(careerButton("programming").disabled && body().textContent.includes("đang làm"), "Workers cannot apply again");
-    // Tuổi 24 luôn có sự kiện định hướng, nên thử sinh nhật thường ở tuổi 26.
+     
     closeAll();
     state.player.age = 25;
     const logCount = state.logs.length;
@@ -129,7 +129,7 @@
     assert(state.player.age === 26 && state.logs.length === logCount + 1 && state.logs.at(-1).content.includes("Nhận lương năm"),
       "Salary continues on later birthdays");
 
-    // Có dấu mốc tuổi 16 đúng ngành: vẫn tự động phỏng vấn ở tuổi 22.
+     
     closeAll();
     Object.assign(state, createInitialState());
     Object.assign(state.player, player({ careerSpark: "programming" }));

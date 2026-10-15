@@ -1,4 +1,4 @@
-/* Giao diện bến xe tách riêng. Nạp sau style.css và achievements.css. */
+ 
 #game-screen[hidden],
 #lobby-screen[hidden],
 #continue-button[hidden],
@@ -307,7 +307,7 @@
 #player-province:empty {
   display: none;
 }
-/* Nhật ký tự co theo màn hình khi hồ sơ có thêm quê quán. */
+ 
 #game-screen .journal {
   height: auto;
 }
@@ -364,7 +364,7 @@
     animation: none;
   }
 }
-/* Giảm khoảng trống phía trên nội dung chính */
+ 
 #lobby-screen .lobby-center {
   flex: 1 0 auto;
   padding-top: 12px;
@@ -379,12 +379,12 @@
   margin-top: 18px;
 }
 
-/* Không giữ chỗ cho thông báo khi chưa có nội dung */
+ 
 #lobby-message:empty {
   display: none;
 }
 
-/* Thu gọn nhân viên để vừa màn hình */
+ 
 #lobby-screen .lobby-footer {
   margin-top: 8px;
   padding-bottom: 12px;
@@ -394,7 +394,7 @@
   height: clamp(120px, 20dvh, 210px);
   width: auto;
 }
-/* Khung hồ sơ: hai cột gọn hơn */
+ 
 #game-screen .character {
   grid-template-columns: minmax(105px, 29%) minmax(0, 1fr);
   align-items: stretch;
@@ -406,7 +406,7 @@
   border-radius: 20px;
 }
 
-/* Thẻ nhân vật */
+ 
 #game-screen .character-card {
   justify-content: center;
   gap: 3px;
@@ -417,7 +417,7 @@
   border-radius: 14px;
 }
 
-/* Ảnh không chiếm thêm khoảng trống */
+ 
 #game-screen .avatar {
   flex: 0 0 auto;
   line-height: 1;
@@ -453,13 +453,13 @@
   color: #365368;
 }
 
-/* Bỏ cách đẩy chỉ số và ví về hai đầu */
+ 
 #game-screen .character-details {
   justify-content: flex-start;
   gap: 10px;
 }
 
-/* Tiêu đề nằm trong bố cục, không cần chừa khoảng trống */
+ 
 #game-screen .stats {
   padding-top: 0;
   gap: 6px;
@@ -486,7 +486,7 @@
   height: 13px;
 }
 
-/* Ví tiền nhỏ gọn */
+ 
 #game-screen .wallet {
   padding: 8px;
   gap: 8px;
@@ -531,7 +531,7 @@
   text-align: right;
 }
 
-/* Màn hình điện thoại hẹp */
+ 
 @media (max-width: 380px) {
   #game-screen .character {
     grid-template-columns: 96px minmax(0, 1fr);
@@ -553,12 +553,12 @@
     font-size: 16px;
   }
 }
-/* Bỏ khoảng trống phía trên cụm nút */
+ 
 #game-screen .game-actions {
   margin-top: 0;
 }
 
-/* Nhật kí tự giãn xuống phần diện tích vừa trống */
+ 
 #game-screen .journal {
   height: auto;
   min-height: 0;
@@ -574,12 +574,12 @@
   color: #17394b;
   font: inherit;
 }
-/* Tạo lớp nền riêng cho bến xe */
+ 
 #lobby-screen {
   isolation: isolate;
 }
 
-/* Logo lặp lại và chuyển động phía sau nội dung */
+ 
 #lobby-screen::before {
   content: "";
   position: absolute;
@@ -606,14 +606,14 @@
   }
 }
 
-/* Tôn trọng cài đặt giảm chuyển động của thiết bị */
+ 
 @media (prefers-reduced-motion: reduce) {
   #lobby-screen::before {
     animation: none;
   }
 }
 
-/* Hành trình một đời người: dải bóng đen ở giữa, phía dưới bến xe */
+ 
 .lobby-life-stages {
   width: min(100%, 520px);
   margin: 8px auto 0;
@@ -643,9 +643,9 @@
   }
 }
 
-/* Bộ bóng nữ và nam thay phiên ẩn hiện như một làn sóng từ trái sang phải */
+ 
 .life-male { opacity: 0; }
-/* Mỗi bộ đứng yên 2 giây, chuyển mờ 0,5 giây: một vòng 5 giây. */
+ 
 @keyframes life-show-female {
   0%, 40% { opacity: 1; }
   50%, 90% { opacity: 0; }
@@ -664,7 +664,7 @@
   #lobby-screen:not([hidden]) .life-male { animation-name: life-show-male; }
 }
 
-/* Điện thoại: popup bến xe gọn hơn, bong bóng lời thoại không gãy dòng */
+ 
 @media (max-width: 480px) {
   .lobby-dialog {
     width: calc(100vw - 24px);
@@ -680,7 +680,7 @@
   }
 }
 
-/* Nút bật/tắt nhạc nền ở góc trên bên phải bến xe */
+ 
 .lobby-music {
   position: absolute;
   top: max(20px, env(safe-area-inset-top));
@@ -725,7 +725,7 @@
 .life-archive-entry p { margin: 10px 0; }
 #open-life-archive { white-space: normal; }
 
-/* ----- Chuyển thiết bị và cài game: hai nút nhỏ dưới số vé, popup hai tab Gửi đi / Nhận về ----- */
+ 
 .lobby-links {
   display: flex;
   justify-content: center;
@@ -747,7 +747,7 @@
   text-decoration: none;
   cursor: pointer;
 }
-/* Đã mở từ biểu tượng trên màn hình chính thì không cần nút cài. */
+ 
 #lobby-screen #install-link[hidden] { display: none; }
 @media (display-mode: standalone) {
   #lobby-screen #install-link { display: none; }
@@ -849,7 +849,7 @@
 .transfer-status.is-error { color: #b52626; }
 .transfer-status:empty { display: none; }
 
-/* Bản cũ trên GitHub Pages: mời chuyển sang nhà mới. */
+ 
 .move-home {
   display: grid;
   gap: 10px;
@@ -868,7 +868,7 @@
 .move-home .transfer-status.is-error { color: #b52626; }
 .move-home .transfer-status:empty { display: none; }
 
-/* ----- Bến xe trên điện thoại: vừa một màn hình, người bán vé luôn thấy được ----- */
+ 
 @media (max-width: 480px) {
   .lobby-links {
     flex-wrap: nowrap;
@@ -887,7 +887,7 @@
     font-size: 21px;
   }
 }
-/* Điện thoại màn thấp (đa số máy Android, iPhone mini/SE): thu khoảng trống và cỡ chữ. */
+ 
 @media (max-width: 480px) and (max-height: 860px) {
   .lobby-center {
     padding-top: 6px;
@@ -919,7 +919,7 @@
     width: min(100%, 360px);
   }
 }
-/* Màn rất thấp (trình duyệt chiếm thanh địa chỉ): bỏ dòng trang trí, thu dải bóng người và người bán vé. */
+ 
 @media (max-width: 480px) and (max-height: 820px) {
   #lobby-screen {
     padding-top: max(12px, env(safe-area-inset-top));

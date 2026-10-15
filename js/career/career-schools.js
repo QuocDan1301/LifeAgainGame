@@ -3,7 +3,7 @@ import { openMojiArt } from "../media/event-art.js";
 import { ensureEventOpenMoji } from "../media/event-openmoji.js";
 import { getAnnualTuition, TUITION_FIRST_AGE, TUITION_LAST_AGE } from "../relationships/family.js";
 import { formatMoney } from "../core/money-format.js";
-// Nguồn ngành đào tạo được lưu theo từng lựa chọn để tiện cập nhật.
+ 
 const school = (id, name, city, program, source) => ({
   id, name, city, program, source,
 });
@@ -149,7 +149,7 @@ function createSchoolEventData(careerPath, player = {}) {
     };
   }
 
-  // Nhập ngũ có hướng huấn luyện riêng.
+   
   const military = careerPath.id === "military";
   const status = military ? "Nhập ngũ" : `Tự rèn luyện ${careerPath.field}`;
   return {

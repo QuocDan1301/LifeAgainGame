@@ -1,7 +1,7 @@
-// Giai đoạn 26–32 tuổi. Mỗi tuổi: 3 sự kiện chung + phiên bản theo hoàn cảnh (đang yêu / đã cưới / độc thân…).
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage26To32 = [
-  // ───────────── 26 tuổi ─────────────
+   
   {
     id: 'ls26-cuoc-goi-mot-gio-sang', age: 26,
     title: 'Cuộc gọi lúc một giờ sáng',
@@ -88,7 +88,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── 27 tuổi ─────────────
+   
   {
     id: 'ls27-kem-em-ho', age: 27,
     title: 'Ba buổi tối mỗi tuần',
@@ -173,7 +173,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── 28 tuổi ─────────────
+   
   {
     id: 'ls28-xe-bi-trom', age: 28,
     title: 'Chiếc xe ở cửa',
@@ -256,7 +256,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── 29 tuổi ─────────────
+   
   {
     id: 'ls29-buc-anh-nham-mat', age: 29,
     title: 'Tấm ảnh nhắm mắt',
@@ -335,7 +335,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── 30 tuổi ─────────────
+   
   {
     id: 'ls30-xe-chan-loi', age: 30,
     title: 'Chiếc xe chắn lối',
@@ -427,7 +427,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── 31 tuổi ─────────────
+   
   {
     id: 'ls31-dong-nghiep-bi-chen-ep', age: 31, needs: ['employed'],
     title: 'Người bị cả phòng xa lánh',
@@ -508,7 +508,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── 32 tuổi ─────────────
+   
   {
     id: 'ls32-dung-ten-tai-khoan', age: 32,
     title: 'Đứng tên giúp bạn',
@@ -611,7 +611,7 @@ export const stage26To32 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-tu-cuoi', ages: [26, 30], requires: ['tu_noi_lai'],
     title: 'Thiệp cưới của Tú',

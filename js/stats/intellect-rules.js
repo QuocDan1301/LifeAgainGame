@@ -4,12 +4,12 @@ import { formatMoney } from "../core/money-format.js";
 import { hasInternationalDegreeForCareer } from "../education/study-abroad.js";
 import { getAppearanceImpression } from "./appearance-rules.js";
 
-// Cấu hình tập trung cho cơ chế phụ thuộc Trí tuệ. Các con số là thông số gameplay.
-// Trí tuệ thấp không có nghĩa là lười hay thiếu đạo đức, và luôn còn đường phát triển (học bổ sung, thi lại,
-// nhờ người hướng dẫn). Trí tuệ cao không biến một lựa chọn vô trách nhiệm thành đúng, không tăng lương tự động,
-// không bảo đảm thắng trò may rủi hay đầu tư.
+ 
+ 
+ 
+ 
 
-// 80–100 học nhanh, 50–79 ổn định, 30–49 cần thêm chuẩn bị, 0–29 gặp khó ở việc phức tạp.
+ 
 export const INTELLECT_BANDS = [
   { id: "sharp", min: 80, label: "Nhạy bén" },
   { id: "steady", min: 50, label: "Ổn định" },
@@ -20,26 +20,26 @@ export const getIntellectBand = (intelligence) => INTELLECT_BANDS.find((band) =>
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 export const formatPercent = (chance) => `${Math.round(chance * 100)}%`;
 
-// Mức ảnh hưởng của trí tuệ theo nghề: nghề chuyên môn/tri thức 0,4 điểm % mỗi điểm trí tuệ,
-// nghề năng khiếu/thể chất 0,2 (không để trí tuệ thành chỉ số quyết định duy nhất).
+ 
+ 
 const TALENT_CAREERS = ["acting", "singing", "painting", "football", "esports", "tiktok", "youtube", "fashion", "culinary", "military"];
 export const getIntellectWeight = (careerId) => (TALENT_CAREERS.includes(careerId) ? 0.2 : 0.4);
 export const isTechnicalCareer = (careerId) =>
   ["programming", "accounting", "finance", "mechanical", "architecture", "medicine", "law", "business", "marketing"].includes(careerId);
 
-// Phỏng vấn: chất lượng câu trả lời có trọng lượng lớn nhất, trí tuệ và chuẩn bị điều chỉnh thêm.
+ 
 export const INTERVIEW = {
   base: { good: 0.6, acceptable: 0.35, weak: 0.1 },
   prepBonus: 0.1, min: 0.05, max: 0.95,
   qualityLabel: { good: "Tốt", acceptable: "Chấp nhận được", weak: "Chưa phù hợp" },
 };
-// Chuẩn bị phỏng vấn (Xin việc → Luyện phỏng vấn): dùng được cho buổi phỏng vấn trong năm đó hoặc năm sau.
+ 
 export const hasInterviewPrep = (player) => Number.isInteger(player.interviewPrepAge) && player.age - player.interviewPrepAge <= 1;
 export function getInterviewChance(player, quality, careerId = player.careerPath?.id) {
   const base = INTERVIEW.base[quality] ?? INTERVIEW.base.weak;
   const intellect = ((player.intelligence ?? 50) - 50) * getIntellectWeight(careerId) / 100;
   const prep = hasInterviewPrep(player) ? INTERVIEW.prepBonus : 0;
-  // Nghề hình ảnh (diễn xuất, thời trang, sáng tạo nội dung…): ấn tượng ngoại hình (Ngoại hình − 50) × 0,1 điểm %.
+   
   const looks = getAppearanceImpression(player, careerId);
   const abroad = (careerId === "study-abroad" || hasInternationalDegreeForCareer(player, careerId)) && player.abroadProgress
     ? clamp(((player.abroadProgress.language ?? 50) - 50) * 0.002 + ((player.abroadProgress.academic ?? 50) - 50) * 0.001 + ((player.abroadProgress.integration ?? 50) - 50) * 0.001, -0.2, 0.2) : 0;
@@ -51,14 +51,14 @@ export function describeInterviewChance(info, quality) {
   return `Câu trả lời: ${INTERVIEW.qualityLabel[quality]} (${formatPercent(info.base)}) · Trí tuệ ${sign(info.intellect)} · Chuẩn bị ${sign(info.prep)}` +
     `${info.looks ? ` · Ấn tượng ngoại hình ${sign(info.looks)}` : ""}${info.abroad ? ` · Ngoại ngữ, học tập và hòa nhập ${sign(info.abroad)}` : ""}${info.recordPenalty ? ` · Tiền án −${Math.round(info.recordPenalty * 100)} điểm %` : ""} → khả năng đỗ ${formatPercent(info.chance)}`;
 }
-// Tung kết quả phỏng vấn một lần (kết quả được lưu ngay nên tải lại không đổi).
+ 
 export function rollInterview(player, quality, random = Math.random, careerId) {
   const info = getInterviewChance(player, quality, careerId);
   return { ...info, quality, passed: random() < info.chance, note: describeInterviewChance(info, quality) };
 }
 
-// Kỳ thi (bài test ngành ở tuổi 18): đáp án đúng luôn được ghi nhận đúng và đỗ. Sai đáp án vẫn có thể đỗ
-// nhờ phần thi tổng thể, phụ thuộc mức chuẩn bị và trí tuệ. Có thể học bổ sung và thi lại một lần.
+ 
+ 
 export const EXAM_PREP = {
   steady: { label: "📖 Ôn tập đều đặn mỗi ngày", overall: 0.4, text: "Tôi ôn đều mỗi ngày, làm lại các câu từng sai." },
   group: { label: "👥 Học cùng bạn, nhờ thầy cô hướng dẫn", overall: 0.35, lowIntellectBonus: 0.15, hint: true,
@@ -74,7 +74,7 @@ export function getExamOverallChance(player, prepId) {
   return clamp(prep.overall + lowBonus + ((player.intelligence ?? 50) - 50) * 0.4 / 100, INTERVIEW.min, INTERVIEW.max);
 }
 
-// Thăng chức: xử lý đúng là điều kiện cần; kết quả còn tùy kinh nghiệm, trí tuệ (theo nghề) và thành tích.
+ 
 export const PROMOTION = { base: 0.65, perYearExperience: 0.02, maxExperience: 0.1, perMerit: 0.05, maxMerit: 3, min: 0.05, max: 0.95 };
 export function getPromotionChance(player, age) {
   const years = Math.max(0, age - (player.employedSince ?? age));
@@ -85,11 +85,11 @@ export function getPromotionChance(player, age) {
     ((player.intelligence ?? 50) - 50) * getIntellectWeight(player.careerPath?.id) / 100 + merit * PROMOTION.perMerit + integration, PROMOTION.min, PROMOTION.max);
 }
 
-// Học bổng khuyến khích khi đang học (kết quả học tập tốt): trí tuệ từ 80 được giảm học phí năm đó.
+ 
 export const SCHOLARSHIP = { minIntellect: 80, rate: 0.5 };
 
-// Rèn luyện trí tuệ miễn phí (Phát triển bản thân → Trí tuệ): mỗi hoạt động một lần mỗi năm, trí tuệ càng cao tăng
-// càng chậm. Khóa học trả phí vẫn có ích khi đã cao nhưng chỉ còn một nửa hiệu quả.
+ 
+ 
 export const HIGH_INTELLECT_TRAINING_RATE = 0.5;
 export const INTELLECT_ACTIVITIES = [
   { id: "library", stat: "intelligence", icon: "📚", name: "Đọc sách, học miễn phí", description: "Miễn phí. Mượn sách ở thư viện hoặc học một bài giảng trực tuyến miễn phí.",
@@ -100,8 +100,8 @@ export const INTELLECT_ACTIVITIES = [
     gain: { struggling: 2, developing: 2, steady: 2, sharp: 1 }, needsJob: true },
 ];
 
-// Tuổi già: có thể suy giảm trí tuệ nhẹ, khác nhau ở mỗi người. Đọc sách, học điều mới, trò chuyện trong năm
-// giúp duy trì. Không chẩn đoán bệnh nhận thức chỉ vì điểm thấp.
+ 
+ 
 export const COGNITIVE_AGING = { from: 70, chance: 0.35, olderFrom: 85, olderChance: 0.5, activeRate: 0.3, loss: 1, olderLoss: 2 };
 export function stayedMentallyActive(player, age) {
   const last = age - 1;
@@ -124,8 +124,8 @@ export function collectCognitiveYear(player, age, random = Math.random) {
 
 const art = (code, alt) => openMojiArt(code, alt);
 
-// Sự cố dự án ở nghề chuyên môn: trí tuệ cao mở lựa chọn phân tích nguyên nhân; trí tuệ thấp vẫn có cách
-// nhờ đồng nghiệp, chia nhỏ việc, học thêm. Giấu lỗi hoặc ôm hết việc vẫn có hậu quả dù trí tuệ cao.
+ 
+ 
 export const PROJECT_BUG = { chance: 0.08, analysisIntellect: 70, hideDiscovered: 0.6 };
 export function createProjectBugEvent(player, age, random = Math.random) {
   const careerId = player.careerPath?.id;
@@ -170,8 +170,8 @@ export function createProjectBugEvent(player, age, random = Math.random) {
   };
 }
 
-// Lời mời kiếm tiền "lợi nhuận cao, không rủi ro": trí tuệ cao thấy dấu hiệu đáng ngờ và có thêm câu hỏi về
-// điều khoản; ai cũng có thể từ chối, kiểm tra thông tin hoặc nhờ tư vấn. Chấp nhận mà không kiểm tra thì mất tiền.
+ 
+ 
 export const RISK_OFFER = { chance: 0.05, minAge: 20, minMoney: 10_000_000, shareOfMoney: 0.3, maxAmount: 50_000_000, sharpIntellect: 70 };
 export function createRiskOfferEvent(player, age, random = Math.random) {
   if (age < RISK_OFFER.minAge || (player.money ?? 0) < RISK_OFFER.minMoney) return null;

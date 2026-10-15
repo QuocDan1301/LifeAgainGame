@@ -4,7 +4,7 @@ import { addChoiceIcon } from "./event-emotions.js";
 import { isServing } from "../career/street-work.js";
 import { getCrimeTool, hasCrimeTool } from "./crime-tools.js";
 
-// Các mức án và xác suất là quy tắc hư cấu của game.
+ 
 export const CRIMES = [
   { id: "theft", name: "Trộm cắp", reward: 8_000_000, risk: 0.35, years: 2, fine: 5_000_000 },
   { id: "fraud", name: "Lừa đảo", reward: 35_000_000, risk: 0.55, years: 4, fine: 20_000_000 },

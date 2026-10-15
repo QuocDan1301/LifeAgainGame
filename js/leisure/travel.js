@@ -3,8 +3,8 @@ import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { getTravelGain } from "../stats/mood-rules.js";
 import { NO_SLOT_LABEL, applyActivityGain, describeActivitySlots, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
-// Du lịch: trả chi phí chuyến đi để tăng hạnh phúc. Mỗi năm đi được một chuyến.
-// Cùng một điểm đến nhiều năm liên tiếp thì hiệu quả giảm dần (xem TRAVEL_REPEAT_RATES).
+ 
+ 
 export const destinations = [
   { id: "da-nang", icon: "🌉", name: "Đà Nẵng", country: "Việt Nam", cost: 3_000_000, happiness: 5 },
   { id: "hoi-an", icon: "🏮", name: "Hội An", country: "Việt Nam", cost: 4_000_000, happiness: 6 },
@@ -57,7 +57,7 @@ export function initTravel(state, { renderMoney, renderStats, renderLogEntry }) 
     render(place.id);
   }
 
-  // Số điểm thực nhận hiển thị trước khi trả tiền: đã tính lặp lại điểm đến và mức trần 100.
+   
   function travelFigures(place) {
     const { count, rate, raw, gain } = getTravelGain(state.player, place);
     const real = previewActivityGain(state.player, "happiness", gain);

@@ -75,7 +75,7 @@
     const openGroup = group => document.querySelector(`.shop-group[data-group="${group}"]`).click();
     const buyButton = (group, id) => document.querySelectorAll(".shop-buy:not(.shop-buy-max)")[shopCatalog.filter(i => i.group === group).findIndex(i => i.id === id)];
 
-    // Mua vật nuôi
+     
     $("activities").click();
     $("activity-pets").click();
     assert($("shop-dialog").open && $("shop-title").textContent.includes("vật nuôi"), "Pets button opens the pet shop");
@@ -98,7 +98,7 @@
     state.player.money = 79_850_000;
     $("close-shop").click();
 
-    // Mua sắm
+     
     $("activities").click();
     $("activity-shopping").click();
     const groups = [...document.querySelectorAll("#shop-dialog .shop-group")];
@@ -131,7 +131,7 @@
     $("close-shop").click();
     closeOthers();
 
-    // Lãi hằng năm
+     
     $("age-up").click();
     if (state.pendingEvent) {
       document.querySelector("#event-choices button")?.click();
@@ -141,7 +141,7 @@
     assert(yearLog.includes("Lãi từ 1 vật nuôi") && !yearLog.includes("Lãi kinh doanh"), "Yearly income in the diary");
     closeOthers();
 
-    // Cho thuê bất động sản trong Tài sản
+     
     state.player.purchases = [...state.player.purchases, { uid: "test-house", id: "house", boughtAtAge: state.player.age }];
     $("assets").click();
     const leaseButton = document.querySelector("#life-realestate .shop-lease");
@@ -154,7 +154,7 @@
     state.player.purchases = state.player.purchases.filter(entry => entry.uid !== "test-house");
     $("close-life-profile").click();
 
-    // Bán trong Tài sản
+     
     $("assets").click();
     assert(document.querySelectorAll("#life-livestock .shop-sell").length === 1 &&
       document.querySelectorAll("#life-realestate .shop-sell").length === 1 &&
@@ -165,7 +165,7 @@
     $("shop-confirm").click();
     assert(state.player.money === beforeSale + 15_000_000 && state.player.purchases.length === 1, "Selling a vehicle pays half price");
     assert(!document.querySelector("#life-vehicles .shop-sell"), "Assets list updates after selling");
-    // Vuốt ve thú cưng trong Tài sản: mỗi con một lần mỗi năm
+     
     $("close-life-profile").click();
     state.player.livestock = [...state.player.livestock, { uid: "test-cat", id: "cat", boughtAtAge: state.player.age }];
     state.player.happiness = 50;
@@ -174,7 +174,7 @@
     assert(state.player.happiness === 52 && state.logs.at(-1).content.includes("Vuốt ve"), "Petting a cat adds 2 happiness");
     assert(document.querySelector("#life-livestock .shop-pet").disabled, "A pet can only be petted once a year");
     $("close-life-profile").click();
-    // Gộp món cùng loại thành một dòng ×N; bán bớt từng món
+     
     state.player.livestock = [20, 21, 22].map(age => ({ uid: `test-pigeon-${age}`, id: "pigeon", boughtAtAge: age }));
     state.player.purchases = ["a", "b"].map(uid => ({ uid: `test-house-${uid}`, id: "house", boughtAtAge: 30 }));
     $("assets").click();

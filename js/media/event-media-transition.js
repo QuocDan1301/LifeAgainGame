@@ -15,8 +15,8 @@ export function createMediaTransition(choice, scene, nextScene, contentOverride)
   };
 }
 
-// Bước giữa chuỗi: lựa chọn không có lời kể riêng thì chuyển thẳng sang tình huống tiếp theo,
-// không chèn màn chỉ nhắc lại "Bạn chọn: …" (chuỗi bốn bước nhờ vậy chỉ cần bốn lần bấm).
+ 
+ 
 export function createChainStep(choice, scene, nextScene) {
   return choice.transitionText?.trim() || choice.text ? createMediaTransition(choice, scene, nextScene) : nextScene;
 }

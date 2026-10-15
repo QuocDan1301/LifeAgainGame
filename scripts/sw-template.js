@@ -1,19 +1,19 @@
-// Service worker của Life Again: lưu sẵn game để chơi khi không có mạng.
-// Đây là khuôn; scripts/build.mjs điền phiên bản, danh sách tệp và phông chữ rồi ghi ra dist/sw.js.
+ 
+ 
 const VERSION = __VERSION__;
 const PRECACHE = __PRECACHE__;
 const FONT_STYLESHEETS = __FONT_STYLESHEETS__;
 const SHELL_CACHE = `life-again-${VERSION}`;
-const RUNTIME_CACHE = "life-again-runtime";
+const RUNTIME_CACHE = `life-again-runtime-${VERSION}`;
 const FONT_HOSTS = new Set(["fonts.googleapis.com", "fonts.gstatic.com", "cdnjs.cloudflare.com"]);
 
-// Cài: tải đủ trang, code, giao diện và ảnh nhân vật. Thiếu một tệp thì không cài, giữ bản cũ.
+ 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(SHELL_CACHE).then(cache =>
     cache.addAll(PRECACHE.map(path => new Request(path, { cache: "reload" })))));
 });
 
-// Trang chỉ cho bản mới thay bản cũ khi người chơi đang ở bến xe, để không đổi code giữa ván.
+ 
 self.addEventListener("message", event => {
   if (event.data === "skip-waiting") self.skipWaiting();
 });
@@ -28,7 +28,7 @@ self.addEventListener("activate", event => {
   })());
 });
 
-// Phông chữ nằm ở máy chủ khác: lưu tệp CSS và mọi tệp phông nó gọi tới.
+ 
 async function cacheStylesheetWithFonts(url) {
   try {
     const cache = await caches.open(RUNTIME_CACHE);
@@ -44,7 +44,7 @@ async function cacheStylesheetWithFonts(url) {
       if (fontResponse.ok) await cache.put(font, fontResponse);
     }));
   } catch {
-    // Mất mạng lúc cài: phông sẽ được lưu dần khi trang tải chúng.
+     
   }
 }
 
@@ -60,10 +60,10 @@ self.addEventListener("fetch", event => {
   }
 });
 
-// Trang luôn lấy từ bản đã lưu để khớp với code cùng phiên bản; không có thì hỏi mạng, mất mạng thì mở game.
+ 
 async function openPage(request) {
   const cache = await caches.open(SHELL_CACHE);
-  // Địa chỉ gọn /gioi-thieu dùng chung bản đã lưu của gioi-thieu.html.
+   
   const cached = await cache.match(request, { ignoreSearch: true }) ??
     await cache.match(new URL(request.url).pathname + ".html");
   if (cached) return cached;
@@ -74,9 +74,12 @@ async function openPage(request) {
   }
 }
 
-// Tệp đã lưu thì dùng ngay; tệp khác (ảnh sự kiện, phông) tải một lần rồi giữ lại cho lần offline sau.
+ 
 async function cacheFirst(request) {
-  const cached = await caches.match(request, { ignoreVary: true });
+  const shell = await caches.open(SHELL_CACHE);
+  const runtime = await caches.open(RUNTIME_CACHE);
+  const cached = await shell.match(request, { ignoreVary: true }) ??
+    await runtime.match(request, { ignoreVary: true });
   if (cached) return cached;
   try {
     const response = await fetch(request);

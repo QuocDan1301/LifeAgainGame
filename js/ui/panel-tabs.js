@@ -1,5 +1,5 @@
-// Thanh tab dùng chung cho popup Tài sản và Mối quan hệ: mỗi thẻ .life-panel là một tab
-// (data-icon, data-tab) kèm số mục, chỉ hiện thẻ đang chọn để popup không dài ra.
+ 
+ 
 export function initPanelTabs(dialog, tabBar) {
   const panels = [...dialog.querySelectorAll(".life-panel")];
   let activePanel = panels[0].id;
@@ -22,10 +22,10 @@ export function initPanelTabs(dialog, tabBar) {
     tab.append(icon, span("", panel.dataset.tab), count);
     tab.addEventListener("click", () => selectTab(panel.id));
     panel.setAttribute("role", "tabpanel");
-    // Các module khác tự vẽ lại danh sách (mua, bán, vuốt ve...), nên đếm lại mỗi khi danh sách đổi.
-    // Danh sách được đếm: phần tử có data-tab-count, mặc định là phần tử ngay sau tiêu đề.
+     
+     
     const list = panel.querySelector("[data-tab-count]") ?? panel.querySelector("h3").nextElementSibling;
-    // Dòng gộp nhiều món (×N) ghi số món vào data-count.
+     
     const recount = () => {
       const total = [...list.children].reduce((sum, row) => sum + (Number(row.dataset.count) || 1), 0);
       count.textContent = total || "";

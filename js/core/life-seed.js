@@ -1,4 +1,4 @@
-// Hạt giống cố định của một đời chơi: dùng cho những thứ tự "ngẫu nhiên nhưng không đổi khi tải lại".
+ 
 
 export function hashText(text) {
   let hash = 7;
@@ -6,13 +6,13 @@ export function hashText(text) {
   return hash;
 }
 
-// Tạo khi lập nhân vật (lobby); bản lưu cũ chưa có thì dùng tên|tỉnh như sự kiện đời thường.
+ 
 export function getLifeSeed(player = {}) {
   if (Number.isInteger(player?.lifeSeed)) return player.lifeSeed >>> 0;
   return hashText(`${player?.name ?? ""}|${player?.province ?? ""}`);
 }
 
-// Bộ sinh số ngẫu nhiên có hạt giống (mulberry32), trả về số trong [0, 1).
+ 
 export function seededRandom(seed) {
   let value = seed >>> 0;
   return () => {
@@ -23,5 +23,5 @@ export function seededRandom(seed) {
   };
 }
 
-// Số ngẫu nhiên riêng cho một việc trong đời này (ví dụ "later-60|2").
+ 
 export const lifeRandom = (player, key) => seededRandom(hashText(`${getLifeSeed(player)}|${key}`));

@@ -31,11 +31,11 @@ export function deriveLifeTitles(player = {}) {
     (player.careerPath?.id === 'teaching' && Number.isFinite(player.employedSince)
       ? Math.max(0, Math.min(player.age ?? 0, 62) - player.employedSince) : 0);
   const matches = [
-    // Cải tạo tốt trong trại chưa tính: phải ra tù rồi mới là hoàn lương.
+     
     player.lifePath === 'reformed' && records.length > 0 && !player.prison,
     teachingYears >= 20,
     (player.age ?? 0) >= 60 && array(player.children).length >= 3,
-    // Mọi đời đều khởi đầu tay trắng; 5 tỷ cao hơn mức cuối đời của người không thăng chức (~3,3 tỷ).
+     
     (player.money ?? 0) >= 5_000_000_000,
     Object.keys(player.tripsTaken ?? {}).length >= 3,
     (player.age ?? 0) >= 40 && !marriedBefore && !player.partner && !array(player.children).length,

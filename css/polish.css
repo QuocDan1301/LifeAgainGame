@@ -1,6 +1,6 @@
-/* ===== Lớp trau chuốt giao diện =====
-   Nạp sau cùng. Chỉ thêm chiều sâu, chuyển động và nhịp điệu thị giác;
-   không đổi bố cục, màu nhận diện hay chức năng của từng phần. */
+
+
+
 :root {
   --polish-shadow: 16 40 63;
   --polish-gold: #ffc93c;
@@ -8,25 +8,25 @@
   --polish-spring: cubic-bezier(0.2, 1.4, 0.4, 1);
 }
 
-/* ----- Nền: thêm ánh sáng nhẹ thay cho màu phẳng ----- */
+ 
 body {
   background:
     radial-gradient(circle at 12% 8%, rgb(255 228 120 / 55%), transparent 38%),
     radial-gradient(circle at 88% 92%, rgb(110 205 240 / 45%), transparent 42%),
     #e8f3f8;
 }
-/* Khung game trong suốt: các khối nằm thẳng trên nền trang */
+ 
 .game {
   background: transparent;
   box-shadow: none;
 }
 
-/* ----- Thanh tiêu đề ----- */
+ 
 .game-header {
   box-shadow: 0 3px 0 #e6b92e, 0 6px 14px rgb(150 110 0 / 14%);
 }
 
-/* ----- Nhật ký: sổ tay giấy kem, mỗi năm một khối, năm mới nhất nổi bật ----- */
+ 
 :root {
   --diary-paper: #fffaea;
   --diary-ink: #263a4d;
@@ -52,7 +52,7 @@ body {
   background: rgb(255 255 255 / 72%);
 }
 .log-entry + .log-entry { margin-top: 0; }
-/* Nhãn tuổi đứng riêng một dòng, không chen vào câu chữ */
+ 
 .log-entry h3 {
   display: inline-block;
   margin: 0 0 0.3rem;
@@ -75,7 +75,7 @@ body {
   padding-top: 0.4rem;
   border-top: 1px dashed var(--diary-line);
 }
-/* Cột biểu tượng cố định: chữ xuống dòng thẳng hàng với dòng đầu */
+ 
 .log-line {
   display: grid;
   grid-template-columns: 2.4rem minmax(0, 1fr);
@@ -124,7 +124,7 @@ body {
 @keyframes polish-log-in {
   from { opacity: 0; transform: translateY(10px); }
 }
-/* Năm bình lặng: một dòng nhạt, nhãn tuổi cùng hàng với chữ */
+ 
 .log-entry.is-quiet {
   display: flex;
   align-items: center;
@@ -143,12 +143,12 @@ body {
   .log-icon { line-height: 2.45rem; }
 }
 
-/* Dải cảnh báo sức khỏe dính ở đầu nhật ký: che phần chữ cuộn phía sau nó */
+ 
 .health-alert {
   box-shadow: 0 -1.6rem 0 0.6rem var(--diary-paper), 0 4px 10px rgb(160 40 40 / 14%);
 }
 
-/* ----- Bốn nút chức năng: nổi khối, ấn xuống khi chạm ----- */
+ 
 #game-screen .game-actions :is(#assets, #relationships, #education, #activities) {
   border-color: #1d3a6e;
   box-shadow:
@@ -176,7 +176,7 @@ body {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 60%);
 }
 
-/* ----- Nút tăng tuổi: khối tròn nổi, vòng sáng nhịp thở mời bấm ----- */
+ 
 .age-button {
   background: radial-gradient(circle at 35% 30%, #e4ff9a 0%, var(--green) 45%, #8fd11e 100%);
   box-shadow:
@@ -205,7 +205,7 @@ body {
   70%, 100% { opacity: 0; transform: scale(1.28); }
 }
 
-/* ----- Chỉ số: thanh bóng loáng, viền mềm ----- */
+ 
 progress {
   height: 1.6rem;
   border-color: rgb(8 134 186 / 70%);
@@ -229,7 +229,7 @@ progress::-moz-progress-bar {
   .character .avatar:hover img { transform: scale(1.06) rotate(-2deg); }
 }
 
-/* ----- Hộp thoại: nền mờ phía sau, lựa chọn nổi lên khi rê chuột ----- */
+ 
 dialog::backdrop {
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
@@ -249,7 +249,7 @@ dialog::backdrop {
   box-shadow: 0 1px 0 #e2c565;
 }
 
-/* ----- Bến xe: nút chính có vệt sáng lướt qua mời bấm ----- */
+ 
 #new-life-button {
   position: relative;
   overflow: hidden;
@@ -277,12 +277,12 @@ dialog::backdrop {
   .character .avatar img { transition: none; }
 }
 
-/* ----- Popup sự kiện: lời kể dài thì cuộn, các lựa chọn luôn nằm trong tầm nhìn ----- */
+ 
 #event-dialog { --event-pad: 22px; }
 @media (max-width: 480px) {
   #event-dialog { --event-pad: 14px; }
 }
-/* Tối đa 4 lựa chọn: dính ở đáy popup, lớp nền mờ dần để chữ trôi bên dưới. Nhiều hơn thì cuộn như thường. */
+ 
 #event-choices:not(:has(> :nth-child(5))) {
   position: sticky;
   bottom: calc(-1 * var(--event-pad));
@@ -291,15 +291,15 @@ dialog::backdrop {
   padding: 16px var(--event-pad) var(--event-pad);
   background: linear-gradient(to bottom, rgb(255 248 220 / 0%), #fff8dc 16px);
 }
-/* Màn hình máy tính thấp: hình minh họa nhỏ lại để lời kể và lựa chọn vừa một màn. */
+ 
 @media (min-width: 481px) and (max-height: 860px) {
   #event-image { max-height: 140px; margin-bottom: 10px; }
   #event-image[src*="/events/openmoji/"] { width: 130px; height: 130px; margin-bottom: 10px; }
   #event-content { margin-bottom: 12px; font-size: 20px; line-height: 1.5; }
 }
 
-/* ----- Thẻ cảnh báo đầu nhật ký: dính sát mép trên, che phần đệm phía trên và làm mờ mép dưới,
-   để dòng nhật ký cuộn qua không bị lộ nửa chữ ----- */
+
+
 .journal { --journal-pad-top: 1.6rem; }
 @media (max-width: 480px) {
   .journal { --journal-pad-top: 1.2rem; }
@@ -308,7 +308,7 @@ dialog::backdrop {
   top: calc(-1 * var(--journal-pad-top));
   box-shadow: 0 calc(-1 * var(--journal-pad-top)) 0 var(--diary-paper);
 }
-/* Dải mờ dưới thẻ chỉ hiện khi nhật ký đã cuộn, để lúc đứng yên không đè lên thẻ năm đầu tiên. */
+ 
 @supports (animation-timeline: scroll()) {
   .health-alert::after {
     content: "";
@@ -329,8 +329,8 @@ dialog::backdrop {
   }
 }
 
-/* ----- Đồng bộ phông: bảng Thành tựu, popup thành tựu mới và nhãn loại sự kiện dùng cùng bộ phông
-   với phần còn lại của game (Sriracha cho tiêu đề, Patrick Hand cho nội dung) ----- */
+
+
 #achievements-dialog,
 #achievement-unlock-dialog {
   font-family: "Patrick Hand", cursive;
@@ -351,12 +351,12 @@ dialog::backdrop {
 #achievements-list .achievement-status { font-size: 14px; }
 #unlock-description { font-size: 19px; }
 
-/* ===== Tối ưu điện thoại ===== */
-/* Vùng chạm tối thiểu ~40px cho các dòng mở/thu gọn. */
+ 
+ 
 .health-alert { padding-top: 0; padding-bottom: 0; }
 .health-alert-summary { padding: 10px 0; }
 #life-archive-body summary { padding: 9px 0; }
-/* Chữ phụ không nhỏ hơn 12px để đọc được trên điện thoại. */
+ 
 .gc-personal-record,
 .gc-progress-note { font-size: 12px; }
 .tower-eyebrow { font-size: 12px; }
@@ -365,8 +365,8 @@ dialog::backdrop {
 .gc-claim,
 .gc-album-claim { font-size: 12px; }
 
-/* Màn hình dọc thấp (iPhone SE, Android nhỏ): thu gọn thẻ nhân vật để nhật ký có thêm chỗ.
-   Giới tính và quê quán vẫn xem được ở Tài sản; ô "Chỉ số" chỉ là nhãn trang trí. */
+
+
 @media (orientation: portrait) and (max-height: 700px) {
   .stats { padding-top: 0; }
   .stats-title { display: none; }
@@ -377,13 +377,13 @@ dialog::backdrop {
   #event-image { max-height: 100px; }
   #event-image[src*="/events/openmoji/"] { width: 100px; height: 100px; }
 }
-/* Màn hình dọc rất thấp vẫn cuộn cả trang, nhưng nhật ký giữ khung cuộn riêng
-   để các nút và nút tăng tuổi không bị đẩy xa xuống dưới. */
+
+
 @media (orientation: portrait) and (max-height: 480px) {
   .game { grid-template-rows: auto minmax(24rem, 60dvh) auto auto; }
 }
 
-/* Điện thoại xoay ngang: hai cột. Nhật ký bên trái cuộn riêng; tiêu đề, các nút và chỉ số bên phải. */
+ 
 @media (orientation: landscape) and (max-height: 480px) {
   body {
     height: 100dvh;
@@ -411,15 +411,15 @@ dialog::backdrop {
   .stats-title { display: none; }
   #player-gender,
   #player-province { display: none; }
-  /* Cột phải chỉ rộng như điện thoại dọc: chữ và biểu tượng nút theo cỡ điện thoại. */
+   
   .action-button { --icon-size: 3rem; --icon-edge: 0.4rem; font-size: 1.7rem; }
   .action-icon { font-size: 2.1rem; }
-  /* Như điện thoại hẹp ≤380px trong lobby.css: cột phải chỉ rộng khoảng 320px. */
+   
   #game-screen .character { grid-template-columns: 96px minmax(0, 1fr); padding: 7px; gap: 7px; }
   #game-screen .stat-row { grid-template-columns: 84px minmax(0, 1fr) 36px; gap: 4px; font-size: 13px; }
 
-  /* Popup sự kiện: rộng hơn, hình nhỏ, lựa chọn chia hai cột và cuộn cùng lời kể
-     (dính ở đáy thì sẽ che hết chữ trên màn hình thấp). */
+  
+
   #event-dialog { width: min(94vw, 680px); max-width: none; max-height: calc(100dvh - 16px); padding: 14px; }
   #event-image { max-height: 72px; margin-bottom: 6px; }
   #event-image[src*="/events/openmoji/"] { width: 72px; height: 72px; margin-bottom: 6px; }

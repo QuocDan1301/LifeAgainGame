@@ -1,10 +1,10 @@
-/* Đồng bộ hình dáng nút; màu nền, viền và chữ do từng tính năng giữ nguyên. */
+ 
 :root {
   --button-radius: 14px;
   --button-shadow: 0 3px 0 rgb(16 40 63 / 18%);
 }
 
-/* Lá bài và nút tròn có hình dáng riêng để phù hợp với cách chơi. */
+ 
 :is(#game-screen, #lobby-screen, dialog) button:not(
   .tl-card, .tarot-back-card, .tarot-mini,
   .dialog-close, .dialog-corner-close, .menu-button, .age-button,
@@ -33,7 +33,7 @@
   cursor: not-allowed;
 }
 
-/* Nút mở nhóm dùng bố cục ngang và mũi tên giống bảng Hoạt động. */
+ 
 dialog .shop-group {
   display: flex;
   align-items: center;
@@ -50,8 +50,8 @@ dialog .shop-group::after {
   font-size: 28px;
   line-height: 1;
 }
-/* Nút nhóm có dòng ghi chú (Tình yêu, Trò chơi, Làm thêm): ghi chú nằm dưới tiêu đề
-   thay vì bị ép thành cột hẹp bên phải; mũi tên vẫn ở giữa bên phải. */
+
+
 dialog .shop-group:has(> .side-job-note) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -75,7 +75,7 @@ dialog .shop-group:disabled::after {
   opacity: 0.4;
 }
 
-/* Màu bóng của các mục trong mẫu vẫn là vàng. */
+ 
 #activities-dialog .activities-list button {
   min-height: 84px;
   box-shadow: 0 3px 0 #e8cf80;

@@ -1,5 +1,5 @@
-// Nút "Cài game vào máy" ở bến xe: trình duyệt cho cài một chạm thì mở hộp cài ngay,
-// không thì đi tới trang hướng dẫn cài theo từng thiết bị.
+ 
+ 
 export function initInstallButton() {
   const link = document.getElementById("install-link");
   let installEvent = null;

@@ -61,7 +61,7 @@ try {
     assert(logContent.includes('Người A:') && logContent.includes('Người B:') && logContent.includes('Tôi đáp:'), 'All dialogue is logged');
     document.getElementById('event-confirm').click();
     assert(state.player.partner.id === 'B' && state.player.partner.relationship === 60, 'Late confession can keep a very trusting person, with a penalty');
-    // Hạnh phúc 75 sau hậu quả; cuối năm chỉ số trên 70 hao mòn 1 điểm.
+     
     assert(state.player.otherPartners.length === 0 && state.player.happiness === 74, 'Consequences apply at confirmation');
     const settled = JSON.stringify(state);
     document.getElementById('event-confirm').click();

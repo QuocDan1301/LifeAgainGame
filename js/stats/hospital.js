@@ -3,10 +3,10 @@ import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 import { askConfirm } from "../ui/confirm-dialog.js";
 import { EMERGENCY, REST_ILLNESS_LOSS_RATE, formatChance, getEmergencyDeathChance, getHealthBand } from "./health-rules.js";
 
-// Mỗi ván có 0–2 bệnh định sẵn, phát ngẫu nhiên ở tuổi 18–95, cộng bệnh do lối sống (LIFESTYLE_ILLNESS). Bệnh tách khỏi chỉ số Sức khỏe: tập luyện
-// không chữa được bệnh, chỉ điều trị ở Bệnh viện mới khỏi. Bệnh chưa điều trị nặng dần theo số năm:
-// Nhẹ → Nặng (severeAfter năm) → Nguy kịch (criticalAfter năm); mỗi mức trừ sức khỏe khác nhau (loss)
-// và chỉ ở mức Nguy kịch mới có nguy cơ tử vong mỗi năm (criticalRisk). Các con số là thông số gameplay.
+ 
+ 
+ 
+ 
 export const diseases = [
   { id: "gastritis", icon: "🤢", name: "Viêm dạ dày", cost: 5_000_000, severeAfter: 3, criticalAfter: 7, loss: [1, 2, 4], criticalRisk: 0.04 },
   { id: "gout", icon: "🦶", name: "Gout", cost: 10_000_000, severeAfter: 3, criticalAfter: 8, loss: [1, 2, 4], criticalRisk: 0.04 },
@@ -23,22 +23,22 @@ export const diseases = [
 export const ILLNESS_MIN_AGE = 18;
 export const ILLNESS_MAX_AGE = 95;
 
-// Điều trị càng muộn càng tốn: viện phí nhân theo mức độ hiện tại.
+ 
 export const ILLNESS_STAGES = {
   mild: { label: "Nhẹ", costRate: 1 },
   severe: { label: "Nặng", costRate: 1.5 },
   critical: { label: "Nguy kịch", costRate: 2 },
 };
 const STAGE_ORDER = ["mild", "severe", "critical"];
-// Sức khỏe thấp làm cơ thể chống chọi kém: bệnh tiến triển như thể đã thêm vài năm,
-// và nguy cơ tử vong ở mức Nguy kịch tăng lên.
+ 
+ 
 const HEALTH_PROGRESS_YEARS = { good: 0, fair: 0, weak: 1, critical: 2, empty: 2 };
 const CRITICAL_RISK_FACTOR = { good: 0.5, fair: 1, weak: 1.5, critical: 2, empty: 2 };
 export const ILLNESS_MAX_DEATH_CHANCE = 0.9;
 
 export const getDisease = (id) => diseases.find((disease) => disease.id === id);
 
-// Lên lịch bệnh một lần cho cả ván (bản lưu cũ: chỉ chọn các tuổi còn ở phía trước).
+ 
 export function planIllnesses(player, random = Math.random) {
   if (Array.isArray(player.illnessPlan)) return player.illnessPlan;
   const from = Math.max(ILLNESS_MIN_AGE, (player.age ?? 0) + 1);
@@ -63,7 +63,7 @@ export function getIllnessStage(illness, age, health) {
 export const getTreatmentCost = (disease, stage) =>
   Math.round((disease.cost * ILLNESS_STAGES[stage].costRate) / 1000) * 1000;
 
-// Diễn biến của một bệnh ở sinh nhật `age` (mặc định là sinh nhật tới), dựa trên sức khỏe hiện tại.
+ 
 export function getIllnessOutlook(player, illness, age = player.age + 1) {
   const disease = getDisease(illness.id);
   const stage = getIllnessStage(illness, age, player.health);
@@ -75,7 +75,7 @@ export function getIllnessOutlook(player, illness, age = player.age + 1) {
   return { disease, stage, loss, deathChance, years: untreatedYears(illness, age), resting };
 }
 
-// Bệnh nguy hiểm: ở sinh nhật tới sẽ Nặng hoặc Nguy kịch, hoặc đủ làm sức khỏe cạn.
+ 
 export function getDangerousIllnesses(player, age = player.age + 1) {
   return (player.illnesses ?? [])
     .filter((illness) => getDisease(illness.id) && illness.since < age)
@@ -83,8 +83,8 @@ export function getDangerousIllnesses(player, age = player.age + 1) {
     .filter((entry) => entry.stage !== "mild" || entry.loss >= player.health);
 }
 
-// Cấp cứu khi sức khỏe về 0 mà chưa tới mức tử vong: trừ viện phí cấp cứu, hồi về mức tối thiểu.
-// Cấp cứu lặp lại trong vài năm có nguy cơ tử vong vì kiệt quệ (xem EMERGENCY trong health-rules.js).
+ 
+ 
 export function applyEmergency(player, reason, age, random = Math.random) {
   const deathChance = getEmergencyDeathChance(player, age);
   player.emergencyAges = [...(player.emergencyAges ?? []), age];
@@ -102,7 +102,7 @@ export function applyEmergency(player, reason, age, random = Math.random) {
   return `🚑 ${reason} Bạn được đưa đi cấp cứu kịp thời: Tiền -${formatMoneyAmount(EMERGENCY.cost)} VNĐ, Sức khỏe hồi về ${EMERGENCY.healthAfter}.${warning}`;
 }
 
-// Gọi mỗi lần sang tuổi mới: bệnh cũ tiến triển, bệnh mới được chẩn đoán.
+ 
 export function collectIllnessYear(player, age, random = Math.random) {
   planIllnesses(player);
   const lines = [];
@@ -150,15 +150,15 @@ export function collectIllnessYear(player, age, random = Math.random) {
   return lines.length ? { content: lines.join("\n") } : null;
 }
 
-// Bệnh do lối sống: ngoài lịch bệnh định sẵn, sức khỏe kém, làm việc quá tải và tinh thần chán nản kéo dài
-// làm tăng nguy cơ mắc bệnh mới mỗi năm. Khám sức khỏe định kỳ năm trước giảm một nửa nguy cơ.
+ 
+ 
 export const LIFESTYLE_ILLNESS = {
   byBand: { good: 0, fair: 0.02, weak: 0.05, critical: 0.08, empty: 0.08 },
   overwork: 0.03, overworkLoad: 3, strained: 0.02, strainedYears: 2, olderFrom: 50, olderRate: 1.5,
   checkupRate: 0.5, maxPerLife: 3,
 };
 export const CHECKUP = { cost: 2_000_000 };
-// Tải công việc: việc chính 1, full-time 2, mỗi ca part-time 0,5, mỗi nghề tự do 1.
+ 
 export function getWorkload(player) {
   return (player.employmentStatus === "employed" ? 1 : 0) +
     (player.sideJobs ?? []).reduce((sum, job) => sum + (job.shift === "full-time" ? 2 : 0.5), 0) +
@@ -186,7 +186,7 @@ function rollLifestyleIllness(player, age, random) {
   return `🩺 Sức khỏe sa sút và nhịp sống quá tải khiến bạn mắc ${disease.icon} ${disease.name} (mức Nhẹ). Giữ sức khỏe, giảm tải công việc và khám định kỳ giúp phòng bệnh: Hoạt động → Bệnh viện.`;
 }
 
-// Mô tả tình trạng hiện tại và nguy cơ năm tới của một bệnh (dùng cho Bệnh viện và thẻ bệnh).
+ 
 export function describeIllness(player, illness) {
   const disease = getDisease(illness.id);
   const stage = getIllnessStage(illness, player.age, player.health);
@@ -279,7 +279,7 @@ export function initHospital(state, { renderMoney, renderLogEntry, onChange = ()
     if (!list.children.length) list.append(element("p", "hospital-healthy", "💪 Bạn chưa phát hiện bệnh nào."));
     current.append(list);
 
-    // Nghỉ dưỡng miễn phí cho năm tới: hồi sức, giảm hao sức vì bệnh nhưng không chữa bệnh.
+     
     const rest = element("section", "dialog-card hospital-rest");
     const resting = player.restYear === player.age + 1;
     rest.append(element("h3", "", "🛌 Nghỉ dưỡng năm tới"),
@@ -291,7 +291,7 @@ export function initHospital(state, { renderMoney, renderLogEntry, onChange = ()
         render();
       }));
 
-    // Khám định kỳ: giảm một nửa nguy cơ mắc bệnh do lối sống ở sinh nhật tới.
+     
     const checkup = element("section", "dialog-card hospital-checkup");
     const checked = player.checkupAge === player.age;
     const chance = getLifestyleIllnessChance(player, player.age + 1);

@@ -46,7 +46,7 @@ export const afterPrisonStories = [
     ],
   },
   {
-    // Lần mời thứ hai: từ chối ở 'Tin nhắn sáng hôm sau' không khóa hẳn đường nhận thư.
+     
     id: 'ls-tro-ve-goi-lai', ages: [25, 104], needs: ['criminalRecord', 'outsidePrison'], requires: ['tro_ve_chua_san_sang'],
     title: 'Cuộc gọi sau một năm',
     text: 'Người hàng xóm gọi lại sau một thời gian dài, nói phòng sinh hoạt chung đang thiếu người trông kho mỗi sáng thứ bảy. Việc không có tiền công và phải dậy sớm, nhưng tên tôi sẽ trở lại trong lịch tháng. Tôi cầm máy, cân nhắc có nhận lời lần này hay không.',

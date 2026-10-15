@@ -151,13 +151,13 @@ test('Activity gains are capped per stat per year from 70, and high stats wear d
   assert.deepEqual([p.health, p.happiness, p.intelligence, p.appearance], [97, 83, 70, 70]);
   Object.assign(p, { health: 100 });
   assert.equal(collectStatWearYear(p, 80), null, 'Old age uses its own decline');
-  // Một người chịu khó tối đa mỗi năm vẫn giữ được 100, nhưng không thể nhảy từ 70 lên 100 trong một năm.
+   
   assert.ok(ACTIVITY_GAIN_CAP > 3 && ACTIVITY_GAIN_CAP < 30);
 });
 test('Tien len charges a table fee and caps the stake', () => {
   assert.equal(getTienLenPot(100_000), 320_000);
   assert.ok(getTienLenPot(TIEN_LEN_MAX_STAKE) < TIEN_LEN_MAX_STAKE * 4);
-  // Bấm gợi ý mỗi lượt thắng khoảng 28%: với phí bàn, kỳ vọng xấp xỉ hòa vốn thay vì lãi 13%.
+   
   assert.ok(0.28 * getTienLenPot(1_000_000) / 1_000_000 < 0.95);
   assert.ok(0.35 * getTienLenPot(1_000_000) / 1_000_000 < 1.15);
 });
@@ -387,7 +387,7 @@ test('Child education and college support update ending relationships, legacy va
   assert.match(result.content, /Ba:.*gắn kết đã tối đa; có người chăm sóc/);
   assert.equal(collectFamilyBudget(p, 41), null);
   assert.equal(p.children[0].relationship, 60);
-  // Gói chăm sóc tính như nhờ người hỗ trợ ở sinh nhật sau, nhưng không hạ mức tự tay chăm sóc.
+   
   assert.equal(p.relatives[0].caredAt, 41);
   assert.equal(p.relatives[0].careBy, 'helper');
   const q = { ...worker(), age: 41, relatives: [{ id: 'mother', name: 'Má', ageAtPlayerBirth: 25, alive: true, bond: 70,
@@ -397,7 +397,7 @@ test('Child education and college support update ending relationships, legacy va
   const r = { ...worker(), age: 41, relatives: [{ id: 'mother', name: 'Má', ageAtPlayerBirth: 25, alive: true, bond: 70, supportPlan: 'support' }] };
   collectFamilyBudget(r, 42);
   assert.equal(r.relatives[0].caredAt, undefined);
-  // Con 6–22 tuổi không có gói nào: gắn kết giảm; học cơ bản suốt 6–22 tuổi rơi dưới mốc 60 của chuyện tuổi già.
+   
   const s = { ...worker(), age: 40, children: [{ id: 'k', name: 'Bé', initialAge: 0, joinedAtAge: 35, relationship: 80 },
     { id: 'baby', name: 'Út', initialAge: 0, joinedAtAge: 40, relationship: 80 }] };
   for (let age = 41; age <= 57; age++) collectFamilyBudget(s, age);

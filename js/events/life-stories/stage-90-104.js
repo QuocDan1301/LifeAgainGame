@@ -1,8 +1,8 @@
-// Giai đoạn 90–104 tuổi (105 là sự kiện kết thúc riêng). Mỗi tuổi: 3 sự kiện chung + phiên bản có bạn đời / một mình.
-// Tự quyết rất ít: lựa chọn là cách đón nhận, cách nói ra, cách trao lại.
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
+ 
 export const stage90To104 = [
-  // ───────────── 90 tuổi ─────────────
+   
   {
     id: 'ls90-chin-muoi', age: 90,
     title: 'Chín mươi',
@@ -59,7 +59,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 91 tuổi ─────────────
+   
   {
     id: 'ls91-an-uong', age: 91,
     title: 'Bữa ăn',
@@ -116,7 +116,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 92 tuổi ─────────────
+   
   {
     id: 'ls92-giac-ngu-dai', age: 92,
     title: 'Giấc ngủ dài',
@@ -173,7 +173,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 93 tuổi ─────────────
+   
   {
     id: 'ls93-di-dao-cuoi', age: 93,
     title: 'Vòng quanh khu phố',
@@ -230,7 +230,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 94 tuổi ─────────────
+   
   {
     id: 'ls94-nhung-ngay-dau', age: 94,
     title: 'Cơn đau',
@@ -287,7 +287,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 95 tuổi ─────────────
+   
   {
     id: 'ls95-buoi-sang', age: 95,
     title: 'Ánh nắng buổi sáng',
@@ -344,7 +344,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 96 tuổi ─────────────
+   
   {
     id: 'ls96-giac-mo-cha-me', age: 96,
     title: 'Giấc mơ',
@@ -401,7 +401,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 97 tuổi ─────────────
+   
   {
     id: 'ls97-cua-so-mua', age: 97,
     title: 'Mùa đổi',
@@ -458,7 +458,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 98 tuổi ─────────────
+   
   {
     id: 'ls98-tieng-ve-que', age: 98,
     title: 'Về quê',
@@ -515,7 +515,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 99 tuổi ─────────────
+   
   {
     id: 'ls99-sap-tram-tuoi', age: 99,
     title: 'Sắp một trăm',
@@ -572,7 +572,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 100 tuổi ─────────────
+   
   {
     id: 'ls100-tram-tuoi', age: 100,
     title: 'Một trăm tuổi',
@@ -629,7 +629,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 101 tuổi ─────────────
+   
   {
     id: 'ls101-tuoi-moi', age: 101,
     title: 'Sau một trăm',
@@ -686,7 +686,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 102 tuổi ─────────────
+   
   {
     id: 'ls102-hoi-tho', age: 102,
     title: 'Hơi thở',
@@ -743,7 +743,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 103 tuổi ─────────────
+   
   {
     id: 'ls103-nho-quen', age: 103,
     title: 'Nhớ và quên',
@@ -800,7 +800,7 @@ export const stage90To104 = [
     ],
   },
 
-  // ───────────── 104 tuổi ─────────────
+   
   {
     id: 'ls104-mot-ngay-nua', age: 104,
     title: 'Một ngày nữa',

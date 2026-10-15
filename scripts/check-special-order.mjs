@@ -1,5 +1,5 @@
-// Kiểm chứng thứ tự lựa chọn của chuỗi đặc biệt: duyệt toàn bộ cây lựa chọn của mọi chuỗi
-// với nhiều hạt giống đời chơi, dùng đúng các hàm main.js gọi (getBaseAgeEvents, createSpecialStep).
+ 
+ 
 import assert from 'node:assert/strict';
 import { getBaseAgeEvents } from '../js/events/events.js';
 import { applySpecialInventory, createAuthoredSpecialStep, createSpecialStep, isOrderedSpecialChain, tagSourceIndex } from '../js/special-events/special-chain.js';
@@ -13,7 +13,7 @@ const SEEDS = Array.from({ length: 240 }, (_, index) => Math.imul(index + 1, 265
 const spouse = { id: 'p1', name: 'Hạnh', relationship: 90, isAlive: true, stats: { health: 80 } };
 const basePlayer = { name: 'Thử', province: 'Huế', age: 60, health: 90, happiness: 60, intelligence: 60,
   partner: spouse, marriedAtAge: 30, children: [{ name: 'Bình', relationship: 80, isAlive: true, stats: { health: 90 } }] };
-// Mỗi biến thể là một chuỗi có điều kiện đầu vào khác nhau (sức khỏe tuổi 35, ký ức tuổi 40 ở tuổi 45).
+ 
 const variants = [
   ...[10, 20, 30, 40, 50, 55].map(age => ({ name: `age-${age}`, age })),
   { name: 'age-35 khỏe', age: 35 },
@@ -26,7 +26,7 @@ const playerFor = (variant, lifeSeed) => ({ ...basePlayer, age: variant.age, ...
   ...(lifeSeed === undefined ? {} : { lifeSeed }) });
 const startOf = (variant, player) => getBaseAgeEvents(variant.age, null, player).find(isOrderedSpecialChain);
 
-// Phần thưởng của chuỗi: thành tựu câu chuyện, tiền thưởng, kỷ vật, mốc chỉ số (kết thúc tuổi 105 không tính).
+ 
 const isReward = choice => Boolean((choice.achievementIds?.length && !choice.ending) || choice.money > 0 ||
   choice.keepsake || choice.statTargets || choice.minimumStats);
 const outcomeOf = choice => JSON.stringify({ title: choice.title, text: choice.text, effects: choice.effects,
@@ -36,7 +36,7 @@ const outcomeOf = choice => JSON.stringify({ title: choice.title, text: choice.t
   minimumStats: choice.minimumStats ?? null, schoolYearDueAge: choice.schoolYearDueAge ?? null,
   partnerRelationship: choice.partnerRelationship ?? null, reward: isReward(choice) });
 
-// Bước tiếp theo giống main.js: túi đồ cập nhật theo nhánh, chuỗi tuổi 10 sang bước 5 ở tuổi 11.
+ 
 function following(step, choice, player, make) {
   if (choice.nextStep) {
     const inventory = step.kind === 'special-chain' ? applySpecialInventory(step.specialInventory, choice) : {};
@@ -45,7 +45,7 @@ function following(step, choice, player, make) {
   if (step.kind === 'lost-child-chain' && choice.schoolYearDueAge === 11) return make(step.kind, step.specialId, 5, {}, player);
   return null;
 }
-// Cây đầy đủ: đường đi theo chỉ số tác giả (bước:sourceIndex) → kết quả cuối.
+ 
 function walk(step, player, make, path = [], leaves = new Map()) {
   assert.ok(step?.choices?.length, `Bước ${step?.specialId} ${step?.specialStep} có lựa chọn`);
   for (const choice of step.choices) {
@@ -66,13 +66,13 @@ function alwaysFirst(step, player, make) {
   }
   throw new Error('Chuỗi không kết thúc');
 }
-// Thứ tự tác giả viết (chưa xáo), để so sánh.
+ 
 const authored = (kind, id, step, inventory, player) => tagSourceIndex(createAuthoredSpecialStep(kind, id, step, inventory, player));
 const authoredStart = (variant, player) => {
   const shown = startOf(variant, player);
   return { ...shown, choices: [...shown.choices].sort((a, b) => a.sourceIndex - b.sourceIndex) };
 };
-// Thứ tự hiển thị của mọi bước trong cây, gom thành một chuỗi để so sánh.
+ 
 const orderKey = (variant, player) => {
   const keys = [];
   const visit = step => {
@@ -124,7 +124,7 @@ test('(b) Cùng hạt giống thì cùng thứ tự; bản lưu giữ nguyên th
     for (const seed of SEEDS) {
       const first = orderKey(variant, playerFor(variant, seed));
       assert.equal(orderKey(variant, playerFor(variant, seed)), first, `${variant.name} hạt giống ${seed}`);
-      // Bản lưu: pendingEvent giữ nguyên choices đã lưu qua JSON.
+       
       const shown = startOf(variant, playerFor(variant, seed));
       const saved = JSON.parse(JSON.stringify(shown));
       assert.deepEqual(saved.choices.map(c => c.sourceIndex), shown.choices.map(c => c.sourceIndex));
@@ -132,7 +132,7 @@ test('(b) Cùng hạt giống thì cùng thứ tự; bản lưu giữ nguyên th
     }
     assert.ok(orders.size > 1, `${variant.name}: các đời khác nhau có thứ tự khác nhau`);
   }
-  // Bản lưu cũ chưa có lifeSeed: hạt giống từ tên|tỉnh, vẫn cố định.
+   
   const old = variants.find(v => v.name === 'later-60');
   assert.equal(orderKey(old, playerFor(old)), orderKey(old, playerFor(old)));
 });
@@ -147,7 +147,7 @@ test('(c) Mọi phần thưởng và kết thúc vẫn đạt được; logic th
       for (const [route, outcome] of expected) assert.equal(leaves.get(route), outcome, `${variant.name} hạt giống ${seed}: ${route}`);
     }
   }
-  // Các điểm từng dựa vào chỉ số gốc vẫn rơi đúng nhánh tác giả viết.
+   
   const outcomes = name => [...baseline.get(name)].map(([route, o]) => [route, JSON.parse(o)]);
   const lessons = outcomes('later-60').filter(([, o]) => o.unlockActivity === 'free-repair-lessons');
   assert.ok(lessons.length && lessons.every(([route]) => route.endsWith('5:1')), 'Tuổi 60: dạy sửa đồ chỉ ở ô tác giả số 1 của bước 5');

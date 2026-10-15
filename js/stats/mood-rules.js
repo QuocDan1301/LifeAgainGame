@@ -1,11 +1,11 @@
 import { openMojiArt } from "../media/event-art.js";
 import { formatMoney } from "../core/money-format.js";
 
-// Cấu hình tập trung cho cơ chế phụ thuộc Hạnh phúc. Các con số là thông số gameplay.
-// Hạnh phúc thấp không gây tử vong, không tự làm mất việc hay chia tay; hạnh phúc cao
-// không thay thế trí tuệ hay năng lực chuyên môn (không đổi kết quả phỏng vấn, nâng bậc).
+ 
+ 
+ 
 
-// 70–100 vững vàng, 40–69 bình thường, 20–39 chán nản, 0–19 rất khó khăn.
+ 
 export const HAPPINESS_BANDS = [
   { id: "steady", min: 70, label: "Vững vàng" },
   { id: "normal", min: 40, label: "Bình thường" },
@@ -14,8 +14,8 @@ export const HAPPINESS_BANDS = [
 ];
 export const getHappinessBand = (happiness) => HAPPINESS_BANDS.find((band) => (Number(happiness) || 0) >= band.min);
 
-// Tinh thần vững vàng (từ 70): thất bại nhỏ trong sự kiện đời thường/công việc chỉ trừ một nửa
-// hạnh phúc. Chỉ áp dụng cho mức trừ nhỏ (tối đa 6) và không giảm thiệt hại sức khỏe, tiền bạc.
+ 
+ 
 export const RESILIENCE = { minHappiness: 70, maxLoss: 6, rate: 0.5, categories: ["everyday", "career", "wellbeing"] };
 export function softenSetback(player, choice, category) {
   const loss = choice.effects?.happiness;
@@ -26,13 +26,13 @@ export function softenSetback(player, choice, category) {
     text: `${choice.text}\n🌤️ Tinh thần vững vàng giúp bạn nhẹ lòng hơn.` };
 }
 
-// Đếm số năm liên tiếp hạnh phúc dưới 20 (mở chuỗi hỗ trợ) và dưới 40 (tăng áp lực công việc).
+ 
 export const LOW_HAPPINESS = 20;
 export const STRAINED_HAPPINESS = 40;
 export const SUPPORT_TRIGGER_YEARS = 3;
 
-// Chuỗi "Bạn đang trải qua giai đoạn khó khăn": hiệu quả ngay + hồi phục mỗi năm trong vài năm.
-// Lựa chọn tâm sự luôn miễn phí để nhân vật độc thân hoặc ít tiền vẫn có hỗ trợ cơ bản.
+ 
+ 
 export const SUPPORT_OPTIONS = {
   confide: { immediate: 6, perYear: 3, years: 2 },
   schedule: { immediate: 5, perYear: 3, years: 2, health: 2, promotionDelay: 1 },
@@ -41,29 +41,29 @@ export const SUPPORT_OPTIONS = {
 };
 export const isSupportActive = (player, age) => Boolean(player.moodSupport) && age <= player.moodSupport.untilAge;
 
-// Sự kiện chán nản (20–39) và áp lực công việc (hạnh phúc thấp kéo dài càng dễ gặp).
+ 
 export const LOW_MOOD_EVENT_CHANCE = { low: 0.3, crisis: 0.4 };
 export const WORK_PRESSURE_CHANCE = { base: 0.05, perStrainedYear: 0.1, max: 0.45 };
 export const getWorkPressureChance = (player) =>
   Math.min(WORK_PRESSURE_CHANCE.max, WORK_PRESSURE_CHANCE.base + WORK_PRESSURE_CHANCE.perStrainedYear * (player.strainedYears ?? 0));
 
-// Biến cố có tác động kéo dài: trừ hạnh phúc mỗi sinh nhật trong vài năm, giảm dần.
-// Năm đang nghỉ dưỡng hoặc đang được hỗ trợ tinh thần thì chỉ chịu một nửa.
-// Mức trừ ngay lúc xảy ra nằm ở nơi gây ra biến cố (chia tay, mất việc, mất người thân); ở đây là phần kéo dài.
+ 
+ 
+ 
 export const MOOD_EFFECTS = {
   breakup: { icon: "💔", label: "Chia tay", immediate: 5, yearly: [3, 2] },
-  // Lo lắng thất nghiệp: chỉ khi còn thất nghiệp, tối đa 2 năm; có việc mới thì hết.
+   
   "job-loss": { icon: "😟", label: "Lo lắng thất nghiệp", yearly: [2, 2], endsWhenEmployed: true },
-  // Đau buồn: mức trừ ngay tùy mức gắn kết (xem family-members.js), sau đó −3, −2, −1.
+   
   bereavement: { icon: "🕯️", label: "Mất người thân", yearly: [3, 2, 1] },
 };
 export const MOOD_EFFECT_RELIEF = 0.5;
-// Tránh vòng lặp hình phạt: tổng hao hạnh phúc mỗi năm từ mọi tác động kéo dài tối đa 5 điểm.
+ 
 export const MOOD_EFFECT_YEARLY_CAP = 5;
 export function addMoodEffect(player, id, age, extra = {}) {
   return [...(player.moodEffects ?? []), { id, startedAt: age, ...extra }];
 }
-// Mức trừ của một tác động ở sinh nhật `age` (0 khi đã hết hạn).
+ 
 export function getMoodEffectLoss(player, effect, age) {
   const config = MOOD_EFFECTS[effect.id];
   const yearly = (config?.yearly ?? []).slice(0, effect.years ?? config?.yearly.length);
@@ -74,12 +74,12 @@ export function getMoodEffectLoss(player, effect, age) {
     label: effect.name ? `${config?.label} (${effect.name})` : config?.label,
     yearsLeft: ended ? 0 : Math.max(0, yearly.length - (age - effect.startedAt - 1)) };
 }
-// Các biến cố đang còn ảnh hưởng tinh thần ở sinh nhật `age`.
+ 
 export const getActiveMoodEffects = (player, age = player.age + 1) =>
   (player.moodEffects ?? []).filter((effect) => getMoodEffectLoss(player, effect, age).yearsLeft > 0);
 
-// Hoạt động miễn phí cho Hạnh phúc (Phát triển bản thân → Hạnh phúc): mỗi hoạt động một lần mỗi năm,
-// hạnh phúc càng thấp càng được nhiều, không thể bấm mãi để lên 100.
+ 
+ 
 export const MOOD_ACTIVITIES = [
   { id: "hobby", stat: "happiness", icon: "🎨", name: "Làm sở thích tại nhà", description: "Miễn phí. Vẽ, nấu món mới hay chăm cây, làm điều mình thích một buổi chiều.",
     gain: { crisis: 4, low: 4, normal: 2, steady: 1 } },
@@ -89,8 +89,8 @@ export const MOOD_ACTIVITIES = [
     gain: { crisis: 5, low: 4, normal: 2, steady: 1 } },
 ];
 
-// Tương tác với người yêu/bạn đời: mỗi lựa chọn một lần mỗi năm. Xin không gian riêng không bị phạt
-// nếu giữ lời hẹn (trò chuyện trước sinh nhật kế tiếp); bỏ hẹn mới làm giảm mức gắn kết.
+ 
+ 
 export const PARTNER_ACTIONS = {
   talk: { happiness: 3, relationship: 2 },
   together: { happiness: 4, relationship: 3 },
@@ -98,7 +98,7 @@ export const PARTNER_ACTIONS = {
   brokenPromise: 5,
 };
 
-// Du lịch cùng một điểm đến nhiều năm liên tiếp: 100% → 75% → 50%. Đổi nơi hoặc nghỉ một năm thì đầy đủ.
+ 
 export const TRAVEL_REPEAT_RATES = [1, 0.75, 0.5];
 export function getTravelStreak(player, placeId) {
   const streak = player.travelStreak;
@@ -113,9 +113,9 @@ export function getTravelGain(player, place) {
 
 const art = (code, alt) => openMojiArt(code, alt);
 
-// Chuỗi hỗ trợ: mở khi hạnh phúc dưới 20 đủ 3 năm liên tiếp, không lặp khi đang được hỗ trợ
-// hoặc vừa trì hoãn (hỏi lại sau 2 năm nếu vẫn khó khăn).
-// Nhiều biến cố cùng lúc (ví dụ mất việc và mất người thân) cũng mở lựa chọn hỗ trợ.
+ 
+ 
+ 
 export const STACKED_EVENTS_FOR_SUPPORT = 2;
 export function createSupportEvent(player, age) {
   const stacked = getActiveMoodEffects(player, age).length >= STACKED_EVENTS_FOR_SUPPORT;
@@ -180,7 +180,7 @@ export function createSupportEvent(player, age) {
   };
 }
 
-// Sự kiện tinh thần trong năm: áp lực công việc (người đang đi làm) hoặc một quãng chán nản.
+ 
 export function createMoodEvent(player, age, random = Math.random) {
   const band = getHappinessBand(player.happiness).id;
   const working = player.employmentStatus === "employed";
@@ -236,11 +236,11 @@ function createLowMoodEvent(player, age) {
   };
 }
 
-// Mỗi sinh nhật: tác động kéo dài, hồi phục từ hỗ trợ, lời hẹn với người yêu, đếm năm hạnh phúc thấp.
+ 
 export function collectMoodYear(player, age) {
   const lines = [];
   const clamp = (value) => Math.max(0, Math.min(100, value));
-  // Hồi phục từ chuỗi hỗ trợ đang diễn ra.
+   
   const support = player.moodSupport;
   if (support && age > support.startedAt && age <= support.untilAge) {
     const option = SUPPORT_OPTIONS[support.type];
@@ -249,13 +249,13 @@ export function collectMoodYear(player, age) {
     lines.push(`🌱 Đang được hỗ trợ tinh thần: Hạnh phúc +${player.happiness - before}` +
       (support.untilAge > age ? ` (còn ${support.untilAge - age} năm).` : " (chặng hỗ trợ đã hoàn thành)."));
   }
-  // Tác động kéo dài của biến cố, giảm dần theo năm.
+   
   const remaining = [];
   let budget = MOOD_EFFECT_YEARLY_CAP;
   for (const effect of player.moodEffects ?? []) {
     const { config, loss: fullLoss, relieved, yearsLeft } = getMoodEffectLoss(player, effect, age);
     if (!config || yearsLeft <= 0) continue;
-    // Tổng mức trừ của mọi tác động trong năm không vượt MOOD_EFFECT_YEARLY_CAP.
+     
     const loss = Math.min(fullLoss, budget);
     budget -= loss;
     if (loss) {
@@ -267,7 +267,7 @@ export function collectMoodYear(player, age) {
     if (yearsLeft > 1) remaining.push(effect);
   }
   player.moodEffects = remaining;
-  // Lời hẹn trò chuyện với người yêu: bỏ hẹn mới bị giảm gắn kết.
+   
   const promise = player.partnerPromise;
   if (promise && age > promise.dueAge) {
     if (player.partner && player.partner.id === promise.partnerId) {
@@ -277,7 +277,7 @@ export function collectMoodYear(player, age) {
     }
     player.partnerPromise = null;
   }
-  // Đếm năm liên tiếp hạnh phúc thấp.
+   
   player.lowHappinessYears = player.happiness < LOW_HAPPINESS ? (player.lowHappinessYears ?? 0) + 1 : 0;
   player.strainedYears = player.happiness < STRAINED_HAPPINESS ? (player.strainedYears ?? 0) + 1 : 0;
   if (player.lowHappinessYears && player.lowHappinessYears < SUPPORT_TRIGGER_YEARS && !isSupportActive(player, age)) {

@@ -28,7 +28,7 @@
       const drawn = T.drawTarotCards();
       assert(drawn.length === 3 && new Set(drawn).size === 3, "Three different cards");
     }
-    // Lá chưa khám phá được ưu tiên: rút mỗi năm một lá là đủ 78 lá trong 78 lần.
+     
     const seen = {};
     for (let i = 0; i < 78; i++) {
       const drawn = T.drawTarotCards(Math.random, seen);
@@ -39,7 +39,7 @@
     const twoLeft = Object.fromEntries(T.tarotCards.slice(2).map(c => [c.id, 1]));
     const mixed = T.drawTarotCards(Math.random, twoLeft);
     assert(new Set(mixed).size === 3 && mixed.filter(id => !twoLeft[id]).length === 2, "Fills with known cards when few are left");
-    // Hiệu ứng chờ và quy tắc giảm giá.
+     
     const player = { age: 30, happiness: 99, intelligence: 50 };
     T.applyTarotEffect(player, T.getTarotCard("cups-1"));
     assert(player.happiness === 100, "Cups +2 happiness, max 100");
@@ -49,7 +49,7 @@
     player.age = 31;
     assert(!T.getActiveTarotBuff(player), "Waiting effects expire on the next birthday");
 
-    // Thành tựu theo bộ sưu tập.
+     
     const ids = (filter) => T.tarotAchievementIds(Object.fromEntries(T.tarotCards.filter(filter).map(c => [c.id, 1])));
     assert(ids(() => false).length === 0, "No card, no Tarot achievement");
     assert(JSON.stringify(ids(c => c.id === "cups-3")) === '["tarot-first"]', "First card");
@@ -93,7 +93,7 @@
     assert(reading.cards.length === 3 && body().querySelectorAll(".tarot-back-card").length === 3, "Three face-down cards");
     assert(!T.tarotCards.some(c => body().textContent.includes(c.name)), "Face-down cards are not revealed");
 
-    // Đóng rồi mở lại: vẫn là ba lá cũ.
+     
     const cards = JSON.stringify(reading.cards);
     $("close-tarot").click();
     open();

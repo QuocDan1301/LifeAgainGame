@@ -15,9 +15,9 @@ function shuffle(items, random) {
   return items;
 }
 
-// Khóa bậc nghề (một hàm dùng chung, theo mã ngành ổn định, tiến độ thuộc từng cuộc đời):
-// bậc 3 chỉ mở khi hoàn thành chuỗi khám phá ngành ở tuổi 16 (thành công) và chọn đúng ngành đó ở tuổi 18.
-// Thiếu điều kiện thì tối đa bậc 2.
+ 
+ 
+ 
 export const MAX_RANK_WITHOUT_MILESTONE = 2;
 export function getRankLock(player, careerId = player?.careerPath?.id) {
   if (hasInternationalDegreeForCareer(player, careerId)) return {
@@ -40,13 +40,13 @@ export function getRankLock(player, careerId = player?.careerPath?.id) {
         : "Bậc 3 cần hoàn thành chuỗi khám phá ngành này ở tuổi 16 và chọn đúng ngành ở tuổi 18; hiện tối đa bậc 2.",
   };
 }
-// Dấu mốc tuổi 16 chỉ có hiệu lực khi tuổi 18 chọn đúng ngành đã hoàn thành chuỗi.
+ 
 export function hasCareerMilestone(player) {
   return Boolean(player?.careerPath?.id && player.careerSpark === player.careerPath.id && careerMilestones[player.careerPath.id]);
 }
 
-// Vòng quyết định tuổi 16 vẫn có bước ngẫu nhiên thành công/thất bại, nhưng tỉ lệ dựa trên chỉ số
-// phù hợp với ngành và được công khai trước: 60% ở mức 50, mỗi điểm ±0,5%, giới hạn 35–85%.
+ 
+ 
 const SPARK_STAT = {
   football: "health", military: "health",
   acting: "happiness", singing: "happiness", painting: "happiness", fashion: "happiness",
@@ -109,7 +109,7 @@ function sparkOutcomeChoice(careerId, success) {
   };
 }
 
-// Chuỗi 4 tình huống ở tuổi 16: nhận lời → vượt khó → vòng quyết định → kết quả ngẫu nhiên.
+ 
 export function createCareerSparkStep(careerId, step = 1, random = Math.random, player = null) {
   const data = careerMilestones[careerId];
   if (!data || step < 1 || step > 4) return null;
@@ -123,7 +123,7 @@ export function createCareerSparkStep(careerId, step = 1, random = Math.random, 
     ...openMojiArt(data.icon, `Khám phá ngành ${data.field}`),
   };
   if (step === 4) {
-    // Kết quả được quyết định một lần khi bước 4 xuất hiện, tải lại không đổi kết quả.
+     
     const success = random() < getSparkChance(careerId, player).chance;
     return {
       ...base,
@@ -134,7 +134,7 @@ export function createCareerSparkStep(careerId, step = 1, random = Math.random, 
   const [text, keepGoing, stop] = spark.steps[step - 1];
   return {
     ...base,
-    // Tỉ lệ thành công được công khai từ bước đầu và nhắc lại trước vòng quyết định.
+     
     text: step === 1 || step === 3 ? `${text}\n\n${describeSparkChance(careerId, player)}` : text,
     choices: shuffle([
       { label: keepGoing, nextStep: step + 1 },
@@ -143,9 +143,9 @@ export function createCareerSparkStep(careerId, step = 1, random = Math.random, 
   };
 }
 
-// Tuổi 16: người chơi chọn 1 trong 3 ngành ngẫu nhiên phù hợp khối học đã chọn ở tuổi 15
-// (chưa có khối thì dùng mọi ngành), rồi mới vào chuỗi 4 bước.
-// Ba ngành bốc theo hạt giống của đời chơi nên tải lại trang vẫn là ba ngành đó.
+ 
+ 
+ 
 export const CAREER_SPARK_OFFER_COUNT = 3;
 export function createCareerSparkPickEvent(studyBlock, player = null, random = lifeRandom(player, `career-spark|${studyBlock ?? ""}`)) {
   const pool = Object.keys(careerMilestones).filter(careerId => !studyBlock || canChooseCareer(careerId, studyBlock));

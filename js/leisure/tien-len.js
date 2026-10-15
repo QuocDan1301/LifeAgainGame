@@ -7,13 +7,13 @@ import {
   dealHands, describeCombo, isRed, legalPlays, RANKS, rankOf, sortCards, suggestPlay, SUITS, suitOf,
 } from "./tien-len-rules.js";
 
-// Tiến lên miền Nam (Hoạt động → Trò chơi): người chơi và 3 máy, cược bằng tiền trong ví.
-// Mỗi người góp một mức cược; ai hết bài trước nhận cả 4 phần sau khi bàn thu phí. Cả bàn lưu trong player.tienLen:
-// trừ cược và chia bài trong cùng một lần lưu, trả thưởng cùng lần lưu với nước đánh cuối,
-// nên tải lại trang chỉ tiếp tục đúng ván đang chơi, không hoàn tiền hay chia lại.
+ 
+ 
+ 
+ 
 export const TIEN_LEN_STAKES = [10_000, 50_000, 100_000, 500_000];
-// Bàn thu 20% tổng tiền góp và giới hạn mức góp: bấm gợi ý thắng khoảng 28% nên kỳ vọng ~0,9;
-// người đánh giỏi (~35%) chỉ lãi nhẹ, và mức góp tối đa 100 triệu để không thành nguồn thu chính.
+ 
+ 
 export const TIEN_LEN_FEE_RATE = 0.2;
 export const TIEN_LEN_MAX_STAKE = 100_000_000;
 export const getTienLenPot = (stake) => Math.floor(stake * 4 * (1 - TIEN_LEN_FEE_RATE));
@@ -65,7 +65,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     return "";
   };
 
-  // ---------- Chọn bàn ----------
+   
   function renderLobby(notice = "") {
     stopTimer();
     const back = button("shop-back", "← Chọn trò khác", () => {
@@ -87,7 +87,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       choice.append(element("span", "side-job-note", `Góp ${formatMoney(stake)} · Thắng nhận ${formatMoney(getTienLenPot(stake))} (lời ${formatMoney(getTienLenPot(stake) - stake)})`));
       tables.append(choice);
     }
-    // Bàn All in: góp toàn bộ ví (tối đa TIEN_LEN_MAX_STAKE); các ván sau ở bàn này giữ nguyên mức góp đó.
+     
     const allInStake = Math.min(Math.floor(state.player.money), TIEN_LEN_MAX_STAKE);
     const allIn = button("shop-group tl-table-pick tl-all-in", "💥 Bàn All in", () => sitDown(allInStake));
     allIn.dataset.stake = "all";
@@ -119,11 +119,11 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     startDeal();
   }
 
-  // ---------- Chia bài, trả thưởng, bỏ ván ----------
+   
   function startDeal() {
     const current = table();
     if (!current || hasActiveTienLen(state.player)) return;
-    // Bàn All in lưu từ bản cũ có thể vượt mức góp tối đa hiện tại.
+     
     current.stake = Math.min(current.stake, TIEN_LEN_MAX_STAKE);
     const blocker = startBlocker(current.stake);
     if (blocker) {
@@ -150,7 +150,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     renderMoney();
     renderTable();
   }
-  // Trả thưởng đúng một lần, cùng lần lưu với nước đánh hết bài.
+   
   function settle() {
     const current = table();
     const round = current?.game;
@@ -197,7 +197,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     renderLobby();
   }
 
-  // ---------- Nước đánh ----------
+   
   const handOrder = (round) => {
     const hand = new Set(round.hands[0]);
     const kept = (round.order ?? []).filter((card) => hand.has(card));
@@ -246,7 +246,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     const round = game();
     if (!round || round.over) return;
     let cards = round.turn === 0 ? suggestPlay(round, 0) : null;
-    // Ngoài lượt: chỉ có thể là bốn đôi thông chặt.
+     
     if (round.turn !== 0) cards = legalPlays(round, 0)[0]?.cards ?? null;
     selected.clear();
     if (cards) {
@@ -267,14 +267,14 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     renderTable();
   }
 
-  // ---------- Lượt của máy ----------
+   
   function stopTimer() {
     clearTimeout(timer);
     timer = null;
   }
-  // Máy chỉ dùng bài trên tay mình, bài đã đánh và số lá còn lại của người khác.
+   
   function schedule() {
-    // Đã hẹn lượt máy thì để nguyên: lúc tới giờ máy sẽ xem lại trạng thái bàn.
+     
     if (timer || isSavePaused()) return;
     const round = game();
     if (!viewing || !dialog.open || !round || round.over) return;
@@ -288,7 +288,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     if (isSavePaused()) return;
     const round = game();
     if (!viewing || !round || round.over) return;
-    // Lần lượt từng hành động: chặt ngoài lượt bằng bốn đôi thông được xét trước.
+     
     for (const seat of [1, 2, 3]) {
       const chop = chooseAiOutOfTurnChop(round, seat);
       if (chop) {
@@ -304,7 +304,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     renderTable();
   }
 
-  // ---------- Giao diện bàn ----------
+   
 function appendCardDetails(node, card) {
     const corner = element("span", "tl-corner");
     corner.append(element("span", "tl-rank", RANKS[rankOf(card)]), element("span", "tl-suit", SUITS[suitOf(card)]));
@@ -464,7 +464,7 @@ function appendCardDetails(node, card) {
       if (selected.size && !check.ok && check.reason && round.turn === 0) live.textContent = check.reason;
       nodes.push(actions, forfeitButton);
     }
-    // Vẽ lại sau mỗi nước: giữ focus ở lá bài / nút đang dùng (chỉ khi focus đang ở trong bàn).
+     
     const active = document.activeElement;
     const focusKey = body.contains(active) ? active?.dataset?.focus ?? "" : null;
     shell.append(...nodes);
@@ -477,7 +477,7 @@ function appendCardDetails(node, card) {
     schedule();
   }
 
-  // Bản lưu cũ: ván đã có người thắng mà chưa trả thưởng thì trả ngay (không bao giờ trả hai lần).
+   
   const saved = game();
   if (saved && saved.winner !== null && !saved.paid) settle();
 

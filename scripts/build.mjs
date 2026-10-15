@@ -4,24 +4,24 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { transform } from 'esbuild';
 
-// Tạo bản deploy trong dist/: JS và CSS được nén (bỏ chú thích, đổi tên biến), kèm dòng bản quyền
-// và khóa tên miền. Code gốc giữ nguyên; server chỉ phục vụ dist/ khi chạy trên Render.
+ 
+ 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
 const YEAR = new Date().getFullYear();
 const BANNER = `/*! Life Again © ${YEAR} QuocDan. Mọi quyền được bảo lưu. Không được sao chép, chỉnh sửa, phân phối hoặc đăng lại khi chưa có sự cho phép bằng văn bản. */`;
-// Thư mục server cho phép tải (xem server/game-server.mjs).
+ 
 const ASSET_DIRS = ['img', 'music', 'audio', 'fonts', 'sounds', 'assets'];
 const LOCKED_ENTRIES = ['boot.js', 'main.js'];
 const PAGES = ['index.html', 'gioi-thieu.html'];
 
-// Tên miền được phép chạy game. Trên Render tự lấy tên onrender.com; tên miền riêng thêm qua GAME_HOSTS.
+ 
 const hosts = [process.env.RENDER_EXTERNAL_HOSTNAME, ...(process.env.GAME_HOSTS ?? '').split(',')]
   .map(host => host?.trim().toLowerCase()).filter(Boolean);
 if (process.env.RENDER && !hosts.length) throw new Error('Thiếu RENDER_EXTERNAL_HOSTNAME hoặc GAME_HOSTS: không build để tránh khóa nhầm trang chính thức.');
 const homeUrl = process.env.GAME_HOME_URL ?? process.env.RENDER_EXTERNAL_URL ?? '';
 
-// FNV-1a 32 bit: lưu mã băm thay vì tên miền để không sửa được bằng tìm-và-thay.
+ 
 function hashHost(host) {
   let hash = 2166136261;
   for (const ch of host) hash = Math.imul(hash ^ ch.codePointAt(0), 16777619) >>> 0;
@@ -75,9 +75,9 @@ async function buildCss(file) {
   fs.writeFileSync(output(file), code);
 }
 
-// Bỏ chú thích HTML và nén các đoạn script viết thẳng trong trang.
+ 
 async function buildHtml(file) {
-  // data-offline: báo cho trang biết bản này có service worker để đăng ký chơi offline.
+   
   let html = fs.readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace('<html lang="vi">', '<html lang="vi" data-offline>');
   const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   for (const [whole, body] of scripts) {
@@ -87,8 +87,8 @@ async function buildHtml(file) {
   fs.writeFileSync(output(file), html);
 }
 
-// Service worker: tải sẵn trang, code, giao diện và ảnh nhân vật để chơi offline. Ảnh sự kiện (OpenMoji, gần 9.000 tệp)
-// và ảnh PNG gốc không dùng tới thì không tải sẵn; ảnh sự kiện được lưu dần khi người chơi gặp.
+ 
+ 
 function shouldPrecache(relative) {
   if (relative.startsWith('js/img/') || relative.startsWith('img/site/')) return false;
   if (/\.(md|txt)$/.test(relative)) return false;
@@ -112,7 +112,7 @@ async function buildServiceWorker() {
   for (const file of files) hash.update(file).update(fs.readFileSync(path.join(DIST, file)));
   const template = fs.readFileSync(path.join(ROOT, 'scripts', 'sw-template.js'), 'utf8');
   hash.update(template);
-  // Game mở bằng địa chỉ gốc (/) nên lưu trang chính dưới địa chỉ đó thay cho index.html.
+   
   const urls = files.map(file => file === 'index.html' ? './' : './' + file);
   const source = template
     .replace('__VERSION__', JSON.stringify(hash.digest('hex').slice(0, 12)))
@@ -130,7 +130,7 @@ const jobs = PAGES.map(page => buildHtml(path.join(ROOT, page)));
 fs.copyFileSync(path.join(ROOT, 'manifest.json'), output(path.join(ROOT, 'manifest.json')));
 for (const file of walk(path.join(ROOT, 'js'))) {
   if (file.endsWith('.js')) jobs.push(buildJs(file));
-  // Bảng kiểm tra ảnh (.json) chỉ dùng khi phát triển, game không tải.
+   
   else if (!file.endsWith('.json')) fs.copyFileSync(file, output(file));
 }
 for (const dir of ['css', 'site']) {

@@ -2,32 +2,32 @@ import { recordAchievementFlags } from '../achievements/achievements-data.js';
 import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
 
-// Mua vé số (từ 18 tuổi): vé 10.000 VNĐ, tối đa 30 vé mỗi năm cho cả hai loại.
-// Mỗi loại chỉ quay một kết quả cho cả năm; kết quả được tạo khi mua vé đầu tiên và
-// lưu cùng vé để tải lại trang không đổi. Nhấn + Tuổi mới dò vé, cộng thưởng vào ví.
+ 
+ 
+ 
 export const LOTTERY_MIN_AGE = 18;
 export const TICKET_PRICE = 10_000;
 export const MAX_TICKETS_PER_YEAR = 30;
 export const VIETLOTT_MAX = 45;
 export const VIETLOTT_PICKS = 6;
 export const VIETLOTT_JACKPOT = 12_000_000_000;
-// Jackpot tích lũy: mỗi năm không ai trúng cộng thêm một khoản (tối đa VIETLOTT_JACKPOT_MAX);
-// có người khác trúng (VIETLOTT_OTHER_WINNER mỗi năm) hoặc chính mình trúng thì quay về mức khởi điểm.
+ 
+ 
 export const VIETLOTT_JACKPOT_GROWTH = 3_000_000_000;
 export const VIETLOTT_JACKPOT_MAX = 300_000_000_000;
 export const VIETLOTT_OTHER_WINNER = 0.2;
 const KIEN_THIET_CHOICES = 6;
 
-// Jackpot đang áp dụng cho kỳ quay tới (vé mua năm nay dò ở sinh nhật sau).
+ 
 export function getVietlottJackpot(player) {
   return player.vietlottPot?.amount ?? VIETLOTT_JACKPOT;
 }
-// Số năm Jackpot đã tích lũy liên tục kể từ lần gần nhất có người trúng.
+ 
 export function getVietlottJackpotYears(player) {
   const pot = player.vietlottPot;
   return pot ? Math.max(0, Math.round((pot.amount - VIETLOTT_JACKPOT) / VIETLOTT_JACKPOT_GROWTH)) : 0;
 }
-// Cập nhật Jackpot đúng một lần ở mỗi sinh nhật, sau khi đã dò vé của kỳ vừa quay.
+ 
 function advanceVietlottPot(player, age, playerWon, random) {
   const before = getVietlottJackpot(player);
   if (player.vietlottPot?.updatedAge >= age) return null;
@@ -47,7 +47,7 @@ function advanceVietlottPot(player, age, playerWon, random) {
   return { drawn: before, next: amount, outcome };
 }
 
-// Vé kiến thiết: so các chữ số cuối, đúng thứ tự; mỗi vé chỉ nhận giải cao nhất.
+ 
 export const kienThietPrizes = [
   { digits: 6, prize: 2_000_000_000 },
   { digits: 5, prize: 30_000_000 },
@@ -55,7 +55,7 @@ export const kienThietPrizes = [
   { digits: 3, prize: 200_000 },
   { digits: 2, prize: 100_000 },
 ];
-// Vietlott Mega 6/45: số lượng số trùng, không cần đúng thứ tự.
+ 
 export const vietlottPrizes = [
   { hits: 6, prize: VIETLOTT_JACKPOT },
   { hits: 5, prize: 10_000_000 },
@@ -69,7 +69,7 @@ export function randomVietlott(random = Math.random) {
   return Array.from({ length: VIETLOTT_PICKS }, () => pool.splice(Math.floor(random() * pool.length), 1)[0])
     .sort((a, b) => a - b);
 }
-// Dùng dấu cách để số không bị tô màu như số tăng/giảm trong nhật ký.
+ 
 export const formatVietlott = (numbers) => numbers.map((number) => String(number).padStart(2, "0")).join(" ");
 
 export function kienThietResult(ticket, draw) {
@@ -115,10 +115,10 @@ function luckyLine(total) {
   return "Dò hết vé vẫn trượt, thôi coi như góp tiền xây dựng quê hương.";
 }
 
-// Gọi mỗi lần sang tuổi mới: dò các vé mua ở năm trước, cộng thưởng và xóa vé đã dò.
+ 
 export function collectLotteryYear(player, age, random = Math.random) {
   const due = (player.lotteryTickets ?? []).filter((ticket) => ticket.age < age);
-  // Không có vé: Jackpot vẫn tích lũy hoặc có người khác trúng như mọi năm.
+   
   if (!due.length) {
     advanceVietlottPot(player, age, false, random);
     return null;
@@ -127,7 +127,7 @@ export function collectLotteryYear(player, age, random = Math.random) {
   let jackpotWon = false;
   const lines = [];
   let total = 0;
-  // Kết quả chi tiết cho popup mở thưởng (lưu cùng nhân vật để tải lại trang vẫn xem được).
+   
   const draws = [];
   for (const boughtAge of [...new Set(due.map((ticket) => ticket.age))]) {
     const draw = player.lotteryDraws?.[boughtAge] ?? { kienThiet: randomKienThiet(), vietlott: randomVietlott() };
@@ -182,7 +182,7 @@ export function collectLotteryYear(player, age, random = Math.random) {
   return { amount: total, content: lines.join("\n") };
 }
 
-// Mọi vé mua trong cùng một năm ghi chung một dòng nhật ký, liệt kê số vé.
+ 
 function setPurchaseLogText(log) {
   const { kienThiet, vietlott } = log.lotteryPurchase;
   const count = kienThiet.length + vietlott.length;
@@ -192,7 +192,7 @@ function setPurchaseLogText(log) {
   log.content = log.summary = lines.join("\n");
 }
 
-// Bản lưu cũ ghi mỗi vé một dòng: gộp các dòng cùng tuổi vào dòng đầu tiên.
+ 
 export function mergeLotteryPurchaseLogs(logs) {
   const kienThietLine = /^🎟️ Mua vé số kiến thiết (\d{6}): Tiền -10k VNĐ\.$/u;
   const vietlottLine = /^🎟️ Mua vé Vietlott ((?:\d{2} ){5}\d{2}): Tiền -10k VNĐ\.$/u;
@@ -277,7 +277,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
       : `Giá ${formatMoney(TICKET_PRICE)}/vé · Đã mua ${bought.length}/${MAX_TICKETS_PER_YEAR} vé năm nay. ` +
         "Nhấn + Tuổi để quay thưởng; tiền thưởng tự cộng vào ví.");
 
-    // Vé số kiến thiết: chọn một vé trong dãy số ngẫu nhiên.
+     
     const kienThiet = element("section", "dialog-card");
     kienThiet.append(element("h3", "", "🎟️ Vé số kiến thiết"),
       element("p", "side-job-intro", "Chọn một vé 6 chữ số. Trùng các số cuối (đúng thứ tự) là trúng."));
@@ -306,7 +306,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
       ["Trùng cả 6 số", formatMoney(2_000_000_000)],
     ]));
 
-    // Vietlott Mega 6/45: chọn 6 số khác nhau từ 01 đến 45.
+     
     const vietlott = element("section", "dialog-card");
     const status = element("p", "lottery-picked");
     const buyVietlott = button("shop-buy lottery-vietlott-buy", "", () => {
@@ -391,13 +391,13 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
   });
   $("close-lottery").addEventListener("click", () => dialog.close());
 
-  // ---------- Popup mở thưởng ở sinh nhật sau năm mua vé ----------
+   
   const resultDialog = $("lottery-result-dialog");
   const resultBody = $("lottery-result-body");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let waiting = null;
 
-  // Bóng số lật lần lượt; số trùng với vé của người chơi được tô sáng.
+   
   function drawRow(values, className, delayStart = 0) {
     const row = element("div", `lottery-draw ${className}`);
     values.forEach((value, index) => {
@@ -499,7 +499,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     done.focus({ preventScroll: true });
   }
 
-  // Chờ các popup khác (sự kiện, thành tựu) đóng hẳn rồi mới mở, để không chồng lên nhau.
+   
   function showResults() {
     clearTimeout(waiting);
     if (isSavePaused()) return;

@@ -1,7 +1,7 @@
-// Giai đoạn 33–39 tuổi. Mỗi tuổi: 3 sự kiện chung (cặp có việc / chưa có việc tính là một) + phiên bản theo hoàn cảnh.
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage33To39 = [
-  // ───────────── 33 tuổi ─────────────
+   
   {
     id: 'ls33-bai-dang', age: 33,
     title: 'Bài đăng lan truyền',
@@ -86,7 +86,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── 34 tuổi ─────────────
+   
   {
     id: 'ls34-ba-cu-nga', age: 34,
     title: 'Bà cụ ngã trước đầu xe',
@@ -167,7 +167,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── 35 tuổi ─────────────
+   
   {
     id: 'ls35-hai-cay-bang', age: 35,
     title: 'Hai cây bàng đầu đường',
@@ -259,7 +259,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── 36 tuổi ─────────────
+   
   {
     id: 'ls36-vay-nong', age: 36,
     title: 'Người họ hàng vay tiền',
@@ -329,7 +329,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── 37 tuổi ─────────────
+   
   {
     id: 'ls37-tien-nha-vo', age: 37,
     title: 'Thợ sửa ống nước',
@@ -399,7 +399,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── 38 tuổi ─────────────
+   
   {
     id: 'ls38-hang-xom-xay-nha', age: 38,
     title: 'Bức tường lấn sang',
@@ -482,7 +482,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── 39 tuổi ─────────────
+   
   {
     id: 'ls39-mang-xa-hoi', age: 39,
     title: 'Tấm ảnh cũ trên mạng',
@@ -572,7 +572,7 @@ export const stage33To39 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-con-hoc-boi', ages: [33, 39], requiresAny: ['khong_biet_boi', 'nhan_khong_biet_boi', 'gia_dau_bung'], needs: ['children'], childAge: [5, 10],
     title: 'Con muốn học bơi',

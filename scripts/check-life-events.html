@@ -24,7 +24,7 @@
       money: 100_000_000, illnessPlan: [], illnesses: [], relatives: [], employmentStatus: "employed", careerLevel: 2, job: "Lập trình viên",
       careerPath: { id: "programming", field: "Công nghệ thông tin" }, lastSalaryAge: 30, nextPromotionAge: 40, employedSince: 25, ...extra });
 
-    // 1. Mất việc: không có xác suất sa thải ngẫu nhiên chung; chỉ có vấn đề → cảnh báo → đánh giá.
+     
     assert(J.getProblemChance(worker({ employedSince: 30 }), 30) === 0, "No problem event in the first year");
     assert(J.getProblemChance(worker({ employmentStatus: "unemployed" }), 31) === 0, "Unemployed players have no work problems");
     assert(!J.createWorkProblemEvent(worker(), 31, () => 0.99), "Most years nothing happens");
@@ -33,19 +33,19 @@
     assert(problem.choices.some(c => c.label.includes("⚠️") && c.label.includes("sa thải ngay")), "Serious misconduct warns before the choice");
     const grieving = worker({ happiness: 20, moodEffects: M.addMoodEffect({}, "bereavement", 30) });
     assert(J.getProblemChance(grieving, 31) === J.getProblemChance(worker({ happiness: 70 }), 31), "Grief does not add firing warnings");
-    // Cải thiện tốt giữ việc; bỏ mặc thì gần như chắc chắn mất việc.
+     
     const improver = worker();
     apply(improver, problem.choices[0]);
     assert(improver.jobWarning?.plan === "improve" && improver.employmentStatus === "employed", "Warning first, no firing yet");
     const pass = J.createJobReviewEvent(improver, 32, () => 0.5);
     assert(pass.choices[0].title.includes("Giữ được"), "A good improvement plan keeps the job");
-    // Che giấu bị phát hiện: sa thải ngay (đã cảnh báo trước ở nhãn lựa chọn).
+     
     const hidden = worker();
     apply(hidden, problem.choices[3]);
     assert(hidden.employmentStatus === "unemployed" && hidden.jobHistory.at(-1).cause === "fired", "Discovered misconduct means immediate dismissal");
     const fail = J.createJobReviewEvent(worker({ jobWarning: { issuedAt: 31, plan: "ignore" } }), 32, () => 0.5);
     assert(fail.choices[0].title.includes("Không đạt"), "Ignoring the warning leads to dismissal at review");
-    // Sa thải: dừng đúng công việc chính, giữ việc làm thêm và kinh nghiệm, ghi rõ nguyên nhân.
+     
     const fired = worker({ sideJobs: [{ storeId: "gs25", shift: "part-time", startedAtAge: 28 }] });
     apply(fired, fail.choices[0]);
     assert(fired.employmentStatus === "unemployed" && fired.sideJobs.length === 1 && fired.careerExperience.level === 2 &&
@@ -53,7 +53,7 @@
       "Firing: -8 happiness, side jobs and experience kept, cause recorded");
     assert(J.getRehireLevel(fired, "programming") === 1 && J.getRehireLevel({ careerExperience: { careerId: "law", level: 2, cause: "layoff" } }, "law") === 2,
       "Experienced workers re-enter at a suitable rank");
-    // Lo lắng thất nghiệp: −2 mỗi năm, tối đa 2 năm; có việc mới thì hết.
+     
     fired.age = 32;
     completeLifeYear(fired, 33);
     const anxious = completeLifeYear(fired, 34);
@@ -62,7 +62,7 @@
     const rehired = worker({ moodEffects: M.addMoodEffect({}, "job-loss", 30) });
     assert(M.getMoodEffectLoss(rehired, rehired.moodEffects[0], 31).loss === 0, "A new job ends the worry");
 
-    // Cắt giảm nhân sự: hiếm, có thông báo, chỉ cho nghề làm thuê; gói nghỉ việc có số tiền trước khi chọn.
+     
     assert(!J.createLayoffNoticeEvent(worker({ careerPath: { id: "military" } }), 31, () => 0) &&
       !J.createLayoffNoticeEvent(worker({ careerPath: { id: "acting" } }), 31, () => 0), "No layoffs for service or contract careers");
     assert(!J.createLayoffNoticeEvent(worker(), 31, () => 0.5), "Layoffs are rare");
@@ -74,7 +74,7 @@
     assert(prepared.employmentStatus === "unemployed" && cut.employment.content.includes("trợ cấp") && prepared.jobHistory.at(-1).cause === "layoff",
       "Layoff happens a year later with the announced severance");
 
-    // Hết hợp đồng: báo trước, xin gia hạn hoặc chuyển hướng.
+     
     const actor = worker({ careerPath: { id: "acting", field: "Diễn xuất" }, employedSince: null, contractEndAge: null });
     actor.age = 29;
     completeLifeYear(actor, 30);
@@ -91,12 +91,12 @@
     assert(silent.employmentStatus === "employed" && silent.contractEndAge === 35, "No contract ends without a notice");
     assert(J.createContractNoticeEvent(silent, 34, () => 0.99), "The postponed contract gets its notice on the next birthday");
 
-    // 2. Tài chính: sàn sinh hoạt phí, giảm mức sống, dự báo trước khi tăng tuổi.
+     
     assert(getLivingCost(30, 0) === 24_000_000 && getLivingCost(30, 0, "frugal") === 16_000_000, "Living cost floor even with no income");
     const forecast = forecastNextYear(worker({ employmentStatus: "unemployed", money: 5_000_000 }));
     assert(forecast.income === 0 && forecast.costs === 24_000_000 && forecast.after === -19_000_000, "Forecast shows income, costs and wallet");
 
-    // 3. Người thân có danh tính và tuổi; bản lưu cũ không chết ngay.
+     
     const young = { age: 0 };
     FM.ensureRelatives(young, () => 0.5);
     assert(young.relatives.length === 2 && young.relatives.every(r => r.name && r.alive && r.ageAtPlayerBirth >= 21 && r.ageAtPlayerBirth <= 36),
@@ -108,7 +108,7 @@
     FM.ensureRelatives(added, () => 0.99);
     added.relatives = added.relatives.map(r => ({ ...r, condition: "severe" }));
     assert(!FM.createRelativeDeathEvent(added, 51, () => 0), "No death right after adding the mechanism");
-    // 5. Qua đời theo tuổi và tình trạng; khỏe thì không đột ngột (dưới 95).
+     
     const family = (condition, bond) => ({ age: 50, relatives: [{ id: "mother", role: "Mẹ", name: "Lan", ageAtPlayerBirth: 28, alive: true, bond,
       condition, trackedFrom: 30, interactions: { calls: 2 }, done: {} }] });
     assert(!FM.createRelativeDeathEvent(family("healthy", 70), 51, () => 0), "Healthy relatives do not die suddenly");
@@ -118,7 +118,7 @@
       "Risk depends on age");
     assert(FM.getDeathChance({ age: 80, condition: "severe", trackedFrom: 0 }, 50, "self") < FM.getDeathChance({ age: 80, condition: "severe", trackedFrom: 0 }, 50),
       "Care helps but is not a guarantee");
-    // 6. Đau buồn theo gắn kết, kéo dài 3 năm giảm dần; kỷ niệm từ tương tác thật.
+     
     for (const [bond, loss] of [[30, 5], [60, 10], [85, 15]]) {
       const home = family("severe", bond);
       const farewell = FM.createRelativeDeathEvent(home, 51, () => 0);
@@ -134,7 +134,7 @@
     home.age = 51;
     const griefYears = [52, 53, 54, 55].map(age => completeLifeYear(home, age).mood?.content ?? "");
     assert(griefYears[0].includes("-3") && griefYears[1].includes("-2") && griefYears[2].includes("-1") && !griefYears[3].includes("người thân"), "Grief -3, -2, -1 then ends");
-    // Bạn đời: góa, giữ lịch sử hôn nhân.
+     
     const spouse = { age: 70, marriedAtAge: 30, relatives: [], relationshipHistory: [{ age: 30, type: "married", text: "Cưới" }],
       partner: { id: "s1", name: "Minh", ageAtMeeting: 80, metAtAge: 60, relationship: 90, condition: "severe" } };
     const widow = FM.createRelativeDeathEvent(spouse, 71, () => 0);
@@ -142,14 +142,14 @@
     assert(!spouse.partner && spouse.widowedAtAge === 71 && spouse.relationshipHistory.some(e => e.type === "married") && spouse.relationshipHistory.at(-1).type === "widowed",
       "Widowed status keeps the marriage history");
 
-    // 7. Tránh vòng lặp phạt: tổng hao từ hiệu ứng kéo dài tối đa 5/năm; nhiều biến cố mở hỗ trợ.
+     
     const stacked = worker({ age: 40, happiness: 60, employmentStatus: "unemployed",
       moodEffects: [...M.addMoodEffect({}, "bereavement", 40), ...M.addMoodEffect({}, "job-loss", 40), ...M.addMoodEffect({}, "breakup", 40)] });
     completeLifeYear(stacked, 41);
     assert(stacked.happiness >= 60 - 5 - 3, "Lingering effects cost at most 5 per year (plus ordinary living costs)");
     assert(M.createSupportEvent({ ...stacked, lowHappinessYears: 0 }, 42)?.text.includes("dồn dập"), "Stacked events open support");
 
-    // Giao diện: Quan hệ → Gia đình, vòng cảnh báo công việc qua sinh nhật thật.
+     
     const html = await (await fetch("../index.html")).text();
     const parsed = new DOMParser().parseFromString(html, "text/html");
     parsed.querySelectorAll("script").forEach(element => element.remove());
@@ -174,12 +174,15 @@
     assert(family$.textContent.includes("Bố") && family$.textContent.includes("Mẹ") && family$.textContent.includes("tuổi"), "Parents shown in Relationships");
     const bond = state.player.relatives[1].bond;
     act("mother", "call").click();
-    assert(state.player.relatives[1].bond === bond + 2 && state.player.money === 1_000_000 && act("mother", "call").disabled, "A free call, once per year");
+    assert($("family-conversation-dialog").open && state.player.relatives[1].bond === bond, "Opening a conversation does not change stats");
+    document.querySelector("[data-family-choice]").click();
+    $("close-family-conversation").click();
+    assert(state.player.relatives[1].bond === bond + 4 && state.player.money === 1_000_000 && act("mother", "call").disabled, "A free call with a thoughtful reply, once per year");
     assert(act("mother", "visit").disabled && act("mother", "visit").textContent.includes("miễn phí"), "No money for a visit: no penalty, call stays free");
     act("father", "postpone").click();
     assert(state.player.relatives[0].promise && state.player.relatives[0].bond === 70, "Postponing is not penalised");
     closeAll();
-    // Vòng công việc: vấn đề → cảnh báo → đánh giá lại → giữ việc.
+     
     state.player.money = 100_000_000;
     // Keep this fixture focused on the warning chain; temptation has separate integration checks.
     state.player.lastWorkTemptationAge = state.player.age;

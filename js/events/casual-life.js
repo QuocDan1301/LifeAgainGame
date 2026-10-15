@@ -105,7 +105,7 @@ export function createCasualLifeEvents(age, player) {
   const pools = active.length ? active.map(entry => entry.id) : player.casualLife ? ['casual'] : [];
   const ordinary = pools.flatMap(pool => {
     const catalog = stories[pool];
-    // Câu chuyện tuổi trẻ, mưu sinh và chuẩn bị nghỉ hưu xoay vòng theo tuổi.
+     
     const start = age >= 55 ? 6 : age >= 35 ? 3 : 0;
     const indexes = [start, (age - 19) % 6, (age - 17) % 6];
     return [...new Set(indexes)].map(index => {

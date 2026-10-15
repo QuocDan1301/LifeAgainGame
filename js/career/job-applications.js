@@ -11,11 +11,11 @@ import { getRehireLevel, startEmploymentRecord } from "./job-loss.js";
 import { canChooseCareer } from "../education/study-blocks.js";
 import { INTERVIEW, getInterviewChance, hasInterviewPrep, formatPercent, rollInterview } from "../stats/intellect-rules.js";
 
-// Xin việc (Hoạt động → Xin việc). Học xong (22 tuổi) mới nộp được hồ sơ, chỉ vào đúng ngành
-// đã học ở tuổi 18, mỗi năm một lần. Người hoàn thành chuỗi tuổi 16 và học đúng ngành đó vẫn
-// được phỏng vấn tự động ở tuổi 22 (createEmploymentEvent), nhưng cũng có thể tự nộp ở đây.
+ 
+ 
+ 
 export const GRADUATION_AGE = 22;
-// Người mới vào làm được xét nâng bậc sớm nhất ở tuổi 27 và sau ít nhất 2 năm làm việc.
+ 
 const FIRST_PROMOTION_AGE = 27;
 const PROMOTION_WAIT_YEARS = 2;
 
@@ -36,13 +36,13 @@ export function getJobApplicationBlocker(player) {
   if (player.jobAppliedAtAge === player.age && !player.jobInterview) {
     return "📭 Năm nay bạn đã nộp hồ sơ. Sang năm hãy thử lại nhé!";
   }
-  // Sức khỏe quá thấp (hoặc yếu mà đang làm thêm) thì chưa nhận thêm việc.
+   
   const health = getJobHealthRule(player);
   if (!health.allowed && !player.jobInterview) return health.message;
   return "";
 }
 
-// Dòng nhắc trong nhật ký năm học xong, cho người không được phỏng vấn tự động.
+ 
 export function createGraduationNotice(player, age) {
   if (age !== GRADUATION_AGE || !player.careerPath || player.careerPath.id === "casual" || player.employmentStatus === "employed" ||
       hasCareerMilestone(player)) return null;
@@ -82,7 +82,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     const player = state.player;
     const blocker = getJobApplicationBlocker(player);
     const studied = player.careerPath?.id;
-    // Sau khi chọn đổi hướng nghề nghiệp: mở thêm các ngành cùng khối học, bắt đầu ở bậc khởi điểm.
+     
     const country = getStudyAbroadCountry(player.careerPath);
     const switching = !country && Boolean(player.careerSwitchOpen) && Boolean(player.studyBlock);
     body.replaceChildren(backToActivities(),
@@ -116,7 +116,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
       body.append(prep);
     }
     const list = element("div", "shop-groups");
-    // Ngành đã học đứng đầu danh sách.
+     
     const ordered = [...careerPaths].sort(([a], [b]) => (b === studied) - (a === studied));
     for (const [id, icon, field] of ordered) {
       if (country && id !== studied) continue;
@@ -140,7 +140,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     const [, , field] = careerPaths.find(([id]) => id === careerId);
     return { id: careerId, field, school: null, status: `Chuyển sang ${field}`, switchedFrom: player.careerPath?.id };
   };
-  // Câu hỏi được lưu ngay khi nộp hồ sơ: đóng popup hay tải lại trang vẫn quay về đúng câu hỏi.
+   
   function startInterview(careerId) {
     const player = state.player;
     if (getJobApplicationBlocker(player)) return renderList();
@@ -177,7 +177,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     if (!choice || interview.age !== player.age) return;
     const target = targetPath(player, interview.careerId);
     const applicant = { ...player, careerPath: target };
-    // Kết quả tổng thể: chất lượng câu trả lời, trí tuệ (theo nghề) và chuẩn bị; Bóng đá còn xét thể lực.
+     
     const assessment = rollInterview(applicant, choice.quality ?? (choice.correct === true ? "good" : "weak"), Math.random, target.id);
     const result = createInterviewResult(applicant, assessment.passed, player.age, assessment);
     const passed = result.updates.employmentStatus === "employed";
@@ -185,7 +185,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     let rehireNote = "";
     if (passed) {
       updates.nextPromotionAge = Math.max(FIRST_PROMOTION_AGE, player.age + PROMOTION_WAIT_YEARS);
-      // Kinh nghiệm cùng ngành giúp vào thẳng vị trí phù hợp, không phải luôn từ bậc thấp nhất.
+       
       const level = getRehireLevel(player, target.id);
       if (level > 1) {
         updates.careerLevel = level;
@@ -195,7 +195,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
       if (target !== player.careerPath) updates.careerPath = target;
       updates.careerSwitchOpen = null;
     }
-    // Đậu thì nhận việc và nhận lương năm đầu ngay, như khi phỏng vấn trong sự kiện sinh nhật.
+     
     const salary = completeCareerYear(player, player.age, updates);
     startEmploymentRecord(player, player.age);
     delete player.jobInterview;

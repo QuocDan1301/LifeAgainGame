@@ -1,4 +1,4 @@
-// Chỉ trang trí lời kể khi hiển thị, không sửa dữ liệu sự kiện hay bản lưu.
+ 
 const faces = /[\u{1F600}-\u{1F64F}\u{1F910}-\u{1F92F}\u{1F970}-\u{1F97A}☺☹]/gu;
 const sourceRules = [
   [/(?:hoảng hốt|hoảng sợ|sợ hãi|sợ chết khiếp|giật mình|thót tim|đột nhiên.*(?:chó|lao tới|phi ra|đuổi|tiếng hét))/iu, "😨"],
@@ -13,7 +13,7 @@ const sourceRules = [
   [/(?:vui sướng|vui mừng|vui vẻ|rất vui|vui quá|cười vui|cười tươi|mừng rỡ|háo hức|phấn khởi|sung sướng)/iu, "😊"],
   [/(?:ngạc nhiên|sững sờ|sửng sốt|không tin vào mắt|không thể tin|bất ngờ.*(?:thấy|nhận|gặp))/iu, "😲"],
 ];
-// Khớp theo nguyên từ: "ôn" không được khớp vào "không", "ăn" không khớp vào "băng", "uống" không khớp vào "xuống".
+ 
 const wholeWord = (pattern) => new RegExp(String.raw`(?<![\p{L}\p{M}])(?:${pattern.source})(?![\p{L}\p{M}])`, "iu");
 const rules = sourceRules.map(([pattern, icon]) => [wholeWord(pattern), icon]);
 
@@ -24,8 +24,8 @@ export function addEventEmotions(text) {
   let previous = "";
   return text.replace(/[^\n]+/gu, line => line.replace(/.+?(?:[.!?…]+(?=\s|$)|$)/gu, sentence => {
     if (!remaining || /\p{Extended_Pictographic}/u.test(sentence)) return sentence;
-    // Không thêm vào thông báo chỉ số, hướng dẫn, lời nói của người khác,
-    // hoặc câu phủ định cảm xúc ("không còn lo lắng", "chẳng vui vẻ gì").
+     
+     
     if (!/(?:\btôi\b|\bmình\b|\bbạn\b|đột nhiên)/iu.test(sentence) ||
         /(?:^[^.!?]*:|Sức khỏe|Hạnh phúc\s*[+\-:]|Trí tuệ|Ngoại hình|xác suất|nguy cơ|bấm|nhấn|chọn nút)/iu.test(sentence) ||
         /(?:không|chẳng|chưa|đừng|hết)\s+(?:(?:còn|thấy|cảm thấy|hề|thể|muốn|được)\s+){0,3}(?:vui|buồn|lo|sợ|tự hào|tự tin|hạnh phúc|háo hức|bất an|ngạc nhiên|thất vọng|bực|tức|xấu hổ|rung động)/iu.test(sentence)) return sentence;
@@ -85,14 +85,14 @@ const sourceActions = [
   [/(?:đồng ý|chấp nhận|nhận lời|tiếp tục|xác nhận|sẵn sàng)/iu, "🙂"],
 ];
 const actions = sourceActions.map(([pattern, icon]) => [wholeWord(pattern), icon]);
-// Nhãn không gợi ra hành động cụ thể: dùng một nhóm mặt đa dạng thay vì luôn một mặt.
+ 
 const CHOICE_FACES = ["🙂", "😊", "😌", "🤔", "😄", "😃", "😇", "😁", "🧐", "😉"];
 const hasAuthorIcon = (label) => /[\p{Extended_Pictographic}\p{Regional_Indicator}]|[0-9#*]\uFE0F?\u20E3/u.test(label);
 const labelSeed = (label) => [...label].reduce((hash, char) => (hash * 31 + char.codePointAt(0)) >>> 0, 7);
 
-// Mỗi lựa chọn có một icon; giữ nguyên icon do tác giả sự kiện chọn. Các nút trong cùng một
-// sự kiện không trùng icon: icon khớp nghĩa đã dùng thì thử icon khớp nghĩa kế tiếp, hết thì dùng mặt.
-// Icon chỉ phụ thuộc nhãn và thứ tự hiển thị, nên tải lại không đổi.
+ 
+ 
+ 
 export function addChoiceIcons(labels) {
   const used = new Set();
   return labels.map((label) => {

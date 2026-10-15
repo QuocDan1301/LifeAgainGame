@@ -10,10 +10,10 @@ import { playArcadeGame } from "./arcade-games.js";
 import { recordAchievementFlags } from "../achievements/achievements-data.js";
 import { applyActivityGain } from "../core/stat-budget.js";
 
-// Game Center: đổi xu, chơi trò, đổi quà và xem bộ sưu tập (dữ liệu trong player.arcade).
-// Phí và hạnh phúc được tính ngay khi bắt đầu, cùng một lần lưu; lượt đang chơi nằm trong
-// arcade.session. Đóng popup hay tải lại trang giữa chừng thì lượt được tính với kết quả đã lưu
-// lúc đó (không hoàn xu). Thưởng chỉ cộng khi xóa session nên mỗi lượt được tính đúng một lần.
+ 
+ 
+ 
+ 
 import { annualChallenges, progressOf, challengeProgress, recordArcadeResult, claimChallenge, ALBUM_MILESTONES, albumCount, claimAlbumMilestone, recordDescription } from "./game-center-progress.js";
 
 export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry, checkAchievements = () => {} }) {
@@ -41,7 +41,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
     saveTimer = null;
     saveGame(state);
   };
-  // Điểm của trò tính giờ thay đổi liên tục: gom lại lưu mỗi chút một.
+   
   const saveSoon = () => { if (!isSavePaused()) saveTimer ??= setTimeout(save, 800); };
   onSavePaused(() => {
     clearTimeout(saveTimer);
@@ -87,7 +87,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
   });
   const toHub = () => button("shop-back", "← Về Game Center", renderHub);
 
-  // ---------- Màn chính ----------
+   
   function renderHub() {
     const grid = element("div", "gc-games");
     for (const game of arcadeGames) {
@@ -111,7 +111,7 @@ export function initGameCenter(state, { renderMoney, renderStats, renderLogEntry
       grid, renderChallenges(), links);
   }
 
-  // ---------- Đổi xu ----------
+   
 function renderChallenges() {
     const data = arcade(), annual = progressOf(data, state.player.age).annual;
     const section = element("section", "gc-challenges");
@@ -208,7 +208,7 @@ function renderChallenges() {
     if (dialog.open) renderExchange();
   }
 
-  // ---------- Giới thiệu trò: phí, luật, bảng thưởng ----------
+   
   function rewardTable(game) {
     if (game.id === "cow") {
       return tableRows([...cowTypes.map((cow) => [`${cow.crown ? "👑" : ""}${cow.icon} ${cow.name} · bắt được ${formatPercent(cow.catchChance)}`,
@@ -239,7 +239,7 @@ function renderChallenges() {
       element("p", "gc-warning", game.id === "claw"
         ? "💾 Đóng popup hoặc tải lại trang giữa chừng: lượt gắp được giữ nguyên để chơi tiếp, không hoàn xu và không đổi kết quả."
         : "⚠️ Đóng popup hoặc tải lại trang giữa chừng: lượt vẫn được tính với kết quả lúc đó và không hoàn xu."));
-    // Gắp thú: vào xem máy miễn phí, trừ xu khi bấm “Chơi” ở máy.
+     
     const viewOnly = game.id === "claw";
     const start = button("shop-buy game-primary gc-start",
       viewOnly ? "🧸 Xem máy gắp" : !enough ? `Thiếu xu (cần ${game.cost}, đang có ${coins})`
@@ -249,7 +249,7 @@ function renderChallenges() {
     if (!enough) card.append(button("shop-back gc-need-coins", "🪙 Đổi thêm xu", renderExchange));
     show(toHub(), walletBar(), card);
   }
-  // Máy gắp dùng chung giữa các lượt; sang tuổi mới thì bổ sung thú.
+   
   function clawMachine() {
     const data = arcade();
     const stocked = stockClawMachine(data.clawMachine, state.player.age);
@@ -260,8 +260,8 @@ function renderChallenges() {
     return data.clawMachine;
   }
 
-  // ---------- Một lượt chơi ----------
-  // Trừ phí, cộng hạnh phúc (3 lượt đầu năm) và lưu lượt mới trong cùng một lần lưu.
+   
+   
   function beginSession(game, extra = {}) {
     const player = state.player;
     const data = arcade();
@@ -287,8 +287,8 @@ function renderChallenges() {
     const session = beginSession(game);
     if (session) renderPlay(session);
   }
-  // Kéo bò: vào sân miễn phí; mỗi lần thả dây là một lượt (1 xu). Kết quả được bốc ngẫu nhiên và lưu
-  // cùng lúc trừ phí, nên tải lại trang giữa chừng không đổi được kết quả; thưởng cộng khi diễn xong.
+   
+   
   function renderCowField() {
     const game = gameOf("cow");
     if (state.player.isAlive === false || arcade().session) return renderHub();
@@ -311,7 +311,7 @@ function renderChallenges() {
         refreshWallet();
         return session;
       },
-      // now: lưu ngay (vừa trúng dây); còn lại gom lưu vì thanh kéo đổi liên tục.
+       
       progress: (session, value, now = false) => {
         if (!current(session)) return;
         session.score = value;
@@ -356,7 +356,7 @@ function renderChallenges() {
       },
     });
   }
-  // Gắp thú: xem máy miễn phí; “Chơi” trừ 3 xu. Lượt dở (đóng/tải lại) được chơi tiếp đúng chỗ cũ.
+   
   function renderClawMachine() {
     const game = gameOf("claw");
     const data = arcade();
@@ -384,7 +384,7 @@ function renderChallenges() {
         return session;
       },
       persist: (now = false) => (now ? save() : saveSoon()),
-      // Chốt kết quả đúng một lần, ngay khi bắt đầu hạ càng.
+       
       lockIn: (session) => {
         if (!current(session)) return null;
         if (session.phase !== "drop") {
@@ -411,7 +411,7 @@ function renderChallenges() {
     stopGame = null;
   }
 
-  // Cộng thưởng và ghi nhật ký đúng một lần cho mỗi lượt.
+   
   function settle(session, wasInterrupted = false) {
     if (isSavePaused()) return null;
     const data = arcade();
@@ -424,7 +424,7 @@ function renderChallenges() {
     let win = false;
     let earnedTickets = 0;
     if (game.id === "cow") {
-      // Kết quả đã bốc khi thả dây (kể cả khi lượt bị gián đoạn). Bản lưu cũ chưa có thì tính như trượt/thoát.
+       
       const outcome = session.outcome ?? { result: session.phase === "pull" ? "escaped" : "miss" };
       const cow = outcome.result === "caught" ? cowOf(outcome.cow) : null;
       const target = cowOf(session.cow ?? session.target);
@@ -444,8 +444,8 @@ function renderChallenges() {
         detail = `thả dây trượt${target ? ` (nhắm ${target.name})` : ""}`;
       }
     } else if (game.id === "claw") {
-      // Thành công: thú rời máy và vào Bộ sưu tập (chỉ gọi sau khi thú đã rơi vào cửa nhận quà).
-      // Tuột: thú nằm lại trong máy ở chỗ rơi. Bản lưu cũ chưa có kết quả thì tính như gắp trượt.
+       
+       
       const outcome = session.outcome ?? { result: "empty", chance: 0 };
       const machine = data.clawMachine;
       const item = machine?.items.find((entry) => entry.uid === outcome.uid) ?? null;
@@ -507,7 +507,7 @@ function renderChallenges() {
     show(walletBar(), card);
   }
 
-  // ---------- Quầy đổi quà ----------
+   
   function renderPrizes() {
     const data = arcade();
     const card = element("section", "dialog-card");
@@ -541,8 +541,8 @@ function renderChallenges() {
     if (dialog.open) renderPrizes();
   }
 
-  // ---------- Bộ sưu tập (Tài sản, Game Center) và tặng quà (Quan hệ) ----------
-  // Thú bông theo thứ tự danh mục; món lạ (bản lưu từ phiên bản khác) vẫn hiện bằng tên/ảnh đã lưu.
+   
+   
   function ownedItems() {
     const data = arcade();
     const plushIds = [...plushies.map((plush) => plush.id), ...Object.keys(data.plushes).filter((id) => !plushOf(id))];
@@ -566,7 +566,7 @@ function renderChallenges() {
       list.append(row);
     }
   }
-  // Màn Quan hệ: danh sách món có thể tặng người yêu / bạn đời (mỗi năm 1 lần).
+   
   function fillGifts() {
     const list = $("relationship-gifts");
     const note = $("relationship-gifts-note");
@@ -615,7 +615,7 @@ function renderChallenges() {
     const log = pushLog(`💝 Tặng ${item.icon} ${item.name} cho ${partner.name}: Quan hệ +${partner.relationship - before}% (hiện ${partner.relationship}%).`);
     save();
     renderLogEntry(log);
-    // Cập nhật con số quan hệ đang hiện trong popup Quan hệ.
+     
     const currentText = $("relationship-current");
     if (currentText) currentText.textContent = currentText.textContent.replace(/Quan hệ: \d+%/, `Quan hệ: ${partner.relationship}%`);
   }
@@ -629,7 +629,7 @@ function renderChallenges() {
     fillCollection(list);
     show(toHub(), walletBar(), card);
   }
-  // Bản lưu đã có thú hiếm từ trước khi có thành tựu: ghi nhận luôn (main.js kiểm tra thành tựu sau khi khởi tạo).
+   
   {
     const data = arcadeOf(state.player);
     const ownsRare = Object.entries(data.plushes).some(([id, entry]) => entry.count > 0 && (plushOf(id)?.rarity ?? entry.rarity) === "rare");
@@ -639,20 +639,20 @@ function renderChallenges() {
     }
   }
   const renderAssetCollection = () => fillCollection($("life-collection"));
-  // Popup Tài sản / Quan hệ tự mở ở module của chúng; ở đây chỉ vẽ phần Game Center.
+   
   $("assets").addEventListener("click", renderAssetCollection);
   $("relationships").addEventListener("click", fillGifts);
   renderAssetCollection();
 
-  // Lượt còn dở từ lần mở trang trước (tải lại giữa chừng): tính ngay theo kết quả đã lưu.
-  // Riêng gắp thú được giữ nguyên để chơi tiếp.
+   
+   
   const pending = arcadeOf(state.player).session;
   if (pending && pending.game !== "claw") {
     const result = settle(pending, true);
     if (result) interrupted = { session: pending, result };
   }
 
-  // ---------- Mở / đóng popup ----------
+   
   $("activity-game-center").addEventListener("click", () => {
     if (state.player.isAlive === false) return;
     $("activities-dialog").close();
@@ -666,16 +666,16 @@ function renderChallenges() {
       renderHub();
     }
   });
-  // Đóng giữa chừng (nút ✕ hoặc phím Esc): dừng trò và tính lượt theo kết quả hiện có.
-  // Gọi ngay khi bấm, không chờ sự kiện close (trình duyệt có thể hoãn sự kiện này); gọi lại cũng không sao.
+   
+   
   const abandon = () => {
     endGame();
     const session = arcade().session;
-    // Gắp thú: giữ lượt (vị trí càng, thời gian, kết quả đã chốt) để chơi tiếp lần sau.
+     
     if (session?.game === "claw") save();
     else if (session) settle(session, true);
   };
-  // Đóng xong thì hiện thông báo thành tựu đang chờ (hộp thông báo không mở chồng lên popup khác).
+   
   $("close-game-center").addEventListener("click", () => {
     abandon();
     dialog.close();

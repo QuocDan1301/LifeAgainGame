@@ -1,13 +1,13 @@
-// Các bản nhạc nền tự soạn (số MIDI, 60 = Đô giữa). Mỗi ô nhịp có 8 móc đơn:
-// chord: hợp âm nền, bass: một nốt (đánh theo kiểu bass của bản) hoặc 8 ô (null = nghỉ), melody: 8 ô giai điệu.
-// lead/pad/bassVoice: tên nhạc cụ trong music.js. drums: 8 ký tự cho 8 móc đơn
-// (k = trống cái, s = trống con, h = chũm chọe nhỏ, w = mõ gỗ, . = nghỉ). swing: độ trễ của móc lẻ (0–0,3).
-// Khung nhận diện bối cảnh (màn nào phát bản nào) nằm ở THEME_RULES cuối file.
+ 
+ 
+ 
+ 
+ 
 
 const bars = (list) => list.map(([chord, bass, melody]) => ({ chord, bass, melody }));
 
 export const MUSIC_THEMES = {
-  // Bến xe và cuộc đời: hộp nhạc nhẹ nhàng trên vòng C – G – Am – F.
+   
   home: {
     tempo: 76, lead: "bell", pad: "warm", bassVoice: "sine", alternate: true,
     bars: bars([
@@ -21,7 +21,7 @@ export const MUSIC_THEMES = {
       [[55, 62, 65], 43, [74, null, null, null, 71, null, null, null]],
     ]),
   },
-  // Danh sách Trò chơi: jazz phòng chờ, đàn điện ấm, bass đi bộ, chổi quét trống.
+   
   lounge: {
     tempo: 92, swing: 0.22, lead: "epiano", pad: "warm", padLevel: 0.045, bassVoice: "walk", drums: "k.s.h.s.",
     bars: bars([
@@ -35,7 +35,7 @@ export const MUSIC_THEMES = {
       [[54, 57, 60, 62], [50, null, 54, null, 57, null, 48, null], [74, null, null, 72, null, 66, null, null]],
     ]),
   },
-  // Sấp ngửa, xúc xắc, hộp bí ẩn, xì dách: swing sòng bài rộn ràng với đàn vibraphone.
+   
   casino: {
     tempo: 124, swing: 0.18, lead: "vibes", pad: "warm", padLevel: 0.04, bassVoice: "walk", drums: "k.shk.sh",
     bars: bars([
@@ -49,7 +49,7 @@ export const MUSIC_THEMES = {
       [[55, 59, 62, 65], [43, null, 47, null, 50, null, 43, null], [71, null, 67, null, 72, null, null, null]],
     ]),
   },
-  // Leo tháp tài lộc: phiêu lưu cung Rê thứ, đàn hạc và trống đều bước.
+   
   tower: {
     tempo: 100, lead: "harp", pad: "warm", padLevel: 0.05, bassVoice: "sine", drums: "k..sk.s.",
     bars: bars([
@@ -63,7 +63,7 @@ export const MUSIC_THEMES = {
       [[49, 52, 57], 45, [76, null, 73, null, 69, null, null, null]],
     ]),
   },
-  // Đấu giá cổ vật: đàn harpsichord phong cách cổ điển, cung La thứ, trang trọng.
+   
   auction: {
     tempo: 84, lead: "harpsichord", pad: "organ", padLevel: 0.035, bassVoice: "pedal",
     bars: bars([
@@ -77,7 +77,7 @@ export const MUSIC_THEMES = {
       [[57, 60, 64], 45, [72, 71, 69, null, 69, null, null, null]],
     ]),
   },
-  // Tiến lên miền Nam: điệu ngũ cung Việt Nam (Đô – Rê – Fa – Son – La), tiếng đàn tranh luyến láy và mõ gỗ.
+   
   tienlen: {
     tempo: 84, lead: "zither", pad: "drone", padLevel: 0.04, bassVoice: "sine", drums: "w..w.w..",
     bars: bars([
@@ -91,7 +91,7 @@ export const MUSIC_THEMES = {
       [[48, 55], 36, [72, null, null, null, 74, null, 72, null]],
     ]),
   },
-  // Game Center: nhạc 8-bit tươi vui như máy chơi game thùng.
+   
   arcade: {
     tempo: 132, lead: "chip", pad: "none", bassVoice: "octaves", drums: "k.hsk.hs",
     bars: bars([
@@ -105,7 +105,7 @@ export const MUSIC_THEMES = {
       [[55, 59, 62], 43, [79, null, null, null, 74, 76, 79, null]],
     ]),
   },
-  // Kéo bò: nhạc đồng quê miền Tây nước Mỹ, đàn banjo và nhịp "bùm – chách".
+   
   cow: {
     tempo: 116, lead: "banjo", pad: "strum", padLevel: 0.05, bassVoice: "boomchick", drums: "k.s.k.s.",
     bars: bars([
@@ -119,7 +119,7 @@ export const MUSIC_THEMES = {
       [[55, 59, 62], 43, [67, null, 71, null, 67, null, null, null]],
     ]),
   },
-  // Gắp thú: hộp đồ chơi lóc cóc với mộc cầm (marimba).
+   
   claw: {
     tempo: 108, lead: "marimba", pad: "warm", padLevel: 0.035, bassVoice: "pluck", drums: "w.h.w.hh",
     bars: bars([
@@ -133,7 +133,7 @@ export const MUSIC_THEMES = {
       [[53, 57, 60], 41, [77, null, 72, null, 77, null, null, null]],
     ]),
   },
-  // Bóng rổ: funk sân đấu, kèn đồng nhấn nhá và bass giật.
+   
   sport: {
     tempo: 104, lead: "brass", pad: "none", bassVoice: "slap", drums: "k.sk.ks.",
     bars: bars([
@@ -147,7 +147,7 @@ export const MUSIC_THEMES = {
       [[51, 54, 59], [47, null, 59, 47, null, 47, 51, null], [78, null, null, null, 75, null, 78, null]],
     ]),
   },
-  // Đập chuột: 8-bit nhanh, tinh nghịch, nốt nảy cục.
+   
   whack: {
     tempo: 148, lead: "chipThin", pad: "none", bassVoice: "octaves", drums: "khshkhsh",
     bars: bars([
@@ -163,7 +163,7 @@ export const MUSIC_THEMES = {
   },
 };
 
-// Bối cảnh → bản nhạc. Xét từ trên xuống, khớp quy tắc nào trước thì phát bản đó; không khớp thì "home".
+ 
 export const THEME_RULES = [
   ["#game-center-dialog[open] .gc-stage-cow", "cow"],
   ["#game-center-dialog[open] .gc-stage-claw", "claw"],

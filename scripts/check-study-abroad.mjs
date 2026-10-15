@@ -26,7 +26,7 @@ const year = (p, age, updates = {}) => {
 test('Every study block supports admission and the age-16 discovery', () => {
   for (const b of studyBlocks) {
     assert.ok(canChooseCareer(path.id, b.id));
-    // Tuổi 16 mời 3 ngành theo hạt giống đời chơi; qua các đời, ngành du học có lúc được mời ở mọi khối.
+     
     assert.ok(Array.from({ length: 200 }, (_, lifeSeed) => createCareerSparkPickEvent(b.id, { lifeSeed }))
       .some(e => e.choices.some(c => c.careerSparkId === path.id)));
   }

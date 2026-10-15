@@ -1,0 +1,16 @@
+[
+  {
+    "test": "check-earth-auction.html",
+    "result": "PASS: 7 scenes, 26 paths, illustrations, saved progress, rewards, diary, annual salary and both proposal deferrals.",
+    "pageErrors": [],
+    "milliseconds": 1803,
+    "diagnostic": null
+  },
+  {
+    "test": "check-save-life.html",
+    "result": "PASS: random selection among all 3 stories, no-event chance, 4 scenes, warnings, deaths, rewards, saves and scheduled proposals.",
+    "pageErrors": [],
+    "milliseconds": 3569,
+    "diagnostic": null
+  }
+]

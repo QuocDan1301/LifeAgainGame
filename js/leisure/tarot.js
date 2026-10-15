@@ -7,7 +7,7 @@ import { tarotCards, tarotGroups, tarotTopics } from "./tarot-data.js";
 export { tarotCards, tarotGroups, tarotTopics };
 export const TAROT_FEE = 500_000;
 export const TAROT_DRAW = 3;
-// Hiệu ứng Tiền: giảm 10% phí phát triển bản thân lần tiếp theo, tối đa 50.000 VNĐ.
+ 
 export const TAROT_DISCOUNT_RATE = 0.1;
 export const TAROT_DISCOUNT_MAX = 50_000;
 const COLLECTION_KEY = "lifeAgainTarotCollection";
@@ -15,7 +15,7 @@ const statLabels = { health: "Sức khỏe", intelligence: "Trí tuệ", happine
 
 export const getTarotCard = (id) => tarotCards.find((card) => card.id === id);
 
-// Bộ sưu tập lưu xuyên các cuộc đời (không nằm trong bản lưu nhân vật).
+ 
 export function readTarotCollection() {
   try {
     const value = JSON.parse(localStorage.getItem(COLLECTION_KEY) ?? "{}");
@@ -32,7 +32,7 @@ function recordInCollection(cardId) {
   return { isNew, discovered: Object.keys(collection).length };
 }
 
-// Thành tựu Tarot dựa trên bộ sưu tập xuyên các cuộc đời.
+ 
 export function tarotAchievementIds(collection = readTarotCollection()) {
   const known = tarotCards.filter((card) => collection[card.id]);
   const count = (group) => known.filter((card) => card.group === group).length;
@@ -44,8 +44,8 @@ export function tarotAchievementIds(collection = readTarotCollection()) {
   return ids;
 }
 
-// 3 lá khác nhau; chủ đề không ảnh hưởng tới việc rút. Ưu tiên lá chưa khám phá để
-// mỗi lần xem đều có lá mới, nhờ vậy gom đủ 78 lá được trong một đời.
+ 
+ 
 export function drawTarotCards(random = Math.random, collection = readTarotCollection()) {
   const fresh = tarotCards.filter((card) => !collection[card.id]).map((card) => card.id);
   const known = tarotCards.filter((card) => collection[card.id]).map((card) => card.id);
@@ -55,20 +55,20 @@ export function drawTarotCards(random = Math.random, collection = readTarotColle
 
 export const hasReadTarotThisYear = (player) => player.tarotUsedAge === player.age;
 
-// Hiệu ứng chờ (Gậy, Tiền) chỉ có hiệu lực trong năm được rút.
+ 
 export function getActiveTarotBuff(player) {
   const buff = player.tarotBuff;
   return buff && buff.age === player.age ? buff : null;
 }
-// Dành cho "Phát triển bản thân": tính phí sau giảm giá mà chưa tiêu hao hiệu ứng.
+ 
 export function getTarotDiscountedFee(player, fee) {
   if (getActiveTarotBuff(player)?.type !== "pentacles") return { fee, discount: 0 };
   const discount = Math.min(TAROT_DISCOUNT_MAX, Math.floor(fee * TAROT_DISCOUNT_RATE));
   return { fee: fee - discount, discount };
 }
-// Dành cho "Phát triển bản thân": điểm cộng thêm vào chỉ số chính (0 nếu không có hiệu ứng).
+ 
 export const getTarotStatBonus = (player) => (getActiveTarotBuff(player)?.type === "wands" ? 1 : 0);
-// Gọi khi hoạt động thực hiện thành công để dùng hết hiệu ứng.
+ 
 export function consumeTarotBuff(player, type) {
   if (getActiveTarotBuff(player)?.type === type) player.tarotBuff = null;
 }
@@ -80,7 +80,7 @@ export function describeTarotEffect(card) {
   return Object.entries(effect).map(([stat, value]) => `${statLabels[stat]} +${value}`).join(" · ");
 }
 
-// Áp dụng hiệu ứng của lá được chọn; trả về phần chỉ số thực sự tăng.
+ 
 export function applyTarotEffect(player, card) {
   if (card.group === "wands" || card.group === "pentacles") {
     player.tarotBuff = { type: card.group, age: player.age, cardId: card.id };
@@ -126,7 +126,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
     return face;
   }
 
-  // ---------- Màn chính ----------
+   
   function renderHome() {
     const player = state.player;
     const used = hasReadTarotThisYear(player);
@@ -152,7 +152,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
     focusFirst();
   }
 
-  // ---------- Xác nhận ----------
+   
   function renderConfirm(topicId) {
     const topic = topicOf(topicId);
     const player = state.player;
@@ -162,7 +162,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
       if (hasReadTarotThisYear(state.player) || state.player.money < TAROT_FEE) return;
       state.player.money -= TAROT_FEE;
       state.player.tarotUsedAge = state.player.age;
-      // Kết quả được lưu ngay để đóng/mở hay tải lại trang không rút lại.
+       
       state.player.tarotReading = { age: state.player.age, topic: topicId, cards: drawTarotCards(), picked: null };
       save();
       renderMoney();
@@ -177,7 +177,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
     focusFirst();
   }
 
-  // ---------- Chọn một trong ba lá úp ----------
+   
   function renderPick() {
     const reading = state.player.tarotReading;
     const topic = topicOf(reading.topic);
@@ -225,7 +225,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
       }).catch(error => { if (error?.name !== 'AbortError') throw error; });
   }
 
-  // ---------- Kết quả ----------
+   
   function renderResult(animate = false) {
     const reading = state.player.tarotReading;
     if (!reading?.picked) return;
@@ -251,7 +251,7 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
     focusFirst();
   }
 
-  // ---------- Bộ sưu tập ----------
+   
   function renderCollection() {
     const collection = readTarotCollection();
     const nodes = [button("shop-back", "← Quay lại Tarot", renderHome),
@@ -303,6 +303,6 @@ export function initTarot(state, { renderMoney, renderStats, renderLogEntry, che
     focusFirst();
   });
   $("close-tarot").addEventListener("click", () => dialog.close());
-  // Mở thông báo thành tựu sau khi đóng Tarot để không che màn lật bài.
+   
   dialog.addEventListener("close", () => checkAchievements?.());
 }

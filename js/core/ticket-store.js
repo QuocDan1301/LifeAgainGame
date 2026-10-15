@@ -10,7 +10,7 @@ function readProfile() {
   }
   return profile;
 }
-// Nếu đóng trình duyệt giữa hai lần ghi, hoàn tất cùng một lượt tạo, không trừ thêm vé.
+ 
 export async function recoverTicketPurchase() {
   if (!readProfile().pendingGame) return;
   await withSaveLock(() => {
@@ -84,7 +84,7 @@ export async function startLife(nextGame, expectedSave) {
   }
   const tickets = getTickets();
   if (tickets < 1) throw new Error("Bạn hết vé rồi. Hãy nhận vé miễn phí ở quầy nhé!");
-  // Một lần ghi lưu cả vé đã trừ lẫn cuộc đời mới để có thể phục hồi an toàn.
+   
   localStorage.setItem(PROFILE_KEY, JSON.stringify({ tickets: tickets - 1, pendingGame: nextGame }));
   try { await recoverTicketPurchase(); }
   catch (cause) {

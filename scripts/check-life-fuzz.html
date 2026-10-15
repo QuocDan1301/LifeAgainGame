@@ -1,9 +1,9 @@
 <!doctype html><meta charset="utf-8"><title>Life fuzz checks</title>
 <pre id="fuzz-result">Running…</pre>
 <script>
-// Chạy nhiều cuộc đời trọn vẹn qua giao diện thật (bấm tăng tuổi, chọn ngẫu nhiên, xác nhận, đóng popup),
-// thỉnh thoảng tải lại bản lưu giữa chừng, và kiểm tra các bất biến sau mỗi bước.
-// Mỗi đời dùng một hạt giống ngẫu nhiên cố định để tái hiện được: thêm ?seed=<số>&lives=<số> vào URL.
+ 
+ 
+ 
 (async () => {
   const result = document.getElementById('fuzz-result');
   const keys = ['lifeAgainSave', 'lifeAgainAchievements', 'lifeAgainAchievementQueue'];
@@ -33,7 +33,7 @@
     const { readSavedGame } = await import('../js/core/ticket-store.js');
     const { trackSavedGame } = await import('../js/core/save-store.js');
     const { achievements } = await import('../js/achievements/achievements-data.js');
-    // Thành tựu đã mở hết để popup thành tựu không chen vào vòng lặp.
+     
     localStorage.setItem('lifeAgainAchievements', JSON.stringify(Object.fromEntries(achievements.map(item => [item.id, true]))));
     localStorage.setItem('lifeAgainAchievementQueue', '[]');
     document.getElementById('game-screen').hidden = false;
@@ -69,8 +69,8 @@
     const stats = { lives: 0, years: 0, deaths: 0, reloads: 0, events: 0, maxAge: 0, causes: {}, clicks: 0, unsaved: {} };
     const explore = params.get('explore') !== '0';
     const label = button => `${button.closest('dialog')?.id ?? 'page'} › ${(button.textContent || button.id).trim().replace(/\s+/g, ' ').slice(0, 50)}`;
-    // Sau mỗi thao tác người chơi, trạng thái trong bộ nhớ phải đã được lưu: nếu không, tải lại trang sẽ hoàn tác
-    // hoặc cho làm lại một việc đã làm.
+     
+     
     const diffKeys = (a, b, path = '') => {
       if (JSON.stringify(a) === JSON.stringify(b)) return [];
       if (!a || !b || typeof a !== 'object' || typeof b !== 'object' || Array.isArray(a) || path.split('.').length > 2) return [path || '(root)'];
@@ -85,7 +85,7 @@
     };
     const entryPoints = ['activities', 'relationships', 'assets'];
     const topDialog = () => openDialogs().at(-1);
-    // Một lượt khám phá: mở một bảng rồi bấm ngẫu nhiên vài nút bên trong (kể cả hộp xác nhận).
+     
     const wander = () => {
       const entry = $(entryPoints[Math.floor(Math.random() * entryPoints.length)]);
       if (!entry || entry.disabled) return;
@@ -124,7 +124,7 @@
             buttons[Math.floor(Math.random() * buttons.length)].click();
             stats.events++;
           } else {
-            // Bấm xác nhận hai lần liên tiếp: lần thứ hai không được làm gì thêm.
+             
             const before = JSON.stringify(state.player);
             $('event-confirm').click();
             const after = JSON.stringify(state.player);
@@ -142,7 +142,7 @@
           if (dialogs.some(d => d.id === 'death-dialog')) break;
           for (const dialog of dialogs) dialog.close();
         } else {
-          // Thỉnh thoảng mô phỏng tải lại trang: đọc lại bản lưu như lúc khởi động.
+           
           if (Math.random() < 0.05) {
             const saved = readSavedGame();
             const snapshot = JSON.stringify(saved);
@@ -151,7 +151,7 @@
             if (JSON.stringify({ ...saved, player: { ...createInitialState().player, ...saved.player } }) !== JSON.stringify({ ...JSON.parse(snapshot), player: state.player })) fail('reload changed data');
             stats.reloads++;
           }
-          // Người chơi chăm lo sức khỏe: có bệnh và đủ tiền thì đi chữa (để phủ được tuổi già).
+           
           if ((state.player.illnesses ?? []).length && Math.random() < 0.8) {
             $('activities').click(); $('activity-hospital').click();
             const treat = document.querySelector('.hospital-illness .shop-buy:not(:disabled)');
@@ -165,7 +165,7 @@
           if (explore && Math.random() < 0.6) {
             wander();
             for (const dialog of openDialogs()) if (!['event-dialog', 'death-dialog', 'study-block-dialog', 'health-check-dialog'].includes(dialog.id)) dialog.close();
-            // Ván Tiến lên đang dở thì bỏ ván để sang năm.
+             
             const forfeit = document.querySelector('.tl-forfeit');
             if (state.player.tienLen?.game && !state.player.tienLen.game.over && forfeit) { forfeit.click(); $('shop-confirm').click(); }
             for (const dialog of openDialogs()) if (!['event-dialog', 'death-dialog', 'study-block-dialog', 'health-check-dialog'].includes(dialog.id)) dialog.close();

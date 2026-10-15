@@ -2,11 +2,11 @@ import { collectCreatorAudienceYear } from '../achievements/achievement-progress
 import { getStudyAbroadCountry } from "../education/study-abroad.js";
 import { formatMoney } from "../core/money-format.js";
 
-// Fixed yearly income in VNĐ for game balance, ordered by career levels 1–3.
-// Bậc 3 nằm trong khoảng 300–720 triệu: nghề cao nhất chỉ gấp khoảng 2 lần nghề thấp nhất,
-// để chọn ngành theo sở thích và dấu mốc tuổi 16 thay vì chỉ theo lương.
-// Nghề thi đấu (bóng đá, esports) lương cao nhưng sau ATHLETE_PEAK_END tuổi chuyển sang huấn luyện,
-// bình luận với ATHLETE_LATE_RATE lương.
+ 
+ 
+ 
+ 
+ 
 export const careerAnnualSalaries = {
   "study-abroad": [180_000_000, 360_000_000, 540_000_000],
   acting: [96_000_000, 240_000_000, 600_000_000],
@@ -53,7 +53,7 @@ export function getPlayerAnnualSalary(player, age = player.age) {
 
 export const formatSalary = formatMoney;
 
-// Từ tuổi nghỉ hưu, người đang có việc thôi đi làm và nhận lương hưu bằng một phần lương bậc cuối.
+ 
 export const RETIREMENT_AGE = 62;
 export const PENSION_RATE = 0.5;
 

@@ -1,7 +1,7 @@
-// Giai đoạn 70–79 tuổi. Mỗi tuổi: 3 sự kiện chung + phiên bản theo hoàn cảnh (có bạn đời / một mình, có con / không).
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage70To79 = [
-  // ───────────── 70 tuổi ─────────────
+   
   {
     id: 'ls70-giau-benh', age: 70,
     title: 'Kết quả không tốt',
@@ -69,7 +69,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 71 tuổi ─────────────
+   
   {
     id: 'ls71-ban-gia-ra-di', age: 71,
     title: 'Ghế đá công viên',
@@ -137,7 +137,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 72 tuổi ─────────────
+   
   {
     id: 'ls72-giay-bao-tu-vong', age: 72,
     title: 'Lá thư từ người đã khuất',
@@ -205,7 +205,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 73 tuổi ─────────────
+   
   {
     id: 'ls73-ngoi-xe-lan', age: 73,
     title: 'Chiếc xe lăn',
@@ -284,7 +284,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 74 tuổi ─────────────
+   
   {
     id: 'ls74-ban-may-tinh', age: 74,
     title: 'Câu lạc bộ thơ',
@@ -352,7 +352,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 75 tuổi ─────────────
+   
   {
     id: 'ls75-cay-gay', age: 75,
     title: 'Cây gậy trong góc nhà',
@@ -442,7 +442,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 76 tuổi ─────────────
+   
   {
     id: 'ls76-quen-duong-ve', age: 76,
     title: 'Con đường quen',
@@ -510,7 +510,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 77 tuổi ─────────────
+   
   {
     id: 'ls77-te-gay-xuong', age: 77,
     title: 'Ca mổ ở tuổi bảy mươi bảy',
@@ -578,7 +578,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 78 tuổi ─────────────
+   
   {
     id: 'ls78-ngu-nhieu', age: 78,
     title: 'Ngủ nhiều hơn',
@@ -646,7 +646,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── 79 tuổi ─────────────
+   
   {
     id: 'ls79-bep-ga-cu', age: 79,
     title: 'Cái bếp ga ba mươi năm',
@@ -725,7 +725,7 @@ export const stage70To79 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-tu-cuoc-goi-cuoi', ages: [70, 88], requiresAny: ['tu_noi_lai', 'tu_ket_ban_im', 'dua_tu_di_kham', 'cho_tu_vay'],
     title: 'Cuộc gọi của Tú',

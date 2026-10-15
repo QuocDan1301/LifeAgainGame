@@ -1,8 +1,8 @@
-// Sự kiện chung bổ sung cho tuổi 1–14: mỗi tuổi thêm 2 sự kiện ai cũng gặp được (không cần ba mẹ,
-// bạn đời hay con), để tuổi thơ không lặp lại y hệt giữa các lần chơi.
-// Quy tắc viết và danh sách tuyến: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
+ 
 export const stage01To14Extra = [
-  // ───────────── 1 tuổi ─────────────
+   
   {
     id: 'ls01-buoc-dau', age: 1,
     title: 'Những bước đầu tiên',
@@ -26,7 +26,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 2 tuổi ─────────────
+   
   {
     id: 'ls02-doi-dep', age: 2,
     title: 'Đôi dép tự xỏ',
@@ -50,7 +50,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 3 tuổi ─────────────
+   
   {
     id: 'ls03-ly-vo', age: 3,
     title: 'Cái ly vỡ',
@@ -74,7 +74,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 4 tuổi ─────────────
+   
   {
     id: 'ls04-lop-mau-giao', age: 4,
     title: 'Buổi sáng ở lớp mẫu giáo',
@@ -98,7 +98,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 5 tuổi ─────────────
+   
   {
     id: 'ls05-bat-com', age: 5,
     title: 'Nửa bát cơm',
@@ -122,7 +122,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 6 tuổi ─────────────
+   
   {
     id: 'ls06-bang-den', age: 6,
     title: 'Chữ đầu tiên trên bảng',
@@ -146,7 +146,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 7 tuổi ─────────────
+   
   {
     id: 'ls07-cham-nham', age: 7,
     title: 'Bài kiểm tra chấm nhầm',
@@ -170,7 +170,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 8 tuổi ─────────────
+   
   {
     id: 'ls08-tien-thoi', age: 8,
     title: 'Tiền thối dư',
@@ -194,7 +194,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 9 tuổi ─────────────
+   
   {
     id: 'ls09-tuot-xich', age: 9,
     title: 'Tuột xích giữa đường',
@@ -218,7 +218,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 10 tuổi ─────────────
+   
   {
     id: 'ls10-truc-nhat', age: 10,
     title: 'Phiên trực nhật',
@@ -242,7 +242,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 11 tuổi ─────────────
+   
   {
     id: 'ls11-doi-bong', age: 11,
     title: 'Đội bóng của lớp',
@@ -266,7 +266,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 12 tuổi ─────────────
+   
   {
     id: 'ls12-don-ca', age: 12,
     title: 'Tiết mục đơn ca',
@@ -290,7 +290,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 13 tuổi ─────────────
+   
   {
     id: 'ls13-dien-thoai-cu', age: 13,
     title: 'Chiếc điện thoại cũ ở chợ',
@@ -314,7 +314,7 @@ export const stage01To14Extra = [
     ],
   },
 
-  // ───────────── 14 tuổi ─────────────
+   
   {
     id: 'ls14-bong-ro', age: 14,
     title: 'Đội bóng rổ hay giờ ôn thi',

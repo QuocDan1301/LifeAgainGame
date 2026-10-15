@@ -1,20 +1,20 @@
 import { applyActivityGain } from "../core/stat-budget.js";
 
-// Thám tử tư: bối cảnh vụ việc, cách sinh hồ sơ và tính thưởng (không đụng giao diện).
-// Mỗi hồ sơ có một nguồn điều tra cho mốc thời gian và một nguồn cho mỗi đặc điểm; mỗi nguồn cho một manh mối
-// về người cần tìm. Giờ điều tra chỉ đủ mở vài nguồn, nên phải nhìn thẻ người liên quan để chọn nguồn giúp loại
-// được nhiều người nhất. Bộ sinh chỉ giữ hồ sơ mà chọn khéo thì vừa đủ giờ để chứng minh, chọn bừa thì không.
-// Khi chỉ ra người cần tìm, phải nêu manh mối loại trừ từng người còn lại; thiếu căn cứ thì giảm thù lao.
-// Các con số là thông số gameplay.
+ 
+ 
+ 
+ 
+ 
+ 
 export const DETECTIVE_MIN_AGE = 18;
 export const BOARD_SIZE = 3;
-// Điều tra quá số giờ được giao: mỗi giờ thêm giảm 20% thù lao, tối đa 2 giờ.
+ 
 export const EXTRA_HOUR_RATE = 0.2;
 export const MAX_EXTRA_HOURS = 2;
-// Mỗi người chưa được loại bằng căn cứ đúng: giảm 25% thù lao, còn tối thiểu 25%.
+ 
 export const UNPROVEN_RATE = 0.25;
 export const MIN_REWARD_RATE = 0.25;
-// Trí tuệ từ mức "Nhạy bén" (80) được thêm 1 giờ điều tra mỗi vụ; không tiết lộ đáp án.
+ 
 export const SHARP_INTELLECT = 80;
 export const WRONG_HAPPINESS = 3;
 export const WRONG_REPUTATION = 2;
@@ -22,9 +22,9 @@ export const WRONG_REPUTATION = 2;
 export const detectiveTiers = [
   { id: 0, icon: "📁", name: "Vụ nhỏ", minReputation: 0, suspects: 4, attrs: ["shoes", "vehicle", "bag"],
     values: 3, hours: 2, minNegative: 0, maxNegative: 0, reward: 2_000_000, reputation: 1 },
-  { id: 1, icon: "🗂️", name: "Vụ vừa", minReputation: 4, suspects: 5, attrs: ["shoes", "vehicle", "bag", "outfit"],
+  { id: 1, icon: "🗂️", name: "Vụ vừa", minReputation: 4, suspects: 5, attrs: ["vehicle", "bag", "outfit", "route"],
     values: 3, hours: 3, minNegative: 0, maxNegative: 2, reward: 5_000_000, reputation: 2 },
-  { id: 2, icon: "🗄️", name: "Vụ khó", minReputation: 10, suspects: 6, attrs: ["shoes", "vehicle", "bag", "outfit"],
+  { id: 2, icon: "🗄️", name: "Vụ khó", minReputation: 10, suspects: 6, attrs: ["bag", "outfit", "route", "trace"],
     values: 4, hours: 3, minNegative: 1, maxNegative: 2, reward: 12_000_000, reputation: 3 },
 ];
 export const detectiveRanks = [
@@ -33,8 +33,16 @@ export const detectiveRanks = [
   { min: 10, name: "Thám tử lành nghề" },
 ];
 
-// Nguồn điều tra: tells là điều nguồn đó cho biết, để người chơi cân nhắc trước khi dùng giờ.
+ 
+export const detectiveAttributeLabels = {
+  shoes: "giày dép", vehicle: "phương tiện", bag: "túi mang theo", outfit: "trang phục",
+  route: "lối đi", trace: "dấu bám trên tay áo",
+};
 export const detectiveSources = {
+  either: { icon: "🧩", chip: "🧩", label: "Đối chiếu hai nguồn", tells: "Hai dấu hiệu liên hệ theo điều kiện ít nhất một đúng" },
+  xor: { icon: "🔬", chip: "🔬", label: "Kiểm chứng chéo dấu vết", tells: "Hai dấu hiệu liên hệ theo điều kiện chỉ một đúng" },
+  route: { icon: "🚪", chip: "🚪", label: "Đối chiếu lối đi", tells: "Lối đi của người cần tìm" },
+  trace: { icon: "🧪", chip: "🧪", label: "Kiểm tra dấu bám", tells: "Dấu bám được ghi nhận trên tay áo người cần tìm" },
   time: { icon: "🕒", chip: "🕒", label: "Dựng mốc thời gian", tells: "Việc xảy ra trong khoảng nào" },
   shoes: { icon: "🔦", chip: "👟", label: "Khám hiện trường", tells: "Dấu giày dép của người cần tìm" },
   vehicle: { icon: "🅿️", chip: "🛵", label: "Hỏi người trông xe", tells: "Người cần tìm đi phương tiện gì" },
@@ -42,8 +50,18 @@ export const detectiveSources = {
   outfit: { icon: "📹", chip: "👕", label: "Xem camera ngoài cửa", tells: "Trang phục của người cần tìm" },
 };
 
-// fact: dòng trên thẻ người liên quan · is/not: manh mối khẳng định/phủ định về người cần tìm.
+ 
 export const detectiveAttributes = {
+  route: { icon: "🚪", values: ["lối chính", "lối bên", "lối giao nhận", "lối nối khu phụ"].map((name) => ({
+    name, fact: `Đi qua ${name}`,
+    is: (scene) => `Sổ theo dõi lối đi xác nhận ${scene.taker} đã đi qua ${name}.`,
+    not: (scene) => `Bản đối chiếu lối đi xác nhận ${scene.taker} không đi qua ${name}.`,
+  })) },
+  trace: { icon: "🧪", values: ["bụi phấn", "đất ẩm", "mực xanh", "bột giấy"].map((name) => ({
+    name, fact: `Tay áo có ${name}`,
+    is: (scene) => `Ảnh kiểm tra sau vụ việc xác nhận tay áo của ${scene.taker} có ${name}.`,
+    not: (scene) => `Ảnh kiểm tra sau vụ việc xác nhận tay áo của ${scene.taker} không có ${name}.`,
+  })) },
   shoes: { icon: "👟", values: ["giày thể thao", "dép tổ ong", "giày da", "dép quai hậu"].map((name) => ({
     name, fact: `Đi ${name}`,
     is: (scene) => `Ngay chỗ để ${scene.item} còn in rõ một dấu đế ${name}.`,
@@ -55,7 +73,7 @@ export const detectiveAttributes = {
     { name: "đi bộ", fact: "Đi bộ", go: "đi bộ ra về", notGo: "không đi bộ ra về" },
     { name: "xe ôm công nghệ", fact: "Đi xe ôm công nghệ", go: "lên một chiếc xe ôm công nghệ", notGo: "không gọi xe ôm công nghệ" },
   ].map((value) => ({ ...value,
-    is: (scene) => `Người trông xe thấy ${scene.taker} ${value.go} ngay sau đó.`,
+    is: (scene) => `Người trông xe thấy ${scene.taker} ${value.go} khi rời địa điểm.`,
     not: (scene) => `Người trông xe nhớ chắc ${scene.taker} ${value.notGo}.`,
   })) },
   bag: { icon: "🎒", values: ["ba lô", "túi đeo chéo", "túi vải", "cặp tài liệu"].map((name) => ({
@@ -73,7 +91,7 @@ export const detectiveAttributes = {
 export const detectiveNames = ["Minh", "Lan", "Hùng", "Thảo", "Quân", "Hà", "Phúc", "Ngọc", "Long", "Trang",
   "Khoa", "Vy", "Đạt", "Yến", "Sơn", "My", "Tâm", "Bảo", "Nhi", "Khánh"];
 
-// intro kết thúc bằng điều người chơi phải làm. time(a, b): manh mối về khoảng thời gian xảy ra việc.
+ 
 export const detectiveScenes = [
   { id: "cafe-wallet", icon: "☕", title: "Chiếc ví trên bàn số 4", client: "Chủ quán cà phê đầu hẻm", item: "chiếc ví", taker: "người cầm chiếc ví",
     intro: (count) => `Một khách quen để quên chiếc ví trên bàn số 4 của quán cà phê đầu hẻm. Trong ví có giấy tờ tùy thân và khoản tiền đặt cọc thuê nhà, nên khách chỉ mong lấy lại mà không muốn làm lớn chuyện. Chủ quán gửi bạn danh sách ${count} người đã ngồi gần bàn ấy trong buổi chiều. Bạn cần chỉ ra ai đã cầm chiếc ví.`,
@@ -115,6 +133,26 @@ export const detectiveScenes = [
     time: (a, b) => `Chủ vườn tưới cây lúc ${a}, chậu vẫn còn; đến ${b} thì trên kệ chỉ còn vết đất.`,
     outcome: "Chậu bonsai về lại kệ, kịp chuẩn bị cho hội chợ sinh vật cảnh.",
     roles: ["Thợ cắt tỉa", "Khách xem cây", "Người chở phân bón", "Hàng xóm", "Người học chăm cây", "Thương lái cây cảnh"] },
+  { id: "gallery-catalog", icon: "🖼️", title: "Bản danh mục sau giờ triển lãm", client: "Điều phối viên phòng tranh", item: "bản danh mục có chữ ký", taker: "người mang bản danh mục đi",
+    intro: count => `Sau buổi triển lãm, bản danh mục có chữ ký xác nhận của các tác giả biến mất khỏi bàn bàn giao. Một số tài liệu được chuyển sang khu đóng gói, nhưng bản gốc này chưa được phép mang đi. Có ${count} người ra vào khu bàn giao chiều hôm đó. Bạn cần xác định ai đã mang bản danh mục đi, không suy đoán động cơ từ nghề nghiệp của họ.`,
+    time: (a, b) => `Ảnh bàn giao chụp lúc ${a} còn bản danh mục; lần kiểm lại lúc ${b} thì không thấy nữa.`,
+    outcome: "Bản danh mục được tìm lại, các tác phẩm được bàn giao đúng hạn.",
+    roles: ["Điều phối viên", "Họa sĩ", "Người đóng gói tranh", "Khách sưu tầm", "Người giao khung", "Trợ lý phòng tranh"] },
+  { id: "bakery-recipe", icon: "🥖", title: "Cuốn sổ sau ca làm bánh", client: "Chủ tiệm bánh gia đình", item: "cuốn sổ công thức", taker: "người mang cuốn sổ đi",
+    intro: count => `Cuối ca, chủ tiệm không tìm thấy cuốn sổ công thức có ghi chú tay của người cha đã nghỉ làm. Mọi người đều nhớ đã thấy sổ, nhưng mỗi người kể một đoạn khác nhau. Danh sách đã xác minh có ${count} người đến khu bàn làm việc. Bạn cần tìm đúng người đã mang cuốn sổ đi, thay vì mặc định người biết làm bánh là người đáng nghi nhất.`,
+    time: (a, b) => `Ảnh chụp bàn làm việc lúc ${a} có cuốn sổ; đến ${b}, chủ tiệm phát hiện bàn đã trống.`,
+    outcome: "Cuốn sổ được trả về tiệm, những ghi chép tay vẫn nguyên vẹn.",
+    roles: ["Thợ bánh chính", "Người học việc", "Nhân viên đóng hộp", "Người giao nguyên liệu", "Khách đặt bánh", "Người sửa lò"] },
+  { id: "station-luggage", icon: "🧳", title: "Hai chiếc túi ở phòng chờ", client: "Nhân viên hỗ trợ hành khách", item: "chiếc túi hành lý", taker: "người cầm nhầm chiếc túi",
+    intro: count => `Một hành khách phát hiện chiếc túi trên ghế không phải của mình. Hai chiếc túi có ngoại hình gần giống nhau, và thông tin ban đầu cho thấy có người đã cầm nhầm. Có ${count} người từng ngồi hoặc làm việc gần dãy ghế ấy. Bạn cần tìm người đang cầm chiếc túi để đổi lại; hồ sơ không yêu cầu quy kết đây là hành vi cố ý.`,
+    time: (a, b) => `Ảnh phòng chờ lúc ${a} còn chiếc túi đúng trên ghế; lúc ${b}, hành khách nhận ra túi đã bị đổi.`,
+    outcome: "Hai chiếc túi được đổi lại đúng chủ trước giờ khởi hành.",
+    roles: ["Hành khách chờ xe", "Người tiễn người thân", "Nhân viên vệ sinh", "Người bán nước", "Nhân viên vận chuyển", "Hướng dẫn viên"] },
+  { id: "school-projector", icon: "📽️", title: "Máy chiếu rời phòng sinh hoạt", client: "Người phụ trách câu lạc bộ", item: "chiếc máy chiếu", taker: "người mang máy chiếu ra khỏi phòng",
+    intro: count => `Máy chiếu ở phòng sinh hoạt được chuyển đi, nhưng phiếu mượn chưa được cập nhật. Buổi sinh hoạt sáng mai cần thiết bị, nên người phụ trách muốn tìm đúng người đã mang máy ra để liên hệ nhận lại. Có ${count} người sử dụng hoặc đi qua phòng chiều đó. Bạn cần dựng lại việc di chuyển thiết bị từ những dữ kiện đã xác minh.`,
+    time: (a, b) => `Người phụ trách kiểm tra phòng lúc ${a}, máy chiếu vẫn còn; lúc ${b}, vị trí để máy đã trống.`,
+    outcome: "Máy chiếu được đưa về phòng, buổi sinh hoạt không phải đổi lịch.",
+    roles: ["Thành viên câu lạc bộ", "Nhân viên thiết bị", "Người phụ trách âm thanh", "Tình nguyện viên", "Nhân viên bảo trì", "Người hỗ trợ sự kiện"] },
 ];
 
 export const getDetectiveScene = (id) => detectiveScenes.find((scene) => scene.id === id);
@@ -136,51 +174,70 @@ function combinations(list, size, start = 0, head = [], out = []) {
   return out;
 }
 
-// Có mặt vào bất kỳ lúc nào trong khoảng xảy ra việc thì chưa loại được.
+ 
 export function matchesClue(suspect, clue, window) {
+  if (!clue) return false;
   if (clue.type === "time") return suspect.arrive < window[1] && suspect.leave > window[0];
+  if (clue.type === "either" || clue.type === "xor") {
+    const count = clue.terms.filter(term => suspect.attrs[term.attr] === term.value).length;
+    return clue.type === "either" ? count >= 1 : count === 1;
+  }
   const same = suspect.attrs[clue.attr] === clue.value;
-  return clue.type === "is" ? same : !same;
+  return clue.type === "is" ? same : clue.type === "not" ? !same : false;
 }
-// clueIndexes: các nguồn đã dùng (mặc định toàn bộ).
+ 
 export const candidatesOf = (file, clueIndexes = file.clues.map((_, index) => index)) =>
   file.suspects.map((_, index) => index).filter((index) =>
     clueIndexes.every((clue) => matchesClue(file.suspects[index], file.clues[clue], file.window)));
-export const sourceOf = (clue) => detectiveSources[clue.type === "time" ? "time" : clue.attr];
+export const sourceOf = (clue) => {
+  const source = detectiveSources[["time", "either", "xor"].includes(clue.type) ? clue.type : clue.attr];
+  return clue.terms ? { ...source, tells: `Mối liên hệ giữa ${clue.terms.map(term => detectiveAttributeLabels[term.attr]).join(" và ")} · ${clue.type === "xor" ? "chỉ một điều đúng" : "ít nhất một điều đúng"}` } : source;
+};
 
 export function describeClue(file, clue) {
   const scene = getDetectiveScene(file.scene);
   if (clue.type === "time") return scene.time(formatClock(file.window[0]), formatClock(file.window[1]));
+  if (clue.type === "either" || clue.type === "xor") {
+    const facts = clue.terms.map(term => detectiveAttributes[term.attr].values[term.value].fact.toLocaleLowerCase("vi-VN"));
+    return clue.type === "either"
+      ? `Biên bản đối chiếu xác nhận ${scene.taker} có ít nhất một trong hai dấu hiệu: “${facts[0]}” hoặc “${facts[1]}”. Có thể có cả hai; không thể thiếu cả hai.`
+      : `Biên bản kiểm chứng xác nhận ${scene.taker} có đúng một trong hai dấu hiệu: “${facts[0]}” và “${facts[1]}”. Không thể có cả hai, cũng không thể thiếu cả hai.`;
+  }
   return detectiveAttributes[clue.attr].values[clue.value][clue.type](scene);
 }
 export const describeFact = (suspect, attr) => detectiveAttributes[attr].values[suspect.attrs[attr]].fact;
-// Lý do một manh mối loại được người này (dùng trong lời giải).
+ 
 export function describeMismatch(file, index, clueIndex) {
   const suspect = file.suspects[index];
   const clue = file.clues[clueIndex];
+  if (clue.type === "either" || clue.type === "xor") {
+    const facts = clue.terms.map(term => describeFact(suspect, term.attr).toLocaleLowerCase("vi-VN")).join("; ");
+    const count = clue.terms.filter(term => suspect.attrs[term.attr] === term.value).length;
+    return `${facts}: ${count === 0 ? "không khớp dấu hiệu nào" : "khớp cả hai dấu hiệu"}, trái với điều kiện ${clue.type === "either" ? "ít nhất một đúng" : "chỉ một đúng"}`;
+  }
   return clue.type === "time"
     ? `có mặt ${formatClock(suspect.arrive)}–${formatClock(suspect.leave)}, không trùng lúc xảy ra việc`
     : describeFact(suspect, clue.attr).toLocaleLowerCase("vi-VN");
 }
-// Manh mối loại được người này, ưu tiên những manh mối đã điều tra; -1 nếu khớp tất cả.
+ 
 export function clearingClue(file, index, preferred = file.revealed ?? []) {
   const order = [...preferred, ...file.clues.map((_, clue) => clue).filter((clue) => !preferred.includes(clue))];
   return order.find((clue) => !matchesClue(file.suspects[index], file.clues[clue], file.window)) ?? -1;
 }
 
-// avoidScenes: bối cảnh đã có trên bảng năm nay, để ba hồ sơ không trùng nhau.
+ 
 export function createDetectiveCase(tierId, random = Math.random, avoidScenes = []) {
   const tier = detectiveTiers[tierId];
-  for (let attempt = 0; attempt < 3000; attempt++) {
+  for (let attempt = 0; attempt < 12000; attempt++) {
     const scene = pick(detectiveScenes.filter((option) => !avoidScenes.includes(option.id)), random);
-    // Việc xảy ra trong 20–40 phút, bắt đầu từ 14:00 đến 16:00.
+     
     const start = 14 * 60 + STEP * Math.floor(random() * 13);
     const window = [start, start + STEP * (2 + Math.floor(random() * 3))];
     const values = Object.fromEntries(tier.attrs.map((attr) =>
       [attr, sample(detectiveAttributes[attr].values.map((_, index) => index), tier.values, random)]));
     const names = sample(detectiveNames, tier.suspects, random);
     const roles = sample(scene.roles, tier.suspects, random);
-    // Mỗi người đến trong 13:00–16:30 và ở lại 30–120 phút.
+     
     const suspects = names.map((name, index) => {
       const arrive = DAY_START + STEP * Math.floor(random() * 22);
       return { name, role: roles[index], arrive, leave: Math.min(DAY_END, arrive + STEP * (3 + Math.floor(random() * 10))),
@@ -191,6 +248,14 @@ export function createDetectiveCase(tierId, random = Math.random, avoidScenes = 
     if (!matchesClue(suspects[culprit], timeClue, window) || suspects.every((suspect) => matchesClue(suspect, timeClue, window))) continue;
     const clues = [timeClue, ...tier.attrs.map((attr) => {
       const own = suspects[culprit].attrs[attr];
+      if (attr === "route" || attr === "trace") {
+        const otherAttr = pick(tier.attrs.filter(other => other !== attr && !["route", "trace"].includes(other)), random);
+        const pattern = pick(attr === "trace" ? [1, 2] : [1, 2, 3], random);
+        const firstValue = pattern & 1 ? own : pick(values[attr].filter(value => value !== own), random);
+        const otherOwn = suspects[culprit].attrs[otherAttr];
+        const otherValue = pattern & 2 ? otherOwn : pick(values[otherAttr].filter(value => value !== otherOwn), random);
+        return { type: attr === "trace" ? "xor" : "either", terms: [{ attr, value: firstValue }, { attr: otherAttr, value: otherValue }] };
+      }
       const options = [{ type: "is", attr, value: own }];
       if (tier.maxNegative) {
         for (const value of values[attr]) {
@@ -205,28 +270,32 @@ export function createDetectiveCase(tierId, random = Math.random, avoidScenes = 
     const all = clues.map((_, index) => index);
     const solving = (size) => combinations(all, size).filter((set) => candidatesOf(file, set).length === 1).length;
     if (candidatesOf(file).length !== 1 || candidatesOf(file)[0] !== culprit) continue;
-    // Chọn khéo thì vừa đủ số giờ được giao; ít giờ hơn thì chưa thể chứng minh; chọn bừa có thể thiếu.
+     
     let tooEasy = false;
     for (let size = 1; size < tier.hours && !tooEasy; size++) tooEasy = solving(size) > 0;
     const fitting = solving(tier.hours);
     if (tooEasy || fitting === 0 || fitting === combinations(all, tier.hours).length) continue;
+     
+    const compound = all.filter(index => ["either", "xor"].includes(clues[index].type));
+    if (compound.length && candidatesOf(file, all.filter(index => !compound.includes(index))).length === 1) continue;
+    if (compound.some(index => suspects.every(suspect => matchesClue(suspect, clues[index], window)))) continue;
     return { tier: tier.id, scene: scene.id, window, suspects, culprit, clues };
   }
   throw new Error("Không tạo được hồ sơ thám tử.");
 }
 
-// ---------- Tiến trình của nhân vật (player.detective) ----------
+ 
 export function detectiveOf(player) {
   if (!player.detective || typeof player.detective !== "object") {
     player.detective = { reputation: 0, solved: 0, failed: 0, streak: 0, board: null, current: null };
   }
   const detective = player.detective;
-  // Hồ sơ theo cách chơi cũ (manh mối hiện sẵn) không còn mở được.
+   
   if (detective.current && !Array.isArray(detective.current.revealed)) detective.current = null;
   return detective;
 }
 
-// Bảng hồ sơ mỗi năm: độ khó tăng dần theo danh tiếng đã mở.
+ 
 export function boardTiers(reputation) {
   const top = detectiveTiers.filter((tier) => reputation >= tier.minReputation).at(-1).id;
   return Array.from({ length: BOARD_SIZE }, (_, index) => Math.min(index, top));
@@ -241,10 +310,10 @@ export function ensureBoard(player, random = Math.random) {
   detective.board = { age: player.age, offers };
   return true;
 }
-// Hiếm khi một mức không ghép được hồ sơ hợp lệ: lùi xuống mức dễ hơn thay vì làm hỏng bảng.
+ 
 function createWithFallback(tierId, random, avoidScenes) {
   for (let tier = tierId; tier > 0; tier--) {
-    try { return createDetectiveCase(tier, random, avoidScenes); } catch { /* thử mức thấp hơn */ }
+    try { return createDetectiveCase(tier, random, avoidScenes); } catch {   }
   }
   return createDetectiveCase(0, random, avoidScenes);
 }
@@ -282,7 +351,7 @@ export function investigate(player, clueIndex) {
 export const baseRewardOf = (file) =>
   Math.round(detectiveTiers[file.tier].reward * (1 - EXTRA_HOUR_RATE * file.extraHours) / 10_000) * 10_000;
 
-// reasons: { chỉ số người khác: chỉ số manh mối đã điều tra dùng để loại người đó }.
+ 
 export function accuse(player, accused, reasons = {}) {
   const detective = player.detective;
   const file = detective?.current;
@@ -291,7 +360,7 @@ export function accuse(player, accused, reasons = {}) {
   const proofs = file.suspects.map((suspect, index) => {
     if (index === accused) return null;
     const clue = reasons[index];
-    return Number.isInteger(clue) && file.revealed.includes(clue) && !matchesClue(suspect, file.clues[clue], file.window);
+    return Number.isInteger(clue) && Boolean(file.clues[clue]) && file.revealed.includes(clue) && !matchesClue(suspect, file.clues[clue], file.window);
   });
   const unproven = proofs.filter((proof) => proof === false).length;
   const result = { accused, reasons: { ...reasons }, proofs, correct: accused === file.culprit, unproven,

@@ -19,8 +19,11 @@ try {
     assert.equal((await fetch(base + route, { method: 'POST' })).status, 405, route);
   }
   assert.equal((await fetch(base + '/css/style.css', { method: 'HEAD' })).status, 200);
+  for (const route of ['/', '/js/boot.js', '/js/core/offline.js', '/css/style.css', '/manifest.json']) {
+    assert.equal((await fetch(base + route)).headers.get('cache-control'), 'no-cache', route + ' must revalidate after deployment');
+  }
   assert.equal((await fetch(base + '/css/%ZZ')).status, 400);
-  // Trang giới thiệu và API chuyển thiết bị.
+   
   const intro = await fetch(base + '/gioi-thieu');
   assert.equal(intro.status, 200);
   assert.match(await intro.text(), /id="cai-dat"/);
@@ -39,7 +42,7 @@ try {
   assert.equal((await post('/api/transfer', { app: 'life-again', v: 1, data: { evil: 'x' } })).status, 400, 'khóa lạ bị từ chối');
   assert.equal((await post('/api/transfer', { app: 'other', v: 1, data: pack.data })).status, 400);
   assert.equal((await fetch(base + '/api/transfer')).status, 405);
-  // Bản cũ trên GitHub Pages được gọi sang tạo mã chuyển nhà; trang lạ thì không.
+   
   const preflight = await fetch(base + '/api/transfer', { method: 'OPTIONS', headers: { Origin: 'https://quocdan1301.github.io', 'Access-Control-Request-Method': 'POST' } });
   assert.equal(preflight.status, 204);
   assert.equal(preflight.headers.get('access-control-allow-origin'), 'https://quocdan1301.github.io');
@@ -50,7 +53,7 @@ try {
 } finally {
   await new Promise(resolve => server.close(resolve));
 }
-// Bản deploy: phải là code đã nén, có dòng bản quyền, không còn chú thích của code gốc.
+ 
 const dist = new URL('../dist/', import.meta.url);
 if (fs.existsSync(new URL('index.html', dist))) {
   const distServer = createGameServer({ root: fs.realpathSync(dist) });

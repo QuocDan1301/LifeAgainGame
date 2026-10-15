@@ -38,7 +38,7 @@ export function renderAvatar(player) {
 
   const src = getAvatarSource(player);
 
-  // Chỉ thay ảnh khi bước sang giai đoạn mới.
+   
   if (image.src !== src) {
     image.src = src;
   }

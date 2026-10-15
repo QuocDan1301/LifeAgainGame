@@ -10,6 +10,7 @@ import {
   createStudyAbroadDramaStep,
 } from "./education/study-abroad.js";
 import { createDatingDramaStep } from "./relationships/dating-drama.js";
+import { createMaritalAffairEvent } from "./relationships/marital-affair.js";
 import {
   createConcurrentDatingEvent,
   postponeDatingMarriage,
@@ -182,11 +183,11 @@ const statNames = {
   happiness: "Hạnh phúc",
   appearance: "Ngoại hình",
 };
-// boot.js chỉ nạp file này sau khi chọn Chơi tiếp hoặc tạo nhân vật.
-// Lấy phần tử HTML
+ 
+ 
 const nameElement = document.getElementById("player-name");
 const ageElement = document.getElementById("player-age");
-// Đưa dữ liệu nhân vật lên giao diện
+ 
 nameElement.textContent = state.player.name;
 renderAvatar(state.player);
 ageElement.textContent = state.player.age;
@@ -194,14 +195,14 @@ document.getElementById("player-province").textContent =
   state.player.province || "";
 const ageButton = document.getElementById("age-up");
 const logElement = document.getElementById("life-log");
-// Dòng nhật ký đang hiển thị của từng log, để cập nhật tại chỗ khi log đổi nội dung.
+ 
 const logLines = new WeakMap();
 logElement.replaceChildren();
 state.logs = mergeLotteryPurchaseLogs(state.logs);
 state.logs.forEach((log) => {
   renderLogEntry(log);
 });
-// Sau khi khôi phục xong nhật ký, cuộn xuống cuối
+ 
 requestAnimationFrame(() => {
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
@@ -213,17 +214,17 @@ function setMenuOpen(isOpen) {
   menuToggle.setAttribute("aria-expanded", String(isOpen));
   menuToggle.setAttribute("aria-label", isOpen ? "Đóng cài đặt" : "Mở cài đặt");
 }
-// Bấm ba gạch để mở hoặc đóng
+ 
 menuToggle.addEventListener("click", () => {
   setMenuOpen(menuPanel.hidden);
 });
-// Bấm ra ngoài để đóng menu
+ 
 document.addEventListener("click", (event) => {
   if (!menuToggle.contains(event.target) && !menuPanel.contains(event.target)) {
     setMenuOpen(false);
   }
 });
-// Nhấn Escape để đóng menu
+ 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !menuPanel.hidden) {
     setMenuOpen(false);
@@ -234,41 +235,41 @@ const restartButton = document.getElementById("restart-button");
 const restartDialog = document.getElementById("restart-dialog");
 const cancelRestart = document.getElementById("cancel-restart");
 const confirmRestart = document.getElementById("confirm-restart");
-// Mở hộp xác nhận
+ 
 restartButton.addEventListener("click", () => {
   setMenuOpen(false);
   restartDialog.showModal();
 });
-// Hủy: giữ nguyên tiến trình
+ 
 cancelRestart.addEventListener("click", () => {
   restartDialog.close();
   menuToggle.focus();
 });
-// Xác nhận: giữ tiến trình và trở về màn hình vé
+ 
 confirmRestart.addEventListener("click", () => {
   saveEventProgress();
   window.location.reload();
 });
 if (!Array.isArray(state.player.relatives)) {
   ensureRelatives(state.player);
-  // Cha mẹ được tạo ngẫu nhiên một lần: lưu ngay để tải lại trang không tạo ra người khác.
+   
   saveGame(state);
 }
 let hospitalUi = null;
 function renderStats() {
-  // Sức khỏe
+   
   document.getElementById("health").value = state.player.health;
   document.getElementById("health-value").textContent =
     `${state.player.health}%`;
-  // Trí tuệ
+   
   document.getElementById("smarts").value = state.player.intelligence;
   document.getElementById("smarts-value").textContent =
     `${state.player.intelligence}%`;
-  // Hạnh phúc
+   
   document.getElementById("happiness").value = state.player.happiness;
   document.getElementById("happiness-value").textContent =
     `${state.player.happiness}%`;
-  // Ngoại hình
+   
   document.getElementById("looks").value = state.player.appearance;
   document.getElementById("looks-value").textContent =
     `${state.player.appearance}%`;
@@ -278,9 +279,9 @@ function renderStats() {
   updateStatColor("looks", state.player.appearance);
   renderHealthAlert();
 }
-// Thẻ sức khỏe & tinh thần ở đầu nhật ký: một dòng tóm tắt gọn để không che nhật ký; bấm vào để xem
-// chi tiết bệnh (mức độ, nguy cơ, viện phí), sức khỏe yếu, biến cố đang ảnh hưởng tinh thần (nguyên nhân,
-// thời gian còn lại), hỗ trợ tinh thần đang diễn ra và lời hẹn với người yêu. Ẩn khi không có gì cần lưu ý.
+ 
+ 
+ 
 let healthAlertOpen = false;
 function getMoodAlertItems(player) {
   const nextAge = player.age + 1;
@@ -426,9 +427,9 @@ function renderHealthAlert() {
   }
   box.append(details);
 }
-// Tài chính trước sinh nhật: dự báo luôn hiện cạnh ví; khi thu nhập không đủ chi phí bắt buộc và ví sẽ âm,
-// thẻ cảnh báo có nút mở các phương án ứng phó (không chặn nút tăng tuổi để tránh popup mỗi năm).
-// Không ai chết hay mất tài sản ngay vì hết tiền: thiếu hụt được ghi thành ví âm (nợ).
+ 
+ 
+ 
 function needsFinanceCheck() {
   const forecast = forecastNextYear(state.player);
   return (
@@ -476,7 +477,8 @@ function showFinanceCheck() {
         (forecast.childcare
           ? ` · Nuôi con: ${formatMoney(forecast.childcare)}`
           : "") +
-        (forecast.familyBudget ? ` · Học cho con và hỗ trợ cha mẹ: ${formatMoney(forecast.familyBudget)}` : "") +
+        (forecast.dating ? ` · Chi phí hẹn hò: ${formatMoney(forecast.dating)}` : "") +
+        (forecast.familyBudget > forecast.dating ? ` · Học cho con và hỗ trợ cha mẹ: ${formatMoney(forecast.familyBudget - forecast.dating)}` : "") +
         (forecast.tuition
           ? ` · Học phí: ${formatMoney(forecast.tuition)}`
           : "") +
@@ -507,7 +509,7 @@ function showFinanceCheck() {
   }
   livingSelect.value = player.livingMode ?? "normal";
   livingSelect.disabled = player.age < 23 || player.isAlive === false || isInPrison(player);
-  // Đổi lựa chọn chỉ lưu và vẽ lại dự báo; nhật ký ghi khoản chi thật lúc sang tuổi.
+   
   livingSelect.addEventListener("change", () => {
     player.livingMode = livingSelect.value;
     saveEventProgress();
@@ -536,7 +538,7 @@ function showFinanceCheck() {
       action(
         `👪 Nhận hỗ trợ từ bố mẹ (+${formatMoney(FAMILY_SUPPORT.amount)})`,
         () => {
-          // Kiểm tra lại lúc bấm: nút cũ (bấm hai lần, hộp thoại chưa vẽ lại) không được nhận thêm lần nữa.
+           
           if (!canGetFamilySupport(state.player)) return;
           state.player.money += FAMILY_SUPPORT.amount;
           state.player.familySupportAge = state.player.age;
@@ -548,7 +550,7 @@ function showFinanceCheck() {
       ),
     );
   }
-  // Đã nghỉ hưu hoặc đang thụ án thì không còn tìm việc làm thêm hay việc chính.
+   
   const canSeekWork = player.age < RETIREMENT_AGE && !isInPrison(player);
   if (canSeekWork) {
     choices.append(
@@ -604,7 +606,7 @@ function showFinanceCheck() {
   if (!dialog.open) dialog.showModal();
   choices.querySelector("button")?.focus({ preventScroll: true });
 }
-// Mục gia đình và công việc trong thẻ cảnh báo.
+ 
 function getLifeAlertItems(player) {
   const items = [];
   if (needsFinanceCheck()) {
@@ -616,7 +618,7 @@ function getLifeAlertItems(player) {
       action: { label: "💸 Phương án tài chính", run: showFinanceCheck },
     });
   } else if (player.livingMode === "frugal") {
-    // Đang sống tiết kiệm mà không còn thiếu hụt: vẫn có lối quay lại mức sống bình thường.
+     
     items.push({
       short: "📉 Đang sống tiết kiệm",
       title: "📉 Đang sống tiết kiệm (Hạnh phúc -1/năm)",
@@ -665,7 +667,7 @@ function getLifeAlertItems(player) {
   }
   return items;
 }
-// Trước khi sang tuổi mới: bệnh sắp nặng/nguy kịch hoặc sức khỏe nguy kịch thì hỏi người chơi.
+ 
 function getAgeUpHealthRisks() {
   const player = state.player;
   const nextAge = player.age + 1;
@@ -794,7 +796,7 @@ function showHealthCheck() {
   if (!dialog.open) dialog.showModal();
   choices.querySelector("button")?.focus({ preventScroll: true });
 }
-// Hiển thị chỉ số khi mở game
+ 
 renderStats();
 function renderLogContent(element, text) {
   element.replaceChildren();
@@ -814,7 +816,7 @@ function cleanLogText(text) {
   return addEventEmotions(cleaned);
 }
 function appendColoredNumbers(element, text) {
-  // Tách các số có dấu + hoặc - ra khỏi nội dung
+   
   const parts = text.split(/([+−-]\d+(?:[.,]\d+)*(?:k| triệu| tỷ)?)/g);
   parts.forEach((part) => {
     if (/^[+−-]\d+(?:[.,]\d+)*(?:k| triệu| tỷ)?$/.test(part)) {
@@ -825,7 +827,7 @@ function appendColoredNumbers(element, text) {
       );
       element.append(number);
     } else {
-      // Phần chữ giữ màu bình thường
+       
       element.append(document.createTextNode(part));
     }
   });
@@ -834,24 +836,24 @@ function updateStatColor(id, value) {
   const bar = document.getElementById(id);
   let color;
   if (value <= 20) {
-    color = "#e53935"; // Đỏ
+    color = "#e53935";  
   } else if (value <= 50) {
     color = "#fb8c00"; // Cam
   } else if (value <= 80) {
-    color = "#fdd835"; // Vàng
+    color = "#fdd835";  
   } else {
-    color = "#43a047"; // Xanh lá
+    color = "#43a047";  
   }
   bar.style.setProperty("--stat-color", color);
 }
 function renderMoney() {
   const moneyElement = document.getElementById("money-value");
   moneyElement.textContent = formatMoneyAmount(state.player.money);
-  // Ví âm (đang nợ) hiện màu đỏ.
+   
   moneyElement
     .closest(".wallet")
     ?.classList.toggle("is-debt", state.player.money < 0);
-  // Dự báo năm tới (thu nhập trừ chi phí bắt buộc) để thấy khả năng tài chính trước khi tăng tuổi.
+   
   const forecastElement = document.getElementById("money-forecast");
   if (forecastElement) {
     const forecast = forecastNextYear(state.player);
@@ -863,10 +865,10 @@ function renderMoney() {
     forecastElement.classList.toggle("is-negative", forecast.after < 0);
   }
 }
-// Hiển thị tiền khi mở game
+ 
 // Update legacy employment state without inventing historical pension payments.
 retirePlayer(state.player);
-// Bản lưu từ trước lần trả lương đầu: cộng lương năm hiện tại vào ví một lần.
+ 
 if (getPlayerAnnualSalary(state.player) && state.player.lastSalaryAge == null) {
   const salary = completeCareerYear(state.player, state.player.age);
   if (salary) {
@@ -898,16 +900,16 @@ function renderEducation() {
   button.title = description;
   button.setAttribute("aria-label", `Hoạt động. ${description}`);
 }
-// Hiển thị khi mở hoặc tải lại game
+ 
 renderEducation();
 initRelationships(state, saveEventProgress, (log) => {
   renderLogEntry(log);
   renderMoney();
   renderStats();
 });
-// Một sự kiện trong nhật ký: mỗi dòng là một hàng, biểu tượng đầu dòng đứng riêng một cột
-// để chữ xuống dòng vẫn thẳng hàng; dòng không có biểu tượng dùng chấm nhỏ (vẽ bằng CSS).
-// Khai báo trong hàm: nhật ký đã lưu được vẽ khi main.js còn đang chạy tới đây.
+ 
+ 
+ 
 function renderLogLines(element, text) {
   const LOG_ICON =
     /^((?:\p{Extended_Pictographic}|\p{Regional_Indicator})(?:️|⃣|\p{Emoji_Modifier}|\p{Regional_Indicator}|‍\p{Extended_Pictographic})*)\s*/u;
@@ -944,7 +946,7 @@ function renderLogEntry(log) {
   const text = compactLogText(log.summary ?? summarizeLifeLog(log.content));
   const last = logElement.lastElementChild;
   const sameAge = last?.dataset.age === String(log.age);
-  // Nội dung trùng hệt trong cùng tuổi chỉ hiện một dòng kèm số lần (×2, ×3…).
+   
   const repeated =
     sameAge &&
     [...last.querySelectorAll("p")].find((line) => line.dataset.text === text);
@@ -957,9 +959,9 @@ function renderLogEntry(log) {
   const content = document.createElement("p");
   content.dataset.text = text;
   logLines.set(log, content);
-  // Giữ màu xanh/đỏ cho các số tăng, giảm
+   
   renderLogLines(content, text);
-  // Các sự kiện liền nhau cùng tuổi gộp chung một mục nhật ký.
+   
   if (sameAge) {
     last.classList.remove("is-quiet");
     last.append(content);
@@ -967,7 +969,7 @@ function renderLogEntry(log) {
   }
   const logItem = document.createElement("section");
   logItem.classList.add("log-entry");
-  // Năm không có chuyện gì: thu gọn thành một dòng nhạt.
+   
   if (text === "Một năm bình lặng.") logItem.classList.add("is-quiet");
   logItem.dataset.age = log.age;
   const title = document.createElement("h3");
@@ -975,7 +977,7 @@ function renderLogEntry(log) {
   logItem.append(title, content);
   logElement.append(logItem);
 }
-// Vẽ lại một dòng nhật ký đã hiển thị (ví dụ: thêm vé số mới mua trong năm).
+ 
 function updateLogEntry(log) {
   const line = logLines.get(log);
   if (!line) {
@@ -1116,16 +1118,16 @@ motionPreference.addEventListener("change", () => {
     );
   }
 });
-// Lưu toàn bộ tiến trình, gồm cả bước sự kiện đang mở
+ 
 function saveEventProgress() {
   state.player.lifeId ??= getLifeId(state);
   observeLifeProgress(state.player, state.pendingEvent);
   saveGame(state);
 }
-// Thời điểm nút lựa chọn/xác nhận vừa hiện: chạm thật trong khoảng này được coi là nhấn đúp và bỏ qua.
+ 
 const DOUBLE_TAP_GUARD_MS = 350;
 let choicesReadyAt = 0;
-// Hiển thị bước chọn hành động hoặc bước kết quả
+ 
 function showPendingEvent() {
   const pending = state.pendingEvent;
   if (!pending) return;
@@ -1248,8 +1250,8 @@ function showPendingEvent() {
       ]) {
         pending[key] = current[key];
         if (pending.stage === "choice") {
-          // Ghép theo chỉ số tác giả (sourceIndex), không theo vị trí: lựa chọn chuỗi đặc biệt đã được xáo.
-          // Bản lưu cũ chưa có sourceIndex vẫn ở thứ tự tác giả, nên vị trí chính là chỉ số tác giả.
+           
+           
           pending.choices?.forEach((branch, index) => {
             const source = branch.sourceIndex ?? index;
             const match = current.choices.find(
@@ -1315,7 +1317,7 @@ function showPendingEvent() {
     pending.imageOptions,
   );
   if (pending.stage === "choice") {
-    // Bước 1: tình huống và các lựa chọn
+     
     eventContent.replaceChildren();
     let remaining = addEventEmotions(pending.text);
     while (remaining) {
@@ -1362,7 +1364,7 @@ function showPendingEvent() {
       if (dialogue)
         eventContent.append(document.createTextNode(`\n\n${dialogue}`));
     }
-    // Chuỗi câu đố (75, 85 tuổi): xem lại các manh mối đã qua mà không phải nhớ hết.
+     
     if (pending.referenceNotes) {
       const notes = document.createElement("details");
       notes.className = "event-reference-notes";
@@ -1374,7 +1376,7 @@ function showPendingEvent() {
       eventContent.append(notes);
     }
     eventConfirm.hidden = true;
-    // Gắn icon cho cả nhóm một lượt để các nút trong cùng sự kiện không trùng icon.
+     
     const choiceLabels = addChoiceIcons(
       pending.choices.map((choice) => formatMoneyText(choice.label)),
     );
@@ -1407,7 +1409,7 @@ function showPendingEvent() {
         label.textContent = addChoiceIcon(choice.label.replace(/^🎮\s*/u, ""));
         button.replaceChildren(emblem, label);
       }
-      // Màn chọn ngành tuổi 18: cho biết ngành này mở được bậc 3 hay tối đa bậc 2 (và vì sao).
+       
       if (choice.careerPath && choice.careerPath.id !== "casual" && !Object.hasOwn(choice.careerPath, "school")) {
         const lock = getRankLock(state.player, choice.careerPath.id);
         const note = document.createElement("small");
@@ -1421,14 +1423,14 @@ function showPendingEvent() {
         button.append(note);
       }
       button.addEventListener("click", (event) => {
-        // Chạm thật quá sát lúc lựa chọn vừa hiện (nhấn đúp) thì bỏ qua, tránh chọn nhầm bước kế tiếp.
+         
         if (event.isTrusted && performance.now() < choicesReadyAt) return;
         chooseEventAction(index);
       });
       eventChoices.append(button);
     });
   } else {
-    // Bước 2: nội dung kết quả và chỉ số thay đổi
+     
     const previewOnly = pending.mediaTransition || pending.mediaSkipInterview;
     const salary = previewOnly
       ? null
@@ -1460,18 +1462,18 @@ function showPendingEvent() {
     eventConfirm.textContent = addChoiceIcon(pending.confirmText ?? "Xác nhận");
     eventConfirm.hidden = false;
   }
-  // Kết quả đậu/rớt có âm thanh ăn mừng hoặc tiếc nuối (chỉ phát một lần cho mỗi kết quả).
+   
   const outcomeSound =
     pending.outcome && !pending.outcomeSoundPlayed ? pending.outcome : null;
   if (outcomeSound) pending.outcomeSoundPlayed = true;
   if (!eventDialog.open) {
     eventDialog.showModal();
-    // Mỗi loại sự kiện có một âm thanh riêng khi popup bật lên.
+     
     if (!outcomeSound) playEventSound(pending.category);
   }
   if (outcomeSound) playOutcomeSound(outcomeSound);
   if (pending.stage === "result") animateEventResult();
-  // Đưa nội dung mới về đầu hộp thoại
+   
   eventDialog.scrollTop = 0;
   if (pending.stage === "choice") {
     eventChoices.querySelector("button")?.focus({
@@ -1482,8 +1484,8 @@ function showPendingEvent() {
   }
   saveEventProgress(); // Persist refreshed OpenMoji and remove legacy media limits.
 }
-// Tính kết quả sau khi người chơi chọn hành động
-// Kết quả đậu/rớt của một lựa chọn để phát âm thanh phù hợp (null = kết quả bình thường).
+ 
+ 
 function getChoiceOutcome(pending, choice) {
   if (choice.outcome === "success" || choice.outcome === "failure")
     return choice.outcome;
@@ -1493,12 +1495,12 @@ function getChoiceOutcome(pending, choice) {
   ) {
     return choice.correct ? "success" : "failure";
   }
-  // Vào trường, đại học, học viện hoặc academy.
+   
   if (choice.careerPath?.school) return "success";
   return null;
 }
 
-// Nhãn khóa của lựa chọn: thiếu tiền hoặc chưa đủ Trí tuệ (ví dụ điều kiện xét tuyển du học).
+ 
 function getChoiceBlocker(choice) {
   if (!canAffordChoice(state.player, choice)) return "Không đủ tiền";
   if (
@@ -1511,7 +1513,7 @@ function getChoiceBlocker(choice) {
 }
 function chooseEventAction(index) {
   const pending = state.pendingEvent;
-  // Không cho chọn lại khi đã chuyển sang bước kết quả
+   
   if (!pending || pending.stage !== "choice") return;
   let choice = pending.choices[index];
   if (!choice) return;
@@ -1556,7 +1558,7 @@ function chooseEventAction(index) {
     return;
   }
   if (pending.kind === "job-interview") {
-    // Kết quả tổng thể: chất lượng câu trả lời, trí tuệ và chuẩn bị (intellect-rules.js), tung một lần.
+     
     const assessment = rollInterview(
       state.player,
       choice.quality ?? (choice.correct === true ? "good" : "weak"),
@@ -1568,7 +1570,7 @@ function chooseEventAction(index) {
       assessment,
     );
     state.pendingEvent.category = pending.category;
-    // Kết quả thật (Bóng đá còn xét thể lực), không chỉ dựa vào câu trả lời.
+     
     state.pendingEvent.outcome =
       state.pendingEvent.updates.employmentStatus === "employed"
         ? "success"
@@ -1642,7 +1644,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-  // Tuổi 16: ngành người chơi chọn trong 3 ngành được mời mở bước 1 của chuỗi khám phá.
+   
   if (pending.kind === "career-spark-pick" && choice.careerSparkId) {
     const firstStep = createCareerSparkStep(
       choice.careerSparkId,
@@ -1661,7 +1663,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-  // Chuỗi khám phá ngành tuổi 16 và chuỗi thay thế nâng bậc lần đầu.
+   
   if (
     (pending.kind === "career-spark" || pending.kind === "career-promotion") &&
     choice.nextStep
@@ -1706,7 +1708,7 @@ function chooseEventAction(index) {
   }
   if (pending.kind === "special-chain" && choice.nextStep) {
     const inventory = applySpecialInventory(pending.specialInventory, choice);
-    // Bước mới được xáo thứ tự theo đời chơi; bước đang lưu giữ nguyên choices đã lưu.
+     
     const nextStep = createSpecialStep(
       pending.kind,
       pending.specialId,
@@ -1726,7 +1728,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-  // Chuẩn bị trước bài test: học dồn hao sức khỏe ngay; bài test nhận mức chuẩn bị để tính phần thi tổng thể.
+   
   if (pending.kind === "exam-prep" && choice.examPrep) {
     const prep = EXAM_PREP[choice.examPrep];
     if (prep?.health)
@@ -1746,7 +1748,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-  // Bài test: trả lời đúng luôn đạt; trả lời chưa đúng vẫn có thể đạt nhờ phần thi tổng thể.
+   
   if (pending.kind === "career-test") {
     const passed = choice.correct === true || choice.passedOverall === true;
     const next = passed
@@ -1773,7 +1775,7 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-  // Chưa đạt: học bổ sung rồi thi lại, hoặc chọn lại ngành.
+   
   if (
     pending.kind === "enlistment-failure" &&
     (choice.retakeTest || choice.reselectCareer)
@@ -1800,7 +1802,7 @@ function chooseEventAction(index) {
   if (choice.careerPath?.id === "casual" && pending.age === 18) {
     choice = createCasualStartChoice(state.player, choice);
   }
-  // Bóng đá cần thể lực: Sức khỏe dưới mức tối thiểu thì chưa được chọn học.
+   
   if (
     choice.careerPath &&
     !Object.hasOwn(choice.careerPath, "school") &&
@@ -1827,9 +1829,9 @@ function chooseEventAction(index) {
     eligibilityFeedback.hidden = false;
     return;
   }
-  // Cả lựa chọn cũ đã lưu cũng chuyển sang chọn trường nếu chưa chọn trường/hướng huấn luyện.
+   
   if (choice.careerPath && !Object.hasOwn(choice.careerPath, "school")) {
-    // Ngành có bài test: chọn cách chuẩn bị trước; ngành không có test đi thẳng tới chọn trường.
+     
     const schoolEvent =
       createExamPrepEvent(choice.careerPath, state.player) ??
       createSchoolEvent(choice.careerPath, state.player);
@@ -1846,14 +1848,14 @@ function chooseEventAction(index) {
     showPendingEvent();
     return;
   }
-  // Sự kiện thường ngày có may rủi theo chỉ số; kết quả lưu ngay nên tải lại không tung lại.
+   
   if (
     pending.category === "everyday" &&
     !pending.automaticResult &&
     !pending.catalogVersion
   )
     choice = rollEverydayLuck(choice, state.player);
-  // Hạnh phúc từ 70: thất bại nhỏ chỉ trừ một nửa hạnh phúc (không đổi sức khỏe, tiền).
+   
   choice = softenSetback(state.player, choice, pending.category);
   const updates = { age: pending.age };
   if (pending.kind === "child-proposal") {
@@ -1907,7 +1909,7 @@ function chooseEventAction(index) {
     updates.lostChildSchoolYearDueAge = choice.schoolYearDueAge;
   }
   if (choice.careerPath) updates.careerPath = choice.careerPath;
-  // Trạng thái riêng của lựa chọn (ví dụ kế hoạch hỗ trợ tinh thần), áp dụng khi xác nhận kết quả.
+   
   if (choice.playerUpdates) Object.assign(updates, choice.playerUpdates);
   if (typeof choice.careerSpark === "string")
     updates.careerSpark = choice.careerSpark;
@@ -2017,7 +2019,7 @@ function chooseEventAction(index) {
       }
     }
   }
-  // Tính mức thay đổi của bốn chỉ số
+   
   for (const stat in choice.effects ?? {}) {
     if (!Object.hasOwn(statNames, stat)) continue;
     const oldValue = state.player[stat];
@@ -2040,7 +2042,7 @@ function chooseEventAction(index) {
     if (delta)
       changes.push(`${statNames[stat]} ${delta > 0 ? "+" : ""}${delta}`);
   }
-  // Tiền được xử lý riêng, không giới hạn ở 100
+   
   if (choice.money) {
     const oldMoney = state.player.money;
     const newMoney = oldMoney + choice.money;
@@ -2053,7 +2055,7 @@ function chooseEventAction(index) {
   }
   const resultContent =
     choice.text + (changes.length ? "\n" + changes.join(" · ") : "");
-  // Chuyển sang bước kết quả và giữ lại hành động đã chọn
+   
   state.pendingEvent = {
     stage: "result",
     specialId: pending.specialId,
@@ -2085,7 +2087,7 @@ function chooseEventAction(index) {
             resultText: choice.text,
             changes,
           })),
-    // Nhật ký ghi cả tình huống, lựa chọn và kết quả
+     
     logContent:
       choice.logContent ??
       (pending.automaticResult
@@ -2098,10 +2100,10 @@ function chooseEventAction(index) {
   saveEventProgress();
   showPendingEvent();
 }
-// Bấm tăng tuổi: tạo tình huống, chưa áp dụng kết quả
+ 
 ageButton.addEventListener("click", () => {
   if (state.pendingEvent || state.player.isAlive === false) return;
-  // Ván Tiến lên chưa xong (chưa có người thắng, chưa xác nhận bỏ ván) thì chưa được sang năm mới.
+   
   if (!isInPrison(state.player) && gamesUi.hasActiveTienLen()) {
     if (!document.querySelector("dialog[open]")) {
       gamesUi.openTienLen(
@@ -2129,7 +2131,7 @@ ageButton.addEventListener("click", () => {
   const nextAge = state.player.age + 1;
   retirePlayer(state.player, nextAge);
 
-  // Kiểm tra tuổi thọ trước khi chọn có/không có sự kiện.
+   
   if (checkOldAgeDeath(nextAge)) {
     return;
   }
@@ -2152,8 +2154,8 @@ ageButton.addEventListener("click", () => {
     (nextAge === 105 ? ageStories[0] : null) ??
     createPrisonEvent(state.player, nextAge) ??
     createCasualServiceEvent(state.player, nextAge) ??
-    // Mốc chỉ có một lần (chọn ngành 18 tuổi, chuỗi 24 tuổi) đi trước các sự kiện tự quay lại năm sau
-    // (điều tra lại, chuỗi hỗ trợ tinh thần, đánh giá công việc…), nếu không sẽ mất hẳn.
+     
+     
     (nextAge === 18 ? careerEvent : null) ??
     orientationEvent ??
     createWorkInvestigationEvent(state.player, nextAge) ??
@@ -2170,6 +2172,7 @@ ageButton.addEventListener("click", () => {
     employmentEvent ??
     createRelativeDeathEvent(state.player, nextAge) ??
     createConcurrentDatingEvent(state.player, nextAge) ??
+    createMaritalAffairEvent(state.player, nextAge) ??
     createJobReviewEvent(state.player, nextAge) ??
     createContractNoticeEvent(state.player, nextAge) ??
     createSupportEvent(state.player, nextAge);
@@ -2202,7 +2205,7 @@ ageButton.addEventListener("click", () => {
       ? createDatingEvent(state.player, nextAge)
       : null;
   const stories = [...ageStories, ...(datingEvent ? [datingEvent] : [])];
-  // Sự kiện tinh thần trong năm (áp lực công việc, một quãng chán nản) thay cho chuyện đời thường.
+   
   const moodEvent =
     nextAge > 18 &&
     !priorityEvent &&
@@ -2221,8 +2224,8 @@ ageButton.addEventListener("click", () => {
         createRiskOfferEvent(state.player, nextAge) ??
         createMoodEvent(state.player, nextAge))
       : null;
-  // Tuổi này chưa có sự kiện: ghi nhật kí và tăng tuổi trực tiếp.
-  // Tuổi 1–10 luôn có chuyện nếu còn sự kiện phù hợp; tuổi lớn giữ 80% để có năm bình lặng.
+   
+   
   const eventChance = 0.8;
 
   const hasEvent =
@@ -2242,8 +2245,8 @@ ageButton.addEventListener("click", () => {
         ? Boolean(randomAgeStory)
         : nextAge <= 10 || Math.random() < eventChance));
 
-  // Lời làm quen (tối đa một lần mỗi năm): chỉ thay cho chuyện đời thường hoặc năm không có sự kiện,
-  // tung sau các lượt chọn sự kiện khác để không chen vào mốc quan trọng.
+   
+   
   const ordinaryYear =
     !priorityEvent &&
     !promotionEvent &&
@@ -2292,7 +2295,7 @@ ageButton.addEventListener("click", () => {
       log.content =
         schooling.content +
         (salary || childcare.content ? `\n${log.content}` : "");
-    // Thu nhập phụ thay câu "không có gì thay đổi" khi năm đó không có lương chính.
+     
     const extras = [
       employment,
       family,
@@ -2318,7 +2321,7 @@ ageButton.addEventListener("click", () => {
     state.logs.push(log);
     saveEventProgress();
 
-    // Cập nhật giao diện theo tuổi mới.
+     
     ageElement.textContent = state.player.age;
     renderMoney();
     renderStats();
@@ -2326,22 +2329,22 @@ ageButton.addEventListener("click", () => {
     renderEducation();
     renderLogEntry(log);
 
-    // Bệnh không điều trị đủ 10 năm có thể kết thúc cuộc đời ngay trong năm không có sự kiện.
+     
     if (state.player.isAlive === false) {
       endLifeAfterYear();
       return;
     }
 
-    // Cuộn xuống dòng nhật kí vừa thêm.
+     
     const logContainer = logElement.parentElement;
     logContainer.scrollTop = logContainer.scrollHeight;
 
-    // Vẫn kiểm tra các thành tựu về tuổi.
+     
     checkAchievements();
-    // Vé số mua năm trước có kết quả: mở popup mở thưởng.
+     
     lotteryUi.showResults();
 
-    // Kết thúc lượt, không mở popup sự kiện.
+     
     return;
   }
   const pickedStory =
@@ -2370,7 +2373,7 @@ ageButton.addEventListener("click", () => {
     !quietYearAcquaintance && ordinaryYear
       ? (createAcquaintanceEvent(state.player, nextAge) ?? pickedStory)
       : pickedStory;
-  // Sự kiện cũ chưa có choices vẫn chạy với một nút Tiếp tục
+   
   const choices = story.choices?.length
     ? story.choices
     : [
@@ -2424,7 +2427,7 @@ ageButton.addEventListener("click", () => {
   saveEventProgress();
   showPendingEvent();
 });
-// Xác nhận kết quả: cập nhật nhân vật và ghi nhật ký
+ 
 eventConfirm.addEventListener("click", (event) => {
   const pending = state.pendingEvent;
   if (!pending || pending.stage === "choice") return;
@@ -2524,13 +2527,13 @@ eventConfirm.addEventListener("click", (event) => {
   }
   state.logs.push(log);
   state.pendingEvent = null;
-  // Sự kiện "không gây tử vong" vẫn không cứu được nhân vật khỏi bệnh để quá 10 năm.
+   
   const died =
     state.player.isAlive === false ||
     (!pending.nonFatal && state.player.health <= 0);
   if (died) {
     state.player.isAlive = false;
-    // Bệnh đã ghi nguyên nhân riêng; còn lại là do sự kiện của năm đó.
+     
     if (!state.player.deathCause) {
       state.player.deathCause = "event";
       state.player.deathEvent = pending.title;
@@ -2559,11 +2562,11 @@ eventConfirm.addEventListener("click", (event) => {
   checkAchievements();
   lotteryUi.showResults();
 });
-// Phải giải quyết sự kiện, không bỏ qua bằng Escape
+ 
 eventDialog.addEventListener("cancel", (event) => {
   event.preventDefault();
 });
-// Tải lại trang sẽ mở đúng bước đang chờ
+ 
 // Older saves at the former upper age limit now use the age-105 finale.
 if (
   state.player.isAlive !== false &&
@@ -2644,7 +2647,7 @@ const lotteryUi = initLottery(state, {
   renderLogEntry,
   updateLogEntry,
 });
-// Tải lại trang khi chưa xem kết quả xổ số: mở lại popup.
+ 
 lotteryUi.showResults();
 initTravel(state, { renderMoney, renderStats, renderLogEntry });
 initGameCenter(state, {
@@ -2697,21 +2700,21 @@ const fortuneName = document.getElementById("fortune-name");
 const fortuneContent = document.getElementById("fortune-content");
 const closeFortuneButton = document.getElementById("close-fortune");
 fortuneButton.addEventListener("click", () => {
-  // Không mở chồng lên popup khác.
+   
   if (document.querySelector("dialog[open]")) return;
-  // Chỉ chọn lời tiên đoán nếu nhân vật chưa từng xem.
+   
   if (
     typeof state.player.fortune !== "string" ||
     state.player.fortune.trim() === ""
   ) {
     const randomIndex = Math.floor(Math.random() * fortunePredictions.length);
     state.player.fortune = fortunePredictions[randomIndex];
-    // Lưu cùng nhân vật để tải lại trang vẫn giữ nguyên.
+     
     saveGame(state);
   }
   fortuneName.textContent = `Dành cho ${state.player.name}`;
   fortuneContent.textContent = state.player.fortune;
-  // Đóng menu ba gạch bằng hàm bạn đang có.
+   
   setMenuOpen(false);
   fortuneDialog.showModal();
 });
@@ -2719,9 +2722,9 @@ closeFortuneButton.addEventListener("click", () => {
   fortuneDialog.close();
 });
 
-// Nhân vật đã mất không thể tiếp tục tăng tuổi.
+ 
 const deathDialog = document.getElementById("death-dialog");
-// Mở trang tổng kết cuộc đời kèm nhạc buồn (nhạc nền lặng dần).
+ 
 function showLifeSummary() {
   checkAchievements();
   const archived = archiveLife(state, undefined, describeDeathCause(state.player));
@@ -2740,7 +2743,7 @@ deathDialog.addEventListener("cancel", (event) => event.preventDefault());
 document
   .getElementById("return-after-death")
   .addEventListener("click", () => window.location.reload());
-// Kết thúc cuộc đời sau một năm không có sự kiện (ví dụ bệnh không được điều trị).
+ 
 function endLifeAfterYear() {
   const log = {
     age: state.player.age,
@@ -2760,7 +2763,7 @@ function endLifeAfterYear() {
 function checkOldAgeDeath(nextAge) {
   // Survivors of age 104 always see the final story at 105.
   if (nextAge === 105) return false;
-  // Nguy cơ tuổi già xét đồng thời tuổi, sức khỏe và bệnh chưa điều trị (xem health-rules.js).
+   
   const stages = (state.player.illnesses ?? [])
     .filter((illness) => getDisease(illness.id))
     .map((illness) => getIllnessStage(illness, nextAge, state.player.health));
@@ -2773,7 +2776,7 @@ function checkOldAgeDeath(nextAge) {
     return false;
   }
 
-  // Nhân vật qua đời tại tuổi mới.
+   
   const healthBefore = state.player.health;
   state.player.age = nextAge;
   state.player.isAlive = false;
@@ -2794,7 +2797,7 @@ function checkOldAgeDeath(nextAge) {
 
   state.logs.push(log);
 
-  // Lưu ngay để tải lại trang không được thử lại xác suất.
+   
   saveEventProgress();
 
   ageElement.textContent = nextAge;
@@ -2809,7 +2812,7 @@ function checkOldAgeDeath(nextAge) {
   const logContainer = logElement.parentElement;
   logContainer.scrollTop = logContainer.scrollHeight;
 
-  // Dùng lại popup kết thúc cuộc đời đã có.
+   
   showLifeSummary();
 
   checkAchievements();

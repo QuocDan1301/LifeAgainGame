@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-// Kiểm tra trang game và máy chủ chỉ phục vụ tệp tĩnh.
+ 
 const target = process.argv[2] ?? process.env.RENDER_EXTERNAL_URL;
 if (!target) throw new Error('Cần URL: npm run check:deployment -- https://ten-dich-vu.onrender.com');
 const base = new URL(target);

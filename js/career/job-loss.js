@@ -4,31 +4,31 @@ import { getCareerProfile, getCareerTopic, getEmploymentContext } from "./career
 import { getCareerAnnualSalary, RETIREMENT_AGE } from "./career-salary.js";
 import { addMoodEffect } from "../stats/mood-rules.js";
 
-// Mất việc: ba nguyên nhân tách biệt, không có xác suất sa thải ngẫu nhiên chung mỗi năm.
-// - Sa thải: chỉ sau chuỗi Vấn đề → Cảnh báo → Đánh giá lại (hoặc che giấu sai phạm bị phát hiện, có cảnh báo trước).
-// - Cắt giảm nhân sự: hiếm, có thông báo trước một năm, chỉ cho nghề làm thuê (không áp dụng nhập ngũ, hợp đồng dự án).
-// - Hết hợp đồng: nghề theo dự án/mùa giải, báo trước một năm, có thể xin gia hạn.
-// Các con số là thông số gameplay.
+ 
+ 
+ 
+ 
+ 
 
-// Nghề theo hợp đồng dự án/mùa giải; nhập ngũ là đơn vị nhà nước (không cắt giảm, không hết hợp đồng).
+ 
 const CONTRACT_CAREERS = ["acting", "singing", "football", "esports", "tiktok", "youtube", "fashion"];
 export const getEmploymentType = (careerId) =>
   careerId === "military" ? "service" : CONTRACT_CAREERS.includes(careerId) ? "contract" : "employee";
 export const CONTRACT_YEARS = 3;
 
 export const JOB_LOSS = {
-  // Vấn đề trong công việc: chỉ khi đã đi làm ít nhất 1 năm, chưa có cảnh báo. Trí tuệ thấp khó xử lý việc,
-  // sức khỏe thấp khó chịu lịch làm, hạnh phúc thấp thiếu động lực (trừ khi đang đau buồn vì biến cố).
+   
+   
   problem: { base: 0.04, lowIntelligence: 0.03, lowHealth: 0.03, lowMotivation: 0.02, perStrike: 0.03, max: 0.15, minYears: 1 },
-  // Khả năng qua đánh giá lại theo kế hoạch cải thiện và chỉ số.
+   
   review: { improve: 0.8, study: 0.8, adjust: 0.7, ignore: 0.15, intelligenceHigh: 0.1, intelligenceLow: -0.1,
     healthLow: -0.1, motivationLow: -0.05, perStrike: -0.15, min: 0.05, max: 0.95 },
   hideDiscovered: 0.5,
   studyCost: 2_000_000,
-  // Cắt giảm nhân sự: hiếm, sau 2 năm làm việc. Gói nghỉ việc nhận ngay = 50% lương năm; bị cắt giảm năm sau = 25%.
+   
   layoff: { chance: 0.015, minYears: 2, transfer: 0.5, packageRate: 0.5, forcedRate: 0.25 },
   renewal: { base: 0.7, intelligenceHigh: 0.1, intelligenceLow: -0.1, healthLow: -0.1, perStrike: -0.15 },
-  // Hạnh phúc giảm ngay khi mất việc; lo lắng thất nghiệp −2 mỗi năm tối đa 2 năm (MOOD_EFFECTS["job-loss"]).
+   
   happiness: { fired: 8, layoff: 5, contract: 5, quit: 2 },
   strikeWindow: 10,
 };
@@ -46,7 +46,7 @@ const isGrieving = (player) => (player.moodEffects ?? []).some((effect) => ["ber
 export const getRecentStrikes = (player, age) => (player.jobStrikes ?? []).filter((at) => age - at < JOB_LOSS.strikeWindow).length;
 const dismissalPhrase = (careerId) => ({ service: "cho xuất ngũ trước hạn", contract: "chấm dứt hợp đồng", employee: "cho thôi việc" })[getEmploymentType(careerId)];
 
-// Ghi nhận thời điểm bắt đầu làm và hạn hợp đồng cho công việc chính mới.
+ 
 export function startEmploymentRecord(player, age) {
   if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed") return;
   player.employedSince ??= age;
@@ -56,14 +56,14 @@ export function startEmploymentRecord(player, age) {
   }
 }
 
-// Cập nhật khi mất công việc chính. Chỉ dừng lương của công việc này; việc làm thêm, học vấn,
-// kinh nghiệm (bậc nghề cũ) được giữ lại để ứng tuyển vị trí phù hợp sau này.
+ 
+ 
 export function getJobLossUpdates(player, age, cause, extra = {}) {
   const careerId = player.careerPath?.id;
   return {
     employmentStatus: "unemployed", job: "Thất nghiệp", careerLevel: 0, nextPromotionAge: null,
     jobWarning: null, layoffDue: null, contractEndAge: null, contractNoticeAge: null, contractEnding: null, employedSince: null,
-    // Sau khi mất việc có thể tìm việc cùng ngành, làm tạm (Làm thêm), học bổ sung hoặc đổi sang ngành cùng khối học.
+     
     careerSwitchOpen: true,
     careerExperience: { careerId, level: Number(player.careerLevel) || 1, title: player.job, lostAt: age, cause,
       years: Math.max(0, age - (player.employedSince ?? age)) },
@@ -73,7 +73,7 @@ export function getJobLossUpdates(player, age, cause, extra = {}) {
   };
 }
 
-// Bậc khi được nhận lại cùng ngành: giữ kinh nghiệm (bị sa thải thì lùi một bậc), không vượt bậc 2.
+ 
 export function getRehireLevel(player, careerId) {
   const experience = player.careerExperience;
   if (!experience || experience.careerId !== careerId) return 1;
@@ -98,12 +98,12 @@ export function getProblemChance(player, age) {
   let chance = p.base + p.perStrike * getRecentStrikes(player, age);
   if (player.intelligence < 40) chance += p.lowIntelligence;
   if (player.health < 40) chance += p.lowHealth;
-  // Đau buồn vì biến cố không tự tạo thêm cảnh báo sa thải.
+   
   if (player.happiness < 40 && !isGrieving(player)) chance += p.lowMotivation;
   return Math.min(p.max, chance);
 }
 
-// Bước 1–2: vấn đề trong công việc và cảnh báo kèm cơ hội cải thiện.
+ 
 export function createWorkProblemEvent(player, age, random = Math.random) {
   const chance = getProblemChance(player, age);
   if (!chance || random() >= chance) return null;
@@ -146,7 +146,7 @@ export function createWorkProblemEvent(player, age, random = Math.random) {
   };
 }
 
-// Bước 3: đánh giá lại một năm sau cảnh báo. Kết quả được quyết định khi sự kiện xuất hiện (tải lại không đổi).
+ 
 export function createJobReviewEvent(player, age, random = Math.random) {
   const warningInfo = player.jobWarning;
   if (!warningInfo || age >= RETIREMENT_AGE || player.employmentStatus !== "employed" || age <= warningInfo.issuedAt) return null;
@@ -171,7 +171,7 @@ export function createJobReviewEvent(player, age, random = Math.random) {
   };
 }
 
-// Cắt giảm nhân sự: thông báo trước một năm, cho chọn chuyển vị trí, chuẩn bị tài chính hoặc nhận gói nghỉ việc.
+ 
 export function createLayoffNoticeEvent(player, age, random = Math.random) {
   const careerId = player.careerPath?.id;
   const l = JOB_LOSS.layoff;
@@ -207,7 +207,7 @@ export function createLayoffNoticeEvent(player, age, random = Math.random) {
   };
 }
 
-// Hết hợp đồng: báo trước một năm (sinh nhật ngay trước năm hết hạn), cho xin gia hạn, tìm việc mới hoặc chuyển hướng.
+ 
 export function createContractNoticeEvent(player, age, random = Math.random) {
   if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed" || !Number.isInteger(player.contractEndAge) ||
       player.contractEndAge !== age + 1 || player.contractNoticeAge === age) return null;
@@ -244,7 +244,7 @@ export function createContractNoticeEvent(player, age, random = Math.random) {
   };
 }
 
-// Mỗi sinh nhật (trước khi trả lương năm mới): thực hiện cắt giảm hoặc hết hợp đồng đã báo trước.
+ 
 export function collectEmploymentYear(player, age) {
   if (age >= RETIREMENT_AGE || player.employmentStatus !== "employed") return null;
   const lines = [];
@@ -260,13 +260,13 @@ export function collectEmploymentYear(player, age) {
     const prepared = player.layoffPrepared;
     const { title, loss } = lose("layoff", { layoffSeverance: null, layoffPrepared: null });
     player.money += severance;
-    // Đã chuẩn bị tài chính trước: nỗi lo thất nghiệp chỉ kéo dài một năm.
+     
     if (prepared) player.moodEffects = player.moodEffects.map((effect) => (effect.id === "job-loss" && effect.startedAt === age ? { ...effect, years: 1 } : effect));
     lines.push(`📉 Bị cắt giảm nhân sự ở vị trí ${title}: nhận trợ cấp ${formatMoney(severance)}, Hạnh phúc -${loss}. Việc làm thêm và kinh nghiệm vẫn còn.`);
   } else if (Number.isInteger(player.contractEndAge) && age >= player.contractEndAge) {
-    // Chỉ kết thúc khi đã báo trước cho chính hợp đồng này (contractEnding). contractNoticeAge còn lại từ lần
-    // gia hạn trước không tính. Chưa kịp báo (năm đó có sự kiện quan trọng hơn): gia hạn tạm đến hai sinh nhật sau,
-    // để sinh nhật kế tiếp có thông báo trước một năm như thường lệ.
+     
+     
+     
     if (!player.contractEnding) {
       player.contractEndAge = age + 2;
       lines.push(`📄 Hợp đồng ${player.job} được gia hạn tạm đến ${age + 2} tuổi trong lúc chờ thương lượng.`);
@@ -278,7 +278,7 @@ export function collectEmploymentYear(player, age) {
   return lines.length ? { content: lines.join("\n") } : null;
 }
 
-// Mô tả bậc khi được nhận lại nhờ kinh nghiệm.
+ 
 export function describeRehire(player, careerId) {
   const level = getRehireLevel(player, careerId);
   return level > 1 ? `Nhờ kinh nghiệm, bạn vào thẳng vị trí ${getCareerProfile(careerId).ranks[level - 1]}.` : "";

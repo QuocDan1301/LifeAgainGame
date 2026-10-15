@@ -41,7 +41,7 @@ test('Remediation is priced, charged once per year and eventually permits gradua
     const forecast = forecastNextYear(p); const event = createStudyAbroadYearEvent(p, age);
     const before = p.money;
     year(p, age, event.choices[0].playerUpdates);
-    // Từ 23 tuổi, nợ mang sang đầu năm bị tính lãi.
+     
     assert.equal(p.money, before - 150e6 - getDebtInterest(age, before));
     assert.equal(p.money, forecast.after);
     assert.equal(getPlayerAnnualSalary(p), 0);

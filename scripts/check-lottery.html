@@ -11,14 +11,14 @@
   const random = Math.random;
   try {
     const L = await import("../js/leisure/lottery.js");
-    // Vé kiến thiết: so số cuối đúng thứ tự, chỉ nhận giải cao nhất.
+     
     assert(L.kienThietResult("123456", "000056").prize === 100_000, "2 last digits");
     assert(L.kienThietResult("123456", "000456").prize === 200_000, "3 last digits");
     assert(L.kienThietResult("123456", "003456").prize === 1_000_000, "4 last digits");
     assert(L.kienThietResult("123456", "923456").prize === 30_000_000, "5 last digits");
     assert(L.kienThietResult("123456", "123456").prize === 2_000_000_000, "All 6 digits");
     assert(L.kienThietResult("123456", "123465").prize === 0 && L.kienThietResult("123456", "654321").prize === 0, "Order matters at the end");
-    // Vietlott: số trùng không cần thứ tự.
+     
     const draw = [3, 9, 17, 25, 33, 45];
     assert(L.vietlottResult([1, 2, 4, 5, 6, 7], draw).prize === 0, "0 hits");
     assert(L.vietlottResult([45, 2, 4, 9, 6, 7], draw).prize === 0, "2 hits");
@@ -31,7 +31,7 @@
       assert(numbers.length === 6 && new Set(numbers).size === 6 && numbers.every(n => n >= 1 && n <= 45), "Quick pick: 6 distinct numbers 1-45");
       assert(/^\d{6}$/.test(L.randomKienThiet()), "Kien thiet ticket has 6 digits");
     }
-    // Dò vé: cộng tiền đúng, mỗi vé nhận thưởng một lần.
+     
     const player = { age: 19, money: 0, lotteryDraws: { 18: { kienThiet: "003456", vietlott: draw } }, lotteryTickets: [
       { type: "kien-thiet", number: "123456", age: 18 }, { type: "kien-thiet", number: "111111", age: 18 },
       { type: "vietlott", numbers: [3, 9, 17, 1, 2, 4], age: 18 }, { type: "kien-thiet", number: "000000", age: 19 } ] };
@@ -42,7 +42,7 @@
     assert(player.lotteryTickets.length === 1 && player.lotteryTickets[0].age === 19 && !player.lotteryDraws[18], "Checked tickets are removed");
     assert(L.collectLotteryYear(player, 19) === null && player.money === 1_030_000, "A ticket pays only once");
 
-    // Bản lưu cũ: mỗi vé một dòng, gộp lại theo tuổi.
+     
     const oldLogs = L.mergeLotteryPurchaseLogs([
       { age: 20, content: "Ăn phở", summary: "Ăn phở" },
       { age: 20, content: "🎟️ Mua vé số kiến thiết 547001: Tiền -10k VNĐ.", summary: "x" },
@@ -105,7 +105,7 @@
     assert(diaryLines.length === 1 && diaryLines[0].textContent.includes("Mua 30 vé số") && diaryLines[0].textContent.includes(first), "Diary shows one updated line listing the tickets");
     $("close-lottery").click();
 
-    // Đặt kết quả năm để biết trước: vé đầu trùng 4 số cuối, vé Vietlott trùng 3 số.
+     
     const other = first[1] === "0" ? "1" : "0";
     state.player.lotteryDraws[18] = { kienThiet: `9${other}${first.slice(2)}`, vietlott: [1, 2, 3, 40, 41, 42] };
     Math.random = () => 0.99;

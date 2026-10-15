@@ -1,7 +1,7 @@
-// Giai đoạn 11–23 tuổi (không có 15, 16, 18, 22: năm có sự kiện đặc biệt).
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage11To23 = [
-  // ───────────── 11 tuổi ─────────────
+   
   {
     id: 'ls11-nhom-ban', age: 11,
     title: 'Nhóm đông nhất lớp',
@@ -47,7 +47,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 12 tuổi ─────────────
+   
   {
     id: 'ls12-mun', age: 12, needs: ['mother'],
     title: 'Mặt nổi mụn',
@@ -97,7 +97,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 13 tuổi ─────────────
+   
   {
     id: 'ls13-ban-thu-vien', age: 13,
     title: 'Người ở thư viện',
@@ -149,7 +149,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 14 tuổi ─────────────
+   
   {
     id: 'ls14-nguyen-vong', age: 14,
     title: 'Nguyện vọng lớp mười',
@@ -197,7 +197,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 17 tuổi ─────────────
+   
   {
     id: 'ls17-ba-va-nganh-hoc', age: 17, needs: ['father'],
     title: 'Tờ hướng dẫn trên bàn',
@@ -247,7 +247,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 19 tuổi ─────────────
+   
   {
     id: 'ls19-phong-tro-chung', age: 19,
     title: 'Tấm rèm trong phòng trọ',
@@ -320,7 +320,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 20 tuổi ─────────────
+   
   {
     id: 'ls20-tin-nhan-gui-nham', age: 20,
     title: 'Tin nhắn gửi nhầm',
@@ -392,7 +392,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 21 tuổi ─────────────
+   
   {
     id: 'ls21-ghe-xe-buyt', age: 21,
     title: 'Chỗ ngồi trên xe buýt',
@@ -451,7 +451,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── 23 tuổi ─────────────
+   
   {
     id: 'ls23-loi-gioi-thieu', age: 23,
     title: 'Lời giới thiệu',
@@ -537,7 +537,7 @@ export const stage11To23 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-ba-trao-nhan', ages: [11, 13], requiresAny: ['than_ba', 'bi_mat_voi_ba', 'ba_lan', 'nghe_chuyen_ba'],
     title: 'Chiếc nhẫn trong hộp thiếc',

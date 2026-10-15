@@ -10,8 +10,8 @@ export const studyAbroadMajors = [
 ];
 
 // Fictional four-year programs and VND costs for gameplay, not admission advice.
-// minIntellect: Trí tuệ tối thiểu để được nhận. Nước trả lương cao xét tuyển gắt hơn, để nước đắt nhất
-// không mặc nhiên là lựa chọn tốt nhất (nợ học phí cũng bị tính lãi sau khi ra trường).
+ 
+ 
 export const studyAbroadCountries = [
   ['japan', 'Nhật Bản', '🇯🇵', 120, 90, 216, 55],
   ['korea', 'Hàn Quốc', '🇰🇷', 100, 80, 192, 50],

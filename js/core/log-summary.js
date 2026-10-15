@@ -40,7 +40,7 @@ export function summarizeLifeLog(text = "") {
     .filter(Boolean).join("\n");
 }
 
-// Rút gọn tối đa khi hiển thị nhật ký; nội dung gốc đã lưu giữ nguyên.
+ 
 const MONEY = String.raw`[+−-]?[\d.,]+(?:\s?(?:k|nghìn|triệu|tỷ))?\s?VNĐ`;
 const yearText = (years) => (years === "năm" ? "" : ` ${years}`);
 const compactRules = [
@@ -65,25 +65,25 @@ export function compactLogText(text = "") {
   const kept = lines.length > 1 ? lines.filter((line) => !fillerLines.has(line)) : lines;
   const mapped = kept.map((line) => {
     if (line === "Không có gì thay đổi, mọi thứ vẫn vậy.") return "Một năm bình lặng.";
-    // Nút chỉ để đi tiếp không phải một lựa chọn đáng ghi.
+     
     if (/^Chọn: (?:Tiếp tục|Xác nhận)\.?$/u.test(line)) return "";
     let compact = line;
     for (const [pattern, replacement] of compactRules) compact = compact.replace(pattern, replacement);
-    // "24 triệu VNĐ" → "24 triệu": đơn vị đã đủ rõ là tiền.
+     
     compact = compact.replace(/(\d\s?(?:k|nghìn|triệu|tỷ))\s?VNĐ/gu, "$1");
     if (compact !== line || isStatLine(compact)) return compact;
     return Array.from(compact).length > COMPACT_LIMIT ? shorten(firstSentence(compact), COMPACT_LIMIT) : compact;
   }).filter(Boolean);
-  // Gộp dòng: lựa chọn nối vào tiêu đề, dòng chỉ số nối vào câu trước nó.
+   
   const merged = [];
   for (let index = 0; index < mapped.length; index++) {
     const line = mapped[index];
-    // Bỏ dòng lặp lại đúng tiêu đề ngay phía trên.
+     
     const previous = merged.at(-1)?.split(" → ")[0];
     if (line === previous) continue;
     if (line.startsWith("Chọn: ") && merged.length) {
       merged[merged.length - 1] += ` → ${line.slice(6)}`;
-      // Câu kết quả ngắn, chung chung ngay trước dòng chỉ số thì bỏ đi.
+       
       const next = mapped[index + 1];
       if (next && pureStatLine.test(mapped[index + 2] ?? "") && !/\d/.test(next) && Array.from(next).length <= 40) index++;
       continue;

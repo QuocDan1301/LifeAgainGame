@@ -1,0 +1,859 @@
+[
+  {
+    "test": "check-earth-auction.html",
+    "result": "FAIL: Error: Confirm advances one year, adds salary once (less 40% living costs) and awards both stats\n    at assert (https://game.test/scripts/check-earth-auction.html:6:58)\n    at https://game.test/scripts/check-earth-auction.html:91:5",
+    "pageErrors": [],
+    "milliseconds": 872,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": "heterosexual",
+        "partner": {
+          "id": "admirer-25-400000000",
+          "name": "Hoàng Thảo Nhi",
+          "gender": "female",
+          "birthDay": 13,
+          "birthMonth": 5,
+          "zodiac": "Kim Ngưu",
+          "ageAtMeeting": 24,
+          "metAtAge": 25,
+          "personality": "chu đáo, năng động",
+          "reason": "thích sự hài hước của tôi, kể cả những câu đùa hơi nhạt",
+          "relationship": 80,
+          "workplace": "công ty công nghệ",
+          "stats": {
+            "health": 58,
+            "intelligence": 58,
+            "happiness": 58,
+            "appearance": 58
+          }
+        },
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": 25,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": 31,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [
+          {
+            "age": 25,
+            "type": "dating",
+            "person": {
+              "id": "admirer-25-400000000",
+              "name": "Hoàng Thảo Nhi",
+              "gender": "female",
+              "birthDay": 13,
+              "birthMonth": 5,
+              "zodiac": "Kim Ngưu",
+              "ageAtMeeting": 24,
+              "metAtAge": 25,
+              "personality": "chu đáo, năng động",
+              "reason": "thích sự hài hước của tôi, kể cả những câu đùa hơi nhạt",
+              "relationship": 80,
+              "workplace": "công ty công nghệ",
+              "stats": {
+                "health": 58,
+                "intelligence": 58,
+                "happiness": 58,
+                "appearance": 58
+              }
+            },
+            "text": "Tôi bắt đầu hẹn hò với Hoàng Thảo Nhi."
+          }
+        ],
+        "province": "",
+        "age": 30,
+        "money": 54500000,
+        "health": 88,
+        "happiness": 60,
+        "intelligence": 60,
+        "appearance": 70,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": "💻 Lập trình viên tập sự",
+        "employmentStatus": "employed",
+        "careerLevel": 1,
+        "lastSalaryAge": 30,
+        "nextPromotionAge": null,
+        "careerPath": {
+          "id": "programming",
+          "field": "Công nghệ thông tin"
+        },
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {
+          "story-alien": true
+        },
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school",
+          "age-30",
+          "money-1m",
+          "money-10m",
+          "story-alien"
+        ],
+        "ending": null,
+        "partnerActions": {},
+        "partnerPromise": null,
+        "lifeId": "legacy-e405322e",
+        "specialChainsSeen": [
+          "earth-auction"
+        ],
+        "careerHighestRanks": {
+          "programming": 1
+        },
+        "careerYears": {
+          "programming": 2
+        },
+        "careerTrackedAge": 30,
+        "employedSince": 30,
+        "relatives": [
+          {
+            "id": "father",
+            "role": "Bố",
+            "name": "Thanh Bình",
+            "ageAtPlayerBirth": 36,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "trackedFrom": 30,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          },
+          {
+            "id": "mother",
+            "role": "Mẹ",
+            "name": "Lan Anh",
+            "ageAtPlayerBirth": 33,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "trackedFrom": 30,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          }
+        ],
+        "illnessPlan": [
+          {
+            "id": "early-cancer",
+            "age": 95
+          },
+          {
+            "id": "coronary",
+            "age": 95
+          }
+        ],
+        "moodEffects": [],
+        "lowHappinessYears": 0,
+        "strainedYears": 0,
+        "storyLoans": [],
+        "homeLoans": [],
+        "vietlottPot": {
+          "amount": 15000000000,
+          "updatedAge": 30
+        },
+        "familyBudgetPaidAge": 30,
+        "specialChainsCompleted": [
+          "earth-auction"
+        ]
+      },
+      "pendingEvent": null,
+      "logs": [
+        {
+          "age": 30,
+          "content": "🌍 Năm 30 tuổi, tôi mơ thấy mình phải bảo vệ Trái Đất trong một phiên đấu giá ngoài vũ trụ. Tỉnh dậy, tôi xuống giúp bác hàng xóm nhặt và xách đồ, giữ được đơn hàng cam bác sắp giao. Bác tặng tôi hai quả cam cùng 500.000 VNĐ để cảm ơn — phần thưởng có vẻ nhỏ, nhưng ít nhất là hàng thật.\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -2.\n🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -48 triệu VNĐ.\nChi phí hẹn hò (ăn uống, đi lại, dịp kỷ niệm) cho Hoàng Thảo Nhi: -18 triệu VNĐ.",
+          "summary": "👽 Thực thể ngoài vũ trụ\nTrí tuệ +10 · Hạnh phúc +10 · Tiền +500.000 VNĐ\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -2.\n🏠 Chi phí sinh hoạt (ăn ở, đi lại, hóa đơn): -48 triệu VNĐ.\nChi phí hẹn hò (ăn uống, đi lại, dịp kỷ niệm) cho Hoàng Thảo Nhi: -18 triệu VNĐ."
+        }
+      ],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-save-life.html",
+    "result": "FAIL: Error: Ordinary draw or no-event draw preserves the due proposal this year\n    at assert (https://game.test/scripts/check-save-life.html:6:57)\n    at https://game.test/scripts/check-save-life.html:93:9",
+    "pageErrors": [],
+    "milliseconds": 973,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": "heterosexual",
+        "partner": {
+          "id": "admirer-25-400000000",
+          "name": "Hoàng Thảo Nhi",
+          "gender": "female",
+          "birthDay": 13,
+          "birthMonth": 5,
+          "zodiac": "Kim Ngưu",
+          "ageAtMeeting": 24,
+          "metAtAge": 25,
+          "personality": "chu đáo, năng động",
+          "reason": "thích sự hài hước của tôi, kể cả những câu đùa hơi nhạt",
+          "relationship": 80,
+          "workplace": "nơi làm việc",
+          "stats": {
+            "health": 58,
+            "intelligence": 58,
+            "happiness": 58,
+            "appearance": 58
+          }
+        },
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": 25,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": 25,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": 31,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 29,
+        "money": 0,
+        "health": 80,
+        "happiness": 50,
+        "intelligence": 50,
+        "appearance": 50,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": null,
+        "employmentStatus": "declined",
+        "careerLevel": 0,
+        "lastSalaryAge": null,
+        "nextPromotionAge": null,
+        "careerPath": null,
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A00",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {},
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [],
+        "ending": null,
+        "lifeId": "legacy-e405322e"
+      },
+      "pendingEvent": {
+        "stage": "choice",
+        "id": "marital-affair-30",
+        "kind": "marital-affair",
+        "addedEveryday": false,
+        "automaticResult": false,
+        "category": "love",
+        "age": 30,
+        "title": "Một lời hẹn riêng",
+        "text": "Lê Bảo Ngọc, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Hoàng Thảo Nhi.",
+        "image": "https://game.test/js/img/events/openmoji/animated/svg/1F4AC.svg",
+        "imageAlt": "OpenMoji: ",
+        "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F4AC.svg",
+        "imageFallbackAlt": "OpenMoji: ",
+        "imageOptions": [
+          {
+            "url": "https://game.test/js/img/events/openmoji/animated/svg/1F4AC.svg",
+            "poster": "https://game.test/js/img/events/openmoji/color/svg/1F4AC.svg",
+            "alt": "OpenMoji: ",
+            "source": "openmoji-1F4AC",
+            "kind": "animated-openmoji",
+            "origin": "openmoji",
+            "plan": {
+              "code": "1F4AC",
+              "action": "icon",
+              "label": "",
+              "key": "openmoji-1F4AC",
+              "reviewRevision": 3,
+              "reviewText": "Lê Bảo Ngọc, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Hoàng Thảo Nhi."
+            }
+          }
+        ],
+        "choices": [
+          {
+            "label": "Từ chối, giữ ranh giới",
+            "title": "Giữ lời cam kết",
+            "text": "Tôi nói rõ mình đã kết hôn và dừng những cuộc trò chuyện riêng tư.",
+            "effects": {
+              "happiness": 1
+            },
+            "playerUpdates": {
+              "affair": null,
+              "affairLastEventAge": 30
+            },
+            "image": "https://game.test/js/img/events/openmoji/animated/svg/1F91D.svg",
+            "imageAlt": "OpenMoji: Gặp gỡ và trò chuyện",
+            "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F91D.svg",
+            "imageFallbackAlt": "OpenMoji: Gặp gỡ và trò chuyện",
+            "mediaReview": {
+              "code": "1F91D",
+              "subject": "OpenMoji: Gặp gỡ và trò chuyện",
+              "kind": "animated-openmoji",
+              "source": "openmoji-1F91D",
+              "origin": "openmoji",
+              "plan": {
+                "code": "1F91D",
+                "action": "icon",
+                "label": "Gặp gỡ và trò chuyện",
+                "key": "openmoji-1F91D",
+                "reviewRevision": 3,
+                "reviewText": "Tôi nói rõ mình đã kết hôn và dừng những cuộc trò chuyện riêng tư."
+              }
+            },
+            "imageOptions": [
+              {
+                "url": "https://game.test/js/img/events/openmoji/animated/svg/1F91D.svg",
+                "poster": "https://game.test/js/img/events/openmoji/color/svg/1F91D.svg",
+                "alt": "OpenMoji: Gặp gỡ và trò chuyện",
+                "source": "openmoji-1F91D",
+                "kind": "animated-openmoji",
+                "origin": "openmoji",
+                "plan": {
+                  "code": "1F91D",
+                  "action": "icon",
+                  "label": "Gặp gỡ và trò chuyện",
+                  "key": "openmoji-1F91D",
+                  "reviewRevision": 3,
+                  "reviewText": "Tôi nói rõ mình đã kết hôn và dừng những cuộc trò chuyện riêng tư."
+                }
+              }
+            ]
+          },
+          {
+            "label": "Bắt đầu quan hệ bí mật",
+            "title": "Một bí mật trong hôn nhân",
+            "text": "Tôi bắt đầu qua lại với Lê Bảo Ngọc, giấu Hoàng Thảo Nhi. Từ năm sau, mỗi lần xét có 50% nguy cơ bị phát hiện.",
+            "effects": {
+              "happiness": 4
+            },
+            "playerUpdates": {
+              "affair": {
+                "person": {
+                  "id": "admirer-30-220000000",
+                  "name": "Lê Bảo Ngọc",
+                  "gender": "female",
+                  "birthDay": 7,
+                  "birthMonth": 3,
+                  "zodiac": "Song Ngư",
+                  "ageAtMeeting": 27,
+                  "metAtAge": 30,
+                  "personality": "điềm tĩnh, hài hước",
+                  "reason": "ấn tượng vì tôi sẵn lòng giúp mọi người khi công việc rối lên",
+                  "relationship": 80,
+                  "workplace": "nơi làm việc",
+                  "stats": {
+                    "health": 45,
+                    "intelligence": 45,
+                    "happiness": 45,
+                    "appearance": 45
+                  }
+                },
+                "spouseId": "admirer-25-400000000",
+                "startedAtAge": 30
+              },
+              "relationshipHistory": [
+                {
+                  "age": 30,
+                  "type": "affair",
+                  "text": "Tôi bắt đầu quan hệ bí mật với Lê Bảo Ngọc khi vẫn đang kết hôn với Hoàng Thảo Nhi.",
+                  "person": {
+                    "id": "admirer-30-220000000",
+                    "name": "Lê Bảo Ngọc",
+                    "gender": "female",
+                    "birthDay": 7,
+                    "birthMonth": 3,
+                    "zodiac": "Song Ngư",
+                    "ageAtMeeting": 27,
+                    "metAtAge": 30,
+                    "personality": "điềm tĩnh, hài hước",
+                    "reason": "ấn tượng vì tôi sẵn lòng giúp mọi người khi công việc rối lên",
+                    "relationship": 80,
+                    "workplace": "nơi làm việc",
+                    "stats": {
+                      "health": 45,
+                      "intelligence": 45,
+                      "happiness": 45,
+                      "appearance": 45
+                    }
+                  }
+                }
+              ],
+              "affairLastEventAge": 30
+            },
+            "image": "https://game.test/js/img/events/openmoji/animated/svg/1F494.svg",
+            "imageAlt": "OpenMoji: Một lời hẹn riêng",
+            "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F494.svg",
+            "imageFallbackAlt": "OpenMoji: Một lời hẹn riêng",
+            "mediaReview": {
+              "code": "1F494",
+              "subject": "OpenMoji: Một lời hẹn riêng",
+              "kind": "animated-openmoji",
+              "source": "openmoji-1F494",
+              "origin": "openmoji",
+              "plan": {
+                "code": "1F494",
+                "action": "icon",
+                "label": "Một lời hẹn riêng",
+                "key": "openmoji-1F494",
+                "reviewRevision": 3,
+                "reviewText": "Tôi bắt đầu qua lại với Lê Bảo Ngọc, giấu Hoàng Thảo Nhi. Từ năm sau, mỗi lần xét có 50% nguy cơ bị phát hiện."
+              }
+            },
+            "imageOptions": [
+              {
+                "url": "https://game.test/js/img/events/openmoji/animated/svg/1F494.svg",
+                "poster": "https://game.test/js/img/events/openmoji/color/svg/1F494.svg",
+                "alt": "OpenMoji: Một lời hẹn riêng",
+                "source": "openmoji-1F494",
+                "kind": "animated-openmoji",
+                "origin": "openmoji",
+                "plan": {
+                  "code": "1F494",
+                  "action": "icon",
+                  "label": "Một lời hẹn riêng",
+                  "key": "openmoji-1F494",
+                  "reviewRevision": 3,
+                  "reviewText": "Tôi bắt đầu qua lại với Lê Bảo Ngọc, giấu Hoàng Thảo Nhi. Từ năm sau, mỗi lần xét có 50% nguy cơ bị phát hiện."
+                }
+              }
+            ]
+          }
+        ],
+        "mediaReview": {
+          "code": "1F4AC",
+          "subject": "OpenMoji: ",
+          "kind": "animated-openmoji",
+          "source": "openmoji-1F4AC",
+          "origin": "openmoji",
+          "plan": {
+            "code": "1F4AC",
+            "action": "icon",
+            "label": "",
+            "key": "openmoji-1F4AC",
+            "reviewRevision": 3,
+            "reviewText": "Lê Bảo Ngọc, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Hoàng Thảo Nhi."
+          }
+        }
+      },
+      "logs": [],
+      "dialogs": [
+        {
+          "id": "event-dialog",
+          "text": "\n      💕 Tình yêu\n      Một lời hẹn riêng\n      \n      Lê Bảo Ngọc, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Hoàng Thảo Nhi.\n      \n      \n      🙅 Từ chối, giữ ranh giới🧐 Bắt đầu quan hệ bí mật\n      \n      🧐 Dành thời gian suy nghĩ\n    "
+        }
+      ]
+    }
+  },
+  {
+    "test": "check-later-specials.html",
+    "result": "FAIL: Error: Random special selected at 100\n    at assert (https://game.test/scripts/check-later-specials.html:6:58)\n    at start (https://game.test/scripts/check-later-specials.html:85:7)\n    at https://game.test/scripts/check-later-specials.html:88:7",
+    "pageErrors": [],
+    "milliseconds": 5688,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": null,
+        "partner": {
+          "id": "spouse",
+          "name": "Bạn đời",
+          "gender": "female",
+          "relationship": 80,
+          "metAtAge": 25,
+          "ageAtMeeting": 24,
+          "stats": {
+            "health": 80,
+            "intelligence": 50,
+            "happiness": 50,
+            "appearance": 50
+          }
+        },
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": 30,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": 101,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 99,
+        "money": 1000000000,
+        "health": 50,
+        "happiness": 50,
+        "intelligence": 50,
+        "appearance": 50,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": null,
+        "employmentStatus": "declined",
+        "careerLevel": 0,
+        "lastSalaryAge": null,
+        "nextPromotionAge": null,
+        "careerPath": null,
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A00",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {},
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [],
+        "ending": null,
+        "healthCheckAge": 99,
+        "lifeId": "legacy-e405322e"
+      },
+      "pendingEvent": {
+        "stage": "choice",
+        "id": "marital-affair-100",
+        "kind": "marital-affair",
+        "addedEveryday": false,
+        "automaticResult": false,
+        "category": "love",
+        "age": 100,
+        "title": "Một lời hẹn riêng",
+        "text": "Trần Gia Bảo, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Bạn đời.",
+        "image": "https://game.test/js/img/events/openmoji/animated/svg/1F4AC.svg",
+        "imageAlt": "OpenMoji: ",
+        "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F4AC.svg",
+        "imageFallbackAlt": "OpenMoji: ",
+        "imageOptions": [
+          {
+            "url": "https://game.test/js/img/events/openmoji/animated/svg/1F4AC.svg",
+            "poster": "https://game.test/js/img/events/openmoji/color/svg/1F4AC.svg",
+            "alt": "OpenMoji: ",
+            "source": "openmoji-1F4AC",
+            "kind": "animated-openmoji",
+            "origin": "openmoji",
+            "plan": {
+              "code": "1F4AC",
+              "action": "icon",
+              "label": "",
+              "key": "openmoji-1F4AC",
+              "reviewRevision": 3,
+              "reviewText": "Trần Gia Bảo, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Bạn đời."
+            }
+          }
+        ],
+        "choices": [
+          {
+            "label": "Từ chối, giữ ranh giới",
+            "title": "Giữ lời cam kết",
+            "text": "Tôi nói rõ mình đã kết hôn và dừng những cuộc trò chuyện riêng tư.",
+            "effects": {
+              "happiness": 1
+            },
+            "playerUpdates": {
+              "affair": null,
+              "affairLastEventAge": 100
+            },
+            "image": "https://game.test/js/img/events/openmoji/animated/svg/1F91D.svg",
+            "imageAlt": "OpenMoji: Gặp gỡ và trò chuyện",
+            "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F91D.svg",
+            "imageFallbackAlt": "OpenMoji: Gặp gỡ và trò chuyện",
+            "mediaReview": {
+              "code": "1F91D",
+              "subject": "OpenMoji: Gặp gỡ và trò chuyện",
+              "kind": "animated-openmoji",
+              "source": "openmoji-1F91D",
+              "origin": "openmoji",
+              "plan": {
+                "code": "1F91D",
+                "action": "icon",
+                "label": "Gặp gỡ và trò chuyện",
+                "key": "openmoji-1F91D",
+                "reviewRevision": 3,
+                "reviewText": "Tôi nói rõ mình đã kết hôn và dừng những cuộc trò chuyện riêng tư."
+              }
+            },
+            "imageOptions": [
+              {
+                "url": "https://game.test/js/img/events/openmoji/animated/svg/1F91D.svg",
+                "poster": "https://game.test/js/img/events/openmoji/color/svg/1F91D.svg",
+                "alt": "OpenMoji: Gặp gỡ và trò chuyện",
+                "source": "openmoji-1F91D",
+                "kind": "animated-openmoji",
+                "origin": "openmoji",
+                "plan": {
+                  "code": "1F91D",
+                  "action": "icon",
+                  "label": "Gặp gỡ và trò chuyện",
+                  "key": "openmoji-1F91D",
+                  "reviewRevision": 3,
+                  "reviewText": "Tôi nói rõ mình đã kết hôn và dừng những cuộc trò chuyện riêng tư."
+                }
+              }
+            ]
+          },
+          {
+            "label": "Bắt đầu quan hệ bí mật",
+            "title": "Một bí mật trong hôn nhân",
+            "text": "Tôi bắt đầu qua lại với Trần Gia Bảo, giấu Bạn đời. Từ năm sau, mỗi lần xét có 50% nguy cơ bị phát hiện.",
+            "effects": {
+              "happiness": 4
+            },
+            "playerUpdates": {
+              "affair": {
+                "person": {
+                  "id": "admirer-100-100000000",
+                  "name": "Trần Gia Bảo",
+                  "gender": "male",
+                  "birthDay": 3,
+                  "birthMonth": 2,
+                  "zodiac": "Bảo Bình",
+                  "ageAtMeeting": 96,
+                  "metAtAge": 100,
+                  "personality": "hài hước, ấm áp",
+                  "reason": "thích cách tôi lắng nghe và nhớ những chuyện nhỏ của người khác",
+                  "relationship": 80,
+                  "workplace": "nơi làm việc",
+                  "stats": {
+                    "health": 37,
+                    "intelligence": 37,
+                    "happiness": 37,
+                    "appearance": 37
+                  }
+                },
+                "spouseId": "spouse",
+                "startedAtAge": 100
+              },
+              "relationshipHistory": [
+                {
+                  "age": 100,
+                  "type": "affair",
+                  "text": "Tôi bắt đầu quan hệ bí mật với Trần Gia Bảo khi vẫn đang kết hôn với Bạn đời.",
+                  "person": {
+                    "id": "admirer-100-100000000",
+                    "name": "Trần Gia Bảo",
+                    "gender": "male",
+                    "birthDay": 3,
+                    "birthMonth": 2,
+                    "zodiac": "Bảo Bình",
+                    "ageAtMeeting": 96,
+                    "metAtAge": 100,
+                    "personality": "hài hước, ấm áp",
+                    "reason": "thích cách tôi lắng nghe và nhớ những chuyện nhỏ của người khác",
+                    "relationship": 80,
+                    "workplace": "nơi làm việc",
+                    "stats": {
+                      "health": 37,
+                      "intelligence": 37,
+                      "happiness": 37,
+                      "appearance": 37
+                    }
+                  }
+                }
+              ],
+              "affairLastEventAge": 100
+            },
+            "image": "https://game.test/js/img/events/openmoji/animated/svg/1F494.svg",
+            "imageAlt": "OpenMoji: Một lời hẹn riêng",
+            "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F494.svg",
+            "imageFallbackAlt": "OpenMoji: Một lời hẹn riêng",
+            "mediaReview": {
+              "code": "1F494",
+              "subject": "OpenMoji: Một lời hẹn riêng",
+              "kind": "animated-openmoji",
+              "source": "openmoji-1F494",
+              "origin": "openmoji",
+              "plan": {
+                "code": "1F494",
+                "action": "icon",
+                "label": "Một lời hẹn riêng",
+                "key": "openmoji-1F494",
+                "reviewRevision": 3,
+                "reviewText": "Tôi bắt đầu qua lại với Trần Gia Bảo, giấu Bạn đời. Từ năm sau, mỗi lần xét có 50% nguy cơ bị phát hiện."
+              }
+            },
+            "imageOptions": [
+              {
+                "url": "https://game.test/js/img/events/openmoji/animated/svg/1F494.svg",
+                "poster": "https://game.test/js/img/events/openmoji/color/svg/1F494.svg",
+                "alt": "OpenMoji: Một lời hẹn riêng",
+                "source": "openmoji-1F494",
+                "kind": "animated-openmoji",
+                "origin": "openmoji",
+                "plan": {
+                  "code": "1F494",
+                  "action": "icon",
+                  "label": "Một lời hẹn riêng",
+                  "key": "openmoji-1F494",
+                  "reviewRevision": 3,
+                  "reviewText": "Tôi bắt đầu qua lại với Trần Gia Bảo, giấu Bạn đời. Từ năm sau, mỗi lần xét có 50% nguy cơ bị phát hiện."
+                }
+              }
+            ]
+          }
+        ],
+        "mediaReview": {
+          "code": "1F4AC",
+          "subject": "OpenMoji: ",
+          "kind": "animated-openmoji",
+          "source": "openmoji-1F4AC",
+          "origin": "openmoji",
+          "plan": {
+            "code": "1F4AC",
+            "action": "icon",
+            "label": "",
+            "key": "openmoji-1F4AC",
+            "reviewRevision": 3,
+            "reviewText": "Trần Gia Bảo, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Bạn đời."
+          }
+        }
+      },
+      "logs": [],
+      "dialogs": [
+        {
+          "id": "event-dialog",
+          "text": "\n      💕 Tình yêu\n      Một lời hẹn riêng\n      \n      Trần Gia Bảo, người tôi quen ở nơi làm việc, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với Bạn đời.\n      \n      \n      🙅 Từ chối, giữ ranh giới🧐 Bắt đầu quan hệ bí mật\n      \n      😊 Kết thúc cuộc đời\n    "
+        }
+      ]
+    }
+  }
+]

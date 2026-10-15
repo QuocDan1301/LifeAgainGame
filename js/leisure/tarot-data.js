@@ -1,6 +1,6 @@
-// Bộ Tarot 78 lá, chỉ dùng hướng xuôi. Mỗi lá: ý nghĩa chung (bộ sưu tập), gợi ý ngắn
-// cho nhật ký và 4 lời giải theo chủ đề: tình duyên, sự nghiệp, tài chính, cuộc sống.
-// Lời giải mang tính gợi mở, không khẳng định chắc chắn chuyện tương lai.
+ 
+ 
+ 
 
 export const tarotTopics = [
   { id: "love", icon: "💘", name: "Tình duyên" },
@@ -17,7 +17,7 @@ export const tarotGroups = [
   { id: "pentacles", name: "Tiền", icon: "🌿" },
 ];
 
-// [tên, biểu tượng, hiệu ứng, ý nghĩa chung, gợi ý nhật ký, tình duyên, sự nghiệp, tài chính, cuộc sống]
+ 
 const major = [
   ["Kẻ Khờ", "🎒", { happiness: 2 }, "Khởi đầu mới, tinh thần phiêu lưu và sự hồn nhiên dám thử.", "mạnh dạn bắt đầu điều mới",
     "Đôi khi tình cảm đẹp bắt đầu từ một lời chào giản dị. Cứ mở lòng, đừng quá lo mình chưa hoàn hảo.",
@@ -133,7 +133,7 @@ const major = [
 
 const ranks = ["Át", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Thị Đồng", "Hiệp Sĩ", "Hoàng Hậu", "Vua"];
 
-// Mỗi chất: [ý nghĩa chung, gợi ý nhật ký, tình duyên, sự nghiệp, tài chính, cuộc sống] theo 14 lá.
+ 
 const minor = {
   wands: { name: "Gậy", icon: "🔥", cards: [
     ["Ngọn lửa đam mê và cảm hứng mới.", "nuôi dưỡng một ngọn lửa đam mê",

@@ -1,5 +1,5 @@
-// Sinh hoạt phí lũy tiến: tỷ lệ cơ bản (40% trong nước, 30% khi ở lại nước ngoài) đến 200 triệu, 55% phần 200–600 triệu,
-// 70% phần vượt 600 triệu. Chỉ tính thu nhập thường xuyên, không tính tiền thưởng.
+ 
+ 
 export const LIVING_COST_HIGH_FROM = 200_000_000;
 export const LIVING_COST_HIGH_RATE = 0.55;
 export const LIVING_COST_TOP_FROM = 600_000_000;

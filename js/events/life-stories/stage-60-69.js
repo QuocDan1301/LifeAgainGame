@@ -1,7 +1,7 @@
-// Giai đoạn 60–69 tuổi (nghỉ hưu từ 62). Mỗi tuổi: 3 sự kiện chung + phiên bản theo hoàn cảnh.
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage60To69 = [
-  // ───────────── 60 tuổi ─────────────
+   
   {
     id: 'ls60-sinh-nhat-sau-muoi', age: 60,
     title: 'Sáu mươi năm',
@@ -91,7 +91,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 61 tuổi ─────────────
+   
   {
     id: 'ls61-ban-tre-tren-mang', age: 61,
     title: 'Người bạn trên mạng',
@@ -170,7 +170,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 62 tuổi ─────────────
+   
   {
     id: 'ls62-ngay-dau-nghi-huu', age: 62,
     title: 'Sáng thứ hai đầu tiên',
@@ -227,7 +227,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 63 tuổi ─────────────
+   
   {
     id: 'ls63-hoc-may-tinh', age: 63,
     title: 'Gọi video cho cháu',
@@ -295,7 +295,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 64 tuổi ─────────────
+   
   {
     id: 'ls64-bai-tap-tri-nho', age: 64,
     title: 'Bắt đầu quên',
@@ -363,7 +363,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 65 tuổi ─────────────
+   
   {
     id: 'ls65-mat-bang-lai', age: 65,
     title: 'Chiếc chìa khóa xe',
@@ -431,7 +431,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 66 tuổi ─────────────
+   
   {
     id: 'ls66-te-nga', age: 66,
     title: 'Cú ngã ngoài chợ',
@@ -499,7 +499,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 67 tuổi ─────────────
+   
   {
     id: 'ls67-chan-tay-yeu', age: 67,
     title: 'Lớp thái cực quyền',
@@ -567,7 +567,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 68 tuổi ─────────────
+   
   {
     id: 'ls68-thinh-luc', age: 68,
     title: 'Máy trợ thính',
@@ -635,7 +635,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── 69 tuổi ─────────────
+   
   {
     id: 'ls69-ban-cung-lop-mat', age: 69,
     title: 'Danh sách lớp',
@@ -703,7 +703,7 @@ export const stage60To69 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-phong-hop-lop', ages: [60, 72], requiresAny: ['khai_phong', 'im_lang_binh_hoa', 'nhan_thay_phong', 'nhac_binh_hoa'],
     title: 'Phong ở buổi họp lớp',

@@ -32,7 +32,7 @@
     assert(free.every(id => canChooseCareer(id, "TD") && !["A00", "A01", "B00", "C00", "D01"].some(block => canChooseCareer(id, block))),
       "The four free careers belong only to Khối Tự do");
     for (const block of ["A00", "A01", "B00", "C00", "D01", "TD"]) {
-      // Mỗi đời mời 3 ngành của khối; qua nhiều đời thì mọi ngành của khối đều được mời.
+       
       const allowed = ids.filter(id => canChooseCareer(id, block));
       const seen = new Set();
       for (let lifeSeed = 1; lifeSeed <= 200; lifeSeed++) {
@@ -61,7 +61,7 @@
       document.getElementById("event-dialog")?.close();
       document.getElementById("age-up").disabled = false;
     };
-    // Một đời khối A00 được mời cả Lập trình lẫn Marketing (ba ngành bốc theo hạt giống đời chơi).
+     
     const lifeSeed = Array.from({ length: 5000 }, (_, index) => index + 1).find(seed => {
       const offered = createCareerSparkPickEvent("A00", { lifeSeed: seed }).choices.map(choice => choice.careerSparkId);
       return offered.includes("programming") && offered.includes("marketing");
@@ -69,7 +69,7 @@
     const resetStudent = reset;
     reset = extra => resetStudent({ lifeSeed, ...extra });
     reset();
-    // Số ngẫu nhiên cố định thấp hơn khả năng thành công (60%).
+     
     Math.random = () => 0.3;
     await import("../js/main.js");
     const birthday = document.getElementById("age-up");
@@ -85,7 +85,7 @@
       assert(state.pendingEvent.choices.map(choice => choice.careerSparkId).join() === offered.join(), "Reload keeps the same 3 careers");
       pick(choice => choice.careerSparkId === careerId);
     };
-    // Thành công: chọn Lập trình và ra kết quả thành công (< 60%).
+     
     birthday.click();
     chooseCareer("programming");
     assert(state.pendingEvent?.kind === "career-spark" && state.pendingEvent.careerSparkId === "programming" &&
@@ -98,7 +98,7 @@
     assert(state.player.age === 16 && state.player.careerSpark === "programming", "Success stores the career milestone");
     assert(state.player.money === 3_000_000 && state.player.happiness === 53, "Success pays the reward and +3 happiness");
 
-    // Thất bại ở kết quả ngẫu nhiên.
+     
     reset();
     Math.random = () => 0.99;
     birthday.click();
@@ -109,7 +109,7 @@
     confirm.click();
     assert(!state.player.careerSpark && state.player.money === 0 && state.player.happiness === 47, "Failure: -3 happiness, no milestone");
 
-    // Từ chối giữa chuỗi.
+     
     reset();
     birthday.click();
     chooseCareer("marketing");
@@ -118,7 +118,7 @@
     confirm.click();
     assert(!state.player.careerSpark && state.player.money === 0 && state.player.happiness === 50, "Stopping gives no reward or milestone");
 
-    // Nâng bậc lần đầu thay thế: đủ 4 tình huống mới lên bậc 2.
+     
     const worker = extra => reset({ age: 26, employmentStatus: "employed", careerLevel: 1, nextPromotionAge: 27,
       careerPath: { id: "acting", field: "Diễn xuất" }, job: getCareerProfile("acting").ranks[0], lastSalaryAge: 26, ...extra });
     worker({ careerSpark: "acting" });
@@ -145,9 +145,9 @@
     birthday.click();
     assert(state.pendingEvent?.kind === "career-promotion" && state.pendingEvent.specialStep === 1, "Retry uses the milestone chain again");
 
-    // Chọn ngành khác ở tuổi 18: sự kiện cũ, không mở bậc 3.
+     
     worker({ careerSpark: "law" });
-    // Khả năng được chọn khi xử lý đúng tung lúc sự kiện xuất hiện; cố định ở mức được chọn.
+     
     const promotionRandom = Math.random;
     Math.random = () => 0;
     birthday.click();

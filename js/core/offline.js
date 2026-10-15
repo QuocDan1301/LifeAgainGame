@@ -1,10 +1,19 @@
-// Chế độ offline: đăng ký service worker (chỉ bản build mới có sw.js) để game chạy khi không có mạng.
-// Bản cập nhật tải xong thì chỉ đổi sang khi người chơi đang rảnh ở bến xe, rồi mở lại trang.
+ 
+ 
 export function initOffline(isIdle) {
   if (!("serviceWorker" in navigator)) return;
   let reloading = false;
+  let controllerChanged = false;
+  const wasControlled = Boolean(navigator.serviceWorker.controller);
+  function reloadWhenIdle() {
+    if (!controllerChanged || !isIdle()) return;
+    reloading = true;
+    location.reload();
+  }
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (reloading) location.reload();
+     
+    controllerChanged = wasControlled || reloading;
+    reloadWhenIdle();
   });
   function activate(worker) {
     if (!worker || !navigator.serviceWorker.controller || reloading || !isIdle()) return;
@@ -12,33 +21,63 @@ export function initOffline(isIdle) {
     worker.postMessage("skip-waiting");
   }
   async function register() {
-    // Bản phát triển (code gốc) không có sw.js: gỡ service worker cũ nếu có để luôn chạy code mới nhất.
+     
     if (!document.documentElement.hasAttribute("data-offline")) {
       const registrations = await navigator.serviceWorker.getRegistrations().catch(() => []);
-      for (const item of registrations) await item.unregister();
+      const appScope = new URL("./", document.baseURI).href;
+      let removed = false;
+      for (const item of registrations) {
+        if (item.scope === appScope) removed = (await item.unregister()) || removed;
+      }
+      if (removed && wasControlled) {
+        controllerChanged = true;
+        reloadWhenIdle();
+        setInterval(reloadWhenIdle, 5000);
+      }
       return;
     }
     let registration;
     try {
-      registration = await navigator.serviceWorker.register("./sw.js");
+      registration = await navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" });
     } catch {
       return;
     }
-    // Trình duyệt chặn service worker (chế độ riêng tư, chính sách công ty) thì bỏ qua.
     if (!registration) return;
-    activate(registration.waiting);
-    registration.addEventListener("updatefound", () => {
-      const worker = registration.installing;
-      worker?.addEventListener("statechange", () => {
+    function watch(worker) {
+      if (!worker) return;
+      worker.addEventListener("statechange", () => {
         if (worker.state === "installed") activate(worker);
       });
-    });
-    // Mở lại app từ nền: hỏi xem có bản mới không.
+      if (worker.state === "installed") activate(worker);
+    }
+    registration.addEventListener("updatefound", () => watch(registration.installing));
+    watch(registration.installing);
+    activate(registration.waiting);
+    let checking = false;
+    async function checkUpdate() {
+      if (checking || document.visibilityState === "hidden") return;
+      checking = true;
+      try {
+        await registration.update();
+        activate(registration.waiting);
+      } catch {
+         
+      } finally {
+        checking = false;
+      }
+    }
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") registration.update().catch(() => {});
+      if (document.visibilityState === "visible") checkUpdate();
     });
-    // Bản mới đang chờ vì người chơi còn trong ván: về bến xe thì đổi.
-    setInterval(() => activate(registration.waiting), 30000);
+    window.addEventListener("online", checkUpdate);
+    window.addEventListener("focus", checkUpdate);
+    checkUpdate();
+    setInterval(checkUpdate, 60000);
+     
+    setInterval(() => {
+      reloadWhenIdle();
+      activate(registration.waiting);
+    }, 5000);
   }
   if (document.readyState === "complete") register();
   else window.addEventListener("load", register, { once: true });

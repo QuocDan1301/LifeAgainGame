@@ -1,4 +1,4 @@
-/* ===== Cài đặt chung ===== */
+ 
 :root {
   --text: #10283f;
   --yellow-border: #ffc400;
@@ -12,7 +12,7 @@
 * {
   box-sizing: border-box;
 }
-/* Ẩn mọi thanh cuộn; vẫn cuộn được bằng chuột, cảm ứng và bàn phím. */
+ 
 * {
   scrollbar-width: none;
 }
@@ -76,15 +76,15 @@ button:active {
   padding-left: max(0.8rem, env(safe-area-inset-left));
   padding-right: max(0.8rem, env(safe-area-inset-right));
   display: grid;
-  /*
-    Header, cụm nút, hồ sơ: theo chiều cao nội dung.
-    Nhật ký: nhận toàn bộ chiều cao còn lại.
-  */
+  
+
+
+
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: 0.6rem;
   background: #ffffff;
 }
-/* ===== Thanh tiêu đề ===== */
+ 
 .game-header {
   position: relative;
   min-height: 5.4rem;
@@ -133,9 +133,9 @@ button:active {
   background: transparent;
   filter: drop-shadow(0 2px 5px rgba(16, 40, 63, 0.5));
 }
-/* ===== Nhật ký ===== */
+ 
 .journal {
-  /* Cho phép phần tử co lại và cuộn trong CSS Grid */
+   
   min-height: 0;
   min-width: 0;
   overflow-y: auto;
@@ -176,7 +176,7 @@ button:active {
   font-weight: 400;
   font-style: normal;
 }
-/* ===== Cụm nút chức năng ===== */
+ 
 .game-actions {
   --age-size: clamp(8rem, 22vw, 10rem);
   position: relative;
@@ -187,7 +187,7 @@ button:active {
   margin-top: 1.2rem;
   flex-shrink: 0;
 }
-/* Icon nằm ở mép ngoài, chữ căn giữa vùng còn lại */
+ 
 .action-button {
   --icon-size: 3.8rem;
   --icon-edge: 0.5rem;
@@ -284,7 +284,7 @@ button:active {
   background: var(--green);
   border: 3px solid var(--text);
   border-radius: 50%;
-  /* Tạo khoảng trắng ngăn cách với 4 nút xung quanh */
+   
   box-shadow: 0 0 0 0.5rem #ffffff;
   font-size: 2rem;
   font-weight: 900;
@@ -297,7 +297,7 @@ button:active {
 .age-button:active {
   transform: translate(-50%, -50%) scale(0.95);
 }
-/* ===== Hồ sơ nhân vật ===== */
+ 
 .character {
   min-width: 0;
   padding: 0.8rem;
@@ -427,7 +427,7 @@ button:active {
   justify-content: space-between;
   gap: 0.7rem;
 }
-/* ===== Chỉ số ===== */
+ 
 .stats {
   display: grid;
   gap: 0.5rem;
@@ -467,7 +467,7 @@ progress::-moz-progress-bar {
   background: var(--bar-color);
   border-radius: 999px;
 }
-/* ===== Ví tiền ===== */
+ 
 .wallet {
   min-width: 0;
   padding: 0.5rem 1rem;
@@ -496,7 +496,7 @@ progress::-moz-progress-bar {
   font-size: 2rem;
   overflow-wrap: anywhere;
 }
-/* Tên game và 4 nút chức năng */
+ 
 .game-header,
 .action-button {
   font-family: "Francois One", sans-serif;
@@ -536,7 +536,7 @@ progress::-moz-progress-bar {
   min-width: 0;
   overflow-wrap: anywhere;
 }
-/* Nền ngoài khung game */
+ 
 body {
   position: relative;
   isolation: isolate;
@@ -544,7 +544,7 @@ body {
     radial-gradient(circle at 15% 20%, #fff3bd 0%, transparent 45%),
     radial-gradient(circle at 85% 80%, #bdeeff 0%, transparent 45%), #edf7fa;
 }
-/* Lớp logo viền chuyển động */
+ 
 body::before {
   content: "";
   position: fixed;
@@ -558,7 +558,7 @@ body::before {
   opacity: 0.08;
   animation: move-background 45s linear infinite;
 }
-/* Khung game nằm trên nền và che logo phía sau */
+ 
 .game {
   position: relative;
   background: #ffffff;
@@ -566,7 +566,7 @@ body::before {
     -8px 0 30px rgba(16, 40, 63, 0.06),
     8px 0 30px rgba(16, 40, 63, 0.06);
 }
-/* Di chuyển đúng một ô để vòng lặp liền mạch */
+ 
 @keyframes move-background {
   from {
     background-position: 0 0;
@@ -575,7 +575,7 @@ body::before {
     background-position: 220px 170px;
   }
 }
-/* Dừng chuyển động nếu thiết bị yêu cầu giảm hiệu ứng */
+ 
 @media (prefers-reduced-motion: reduce) {
   body::before {
     animation: none;
@@ -608,7 +608,7 @@ body::before {
 .game {
   background: transparent;
 }
-/* Icon và chữ trên điện thoại hẹp */
+ 
 @media (max-width: 420px) {
   .action-button {
     --icon-size: 3rem;
@@ -636,7 +636,7 @@ body::before {
   height: auto;
   object-fit: contain;
 }
-/* ===== Điện thoại nhỏ ===== */
+ 
 @media (max-width: 360px) {
   .game {
     gap: 0.4rem;
@@ -655,7 +655,7 @@ body::before {
     font-size: 1.1rem;
   }
 }
-/* Màn hình thấp: thu gọn phần cố định để ưu tiên nhật ký */
+ 
 @media (max-height: 700px) {
   .game-header {
     min-height: 4.8rem;
@@ -679,7 +679,7 @@ body::before {
     padding: 0.3rem 0.8rem;
   }
 }
-/* Khi xoay ngang điện thoại, cho phép toàn trang cuộn */
+ 
 @media (max-height: 480px) {
   body {
     height: auto;
@@ -769,28 +769,28 @@ body::before {
   overflow: hidden;
   background: #e5e7eb;
 }
-/* Nền thanh trên Chrome, Edge, Safari */
+ 
 .stats progress::-webkit-progress-bar {
   background: #e5e7eb;
   border-radius: 999px;
 }
-/* Phần đã đầy trên Chrome, Edge, Safari */
+ 
 .stats progress::-webkit-progress-value {
   background: var(--stat-color, #43a047);
   border-radius: 999px;
 }
-/* Phần đã đầy trên Firefox */
+ 
 .stats progress::-moz-progress-bar {
   background: var(--stat-color, #43a047);
   border-radius: 999px;
 }
-/* Đưa nhóm chỉ số xuống gần ví tiền */
+ 
 .stats {
   position: relative;
   padding-top: 38px;
   box-sizing: border-box;
 }
-/* Ô tiêu đề nằm phía trên bốn thanh */
+ 
 .stats-title {
   position: absolute;
   top: 0;
@@ -1021,7 +1021,7 @@ body::before {
   touch-action: manipulation;
   transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease, border-color 150ms ease;
 }
-/* Mũi tên › báo hiệu bấm vào để mở. */
+ 
 .activities-list button::after {
   content: "›";
   flex: none;
@@ -1068,7 +1068,7 @@ body::before {
   line-height: 1.25;
   color: #17394b;
 }
-/* Mỗi hoạt động một màu nền riêng cho biểu tượng. */
+ 
 #activity-self-development { --tone: #d6f3c4; }
 #activity-games { --tone: #e2dbff; }
 #activity-love { --tone: #ffd6e4; }
@@ -1095,6 +1095,7 @@ body::before {
   outline-offset: 3px;
 }
 #relationships-dialog,
+#family-conversation-dialog,
 #life-profile-dialog,
 #education-dialog,
 #study-block-dialog,
@@ -1116,7 +1117,7 @@ body::before {
 #study-block-dialog::backdrop { background: rgb(0 0 0 / 55%); }
 #education-dialog::backdrop { background: rgb(0 0 0 / 55%); }
 #relationships-dialog::backdrop { background: rgb(0 0 0 / 55%); }
-/* Popup Tài sản, Học vấn, Mối quan hệ: tiêu đề xanh giống popup Hoạt động, mỗi phần là một thẻ. */
+ 
 .dialog-heading {
   position: relative;
   margin-bottom: 16px;
@@ -1417,7 +1418,7 @@ body::before {
   border-radius: 14px;
   background: #fff1ad;
 }
-/* Chưa đạt: vẫn hiện nhưng mờ và mất màu */
+ 
 .achievement-card.is-locked {
   opacity: 0.5;
   filter: grayscale(1);
@@ -1499,24 +1500,24 @@ body::before {
 #reset-achievements:active {
   transform: translateY(1px);
 }
-/* Tên nhóm nhỏ: Học tập và trưởng thành */
+ 
 #achievements-list .achievement-subgroup-title {
   font-family: "Sriracha", cursive;
   font-size: 18px;
 }
-/* Tên thành tựu: Ngày đầu đến trường */
+ 
 #achievements-list .achievement-card h4 {
   font-family: "Sriracha", cursive;
   font-size: 22px;
   font-weight: 400;
 }
-/* Hướng dẫn bên dưới tên */
+ 
 #achievements-list .achievement-card p {
   font-family: "Patrick Hand", cursive;
   font-size: 20px;
   line-height: 1.5;
 }
-/* Chữ Đã đạt / Chưa đạt */
+ 
 #achievements-list .achievement-status {
   font-family: "Patrick Hand", cursive;
   font-size: 16px;
@@ -1587,21 +1588,21 @@ body::before {
 #life-profile-dialog {
   width: min(520px, 92vw);
 }
-/* Tài sản: thanh tab 4 cột, dính ở đầu popup khi cuộn; mỗi lần chỉ hiện một thẻ. */
+ 
 .life-tabs {
   position: sticky;
-  /* Dính sát mép popup: kéo lên đúng bằng lớp đệm 22px của popup. */
+   
   top: -22px;
   z-index: 1;
   display: grid;
-  /* 9 tab: 2 hàng 5 + 4. */
+   
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 6px;
   margin: 0 -22px;
   padding: 6px 22px;
   background: #fff8dc;
 }
-/* Mối quan hệ: 4 tab trên một hàng. */
+ 
 #relationship-tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .life-tab {
   position: relative;
@@ -1705,8 +1706,8 @@ body::before {
   border: 1px solid #ddc7a1;
   background: white;
 }
-/* ===== Tổng kết cuộc đời (popup khi nhân vật qua đời) ===== */
-/* Tông xám trầm cho lúc tiễn biệt. */
+ 
+ 
 #death-dialog {
   --mourn-ink: #2c3640;
   --mourn-muted: #5d6874;
@@ -1721,7 +1722,7 @@ body::before {
   text-align: center;
 }
 #death-dialog::backdrop { background: rgb(22 27 33 / 72%); }
-/* Dải tiêu đề: xám cho kết thúc thường, xám ánh bạc viền vàng nhạt khi viên mãn, xám đậm khi lạnh lẽo. */
+ 
 #death-title {
   padding: 10px 16px;
   border: 1px solid #7d8994;
@@ -1765,7 +1766,7 @@ body::before {
   background: linear-gradient(180deg, #fafbfb, #e3e7ea);
   text-align: left;
 }
-/* Ảnh chân dung ngả xám như ảnh thờ. */
+ 
 .death-hero .life-summary-portrait {
   width: 92px;
   height: 112px;
@@ -1813,7 +1814,7 @@ body::before {
   line-height: 1.3;
 }
 .death-stat strong { font-variant-numeric: tabular-nums; }
-/* Nhãn chỉ số (ví dụ "Ngoại hình") không gãy dòng; màn hẹp thì chữ nhỏ lại một chút. */
+ 
 .death-stat > span:first-child { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 420px) { .death-stat { font-size: 14px; padding: 8px; } }
 .death-stat-bar {
@@ -1832,7 +1833,7 @@ body::before {
 }
 .death-facts dt { color: var(--mourn-muted); font-weight: 700; }
 .death-facts dd { margin: 0; overflow-wrap: anywhere; text-wrap: pretty; white-space: pre-line; }
-/* Popup tử vong: nội dung cuộn, nút hành động luôn nhìn thấy ở đáy; tính cả màn hình thấp và vùng an toàn. */
+ 
 #death-dialog {
   max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
@@ -1905,7 +1906,7 @@ body::before {
   }
 }
 
-/* Cửa hàng (Mua vật nuôi, Mua sắm) và danh sách tài sản đã mua. */
+ 
 #shop-dialog,
 #shop-confirm-dialog {
   box-sizing: border-box;
@@ -2076,7 +2077,7 @@ body::before {
 .shop-pet:disabled { opacity: 0.6; cursor: not-allowed; }
 .shop-pet:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
 
-/* Nội dung đổi bên trong popup (chọn nhóm cửa hàng, quay lại, xác nhận chia tay) cũng hiện ra mượt. */
+ 
 @keyframes popup-content-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
@@ -2092,7 +2093,7 @@ body::before {
   .shop-group:nth-child(4) { animation: popup-content-in 240ms 120ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-/* Học bằng lái */
+ 
 #license-dialog {
   box-sizing: border-box;
   width: min(92vw, 440px);
@@ -2150,7 +2151,7 @@ body::before {
   line-height: 1.4;
 }
 
-/* Làm thêm */
+ 
 #side-job-dialog,
 #job-dialog,
 #health-check-dialog,
@@ -2182,7 +2183,7 @@ body::before {
   font-size: 1.7rem;
   line-height: 1.4;
 }
-/* Ngân sách năm tới: ô chọn co theo hộp thoại, lựa chọn dài không đẩy rộng lưới. */
+ 
 .finance-budget > * { min-width: 0; }
 .finance-budget label { display: grid; gap: 6px; }
 .finance-budget select {
@@ -2208,7 +2209,7 @@ body::before {
   #side-job-body > *, #job-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-/* Sức khỏe: thẻ cảnh báo đầu nhật ký, hộp thoại trước sinh nhật, dòng cảnh báo */
+ 
 .health-alert {
   position: sticky;
   top: 0;
@@ -2244,6 +2245,17 @@ body::before {
 .family-member p { margin: 0 0 6px; line-height: 1.4; }
 .family-member.is-passed { opacity: 0.85; background: #f4f1ea; }
 .family-actions { display: grid; gap: 6px; }
+#family-conversation-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#family-conversation-title { font-size: clamp(21px, 5vw, 26px); }
+#family-conversation-body { font-family: "Patrick Hand", cursive; font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
+#family-conversation-body p { margin: 0 0 14px; }
+.family-conversation-recall { margin: 0 0 14px; padding: 10px 12px; border-left: 3px solid #b99b43; background: #f4edcf; font-size: 18px; }
+.family-conversation-choices { display: grid; gap: 10px; }
+#family-conversation-body button { width: 100%; min-height: 44px; padding: 12px; white-space: normal; text-align: left; font-size: 18px; line-height: 1.45; }
+.family-shared-memories { margin-top: 10px; font-family: "Patrick Hand", cursive; font-size: 18px; }
+.family-shared-memories summary { cursor: pointer; }
+.family-shared-memories ol { padding-left: 22px; }
+.family-shared-memories li { margin: 10px 0; line-height: 1.4; }
 .money-forecast { display: block; font-size: 12px; color: #4b5d6b; }
 .money-forecast.is-negative { color: #c62828; font-weight: 700; }
 .health-alert-button {
@@ -2266,7 +2278,7 @@ body::before {
 .hospital-illness.is-severe { border-left-color: #e08a2a; }
 .hospital-illness.is-critical { border-left-color: #a12f2f; background: #fff1f1; }
 
-/* Bệnh viện */
+ 
 #hospital-dialog {
   box-sizing: border-box;
   width: min(92vw, 440px);
@@ -2300,7 +2312,7 @@ body::before {
   #hospital-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-/* Tình yêu: trung tâm mai mối */
+ 
 #love-dialog {
   box-sizing: border-box;
   width: min(92vw, 440px);
@@ -2330,7 +2342,7 @@ body::before {
   #love-body > * { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-/* Trò chơi */
+ 
 .activity-note {
   display: block;
   font-family: "Patrick Hand", cursive;
@@ -2338,7 +2350,8 @@ body::before {
   line-height: 1.3;
   color: #86692a;
 }
-#games-dialog {
+#games-dialog,
+#games-notice-dialog {
   box-sizing: border-box;
   width: min(92vw, 460px);
   max-height: 88dvh;
@@ -2350,7 +2363,32 @@ body::before {
   color: #173247;
   font-family: inherit;
 }
-#games-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#games-dialog::backdrop,
+#games-notice-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+#games-notice-title {
+  font-size: clamp(22px, 6vw, 28px);
+  line-height: 1.3;
+}
+#games-notice-content {
+  font-family: "Patrick Hand", cursive;
+  font-size: 20px;
+  line-height: 1.55;
+}
+#games-notice-content p { margin: 0 0 16px; }
+#games-notice-dialog .games-notice-confirm {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 2px solid #d6b842;
+  border-radius: 12px;
+  background: #ffe481;
+  color: #173247;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1.4;
+  cursor: pointer;
+}
 .game-motto {
   margin: 6px 0 0;
   text-align: center;
@@ -2413,7 +2451,7 @@ body::before {
 .game-live { min-height: 1.4em; text-align: center; }
 .game-result.is-win { border-color: #3f8f4c; background: #e2f7d4; }
 .game-result.is-lose { border-color: #d98a8a; background: #ffe8e8; }
-/* Đồng xu: mặt khắc nổi, vành răng cưa, ánh kim; Ngửa vàng, Sấp ánh đồng */
+ 
 .game-coin-face, .coin-mini {
   --coin-hi: #fff4b8; --coin-mid: #f0c43c; --coin-lo: #c18e16; --coin-rim: #a87812; --coin-ink: #6b4a0a;
   position: relative; display: grid; place-items: center; align-content: center; gap: 2px; border-radius: 50%;
@@ -2427,14 +2465,14 @@ body::before {
 .is-tails.game-coin-face, .is-tails.coin-mini { --coin-hi: #ffe2c4; --coin-mid: #e19a5a; --coin-lo: #a8622b; --coin-rim: #8a4f20; --coin-ink: #5c2d0c; }
 .coin-symbol { font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", serif; line-height: 1; }
 .coin-label { line-height: 1; letter-spacing: .06em; }
-/* Màn chọn mặt: hai đồng xu nhỏ */
+ 
 .coin-faces { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .game-option.coin-pick { display: grid; justify-items: center; gap: 8px; padding: 14px 8px 10px; font-size: 19px; }
 .coin-mini { width: 64px; height: 64px; box-shadow: 0 0 0 3px var(--coin-rim), 0 0 0 4px var(--coin-lo), inset 0 0 0 4px rgb(255 240 190 / 55%), 0 4px 6px rgb(0 0 0 / 18%); }
 .coin-mini .coin-symbol { font-size: 26px; }
 .coin-mini .coin-label { display: none; }
 .game-option.coin-pick[aria-pressed="true"] .coin-mini { animation: coin-pick-bob 1.6s ease-in-out infinite; }
-/* Màn tung: bàn nỉ xanh, viền vàng */
+ 
 #games-dialog:has(.coin-table) { width: min(560px, calc(100vw - 24px)); }
 .game-stage-coin { background: #fbf6e8; border-color: #d9c49a; }
 .coin-table { display: grid; justify-items: center; gap: 6px; padding: 14px 12px 12px; border: 2px solid #b8955a; border-radius: 18px;
@@ -2453,7 +2491,7 @@ body::before {
 .coin-table.is-win { box-shadow: inset 0 0 0 4px #1d3d2d, inset 0 -16px 28px rgb(0 0 0 / 25%), 0 0 0 3px #f3d27a, 0 0 22px rgb(243 210 122 / 55%); }
 .coin-table.is-win .game-coin { filter: drop-shadow(0 0 14px rgb(255 226 120 / 85%)); }
 .coin-table.is-lose .game-live { color: #f5c9bd; }
-/* Kết quả: số tiền lời/lỗ cỡ lớn */
+ 
 .game-net { margin: 2px 0 6px; font-family: "Sriracha", cursive; font-size: clamp(28px, 7vw, 36px); line-height: 1.15; font-variant-numeric: tabular-nums; }
 .game-net.is-gain { color: #2f7a3b; }
 .game-net.is-loss { color: #b03a2e; }
@@ -2475,16 +2513,16 @@ body::before {
   .coin-mini { width: 56px; height: 56px; }
 }
 .game-floor.is-fallen { background: #ffd2d2; }
-/* Xúc xắc và hộp */
+ 
 .game-die, .game-box { display: grid; place-items: center; height: 160px; font-size: 110px; line-height: 1; }
 .game-box.is-open { filter: drop-shadow(0 0 18px #ffd84d); }
-/* Đoán xúc xắc: mặt có chấm thật, khối lập phương 3D trên bàn nỉ xanh dương */
+ 
 .die-face, .die-mini { display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); box-sizing: border-box; border-radius: 18%;
   background: radial-gradient(circle at 30% 25%, #ffffff 0%, #f7f4ec 55%, #e6dfcf 100%); box-shadow: inset 0 0 0 1px rgb(0 0 0 / 8%), inset 0 -4px 6px rgb(0 0 0 / 10%); }
 .die-pip { place-self: center; width: 62%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #4a4a4a, #111 70%); }
 .die-face.is-1 .die-pip, .die-mini.is-1 .die-pip { width: 78%; background: radial-gradient(circle at 35% 30%, #ff6b5e, #b3170c 72%); }
 .die-mini { width: 38px; height: 38px; padding: 5px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%), 0 2px 3px rgb(0 0 0 / 18%); }
-/* Màn chọn */
+ 
 .dice-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .dice-modes .game-option { display: grid; gap: 2px; padding: 10px 8px; }
 .game-dice-values { margin-top: 10px; }
@@ -2495,7 +2533,7 @@ body::before {
 .game-dice-values .dice-numbers { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
 .game-dice-values .dice-numbers .game-option { display: grid; justify-items: center; gap: 4px; min-width: 0; padding: 8px 2px 6px; font-size: 15px; line-height: 1; }
 .game-option[aria-pressed="true"] .die-mini { box-shadow: inset 0 0 0 1px rgb(0 0 0 / 10%), 0 0 0 3px #fff, 0 3px 6px rgb(0 0 0 / 25%); }
-/* Màn lăn: bàn nỉ xanh dương, viền vàng */
+ 
 #games-dialog:has(.dice-table) { width: min(560px, calc(100vw - 24px)); }
 .game-stage-dice { background: #fbf6e8; border-color: #d9c49a; }
 .dice-table { display: grid; justify-items: center; gap: 6px; padding: 14px 12px 12px; border: 2px solid #b8955a; border-radius: 18px;
@@ -2516,7 +2554,7 @@ body::before {
 .dice-shadow { position: absolute; bottom: 22px; width: 110px; height: 18px; border-radius: 50%; background: rgb(0 0 0 / 60%); filter: blur(5px); opacity: .5; }
 .dice-table .game-live { margin: 0; color: #eaf2ff; font-family: "Sriracha", cursive; font-size: 19px; }
 .dice-table.is-win { box-shadow: inset 0 0 0 4px #15304f, inset 0 -16px 28px rgb(0 0 0 / 28%), 0 0 0 3px #f3d27a, 0 0 22px rgb(243 210 122 / 55%); }
-/* Không đặt filter lên khối 3D (filter làm phẳng cảnh 3D); phát sáng ở lớp bọc bên ngoài. */
+ 
 .dice-table.is-win .dice-bounce { filter: drop-shadow(0 0 12px rgb(255 226 120 / 80%)); }
 .dice-table.is-lose .game-live { color: #f5c9bd; }
 @media (prefers-reduced-motion: no-preference) {
@@ -2527,7 +2565,7 @@ body::before {
   .game-dice-values .dice-numbers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .die-mini { width: 42px; height: 42px; }
 }
-/* Hộp bí ẩn: thẻ chọn hộp, bảng phần thưởng theo bậc, sân khấu mở hộp với tia sáng theo độ hiếm */
+ 
 .game-setup-box, .box-stage, .box-reveal { --tier-miss: #8a8f98; --tier-common: #4c9a5b; --tier-fair: #3f7fc4; --tier-rare: #8a55c9; --tier-epic: #e07a1f; --tier-legend: #d4a017; }
 .box-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .game-option.box-pick { display: grid; justify-items: center; gap: 2px; padding: 12px 6px 10px; font-size: 17px; line-height: 1.25; }
@@ -2546,7 +2584,7 @@ body::before {
 :is(.box-tier, .box-reveal).is-epic { --tier: var(--tier-epic); }
 :is(.box-tier, .box-reveal).is-legend { --tier: var(--tier-legend); }
 .box-tier.is-legend { background: linear-gradient(90deg, #fff6d6, #fffaf0); }
-/* Sân khấu mở hộp */
+ 
 #games-dialog:has(.box-theater) { width: min(560px, calc(100vw - 24px)); }
 .box-stage { background: #fbf6e8; border-color: #d9c49a; }
 .box-theater { --tier: #c9b7ff; display: grid; justify-items: center; gap: 6px; padding: 14px 12px 12px; border: 2px solid #8f7bd0; border-radius: 18px;
@@ -2596,7 +2634,7 @@ body::before {
   .box-tier { grid-template-columns: minmax(0, 1fr) auto; }
   .box-tier-items { grid-column: 1 / -1; grid-row: 2; }
 }
-/* Đấu giá cổ vật: sàn đấu giá nhung đỏ, viền vàng, cổ vật dưới đèn rọi */
+ 
 #games-dialog:has(.auction-house) { width: min(600px, calc(100vw - 24px)); background: #f7f0de; border-color: #ba9758; }
 .auction-house { --auction-velvet: #5a1d29; --auction-velvet-deep: #34101a; --auction-gold: #d9b45a; --auction-ink: #3a2a1c;
   display: grid; gap: 12px; padding: 16px; border-color: #d9c49a; background: #fbf6e8; color: var(--auction-ink); overflow-wrap: anywhere;
@@ -2695,7 +2733,7 @@ body::before {
   .auction-rival { grid-template-columns: 34px minmax(0, 1fr) auto; gap: 8px; }
   .auction-rival-icon { width: 34px; height: 34px; font-size: 19px; }
 }
-/* Màn rất hẹp: nhãn trạng thái xuống dưới tên để tên đối thủ không bị bẻ dòng. */
+ 
 @media (max-width: 360px) {
   .auction-rival { grid-template-columns: 34px minmax(0, 1fr); }
   .auction-rival-icon { grid-row: span 2; }
@@ -2711,7 +2749,7 @@ body::before {
 @keyframes auction-price-pop { from { transform: scale(0.92); opacity: 0.4; } }
 @keyframes auction-stamp { from { transform: rotate(-12deg) scale(1.8); opacity: 0; } }
 #life-auction-items[data-empty="true"]::before { content: "Chưa có cổ vật. Ghé Trò Chơi → Đấu giá cổ vật để bắt đầu sưu tầm."; display: block; line-height: 1.6; }
-/* Leo tháp */
+ 
 #games-dialog:has(.tower-stage) { width: min(640px, calc(100vw - 24px)); background: #f7f0de; border-color: #ba9758; }
 .tower-stage { padding: 18px; border-color: #d9c49a; background: #fbf6e8; }
 .tower-stage > h3 { margin: 0 0 14px; font-size: 23px; }
@@ -2746,7 +2784,7 @@ body::before {
 @media (hover: hover) { .game-door:hover:not(:disabled) { transform: translateY(-3px); } }
 @media (max-width: 480px) { .tower-stage { padding: 12px; } .tower-arena { padding: 12px 9px 8px; } .game-floor { min-height: 35px; padding: 6px 8px; font-size: 12px; } .tower-floor-value { gap: 5px; } .game-door { width: 105px; height: 138px; } .tower-summary { padding: 8px; } }
 @media (prefers-reduced-motion: reduce) { .game-door, .game-floor { transition: none; } }
-/* Xì dách: bàn nỉ nghiêng 3D, viền gỗ, lá bài lật hai mặt */
+ 
 .bj-table {
   margin: 8px -4px 2px;
   perspective: 900px;
@@ -2771,7 +2809,7 @@ body::before {
   transform: rotateX(14deg);
   transform-origin: 50% 100%;
 }
-/* Hộp bài ở góc bàn: lá bài bay ra từ đây */
+ 
 .bj-shoe {
   position: absolute;
   top: 10px;
@@ -2830,7 +2868,7 @@ body::before {
   font-size: 1.3rem;
   letter-spacing: 0.04em;
 }
-/* Sấp tiền cược giữa bàn */
+ 
 .bj-pot {
   display: flex;
   justify-content: center;
@@ -2840,7 +2878,7 @@ body::before {
   transition: transform 650ms cubic-bezier(0.3, 1.3, 0.5, 1), opacity 650ms ease;
 }
 .bj-cash { position: relative; width: 88px; height: 54px; }
-/* Tờ tiền polymer: màu theo mệnh giá, ô cửa sổ trong suốt bên trái, mệnh giá in góc phải */
+ 
 .bj-note {
   --note: #4f9d5d;
   --note-light: #9fd39a;
@@ -2872,7 +2910,7 @@ body::before {
   line-height: 1;
   text-shadow: 0 1px 1px var(--note-dark);
 }
-/* Tờ dưới cùng có nhiều lớp mép giấy: trông như cả một sấp dày */
+ 
 .bj-note.is-100000 {
   rotate: -10deg;
   translate: -6px 5px;
@@ -2899,7 +2937,7 @@ body::before {
 .bj-felt.is-lose .bj-pot { transform: translateY(-78px) scale(0.8); opacity: 0; }
 .bj-felt.is-win .is-player .game-hand { filter: drop-shadow(0 0 10px rgb(255 226 122 / 90%)); }
 .bj-felt.is-lose .is-player .game-card { filter: saturate(0.6) brightness(0.82); }
-/* Bài trên tay xòe hình quạt */
+ 
 .game-hand {
   display: flex;
   justify-content: center;
@@ -2969,7 +3007,7 @@ body::before {
   box-shadow: inset 0 0 0 2px #fff;
   font-size: 30px;
 }
-/* Nút bấm nổi khối, ấn xuống khi chạm */
+ 
 .game-bj-actions { gap: 10px; margin-top: 16px; }
 .game-bj-actions .bj-button {
   flex: 1 1 0;
@@ -3010,7 +3048,7 @@ body::before {
   .bj-pot, .bj-score, .game-card { transition: none; }
 }
 
-/* Nút ✕: vùng bấm 52×52px (lớn hơn hình tròn hiển thị) để đóng popup dễ hơn trên điện thoại. */
+ 
 .dialog-close,
 #close-activities {
   width: 38px;
@@ -3036,7 +3074,7 @@ body::before {
   font-style: italic;
 }
 
-/* Ăn uống */
+ 
 #food-dialog,
 #beauty-dialog,
 #lottery-dialog,
@@ -3065,7 +3103,7 @@ body::before {
   .food-item.is-eaten { animation: food-eaten 500ms ease; }
 }
 
-/* Làm đẹp */
+ 
 .beauty-result {
   margin: 0 0 12px;
   padding: 10px 12px;
@@ -3075,7 +3113,7 @@ body::before {
 .beauty-result.is-success { background: #e2f7d4; color: #24592b; }
 .beauty-result.is-failure { background: #fde2e2; color: #a12f2f; }
 
-/* Mua vé số */
+ 
 .lottery-choices {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3124,7 +3162,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 }
 .lottery-empty { color: #5a6b78; font-style: italic; }
 
-/* Du lịch */
+ 
 #travel-dialog {
   box-sizing: border-box;
   width: min(92vw, 440px);
@@ -3226,7 +3264,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   #tarot-body > .dialog-card, #tarot-body > .shop-groups { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-/* Thám tử tư: văn phòng xanh đêm, bảng ghim gỗ bần, hồ sơ giấy kraft. */
+ 
 #detective-dialog {
   --dt-ink: #1f2d3d;
   --dt-night: #22324a;
@@ -3253,7 +3291,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 #detective-body .shop-buy { margin-top: 0; }
 .detective-panel-note { margin: 0; font-family: "Patrick Hand", cursive; font-size: 1.6rem; line-height: 1.35; color: #5b4a2e; }
 
-/* Văn phòng */
+ 
 .detective-office {
   display: flex;
   align-items: center;
@@ -3295,7 +3333,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-stat-label { font-size: 12px; color: var(--dt-muted); }
 .detective-section-title { margin: 6px 0 0; font-family: "Sriracha", cursive; font-size: 20px; font-weight: 400; }
 
-/* Bảng ghim hồ sơ */
+ 
 .detective-board {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 165px), 1fr));
@@ -3362,7 +3400,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-rules ul { margin: 8px 0 0; padding-left: 22px; font-family: "Patrick Hand", cursive; font-size: 1.7rem; line-height: 1.4; }
 .detective-rules li + li { margin-top: 4px; }
 
-/* Đầu hồ sơ */
+ 
 .detective-case-head {
   display: grid;
   gap: 10px;
@@ -3386,13 +3424,13 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-hour.is-used { border-color: #a9b7c8; background: transparent; }
 .detective-hour.is-extra { border-color: #d9534f; background: #d9534f; }
 
-/* Tab hồ sơ: dính ở đầu popup khi cuộn (kéo lên đúng bằng lớp đệm của popup). */
+ 
 .detective-tabs {
   position: sticky;
   top: -22px;
   z-index: 2;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   margin: 0 -22px;
   padding: 8px 22px;
@@ -3430,10 +3468,33 @@ dialog .lottery-grid .lottery-number.is-picked {
   line-height: 18px;
 }
 .detective-tab:focus-visible, .detective-chip:focus-visible { outline: 3px solid #285a91; outline-offset: 2px; }
-.detective-panel { display: grid; gap: 12px; }
+.detective-panel { display: grid; gap: 12px; min-width: 0; }
+.detective-workflow { margin: 10px 0; padding-left: 24px; font-family: "Patrick Hand", cursive; font-size: 18px; line-height: 1.5; }
+.detective-brief h3 { margin-top: 0; }
+.detective-notebook-scroll { max-width: 100%; overflow-x: auto; border: 1px solid var(--dt-line); border-radius: 10px; background: var(--dt-paper); }
+.detective-notebook-scroll:focus-visible { outline: 3px solid #285a91; outline-offset: 2px; }
+.detective-notebook { width: 100%; border-spacing: 0; font-size: 14px; }
+.detective-notebook caption { padding: 10px; text-align: left; font-weight: 700; }
+.detective-notebook :is(th, td) { padding: 6px; border-top: 1px solid var(--dt-line); text-align: center; }
+.detective-notebook th:first-child { position: sticky; left: 0; z-index: 1; min-width: 82px; background: var(--dt-paper); text-align: left; border-right: 1px solid var(--dt-line); }
+#detective-body .detective-note { min-width: 88px; min-height: 44px; padding: 6px; border: 1px solid var(--dt-line); border-radius: 8px; background: #f1eadc; color: #645b4a; font: inherit; cursor: pointer; }
+#detective-body .detective-note[data-note="fits"] { background: #e5f1df; border-color: #73966a; color: #24572d; }
+#detective-body .detective-note[data-note="conflict"] { background: #fbe6df; border-color: #bd7967; color: #842e1c; }
+#detective-body .detective-notebook-person { min-height: 44px; padding: 4px; border: 0; background: none; color: #234a85; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.detective-note:focus-visible, .detective-notebook-person:focus-visible { outline: 3px solid #285a91; outline-offset: 1px; }
+.detective-notebook-facts h4 { margin: 12px 0 6px; }
+.detective-reason-evidence { margin: 0; font-family: "Patrick Hand", cursive; font-size: 17px; line-height: 1.4; }
+.detective-deduction-steps { margin: 0; padding-left: 22px; font-family: "Patrick Hand", cursive; font-size: 18px; line-height: 1.45; }
+.detective-deduction-steps > li + li { margin-top: 16px; }
+.detective-deduction-steps p { margin: 4px 0; }
+.detective-deduction-steps ul { padding-left: 18px; }
+.detective-deduction-left { font-weight: 700; }
+@media (max-width: 400px) {
+  .detective-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .detective-sharp { margin: 0; padding: 8px 12px; border-radius: 10px; background: #e6f0ff; color: #234a85; font-size: 14px; }
 
-/* Tờ hồ sơ có dòng kẻ */
+ 
 .detective-paper {
   position: relative;
   padding: 12px 16px 12px 26px;
@@ -3445,7 +3506,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-paper::before { content: ""; position: absolute; top: 0; bottom: 0; left: 14px; width: 2px; background: #f0a8a0; }
 .detective-paper p { margin: 0; font-family: "Patrick Hand", cursive; font-size: 1.8rem; line-height: 28px; }
 
-/* Dòng thời gian: mỗi giờ là 20% chiều ngang (13:00–18:00). */
+ 
 .detective-timeline { display: grid; gap: 0; padding: 14px; border: 1px solid var(--dt-line); border-radius: 14px; background: var(--dt-paper); }
 .detective-timeline h4 { margin: 0 0 8px; font-family: "Sriracha", cursive; font-size: 17px; font-weight: 400; }
 .detective-timeline .detective-panel-note { margin-top: 10px; }
@@ -3466,7 +3527,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-tl-band { position: absolute; top: -4px; bottom: -4px; border-inline: 2px solid #d9534f; background: rgb(217 83 79 / 26%); }
 .detective-tl-bar { position: absolute; top: 4px; bottom: 4px; border-radius: 999px; background: var(--avatar); box-shadow: inset 0 -2px 0 rgb(0 0 0 / 18%); }
 
-/* Nguồn điều tra */
+ 
 .detective-leads { display: grid; gap: 10px; }
 .detective-lead { display: flex; gap: 12px; padding: 12px; border: 1px dashed #c9ad74; border-radius: 14px; background: #fbf3e2; }
 .detective-lead.is-revealed { border-style: solid; background: var(--dt-paper); }
@@ -3494,7 +3555,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   vertical-align: 2px;
 }
 
-/* Thẻ nghi phạm */
+ 
 .detective-avatar {
   display: inline-grid;
   place-items: center;
@@ -3534,7 +3595,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-suspect.is-crossed :is(.detective-suspect-head, .detective-facts) { opacity: 0.5; }
 .detective-suspect.is-crossed h4 { text-decoration: line-through; }
 
-/* Lập luận */
+ 
 .detective-accused {
   display: flex;
   align-items: center;
@@ -3558,7 +3619,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .detective-chip[aria-pressed="true"] { border-color: var(--dt-night); background: var(--dt-night); color: var(--dt-gold); }
 .detective-warning { margin: 0; padding: 10px 12px; border-radius: 10px; background: #fbe3dc; color: #8a2d1c; font-size: 14px; }
 
-/* Kết quả */
+ 
 .detective-stamp {
   justify-self: center;
   margin: 10px 0 6px;
@@ -3599,7 +3660,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .detective-stamp { font-size: 28px; }
 }
 
-/* Vườn nhà: banner mùa có hiệu ứng thời tiết, luống đất vẽ bằng CSS, chợ, bếp và kho. */
+ 
 #garden-dialog {
   --g-ink: #22351f;
   --g-leaf: #3f8f3a;
@@ -3626,7 +3687,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-note { margin: 0; font-family: "Patrick Hand", cursive; font-size: 1.6rem; line-height: 1.35; color: var(--g-muted); }
 .garden-empty { margin: 0; padding: 12px; border: 1px dashed var(--g-line); border-radius: 12px; color: var(--g-muted); font-size: 14px; text-align: center; }
 
-/* Banner mùa */
+ 
 .garden-hero {
   position: relative;
   display: grid;
@@ -3770,7 +3831,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-report-icon { font-size: 28px; }
 .garden-report p { margin: 0; font-family: "Patrick Hand", cursive; font-size: 1.7rem; line-height: 1.35; }
 
-/* Công chăm và nút thao tác */
+ 
 .garden-care { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .garden-care-label { font-size: 14px; font-weight: 700; }
 .garden-care-leaves { display: flex; gap: 2px; font-size: 18px; }
@@ -3799,7 +3860,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-diligent-button { justify-self: stretch; border-style: dashed; }
 .garden-diligent-note { margin: 0; color: var(--g-muted); font-size: 13px; line-height: 1.4; }
 
-/* Luống đất */
+ 
 .garden-plots {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3891,7 +3952,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-plot-buy .garden-plot-name { color: inherit; text-shadow: none; }
 .garden-plot-price { font-family: "Oswald", sans-serif; font-size: 12px; font-weight: 600; color: #6a4b0e; }
 
-/* Thanh chọn nhóm trong Chợ và Bếp. Nút chung của game luôn có bóng đổ, nên tắt riêng ở đây. */
+ 
 .garden-segment {
   display: grid;
   grid-auto-columns: minmax(0, 1fr);
@@ -3936,7 +3997,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   line-height: 17px;
 }
 
-/* Chi tiết luống */
+ 
 .garden-detail { display: grid; gap: 10px; padding: 14px; border: 2px solid var(--g-line); border-radius: 16px; background: var(--g-paper); box-shadow: 0 3px 0 rgb(60 100 40 / 10%); }
 .garden-detail h4 { margin: 0; font-family: "Sriracha", cursive; font-size: 19px; font-weight: 400; }
 .garden-facts { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.4; }
@@ -3963,7 +4024,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-seed-pick small { font-family: system-ui, sans-serif; font-size: 11px; color: var(--g-muted); }
 .garden-seed-icon { font-size: 26px; }
 
-/* Chợ */
+ 
 .garden-section { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--g-line); border-radius: 16px; background: var(--g-paper); }
 .garden-section h3 { margin: 0; font-family: "Sriracha", cursive; font-size: 19px; font-weight: 400; }
 .garden-subtitle { margin: 6px 0 0; font-size: 14px; }
@@ -3999,7 +4060,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-trend.is-up { color: #24622c; font-weight: 700; }
 .garden-trend.is-down { color: #9b2c1c; }
 
-/* Bếp và kho */
+ 
 .garden-skill { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 16px; background: linear-gradient(135deg, #fff1d6, #ffe2b8); box-shadow: 0 3px 0 rgb(150 90 20 / 15%); }
 .garden-skill-icon { display: grid; place-items: center; flex: none; width: 56px; height: 56px; border-radius: 50%; background: #fff; font-size: 30px; box-shadow: 0 3px 0 rgb(0 0 0 / 8%); }
 .garden-skill > div { flex: 1; min-width: 0; }
@@ -4034,7 +4095,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .garden-stock-chip { background: #f1f6e8; }
 .garden-stock-chip.is-seed { background: #f7efe2; }
 
-/* Chuyển động: cây chín đung đưa, sâu ngọ nguậy, hoa/lá/tuyết trôi, mưa rơi. */
+ 
 @media (prefers-reduced-motion: no-preference) {
   .garden-plot.is-ready .garden-sprite { animation: garden-sway 2.4s ease-in-out infinite; }
   .garden-sprite.stage-0, .garden-sprite.stage-1, .garden-sprite.stage-2 { animation: garden-sway 3.6s ease-in-out infinite; }
@@ -4069,7 +4130,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .garden-sell-info { grid-column: 1 / -1; }
 }
 
-/* Phát triển bản thân */
+ 
 #self-development-dialog {
   box-sizing: border-box;
   width: min(92vw, 460px);
@@ -4109,9 +4170,9 @@ dialog .lottery-grid .lottery-number.is-picked {
   #self-development-body > .shop-groups, #self-development-body > .dialog-card { animation: popup-content-in 240ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 }
 
-/* ===== Tối ưu cho điện thoại (màn hình hẹp) ===== */
+ 
 @media (max-width: 480px) {
-  /* Popup: rộng gần hết màn hình, viền và đệm mỏng hơn để chữ không bị gãy dòng. */
+   
   :is(#restart-dialog, #relationships-dialog, #education-dialog, #activities-dialog, #shop-dialog, #license-dialog, #side-job-dialog, #job-dialog, #health-check-dialog, #finance-check-dialog, #hospital-dialog, #love-dialog, #games-dialog, #food-dialog, #beauty-dialog, #lottery-dialog, #lottery-result-dialog, #travel-dialog, #game-center-dialog, #self-development-dialog, #tarot-dialog, #detective-dialog, #garden-dialog, #life-profile-dialog, #study-block-dialog, #event-dialog, #achievements-dialog, #fortune-dialog) {
     width: calc(100vw - 16px);
     max-width: none;
@@ -4129,7 +4190,7 @@ dialog .lottery-grid .lottery-number.is-picked {
     font-size: 21px;
     line-height: 1.3;
   }
-  /* Nút đóng to, dễ bấm bằng ngón tay. */
+   
   .dialog-close,
   #close-activities {
     width: 36px;
@@ -4142,7 +4203,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .dialog-card h3 {
     font-size: 17px;
   }
-  /* Tài sản: popup đệm 14px nên thanh tab kéo ra đúng 14px. */
+   
   .life-tabs {
     top: -14px;
     gap: 5px;
@@ -4156,7 +4217,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   }
   .life-tab-icon { font-size: 18px; }
 
-  /* Hoạt động: mỗi mục một hàng, giữ mô tả và biểu tượng dễ đọc. */
+   
   .activities-list {
     grid-template-columns: minmax(0, 1fr);
     gap: 12px;
@@ -4185,7 +4246,7 @@ dialog .lottery-grid .lottery-number.is-picked {
     line-height: 1.3;
   }
 
-  /* Nhóm lựa chọn (Mua sắm, Phát triển bản thân, Tình yêu...). */
+   
   .shop-group {
     padding: 12px 14px;
     font-size: 18px;
@@ -4209,7 +4270,7 @@ dialog .lottery-grid .lottery-number.is-picked {
     padding-inline: 12px;
   }
 
-  /* Nhật ký: chữ vừa đủ đọc, giãn dòng gọn để thấy nhiều năm hơn. */
+   
   .journal {
     padding: 1.2rem 1.4rem;
   }
@@ -4225,7 +4286,7 @@ dialog .lottery-grid .lottery-number.is-picked {
     line-height: 1.45;
   }
 
-  /* Nút Tuổi: dấu + nhỏ lại để chữ "Tuổi" không đè lên. */
+   
   .age-button .plus,
   .plus {
     font-size: 5.2rem;
@@ -4235,7 +4296,7 @@ dialog .lottery-grid .lottery-number.is-picked {
     font-size: 15px;
   }
 
-  /* Popup sự kiện: ảnh và chữ gọn lại để các lựa chọn nằm trong màn hình. */
+   
   #event-title {
     margin-bottom: 10px;
     font-size: 21px;
@@ -4260,7 +4321,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   }
 }
 
-/* ===== Nút cài đặt hình bánh răng và bảng cài đặt ===== */
+ 
 .menu-button {
   display: grid;
   place-items: center;
@@ -4424,7 +4485,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   font-style: italic;
 }
 
-/* Sân chơi */
+ 
 .gc-stage { text-align: center; }
 .gc-canvas {
   display: block;
@@ -4477,7 +4538,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   font-size: 1.5rem;
 }
 
-/* Đập chuột */
+ 
 .gc-holes {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4552,7 +4613,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .gc-hud { font-size: 17px; }
 }
 
-/* Kéo bò: đồng cỏ dọc, thanh tiến độ và nút kéo lớn bên dưới để bấm bằng ngón cái. */
+ 
 .gc-stage-cow .gc-pasture { cursor: pointer; }
 .gc-stage-cow .gc-action { margin-top: 8px; }
 .gc-leave { display: block; margin: 8px auto 0; }
@@ -4617,7 +4678,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .gc-pull-button { min-height: 120px; }
   .gc-pull-label { font-size: 18px; }
 }
-/* Kéo bò: dòng trạng thái dạng bong bóng, thanh kéo có tên bò và phần trăm, cờ đích; bảng tỉ lệ thành thẻ màu */
+ 
 .gc-stage-cow > .game-live { margin: 8px auto 0; padding: 6px 14px; max-width: 360px; border-radius: 14px; background: #fff8dc; border: 1px solid #ecd28a;
   box-shadow: 0 2px 0 #e5c76b; font-size: 17px; line-height: 1.4; }
 .gc-pull-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
@@ -4625,7 +4686,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .gc-pull-bar { position: relative; height: 24px; overflow: visible; box-shadow: inset 0 2px 3px rgb(120 80 20 / 25%); }
 .gc-pull-bar::after { content: "🏁"; position: absolute; right: -6px; top: 50%; transform: translateY(-50%); font-size: 22px; line-height: 1; }
 .gc-pull-fill { box-shadow: inset 0 -3px 0 rgb(0 0 0 / 10%), inset 0 3px 0 rgb(255 255 255 / 45%); transition: width 80ms linear; }
-/* 3 thẻ trên, 2 thẻ hiếm (vàng, vương miện) dưới rộng hơn. */
+ 
 .gc-legend:has(.gc-legend-cow) { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; max-width: 420px; margin: 10px auto 0; }
 .gc-legend-cow { grid-column: span 2; }
 .gc-legend-cow.is-gold, .gc-legend-cow.is-crown { grid-column: span 3; }
@@ -4639,7 +4700,7 @@ dialog .lottery-grid .lottery-number.is-picked {
 .gc-legend-cow.is-crown { --tag: #e0457b; background: linear-gradient(#ffe3ef, #fffaf0); }
 .gc-legend-cow .gc-legend-icon, .gc-legend-cow small { white-space: nowrap; }
 
-/* ===== Tiến lên miền Nam ===== */
+ 
 #games-dialog:has(.tl-shell, .tl-lobby) { width: min(960px, calc(100vw - 24px)); padding: 24px; border-color: #c5a467; background: #f7f1e2; }
 .tl-shell, .tl-lobby { --tl-card-w: 56px; color: #25392f; font-family: "Sriracha", cursive; }
 #games-dialog:has(.tl-shell, .tl-lobby) > .dialog-heading { margin-bottom: 8px; padding: 0; border: 0; background: none; box-shadow: none; }
@@ -4770,8 +4831,8 @@ dialog .lottery-grid .lottery-number.is-picked {
 }
 @media (max-width: 360px) { .tl-hand { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .tl-hand .tl-card, .tl-seat { transition: none; } }
-/* ===== Tiến lên: nâng cấp giao diện (bàn nỉ viền gỗ, lá úp của đối thủ, hiệu ứng đặt bài, phỉnh cược) ===== */
-/* Phông đồng bộ với game: chữ phụ dùng Patrick Hand thay vì phông hệ thống. */
+ 
+ 
 .tl-eyebrow, .tl-phase, .tl-metric > span, .tl-count, .tl-badge, .tl-danger, .tl-table-mark, .tl-center-label,
 .tl-selection, .tl-tables .side-job-note, .tl-rest-count, .tl-turn { font-family: "Patrick Hand", cursive; font-weight: 400; }
 .tl-eyebrow { font-size: 14px; letter-spacing: .04em; }
@@ -4786,27 +4847,27 @@ dialog .lottery-grid .lottery-number.is-picked {
 .tl-status { font-family: "Patrick Hand", cursive; font-size: 17px; text-align: center; }
 .tl-turn { font-size: 15px; }
 .tl-me { font-size: 16px; }
-/* Bàn nỉ: viền gỗ, chỉ vàng bên trong, hoa văn bốn chất mờ ở giữa */
+ 
 .tl-board { position: relative; border: 8px solid #7a5530; border-radius: 40px;
   background: radial-gradient(ellipse at 50% 45%, #3f7a5c 0%, #2a5a43 55%, #1c4231 100%);
   box-shadow: inset 0 0 0 3px #c9a453, inset 0 0 0 6px rgb(0 0 0 / 18%), inset 0 10px 30px rgb(0 0 0 / 30%), 0 6px 0 #5a3d20, 0 12px 20px rgb(60 40 20 / 25%); }
 .tl-board::before { content: "♠ ♥ ♦ ♣"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: rgb(255 255 255 / 6%);
   font-size: clamp(34px, 9vw, 64px); letter-spacing: .2em; white-space: nowrap; pointer-events: none; }
 .tl-board > * { position: relative; }
-/* Ghế đối thủ: thẻ nổi, lượt đang đánh có vòng sáng nhấp nháy */
+ 
 .tl-seat { background: rgb(15 40 30 / 78%); border-color: rgb(201 164 83 / 45%); box-shadow: 0 4px 10px rgb(0 0 0 / 25%); font-family: "Sriracha", cursive; }
 .tl-seat.is-turn { border-color: #f3d27a; box-shadow: 0 0 0 3px rgb(243 210 122 / 45%), 0 4px 10px rgb(0 0 0 / 25%); }
 .tl-seat.is-winner { background: linear-gradient(#4b8a59, #2f6a44); border-color: #f3d27a; }
 .tl-avatar { box-shadow: 0 0 0 2px rgb(255 255 255 / 25%); }
 .tl-seat-top .tl-fan { grid-column: 1 / -1; justify-self: center; }
-/* Lá úp: lưng bài đỏ đô, viền trắng, hoa văn kẻ chéo */
+ 
 .tl-fan { display: flex; justify-content: center; padding: 2px 0 0; }
 .tl-back { width: 14px; height: 20px; border: 1.5px solid #fff8ea; border-radius: 3px; box-shadow: 0 1px 2px rgb(0 0 0 / 35%);
   background: repeating-linear-gradient(45deg, #9c2f2f 0 3px, #7d2222 3px 6px), #8a2828; }
 .tl-back + .tl-back { margin-left: -8px; }
 .tl-fan .tl-back:nth-child(odd) { transform: translateY(-1px) rotate(-3deg); }
 .tl-fan .tl-back:nth-child(even) { transform: rotate(3deg); }
-/* Giữa bàn: ô chờ mở vòng, bộ vừa đánh rơi xuống, chặt thì lóe sáng */
+ 
 .tl-table-mark { font-family: "Sriracha", cursive; font-size: 14px; letter-spacing: .3em; color: #d9c48e; }
 .tl-center-label { font-size: 13px; color: #cfe0d3; }
 .tl-pile-caption { font-family: "Patrick Hand", cursive; font-size: 16px; padding: 2px 10px; border-radius: 999px; background: rgb(0 0 0 / 22%); }
@@ -4816,20 +4877,20 @@ dialog .lottery-grid .lottery-number.is-picked {
 .tl-pile .tl-card:nth-child(even) { transform: rotate(3deg) translateY(2px); }
 .tl-center.is-chop .tl-pile-caption { background: #b3261e; color: #fff4e0; }
 .tl-center.is-chop .tl-pile { filter: drop-shadow(0 0 10px rgb(255 120 90 / 85%)); }
-/* Khu bài của bạn: khay gỗ sáng */
+ 
 .tl-player-area { background: linear-gradient(#efe5cf, #e3d5b6); border: 1px solid #cdb98f; box-shadow: inset 0 2px 0 #fff8e8, 0 3px 0 #c8b184; }
 .tl-me.is-turn { color: #2f6a44; }
 .tl-hand .tl-card { background: linear-gradient(#fffefb, #f6f1e4); }
 .tl-hand .tl-card[aria-pressed="true"] { background: linear-gradient(#fff9de, #ffefb3); border-color: #c9952c; box-shadow: 0 0 0 2px #c9952c, 0 8px 12px rgb(120 80 10 / 30%); }
-/* Nút: nút Đánh nổi bật, nhóm phụ đồng màu khay */
+ 
 .tl-actions .tl-play { background: linear-gradient(#3c7552, #2c5c40); border-color: #2c5c40; box-shadow: 0 3px 0 #1f4430; font-family: "Sriracha", cursive; font-size: 18px; }
 .tl-actions .tl-play:disabled { box-shadow: none; }
 .tl-actions .shop-back { font-family: "Sriracha", cursive; font-size: 15px; box-shadow: 0 2px 0 #d6c7a6; }
 .tl-forfeit { font-family: "Patrick Hand", cursive; font-size: 15px; }
-/* Sảnh: bàn chơi là thẻ nỉ xanh có chồng phỉnh theo mức cược */
+ 
 .tl-tables .tl-table-pick { position: relative; padding: 16px 16px 16px 74px; border: 2px solid #8a6a3c; border-radius: 16px; color: #fff8e5;
   background: radial-gradient(ellipse at 30% 30%, #3f7a5c, #24503b); box-shadow: inset 0 0 0 2px rgb(201 164 83 / 55%), 0 3px 0 #5a3d20; font-family: "Sriracha", cursive; }
-/* buttons.css tô ghi chú của nút nhóm màu xám xanh; trên nền nỉ cần chữ sáng nên tăng độ ưu tiên bằng id hộp thoại. */
+ 
 #games-dialog .tl-tables .tl-table-pick > .side-job-note { color: #eef5ef; font-size: 15px; text-shadow: 0 1px 0 rgb(0 0 0 / 30%); }
 .tl-tables .tl-table-pick::before { content: ""; position: absolute; left: 16px; top: 50%; width: 42px; height: 42px; margin-top: -21px; border-radius: 50%;
   background: radial-gradient(circle, var(--chip) 0 38%, #fff 39% 46%, var(--chip) 47% 100%);
@@ -4882,7 +4943,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .tl-actions button { min-height: 44px; white-space: nowrap; }
 }
 
-/* Gắp thú: máy nhìn từ trên xuống, bàn điều khiển 4 hướng và nút GẮP lớn. */
+ 
 .gc-claw-canvas { border-color: #b9a3e8; }
 .gc-claw-controls {
   display: grid;
@@ -4936,7 +4997,7 @@ dialog .lottery-grid .lottery-number.is-picked {
   .gc-grab { min-height: 104px; font-size: 22px; }
 }
 
-/* ===== Nút ✕ của popup: nằm ngoài khung, đè lên góc trên bên phải (dialog-close.js bọc nội dung vào .dialog-scroll) ===== */
+ 
 dialog.has-corner-close { overflow: visible !important; }
 dialog.has-corner-close[open] { display: flex; flex-direction: column; }
 .dialog-scroll {
@@ -4974,7 +5035,7 @@ dialog > .dialog-corner-close {
   touch-action: manipulation;
   transition: transform 120ms ease, filter 120ms ease;
 }
-/* Vùng bấm rộng hơn hình tròn để dễ chạm trên điện thoại. */
+ 
 dialog > .dialog-corner-close::after {
   content: "";
   position: absolute;
@@ -4987,7 +5048,7 @@ dialog > .dialog-corner-close:focus-visible { outline: 3px solid #285a91; outlin
 @media (prefers-reduced-motion: reduce) {
   dialog > .dialog-corner-close { transition: none; }
 }
-/* Điện thoại: popup cách mép màn hình 8px nên nút thò ra ít hơn để không bị cắt. */
+ 
 @media (max-width: 480px) {
   dialog > .dialog-corner-close {
     top: -12px !important;
@@ -4998,8 +5059,8 @@ dialog > .dialog-corner-close:focus-visible { outline: 3px solid #285a91; outlin
   }
 }
 
-/* ===== Hoàn thiện chữ và số ===== */
-/* Tránh một chữ rơi lẻ xuống dòng cuối; tiêu đề ngắt dòng cân đối. */
+ 
+ 
 dialog :is(h2, h3, h4),
 .log-entry h3 {
   text-wrap: balance;
@@ -5008,7 +5069,7 @@ dialog :is(p, li, .side-job-note),
 .log-entry p {
   text-wrap: pretty;
 }
-/* Tiền và chỉ số dùng chữ số đều chiều rộng để không nhảy khi giá trị đổi. */
+ 
 .shop-wallet,
 .shop-figures,
 .dialog-entries strong,
@@ -5018,15 +5079,15 @@ dialog :is(p, li, .side-job-note),
 .lottery-kien-thiet {
   font-variant-numeric: tabular-nums;
 }
-/* Cuộn trong popup không kéo theo trang phía sau. */
+ 
 dialog {
   overscroll-behavior: contain;
 }
 
-/* Nút thành tựu ở thanh trên: vùng chạm tối thiểu 44px. */
+ 
 .achievement-button { min-width: 44px; min-height: 44px; }
 
-/* Màn hẹp (≤ 380px): popup tử vong gọn hơn để tên dài và tiêu đề không gãy nhiều dòng. */
+ 
 @media (max-width: 380px) {
   #death-dialog { padding-left: 12px; padding-right: 12px; }
   #death-title { padding: 8px 10px; font-size: 20px; }
@@ -5034,12 +5095,12 @@ dialog {
   .death-hero .life-summary-portrait { width: 64px; height: 80px; }
   .death-name { font-size: 19px; overflow-wrap: normal; }
   .death-origin, .death-lifespan { font-size: 15px; }
-  /* Nhãn chỉ số và phần trăm hiện đầy đủ: một cột trên màn hẹp. */
+   
   .death-stats { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .death-stat { font-size: 15px; }
 }
 
-/* Popup mở thưởng xổ số (sinh nhật sau năm mua vé) */
+ 
 #lottery-result-dialog {
   box-sizing: border-box;
   width: min(92vw, 440px);
@@ -5079,14 +5140,14 @@ dialog {
   font-variant-numeric: tabular-nums;
   animation: lottery-ball-in 420ms cubic-bezier(0.2, 1.4, 0.4, 1) var(--reveal-delay, 0ms) both;
 }
-/* Kiến thiết: ô số vàng như dãy số trên tờ vé */
+ 
 .lottery-draw.is-kien-thiet .lottery-ball {
   border-radius: 10px;
   background: linear-gradient(#fff3c4, #ffd75e);
   box-shadow: inset 0 0 0 2px #d9a21c, 0 3px 0 #c48a12;
   color: #8b1a1a;
 }
-/* Vietlott: bóng đỏ tròn */
+ 
 .lottery-draw.is-vietlott .lottery-ball {
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #ff8a80, #e53935 55%, #a91d1d);
@@ -5178,7 +5239,7 @@ dialog {
   .lottery-ball { width: 36px; height: 36px; font-size: 1.7rem; }
 }
 
-/* Jackpot Vietlott tích lũy */
+ 
 .lottery-jackpot {
   display: grid;
   justify-items: center;
@@ -5211,7 +5272,7 @@ dialog {
 }
 .lottery-jackpot-next.is-player { background: #effbe9; color: #1d7a35; }
 
-/* Sống khác: lựa chọn rõ ràng và dễ đọc trên điện thoại. */
+ 
 #crime-dialog { width: min(540px, calc(100vw - 40px)); box-sizing: border-box; max-height: 85vh; overflow-y: auto; border: 2px solid #594537; border-radius: 18px; padding: 24px; background: #fff8ed; color: #392a22; }
 #crime-dialog h2 { margin-top: 0; }
 #crime-dialog p { line-height: 1.6; }

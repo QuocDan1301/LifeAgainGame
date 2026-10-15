@@ -17,7 +17,7 @@
     assert(diseases.length === 10 && new Set(diseases.map(d => d.id)).size === 10 && diseases.every(d => d.cost > 0), "Ten diseases with fees");
     assert(diseases.every(d => d.severeAfter < d.criticalAfter && d.loss.length === 3 && d.criticalRisk > 0), "Each disease has its own stage config");
     assert(new Set(diseases.map(d => d.criticalAfter)).size > 1, "No single fatal deadline for every disease");
-    // Lịch bệnh: 0–2 bệnh khác nhau, tuổi 18–95.
+     
     const counts = new Set();
     for (let i = 0; i < 300; i++) {
       const plan = planIllnesses({ age: 0 });
@@ -30,7 +30,7 @@
     assert(planIllnesses({ age: 60 }).every(p => p.age > 60), "Old saves only schedule future diseases");
     const fixed = { age: 5, illnessPlan: [{ id: "gout", age: 30 }] };
     assert(planIllnesses(fixed) === fixed.illnessPlan, "The plan is made once per life");
-    // Chẩn đoán, tiến triển Nhẹ → Nặng → Nguy kịch theo cấu hình riêng của Gout (Nặng sau 3 năm, Nguy kịch sau 8 năm).
+     
     const lucky = () => 0.99;
     const sick = { age: 29, health: 80, money: 0, isAlive: true, illnessPlan: [{ id: "gout", age: 30 }] };
     assert(collectIllnessYear(sick, 29) === null, "Nothing before the scheduled age");
@@ -43,21 +43,21 @@
     assert(sick.isAlive === false && sick.deathCause === "gout", "Only the critical stage carries a death risk");
     assert(getIllnessStage({ id: "pneumonia", since: 30 }, 32, 80) === "critical" && getIllnessStage({ id: "gout", since: 30 }, 32, 80) === "mild",
       "Acute diseases progress faster than chronic ones");
-    // Sức khỏe thấp làm bệnh tiến triển nhanh hơn và tăng nguy cơ.
+     
     assert(getIllnessStage({ id: "gout", since: 30 }, 31, 80) === "mild" && getIllnessStage({ id: "gout", since: 30 }, 31, 10) === "severe",
       "Low health makes the disease progress faster");
     const strong = getIllnessOutlook({ age: 40, health: 90 }, { id: "coronary", since: 36 });
     const weak = getIllnessOutlook({ age: 40, health: 30 }, { id: "coronary", since: 36 });
     assert(strong.stage === "critical" && weak.deathChance > strong.deathChance, "Low health raises the critical-stage risk");
-    // Điều trị sớm rẻ hơn.
+     
     const gout = getDisease("gout");
     assert(getTreatmentCost(gout, "mild") === 10_000_000 && getTreatmentCost(gout, "severe") === 15_000_000 &&
       getTreatmentCost(gout, "critical") === 20_000_000, "Treatment costs more at later stages");
-    // Nghỉ dưỡng giảm hao sức nhưng không chữa bệnh.
+     
     const resting = getIllnessOutlook({ age: 40, health: 80, restYear: 41 }, { id: "diabetes", since: 37 });
     const working = getIllnessOutlook({ age: 40, health: 80 }, { id: "diabetes", since: 37 });
     assert(resting.loss < working.loss && resting.stage === working.stage, "Rest halves the health loss but not the stage");
-    // Sức khỏe cạn khi bệnh chưa nguy kịch: cấp cứu, không tử vong.
+     
     const frail = { age: 50, health: 1, money: 0, isAlive: true, illnessPlan: [], illnesses: [{ id: "gout", since: 49 }] };
     assert(collectIllnessYear(frail, 50, lucky).content.includes("cấp cứu") && frail.isAlive && frail.health === EMERGENCY.healthAfter &&
       frail.money === -EMERGENCY.cost, "Running out of health before the critical stage means an emergency, not death");
@@ -79,7 +79,7 @@
     await import("../js/main.js");
     const $ = id => document.getElementById(id);
     const treatButton = id => $("hospital-body").querySelector(`.shop-buy[data-disease="${id}"]`);
-    // Thẻ bệnh trên màn hình chính.
+     
     assert(!$("health-alert").hidden && $("health-alert").textContent.includes("Gout") && $("health-alert").textContent.includes("Năm tới"),
       "Visible illness card with next-year risk");
     $("activities").click();
@@ -93,7 +93,7 @@
     assert(state.player.illnesses.length === 1 && state.player.money === 10_000_000, "Treatment cures and charges the fee");
     assert(state.logs.at(-1).content.includes("Điều trị khỏi"), "Treatment is recorded");
     $("close-hospital").click();
-    // Bệnh nguy kịch: cảnh báo trước sinh nhật, người chơi chọn tiếp tục bỏ qua và gặp rủi ro.
+     
     state.player.illnesses = [{ id: "early-cancer", since: 31 }];
     $("age-up").click();
     assert($("health-check-dialog").open && $("health-check-body").textContent.includes("Ung thư") &&

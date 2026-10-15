@@ -28,10 +28,10 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   let activeTab = "garden";
   let selected = null;
-  // Nhóm đang xem trong Chợ và Bếp, để mỗi lần chỉ hiện một nhóm thay vì một trang rất dài.
+   
   let marketView = "seeds";
   let kitchenTier = 0;
-  // Thông báo ngắn sau mỗi thao tác và bản tổng kết khi vừa sang mùa.
+   
   let toast = null;
   let report = null;
 
@@ -54,7 +54,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     state.logs.push(entry);
     renderLogEntry(entry);
   };
-  // Lưu, vẽ lại và giữ chỗ đang đọc; focusSelector đưa bàn phím về đúng nút vừa bấm.
+   
   function commit(message, focusSelector) {
     if (message) toast = message;
     recordAchievementFlags(state, gardenAchievementIds(garden()));
@@ -160,7 +160,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     if (focusSelector) body.querySelector(focusSelector)?.focus({ preventScroll: true });
   }
 
-  // ---------- Vườn ----------
+   
   function careMeter() {
     const g = garden();
     const row = element("div", "garden-care");
@@ -169,7 +169,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     for (let index = 0; index < max; index++) leaves.append(element("span", index < careLeft(g) ? "is-left" : "", "🌿"));
     row.append(element("span", "garden-care-label", "Công chăm mùa này"), leaves,
       element("span", "garden-care-value", `${careLeft(g)}/${max}`));
-    // Nút mờ thì nói rõ vì sao: vườn nghỉ, chưa có cây, đã tưới đủ hay không đủ công tưới hết.
+     
     const growing = g.plots.filter((plot) => plot && !plot.withered && !isReady(plot));
     const dry = dryCount(g);
     const label = canWaterAll(g) ? `💧 Tưới ${dry} luống khô · ${dry} công`
@@ -191,7 +191,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
       plot.animate([{ filter: "brightness(1.35)" }, { filter: "brightness(1)" }], { duration: 700, easing: "ease-out" }));
   }
 
-  // Chăm kỹ năm nay: đổi 1 lượt thời gian rảnh lấy thêm công cho các mùa còn lại.
+   
   function diligentCard() {
     const g = garden();
     if (isResting(g)) return null;
@@ -423,7 +423,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     return nodes.filter(Boolean);
   }
 
-  // ---------- Chợ ----------
+   
   function shopItem(item, { meta, owned, price, badge }) {
     const card = element("article", `garden-item${badge ? " is-highlight" : ""}`);
     if (badge) card.append(element("span", "garden-item-badge", badge));
@@ -447,7 +447,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
     return card;
   }
 
-  // Thanh chọn nhóm (Chợ: hạt/nguyên liệu/bán · Bếp: mức món); count hiện số mục đáng chú ý.
+   
   function segment(label, options, current, onPick) {
     const group = element("div", "garden-segment");
     group.setAttribute("role", "group");
@@ -538,7 +538,7 @@ export function initGarden(state, { renderMoney, renderStats, renderLogEntry, ch
       `[data-sell="${crop.id}"] .garden-buy, .garden-tab[aria-selected="true"]`);
   }
 
-  // ---------- Bếp ----------
+   
   const effectChips = (effects, real = null) => {
     const row = element("div", "garden-effects");
     for (const [stat, value] of Object.entries(effects)) {

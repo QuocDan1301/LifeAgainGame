@@ -116,7 +116,7 @@
       Object.assign(state.player, { age: promotionAge - 1, careerLevel: 2,
         nextPromotionAge: promotionAge, lastSalaryAge: promotionAge - 1 });
       assert(createEmploymentEvent(state.player, promotionAge)?.kind === "career-promotion", "Career scheduler retains final promotions");
-      // Xử lý đúng còn phụ thuộc khả năng được chọn (65–95%): lượt tung 0.5 nằm trong khả năng đó.
+       
       Math.random = () => 0.5; birthday.click(); Math.random = () => 0.99;
       assert(state.pendingEvent?.kind === "career-promotion", `Final promotion overrides ordinary events at ${promotionAge}`);
       choose(state.pendingEvent.choices.findIndex(entry => entry.correct));

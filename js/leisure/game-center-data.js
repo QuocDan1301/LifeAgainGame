@@ -1,13 +1,13 @@
-// Game Center: cấu hình tiền tệ, trò chơi, quà tặng và các hàm tính thưởng (không đụng giao diện).
-// Xu mua bằng tiền game, dùng để chơi; vé thưởng dùng đổi quà. Cả hai lưu trong player.arcade
-// theo từng nhân vật, giữ qua các năm và không đổi ngược ra tiền.
+ 
+ 
+ 
 export const COIN_VALUE = 10_000;
 export const coinPacks = [
   { coins: 10, price: 100_000 },
   { coins: 50, price: 500_000 },
   { coins: 100, price: 1_000_000 },
 ];
-// Mỗi năm, vài lượt chơi đầu tiên được cộng hạnh phúc dù thắng hay thua.
+ 
 export const HAPPY_PLAYS_PER_YEAR = 3;
 
 export const arcadeGames = [
@@ -46,12 +46,12 @@ export const arcadeGames = [
 ];
 export const gameOf = (id) => arcadeGames.find((game) => game.id === id);
 
-// Kéo bò: payout là số xu nhận khi bắt được (phí 1 xu mỗi lần thả dây tính riêng).
-// chance: tỉ lệ xuất hiện trên đồng cỏ · catchChance: tỉ lệ bắt được cho cả lượt.
-// payout × catchChance = 0,75 với mọi loại bò: trung bình mỗi xu bỏ ra nhận về 0,75 xu.
-// size: bề ngang ở làn gần nhất (px trên sân rộng 320px) · struggle: độ giãy khi kéo (chỉ là hoạt ảnh).
+ 
+ 
+ 
+ 
 export const LASSO_FLIGHT = 0.45;
-// Trong các lần không bắt được: 40% là trúng dây nhưng bò thoát, còn lại là trượt dây.
+ 
 export const COW_ESCAPE_SHARE = 0.4;
 export const cowTypes = [
   { id: "dairy", icon: "🐄", name: "Bò sữa", payout: 2, chance: 0.4, catchChance: 0.375, size: 60, struggle: 0 },
@@ -64,7 +64,7 @@ export const cowTypes = [
 ];
 export const cowOf = (id) => cowTypes.find((cow) => cow.id === id);
 export const formatPercent = (rate) => `${String(Math.round(rate * 10000) / 100).replace(".", ",")}%`;
-// Bốc kết quả cả lượt một lần duy nhất khi thả dây; kết quả được lưu ngay cùng lượt chơi.
+ 
 export function rollCowOutcome(cow, random = Math.random) {
   const roll = random();
   if (roll < cow.catchChance) return { result: "caught", cow: cow.id };
@@ -72,14 +72,14 @@ export function rollCowOutcome(cow, random = Math.random) {
   return { result: escaped ? "escaped" : "miss", cow: cow.id };
 }
 
-// Gắp thú: ba loại thú. grab là tỉ lệ thành công khi càng căn chính giữa thú; gift là % quan hệ khi tặng.
+ 
 export const plushRarities = {
   common: { label: "Phổ thông", grab: 0.45, gift: 3 },
   big: { label: "Thú lớn", grab: 0.3, gift: 5 },
   rare: { label: "Hiếm", grab: 0.15, gift: 8 },
 };
 export const rarityLabels = Object.fromEntries(Object.entries(plushRarities).map(([id, rarity]) => [id, rarity.label]));
-// radius: bán kính thân thú trên mặt máy (px, máy rộng 320) · chance: tỉ lệ xuất hiện khi bổ sung máy.
+ 
 export const plushies = [
   { id: "teddy", icon: "🧸", name: "Gấu bông", rarity: "common", radius: 20, chance: 0.14 },
   { id: "bunny", icon: "🐰", name: "Thỏ bông", rarity: "common", radius: 20, chance: 0.13 },
@@ -94,10 +94,10 @@ export const plushies = [
   { id: "fox", icon: "🦊", name: "Cáo lửa bông", rarity: "rare", radius: 16, chance: 0.04 },
 ].map((plush) => ({ ...plush, gift: plushRarities[plush.rarity].gift }));
 export const plushOf = (id) => plushies.find((plush) => plush.id === id);
-// Thành tựu khi gắp được thú thuộc loại hiếm nhất.
+ 
 export const CLAW_RARE_ACHIEVEMENT = "claw-rare-plush";
 
-// Quầy đổi quà (giá bằng vé). Quà cất vào Tài sản, không quy đổi ra tiền.
+ 
 export const prizes = [
   { id: "sticker", icon: "🌟", name: "Sticker lấp lánh", tickets: 20, gift: 3 },
   { id: "keychain", icon: "🔑", name: "Móc khóa", tickets: 60, gift: 3 },
@@ -109,8 +109,8 @@ export const prizes = [
 export const collectibles = [...plushies, ...prizes];
 export const collectibleOf = (id) => collectibles.find((item) => item.id === id);
 
-// collection: quà đổi vé { id: số lượng }. plushes: Bộ sưu tập thú bông { id: { name, icon, rarity, count } }.
-// clawMachine: thú đang nằm trong máy gắp { age, items: [{ uid, id, x, y }] }.
+ 
+ 
 export const createArcade = () => ({
   coins: 0, tickets: 0, collection: {}, plushes: {}, clawMachine: null, plays: null, giftAge: null, session: null,
 });
@@ -118,8 +118,8 @@ export function addPlush(arcade, plush, count = 1) {
   const entry = arcade.plushes[plush.id] ?? { count: 0 };
   arcade.plushes[plush.id] = { name: plush.name, icon: plush.icon, rarity: plush.rarity, count: entry.count + count };
 }
-// Bản lưu cũ chưa có Game Center: tạo mới, hoặc bổ sung trường còn thiếu (giữ nguyên object đang có).
-// Bản lưu cũ để thú bông chung với quà: chuyển sang Bộ sưu tập thú bông.
+ 
+ 
 export function arcadeOf(player) {
   const defaults = createArcade();
   player.arcade ??= defaults;
@@ -150,8 +150,8 @@ export function pickWeighted(entries, random = Math.random) {
   return entries.at(-1);
 }
 
-// ---------- Máy gắp thú (nhìn từ trên xuống) ----------
-// Mặt máy 320×320; cửa nhận quà ở góc dưới trái. CLAW_REACH là bán kính vùng gắp (bóng dưới càng).
+ 
+ 
 export const CLAW_BOX = { left: 14, top: 14, right: 306, bottom: 306 };
 export const CLAW_CHUTE = { x: 14, y: 236, size: 70 };
 export const CLAW_REACH = 14;
@@ -159,7 +159,7 @@ export const CLAW_SECONDS = 20;
 export const CLAW_STOCK = 10;
 export const CLAW_START = { x: 160, y: 60 };
 export const clawChuteCenter = () => ({ x: CLAW_CHUTE.x + CLAW_CHUTE.size / 2, y: CLAW_CHUTE.y + CLAW_CHUTE.size / 2 });
-// Thân thú có chạm vào khu cửa nhận quà không (thú không được nằm trên cửa).
+ 
 export const touchesChute = (x, y, radius) =>
   x - radius < CLAW_CHUTE.x + CLAW_CHUTE.size + 4 && y + radius > CLAW_CHUTE.y - 4;
 export const clampClaw = (x, y) => ({
@@ -167,7 +167,7 @@ export const clampClaw = (x, y) => ({
   y: Math.max(CLAW_BOX.top + 6, Math.min(CLAW_BOX.bottom - 6, y)),
 });
 
-// Bổ sung máy khi sang tuổi mới: giữ thú còn lại, thêm thú mới vào chỗ trống cho đủ CLAW_STOCK con.
+ 
 export function stockClawMachine(machine, age, random = Math.random) {
   if (machine && machine.age === age) return machine;
   const items = [...(machine?.items ?? [])];
@@ -178,16 +178,16 @@ export function stockClawMachine(machine, age, random = Math.random) {
     const x = CLAW_BOX.left + r + random() * (CLAW_BOX.right - CLAW_BOX.left - 2 * r);
     const y = CLAW_BOX.top + r + random() * (CLAW_BOX.bottom - CLAW_BOX.top - 2 * r);
     if (touchesChute(x, y, r)) continue;
-    // Thú không chồng quá nhiều lên nhau để còn nhìn và căn được.
+     
     if (items.some((item) => Math.hypot(item.x - x, item.y - y) < plushOf(item.id).radius + r + 2)) continue;
     serial += 1;
     items.push({ uid: `p${age}-${Date.now().toString(36)}-${serial}`, id: plush.id, x: Math.round(x), y: Math.round(y) });
   }
   return { age, items };
 }
-// Tỉ lệ gắp được theo khoảng cách từ tâm càng tới tâm thú: chỉ khi căn thật chuẩn (trong 1/10 bán kính
-// thân) mới được tỉ lệ đầy đủ; lệch ra thì giảm nhanh (bậc hai) về 0% ở mép vùng gắp
-// (bán kính thân + bán kính vùng gắp).
+ 
+ 
+ 
 export function grabChance(plush, distance) {
   const reach = plush.radius + CLAW_REACH;
   const sweet = plush.radius * 0.1;
@@ -196,15 +196,15 @@ export function grabChance(plush, distance) {
   if (distance <= sweet) return full;
   return full * (1 - (distance - sweet) / (reach - sweet)) ** 2;
 }
-// Thú bị càng chạm (trong vùng gắp), gần tâm càng nhất trước.
+ 
 export function clawTargets(items, claw) {
   return items
     .map((item) => ({ item, distance: Math.hypot(item.x - claw.x, item.y - claw.y) }))
     .filter(({ item, distance }) => distance <= plushOf(item.id).radius + CLAW_REACH)
     .sort((a, b) => a.distance - b.distance);
 }
-// Chốt kết quả một lần khi bắt đầu hạ càng. Thất bại khi đã chạm thú: một nửa là nâng lên rỗng,
-// một nửa là thú tuột giữa đường về cửa và rơi lại trong máy (slipTo).
+ 
+ 
 export function judgeClawGrab(items, claw, random = Math.random) {
   const [target] = clawTargets(items, claw);
   if (!target) return { result: "empty", uid: null, chance: 0 };
@@ -213,7 +213,7 @@ export function judgeClawGrab(items, claw, random = Math.random) {
   const roll = random();
   if (roll < chance) return { result: "caught", uid: target.item.uid, chance };
   if (random() < 0.5) return { result: "missed", uid: target.item.uid, chance };
-  // Tuột ở khoảng 35–65% quãng đường từ chỗ gắp tới cửa nhận quà, rơi xuống ngoài khu cửa.
+   
   const chute = clawChuteCenter();
   const k = 0.35 + random() * 0.3;
   let x = target.item.x + (chute.x - target.item.x) * k;
@@ -224,7 +224,7 @@ export function judgeClawGrab(items, claw, random = Math.random) {
   return { result: "slipped", uid: target.item.uid, chance, slipTo: { x: Math.round(x), y: Math.round(y) } };
 }
 
-// Đập chuột: mục tiêu ló lên khỏi hang; points âm là mục tiêu giả.
+ 
 export const whackTargets = [
   { id: "mouse", icon: "🐭", label: "Chuột", points: 1, chance: 0.7, stay: 1000 },
   { id: "gold", icon: "🐭", label: "Chuột vàng", points: 3, chance: 0.1, stay: 650, gold: true },
@@ -232,7 +232,7 @@ export const whackTargets = [
   { id: "cat", icon: "🐱", label: "Mèo", points: -2, chance: 0.1, stay: 1200 },
 ];
 
-// Bóng rổ: điểm mỗi quả theo thời gian còn lại.
+ 
 export const BASKET_POINTS = 2;
 export const BASKET_FINAL_POINTS = 3;
 export const BASKET_FINAL_SECONDS = 5;

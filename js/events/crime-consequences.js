@@ -27,7 +27,7 @@ export function collectReformationYear(player, age) {
   player.lastReformationYear = age;
   player.reformedYears = clean ? (player.reformedYears ?? 0) + 1 : 0;
   if (!clean) player.reformationRecognized = false;
-  // Sau tái phạm, thư cũ chỉ có giá trị lại sau năm năm mới giữ mình.
+   
   if (clean && player.reformedYears >= 5 && player.storyFlags?.includes('hoan_luong_nhan_thu')) player.reformationRecognized = true;
 }
 

@@ -1,7 +1,7 @@
 import { saveGame } from "../core/save-store.js";
 import { playOutcomeSound } from "../ui/music.js";
-// Học bằng lái: mỗi loại có 5 câu hỏi, mỗi câu 2 đáp án; correct là vị trí đáp án đúng.
-// Giao diện không bao giờ hiện đáp án đúng, kể cả khi người chơi trả lời sai.
+ 
+ 
 export const licenseTypes = [
   {
     id: "motorbike",
@@ -39,7 +39,7 @@ export const licenseTypes = [
   },
 ];
 
-// Chỉ được học và thi bằng lái khi nhân vật đủ 18 tuổi.
+ 
 export const LICENSE_MIN_AGE = 18;
 
 export const getLicenseType = (id) => licenseTypes.find((type) => type.id === id);
@@ -93,7 +93,7 @@ export function initLicenses(state, { renderLogEntry }) {
   function renderQuestion(type) {
     if (state.player.age < LICENSE_MIN_AGE) return renderPicker();
     const question = type.questions[Math.floor(Math.random() * type.questions.length)];
-    // Đảo vị trí hai đáp án để người chơi không học thuộc theo thứ tự.
+     
     const order = Math.random() < 0.5 ? [0, 1] : [1, 0];
     const card = element("section", "dialog-card");
     card.append(element("h3", "", `${type.icon} ${type.name}`), element("p", "license-question", question.text));
@@ -138,7 +138,7 @@ export function initLicenses(state, { renderLogEntry }) {
     renderPicker();
   });
   $("close-license").addEventListener("click", () => dialog.close());
-  // Popup Tài sản tự mở trong life-profile.js; ở đây chỉ vẽ danh sách bằng lái.
+   
   $("assets").addEventListener("click", () => {
     const list = $("life-licenses");
     list.replaceChildren();

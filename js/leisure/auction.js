@@ -43,7 +43,7 @@ export function initAuction(state, { body, playsLeft, usePlay, minAge, renderMon
     if (entry) renderLogEntry(entry);
     render();
   }
-  // Diễn biến lưu số tiền thô ("Bạn trả 600000đ."): hiển thị lại theo định dạng tiền của game, kèm icon.
+   
   const formatMessage = message => message.replace(/(\d{4,})đ/g, (_, amount) => formatMoney(Number(amount)));
   const messageIcon = message => message.startsWith('Phiên đấu giá bắt đầu') ? '🔔'
     : message.startsWith('Bạn trả') ? '🙋' : message.startsWith('Bạn rời') ? '👋'

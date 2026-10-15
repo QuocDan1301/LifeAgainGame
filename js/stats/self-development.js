@@ -8,8 +8,8 @@ import { APPEARANCE_ACTIVITIES, getAppearanceBand } from "./appearance-rules.js"
 import { getIllnessStage } from "./hospital.js";
 import { NO_SLOT_LABEL, applyActivityGain, describeActivityRoom, getActivitySlotsLeft, previewActivityGain, useActivitySlot } from "../core/stat-budget.js";
 
-// Phát triển bản thân: mỗi chỉ số có 2 hoạt động, mỗi hoạt động có 3 gói.
-// Trả càng nhiều tiền, chỉ số chính tăng càng nhiều. Mỗi hoạt động một lần mỗi năm.
+ 
+ 
 export const packageTiers = [
   { id: "basic", label: "Cơ bản", price: 300_000, gain: 1 },
   { id: "standard", label: "Tiêu chuẩn", price: 1_200_000, gain: 3 },
@@ -53,10 +53,10 @@ export const developmentActivities = [
 const statName = (id) => developmentStats.find((stat) => stat.id === id).name;
 export const hasTrainedThisYear = (player, id) => (player.developmentDone?.[id] ?? -1) === player.age;
 
-// Bệnh đang ở mức Nặng hoặc Nguy kịch (tập luyện không chữa được bệnh).
+ 
 const hasSeriousIllness = (player) => (player.illnesses ?? [])
   .some((illness) => getIllnessStage(illness, player.age, player.health) !== "mild");
-// Gym (tập nặng) khi đang yếu hoặc bệnh nặng chỉ còn một nửa hiệu quả; yoga (tập nhẹ) khi yếu được cộng thêm.
+ 
 export const HIGH_STAT_THRESHOLD = 80;
 export function getTrainingGain(player, activity, tierGain) {
   const high = (player[activity.stat] ?? 0) >= HIGH_STAT_THRESHOLD;
@@ -78,8 +78,8 @@ export function getTrainingGain(player, activity, tierGain) {
   }
   return { gain: tierGain };
 }
-// Hoạt động miễn phí theo chỉ số: Sức khỏe (nghỉ ngơi, đi bộ nhẹ) và Hạnh phúc (sở thích, cộng đồng, tâm sự).
-// Chỉ số càng thấp, mức hồi phục càng nhiều; mỗi hoạt động một lần mỗi năm.
+ 
+ 
 export const freeActivities = {
   health: RECOVERY_ACTIVITIES.map((activity) => ({ stat: "health", ...activity })),
   happiness: MOOD_ACTIVITIES,
@@ -112,7 +112,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
   const focusFirst = () =>
     (body.querySelector(".shop-group:not(:disabled), .dev-buy:not(:disabled)") ?? body.querySelector("button"))?.focus({ preventScroll: true });
 
-  // Ghi chú về hiệu ứng Tarot đang chờ (nếu có).
+   
   function buffNote() {
     const buff = getActiveTarotBuff(state.player);
     if (buff?.type === "wands") return element("p", "tarot-buff", "🪄 Lá Gậy: lần tập tiếp theo được thêm 1 điểm vào chỉ số chính.");
@@ -144,7 +144,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
     renderStat(statId, activity.id);
   }
 
-  // Hồi phục miễn phí: mỗi hoạt động một lần mỗi năm.
+   
   function recover(activity) {
     const player = state.player;
     if (player.isAlive === false || hasTrainedThisYear(player, activity.id) || !useActivitySlot(player)) return;
@@ -222,7 +222,7 @@ export function initSelfDevelopment(state, { renderMoney, renderStats, renderLog
 
   function renderStat(statId, justTrained = null) {
     const player = state.player;
-    // Điểm thực nhận (không vượt 100, đã tính giới hạn tăng mỗi năm) hiển thị trước khi trả tiền.
+     
     const realGain = (gain) => previewActivityGain(player, statId, gain);
     const stat = developmentStats.find((entry) => entry.id === statId);
     const back = button("shop-back", "← Chọn chỉ số khác", renderHome);

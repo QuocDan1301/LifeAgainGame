@@ -2,9 +2,9 @@ import { openMojiArt } from "../media/event-art.js";
 import { formatMoney } from "../core/money-format.js";
 import { getCasualRomanceAdjustment } from "../relationships/casual-romance.js";
 
-// Cấu hình tập trung cho cơ chế phụ thuộc Ngoại hình. Các con số là thông số gameplay.
-// Ngoại hình chỉ ảnh hưởng ấn tượng ban đầu, cơ hội được làm quen và một số nghề liên quan đến hình ảnh.
-// Không quyết định giá trị, đạo đức, trí tuệ hay khả năng giữ một mối quan hệ; không tăng lương tự động.
+ 
+ 
+ 
 
 export const APPEARANCE_BANDS = [
   { id: "striking", min: 70, label: "Nổi bật" },
@@ -14,10 +14,10 @@ export const APPEARANCE_BANDS = [
 export const getAppearanceBand = (appearance) => APPEARANCE_BANDS.find((band) => (Number(appearance) || 0) >= band.min);
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-// Cơ hội được làm quen: 15% + (Ngoại hình − 50) × 0,2 điểm % + 10% nếu có hoạt động giao tiếp trong năm,
-// giới hạn 5–35%, tối đa một lời làm quen mỗi năm, chỉ khi có bối cảnh giao tiếp (trường, nơi làm, cộng đồng).
+ 
+ 
 export const ACQUAINTANCE = { base: 0.15, perPoint: 0.002, socialBonus: 0.1, min: 0.05, max: 0.35, minAge: 12, schoolUntil: 22 };
-// Hoạt động giao tiếp trong năm: cộng đồng, học nhóm, tâm sự với người thân, hoặc chủ động kết nối.
+ 
 const SOCIAL_ACTIVITIES = ["community", "study-together", "call-family"];
 export function wasSocialThisYear(player, age) {
   const last = age - 1;
@@ -36,22 +36,22 @@ export function getAcquaintanceChance(player, age) {
   const social = wasSocialThisYear(player, age) ? ACQUAINTANCE.socialBonus : 0;
   return clamp(ACQUAINTANCE.base + ((player.appearance ?? 50) - 50) * ACQUAINTANCE.perPoint + social + getCasualRomanceAdjustment(player) * 0.25, ACQUAINTANCE.min, ACQUAINTANCE.max);
 }
-// Lời mời hẹn tìm hiểu: ngoại hình chỉ tạo lợi thế nhỏ (±10%), không bảo đảm đồng ý cũng không khiến mọi lời mời thất bại.
+ 
 export const ROMANCE = { base: 0.55, perPoint: 0.002, min: 0.35, max: 0.75, startBond: 70, bondPerPoint: 0.06, maxBondBonus: 3 };
 export const getRomanceChance = (player) => clamp(ROMANCE.base + ((player.appearance ?? 50) - 50) * ROMANCE.perPoint + getCasualRomanceAdjustment(player), player.casualLife ? 0.15 : ROMANCE.min, ROMANCE.max);
 export const getStartingBond = (player) =>
   ROMANCE.startBond + clamp(Math.round(((player.appearance ?? 50) - 50) * ROMANCE.bondPerPoint), -ROMANCE.maxBondBonus, ROMANCE.maxBondBonus);
 
-// Nghề liên quan đến hình ảnh (diễn xuất, thời trang, quảng cáo, sáng tạo nội dung trước máy quay).
+ 
 export const IMAGE_CAREERS = ["acting", "fashion", "tiktok", "youtube", "singing"];
 export const isImageCareer = (careerId) => IMAGE_CAREERS.includes(careerId);
-// Ấn tượng ban đầu ở phỏng vấn nghề hình ảnh: (Ngoại hình − 50) × 0,1 điểm %, nhỏ hơn nhiều so với câu trả lời.
+ 
 export const IMAGE_INTERVIEW_PER_POINT = 0.001;
 export const getAppearanceImpression = (player, careerId) =>
   isImageCareer(careerId) ? ((player.appearance ?? 50) - 50) * IMAGE_INTERVIEW_PER_POINT : 0;
 
-// Chăm sóc cá nhân miễn phí (Phát triển bản thân → Ngoại hình): tăng ít, mỗi hoạt động một lần mỗi năm.
-// "Học xây dựng phong cách" học một lần, mở lựa chọn chuẩn bị theo phong cách riêng cho các dịp quan trọng.
+ 
+ 
 export const APPEARANCE_ACTIVITIES = [
   { id: "home-care", stat: "appearance", icon: "🧴", name: "Chăm sóc cá nhân tại nhà", description: "Miễn phí. Ngủ đủ, rửa mặt kỹ, cắt móng, chải tóc gọn gàng.",
     gain: { plain: 2, pleasant: 1, striking: 1 } },
@@ -61,8 +61,8 @@ export const APPEARANCE_ACTIVITIES = [
     gain: { plain: 1, pleasant: 1, striking: 1 }, once: true },
 ];
 
-// Tuổi tác: ngoại hình biến động nhẹ, không mặc định tuổi già là kém. Từ 60 tuổi, năm không chăm sóc bản thân
-// có 20% khả năng giảm 1 điểm; năm có chăm sóc (tại nhà, salon, spa, nail) thì giữ được phong cách.
+ 
+ 
 export const APPEARANCE_AGING = { from: 60, chance: 0.2, loss: 1 };
 const CARE_ACTIVITIES = ["home-care", "outfit", "style-lesson", "salon", "spa"];
 export function collectAppearanceYear(player, age, random = Math.random) {
@@ -76,8 +76,8 @@ export function collectAppearanceYear(player, age, random = Math.random) {
   return { content: `🪞 Tuổi tác để lại dấu vết nhẹ: Ngoại hình -${before - player.appearance}. Chăm sóc bản thân đều đặn giúp giữ phong cách ở mọi tuổi.` };
 }
 
-// Chuẩn bị cho dịp quan trọng (casting, ra mắt gia đình người yêu): ấn tượng tạm thời chỉ cho dịp đó,
-// không cộng vĩnh viễn vào chỉ số. Phương án đắt nhất không luôn tốt nhất.
+ 
+ 
 export const OCCASION_PREP = {
   simple: { label: "🪞 Chuẩn bị đơn giản", cost: 200_000, impression: 5, text: "Tôi ủi bộ đồ đẹp nhất, cắt tóc gọn gàng ở tiệm quen." },
   pro: { label: "💇 Thuê dịch vụ trang điểm, trang phục chuyên nghiệp", cost: 3_000_000, impression: 10, text: "Tôi thuê chuyên viên trang điểm và thuê trang phục hợp dịp." },
@@ -86,7 +86,7 @@ export const OCCASION_PREP = {
   current: { label: "🙂 Đi với phong cách hiện tại", cost: 0, impression: 0, text: "Tôi đi với phong cách thường ngày của mình." },
   style: { label: "🧭 Phối đồ theo phong cách riêng đã học", cost: 0, impression: 8, needsStyle: true, text: "Tôi phối bộ đồ hợp dáng người và màu da theo những gì đã học." },
 };
-// Casting: năng lực, kinh nghiệm và chuẩn bị quyết định phần lớn; ngoại hình chỉ cộng nhỏ và tùy vai.
+ 
 export const CASTING = { chance: 0.15, base: 45, perYear: 2, maxExperience: 10, perMerit: 5, maxMerit: 3, lookPerPoint: 0.15, min: 10, max: 90 };
 const CASTING_ROLES = {
   acting: [["vai chính trong phim tình cảm", 1], ["vai người cha/mẹ đời thường", 0], ["vai phản diện cá tính", 0.5]],
@@ -141,7 +141,7 @@ export function createCastingEvent(player, age, random = Math.random) {
   };
 }
 
-// Ra mắt gia đình người yêu: ấn tượng ban đầu chỉ là một phần; cách cư xử và sự chân thành quan trọng hơn.
+ 
 export const MEET_FAMILY = { chance: 0.25, minYears: 1, base: 65, min: 40, max: 95 };
 export function createMeetFamilyEvent(player, age, random = Math.random) {
   const partner = player.partner;

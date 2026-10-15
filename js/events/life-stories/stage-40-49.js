@@ -1,7 +1,7 @@
-// Giai đoạn 40–49 tuổi. Mỗi tuổi: 3 sự kiện chung (cặp có việc / chưa có việc tính là một) + phiên bản theo hoàn cảnh.
-// Quy tắc viết: docs/su-kien-doi-thuong/SO-TAY.md.
+ 
+ 
 export const stage40To49 = [
-  // ───────────── 40 tuổi ─────────────
+   
   {
     id: 'ls40-mat-kem', age: 40,
     title: 'Cặp kính đầu tiên',
@@ -82,7 +82,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 41 tuổi ─────────────
+   
   {
     id: 'ls41-tim-dap-nhanh', age: 41,
     title: 'Tim đập nhanh',
@@ -172,7 +172,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 42 tuổi ─────────────
+   
   {
     id: 'ls42-tai-nan-ban', age: 42,
     title: 'Người bạn trong viện',
@@ -253,7 +253,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 43 tuổi ─────────────
+   
   {
     id: 'ls43-nam-vien-dai', age: 43,
     title: 'Đơn thuốc dài',
@@ -334,7 +334,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 44 tuổi ─────────────
+   
   {
     id: 'ls44-kinh-doc-sach', age: 44,
     title: 'Cặp kính đọc sách',
@@ -424,7 +424,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 45 tuổi ─────────────
+   
   {
     id: 'ls45-dam-cuoi-va-dam-gio', age: 45,
     title: 'Hai lời mời cùng một ngày',
@@ -516,7 +516,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 46 tuổi ─────────────
+   
   {
     id: 'ls46-may-cuoi', age: 46,
     title: 'Cuộc gọi lúc rạng sáng',
@@ -595,7 +595,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 47 tuổi ─────────────
+   
   {
     id: 'ls47-dau-dau-goi', age: 47,
     title: 'Đầu gối',
@@ -674,7 +674,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 48 tuổi ─────────────
+   
   {
     id: 'ls48-doi-mua-khu-pho', age: 48,
     title: 'Đội múa của khu phố',
@@ -775,7 +775,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── 49 tuổi ─────────────
+   
   {
     id: 'ls49-buoi-sang-yen', age: 49,
     title: 'Buổi sáng không vội',
@@ -865,7 +865,7 @@ export const stage40To49 = [
     ],
   },
 
-  // ───────────── Chuỗi ─────────────
+   
   {
     id: 'ls-ba-lan-cau-ca', ages: [40, 70], requires: ['nghe_chuyen_ba'], needs: ['father'],
     title: 'Chuyện câu cá',

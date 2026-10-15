@@ -1,5 +1,5 @@
-// Trang giới thiệu: chọn sẵn hướng dẫn theo thiết bị, nút cài một chạm khi trình duyệt hỗ trợ,
-// và đăng ký service worker để trang cùng game dùng được khi không có mạng.
+ 
+ 
 const get = id => document.getElementById(id);
 const tabs = [...document.querySelectorAll('.device-picker [role="tab"]')];
 
@@ -21,7 +21,7 @@ document.querySelector(".device-picker").addEventListener("keydown", event => {
   selectTab(tabs[(index + step + tabs.length) % tabs.length], true);
 });
 
-// iPadOS báo mình là Mac nhưng có màn hình cảm ứng.
+ 
 const ua = navigator.userAgent;
 const isIos = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
 const isAndroid = /Android/.test(ua);
@@ -49,7 +49,7 @@ window.addEventListener("appinstalled", () => {
   get("install-done").hidden = false;
 });
 
-// Chỉ bản build (có data-offline) mới có sw.js.
+ 
 if ("serviceWorker" in navigator && document.documentElement.hasAttribute("data-offline")) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
