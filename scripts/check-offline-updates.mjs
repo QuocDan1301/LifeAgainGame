@@ -14,11 +14,12 @@ function events(extra = {}) {
   });
 }
 const flush = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
-async function app({ controlled = true, idle = true, waiting = true, online = true, saveFails = false, revision = null } = {}) {
+async function app({ controlled = true, idle = true, waiting = true, online = true, saveFails = false, revision = null, pending = false } = {}) {
   let reloads = 0, updates = 0, saves = 0, unregisters = 0;
   let registrationOptions;
   const messages = [], deleted = [];
-  const buttons = [events({}), events({})], notices = [{}, {}];
+  const buttons = [events({}), events({})], notices = [{}, {}], panels = [{}], toast = { hidden: true };
+  const session = new Map(pending ? [['lifeAgainUpdatePending', '1']] : []), timeouts = new Map();
   const worker = events({ state: 'installed', postMessage: message => messages.push(message) });
   const registration = events({ scope: 'https://game.test/', waiting: waiting ? worker : null, installing: null,
     update: async () => { updates++; }, unregister: async () => { unregisters++; return true; } });
@@ -29,12 +30,15 @@ async function app({ controlled = true, idle = true, waiting = true, online = tr
       return registration;
     } });
   const document = events({ readyState: 'complete', baseURI: 'https://game.test/', visibilityState: 'visible',
-    querySelectorAll: selector => selector === '[data-game-update]' ? buttons : notices,
+    querySelectorAll: selector => selector === '[data-game-update]' ? buttons : selector === '.game-update-controls' ? panels : notices,
+    getElementById: () => toast,
     documentElement: { hasAttribute: () => true } });
   const window = events(), timers = new Map();
   const storage = new Map([['lifeAgainSave', 'saved-life'], ['lifeAgainAchievements', 'achievements'], ['lifeAgainTickets', 'tickets']]);
   if (revision) storage.set('lifeAgainWorkerRevision', revision);
   const context = vm.createContext({ navigator: { serviceWorker }, document, window, URL, AbortSignal,
+    setTimeout: (callback, delay) => timeouts.set(delay, callback),
+    sessionStorage: { getItem: key => session.get(key) ?? null, setItem: (key, value) => session.set(key, value), removeItem: key => session.delete(key) },
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
     fetch: async () => { if (!online) throw new Error('offline'); return { ok: true, json: async () => ({ ok: true }) }; },
     caches: { keys: async () => ['life-again-v1', 'life-again-runtime-v1', 'other-app'], delete: async key => { deleted.push(key); } },
@@ -44,7 +48,7 @@ async function app({ controlled = true, idle = true, waiting = true, online = tr
   await flush();
   return { worker, registration, serviceWorker, document, window, timers, messages, buttons, notices, deleted,
     setIdle(value) { idle = value; }, get reloads() { return reloads; }, get updates() { return updates; },
-    get saves() { return saves; }, get unregisters() { return unregisters; }, get options() { return registrationOptions; }, storage };
+    get saves() { return saves; }, get unregisters() { return unregisters; }, get options() { return registrationOptions; }, storage, session, panels, toast, timeouts };
 }
 const revised = await app({ revision: '12345', waiting: false });
 assert.equal(revised.options.updateViaCache, 'none', 'refresh token is reused on subsequent visits');
@@ -52,7 +56,22 @@ const active = await app({ idle: false });
 assert.equal(active.options.updateViaCache, 'none');
 assert.equal(active.updates, 1);
 assert.equal(active.messages.length, 0, 'new release does not automatically interrupt play');
-assert.match(active.buttons[0].textContent, /Có bản mới/);
+assert.match(active.buttons[0].textContent, /Cập nhật bản mới/);
+assert.equal(active.buttons[0].hidden, false);
+assert.equal(revised.buttons[0].hidden, true, 'no update button when already current');
+assert.equal(revised.panels[0].hidden, true, 'no reserved layout space when current');
+const completed = await app({ pending: true, waiting: false });
+completed.registration.active = { state: 'activating' };
+completed.serviceWorker.controller = completed.registration.active;
+await completed.serviceWorker.emit('controllerchange');
+assert.equal(completed.toast.hidden, true, 'do not report success before activation');
+completed.registration.active.state = 'activated';
+await completed.serviceWorker.emit('controllerchange');
+assert.equal(completed.toast.textContent, '✓ Đã cập nhật');
+assert.equal(completed.toast.hidden, false);
+assert.equal(completed.session.has('lifeAgainUpdatePending'), false);
+completed.timeouts.get(3000)();
+assert.equal(completed.toast.hidden, true, 'success message disappears after three seconds');
 active.setIdle(true);
 active.timers.get(5000)();
 assert.equal(active.reloads, 0, 'the waiting update is offered for explicit installation');

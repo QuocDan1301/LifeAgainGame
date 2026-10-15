@@ -2,7 +2,8 @@
   "PASS actual service worker: cached game opens offline and preserves the save.",
   "PASS new version waits while the player is in the game.",
   "PASS update button loads the new release, preserves saved progress/storage, and keeps other app caches.",
-  "{\"beforeOffline\":[{\"key\":\"another-app-cache\",\"size\":1,\"shell\":false},{\"key\":\"life-again-aabbccddeeff\",\"size\":188,\"shell\":true},{\"key\":\"life-again-runtime-aabbccddeeff\",\"size\":0,\"shell\":false}],\"revision\":\"1792050990959\",\"activeURL\":\"http://localhost:55014/sw.js?refresh=1792050990959\",\"controllerURL\":\"http://localhost:55014/sw.js?refresh=1792050990959\"}",
+  "PASS update controls are hidden when current; success message appears after activation and disappears automatically.",
+  "{\"beforeOffline\":[{\"key\":\"another-app-cache\",\"size\":1,\"shell\":false},{\"key\":\"life-again-aabbccddeeff\",\"size\":188,\"shell\":true},{\"key\":\"life-again-runtime-aabbccddeeff\",\"size\":0,\"shell\":false}],\"revision\":\"1792052327195\",\"activeURL\":\"http://localhost:60800/sw.js?refresh=1792052327195\",\"controllerURL\":\"http://localhost:60800/sw.js?refresh=1792052327195\"}",
   "PASS the new version also opens offline after updating.",
   "PASS settings update saves the live game before reloading, including progress not yet written to storage."
 ]

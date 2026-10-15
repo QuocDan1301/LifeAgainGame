@@ -22,7 +22,7 @@ const server = http.createServer((req, res) => {
   if (!file.startsWith(root + path.sep)) { res.writeHead(403).end(); return; }
   try {
     let body = fs.readFileSync(file);
-    if (url.pathname === '/sw.js' && revision === 2) body = originalWorker.replaceAll(version, 'aabbccddeeff');
+    if (url.pathname === '/sw.js' && revision > 1) body = originalWorker.replaceAll(version, revision === 2 ? 'aabbccddeeff' : 'aabbccddee33');
     if (url.pathname === '/js/boot.js') body = body.toString('utf8') + '\nglobalThis.TESTER_BUILD_REVISION=' + revision + ';';
     res.writeHead(200, { 'Content-Type': types[path.extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'no-cache' });
     res.end(body);
@@ -90,7 +90,11 @@ try {
   await page.reload();
   const updateButton = page.locator('#lobby-screen [data-game-update]');
   await updateButton.waitFor({ state: 'visible' });
-  await page.waitForFunction(() => document.querySelector('#lobby-screen [data-game-update]').textContent.includes('Có bản mới'));
+  assert.equal(await updateButton.textContent(), '↻ Cập nhật bản mới');
+  await page.setViewportSize({ width: 320, height: 568 });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+  await page.screenshot({ path: 'output/tester-audit/update-available-small.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.evaluate(async () => {
     localStorage.setItem('tester-preserve', 'tickets-and-achievements');
     await (await caches.open('another-app-cache')).put('/sentinel', new Response('keep'));
@@ -108,6 +112,12 @@ try {
     const registration = await navigator.serviceWorker.getRegistration();
     return registration?.active?.state === 'activated' && navigator.serviceWorker.controller === registration.active && !registration.waiting && !registration.installing;
   });
+  await page.locator('#game-update-toast').waitFor({ state: 'visible' });
+  assert.match(await page.locator('#game-update-toast').textContent(), /Đã cập nhật/);
+  assert.equal(await updateButton.isVisible(), false);
+  await page.screenshot({ path: 'output/tester-audit/update-success-mobile.png' });
+  await page.locator('#game-update-toast').waitFor({ state: 'hidden', timeout: 5000 });
+  results.push('PASS update controls are hidden when current; success message appears after activation and disappears automatically.');
   results.push(JSON.stringify(await page.evaluate(async () => {
     const rows = [];
     for (const key of await caches.keys()) {
@@ -131,6 +141,11 @@ try {
   });
   await page.locator('#menu-button').click();
   const menuUpdate = page.locator('#menu-panel [data-game-update]');
+  assert.equal(await menuUpdate.isVisible(), false, 'settings has no update row when current');
+  revision = 3;
+  await page.evaluate(async () => { await (await navigator.serviceWorker.getRegistration()).update(); });
+  await waitForWorker(async () => Boolean((await navigator.serviceWorker.getRegistration())?.waiting));
+  await menuUpdate.waitFor({ state: 'visible' });
   assert.equal(await menuUpdate.isEnabled(), true);
   await page.screenshot({ path: 'output/tester-audit/update-menu-mobile.png' });
   await Promise.all([page.waitForNavigation({ waitUntil: 'load' }), menuUpdate.click()]);

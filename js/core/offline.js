@@ -3,6 +3,10 @@
 export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
   const buttons = [...document.querySelectorAll("[data-game-update]")];
   const notices = [...document.querySelectorAll("[data-game-update-status]")];
+  const panels = [...document.querySelectorAll(".game-update-controls")];
+  const toast = document.getElementById("game-update-toast");
+  let pendingUpdate = false;
+  try { pendingUpdate = Boolean(sessionStorage.getItem("lifeAgainUpdatePending")); } catch { /* Optional UI state. */ }
   const supported = "serviceWorker" in navigator && document.documentElement.hasAttribute("data-offline");
   let registration;
   let updating = false;
@@ -12,10 +16,25 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
   const wasControlled = Boolean(navigator.serviceWorker?.controller);
   function show(message, busy = false) {
     for (const button of buttons) {
+      button.hidden = !supported || (!available && !busy);
       button.disabled = busy || !supported;
-      button.textContent = busy ? "Đang cập nhật…" : available ? "↻ Có bản mới — cập nhật ngay" : "↻ Cập nhật bản mới nhất";
+      button.textContent = busy ? "Đang cập nhật…" : "↻ Cập nhật bản mới";
     }
     for (const notice of notices) notice.textContent = message;
+    for (const panel of panels) panel.hidden = !supported || (!available && !busy && !message);
+  }
+  function completeUpdate() {
+    if (!pendingUpdate || registration?.active?.state !== "activated" ||
+        navigator.serviceWorker.controller !== registration.active) return;
+    pendingUpdate = false;
+    try { sessionStorage.removeItem("lifeAgainUpdatePending"); } catch { /* Optional UI state. */ }
+    available = false;
+    show("");
+    if (toast) {
+      toast.textContent = "✓ Đã cập nhật";
+      toast.hidden = false;
+      setTimeout(() => { toast.hidden = true; }, 3000);
+    }
   }
   function reloadWhenIdle() {
     if (reloaded || updating || !controllerChanged || !isIdle()) return;
@@ -23,14 +42,14 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
     location.reload();
   }
   function offerUpdate() {
-    if (!registration?.waiting || !navigator.serviceWorker.controller || updating) return;
+    if (!registration?.waiting || !navigator.serviceWorker.controller || updating || pendingUpdate || available) return;
     available = true;
-    show("Có phiên bản mới. Bấm cập nhật để tải lại game; tiến trình của bạn được giữ nguyên.");
+    show("");
   }
   async function updateNow() {
-    if (updating || !supported) return;
+    if (updating || !supported || !available) return;
     updating = true;
-    show("Đang kiểm tra kết nối và tải bản mới…", true);
+    show("", true);
     try {
       // The worker deliberately passes /health through to the network.
       // Verify connectivity before touching the offline cache.
@@ -56,6 +75,7 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
       }
       // Capture any progress made while the network/cache operations were pending.
       await beforeUpdate();
+      try { sessionStorage.setItem("lifeAgainUpdatePending", "1"); } catch { /* Updating still works without the toast. */ }
       reloaded = true;
       location.reload();
     } catch {
@@ -64,9 +84,10 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
     }
   }
   for (const button of buttons) button.addEventListener("click", updateNow);
-  show(supported ? "" : "Nút cập nhật khả dụng khi chơi bản game đã triển khai trực tuyến.");
+  show("");
   if (!("serviceWorker" in navigator)) return;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (pendingUpdate) { completeUpdate(); return; }
     controllerChanged = wasControlled;
     reloadWhenIdle();
   });
@@ -98,11 +119,14 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
       if (!worker) return;
       worker.addEventListener("statechange", () => {
         if (worker.state === "installed") offerUpdate();
+        if (worker.state === "activated") completeUpdate();
       });
       if (worker.state === "installed") offerUpdate();
     }
     registration.addEventListener("updatefound", () => watch(registration.installing));
     watch(registration.installing);
+    watch(registration.active);
+    completeUpdate();
     offerUpdate();
     let checking = false;
     async function checkUpdate() {

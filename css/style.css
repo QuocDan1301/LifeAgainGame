@@ -762,7 +762,10 @@ body::before {
   font: inherit;
   cursor: pointer;
 }
-.game-update-controls { margin-top: 14px; width: 100%; }
+.game-update-controls { margin-top: 8px; }
+.game-update-controls [data-game-update] { width: auto; padding: 8px 14px; font-size: 14px; }
+.game-update-controls[hidden], [data-game-update][hidden], #game-update-toast[hidden] { display: none !important; }
+#game-update-toast { position: fixed; top: max(12px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 1000; max-width: calc(100vw - 32px); box-sizing: border-box; padding: 10px 18px; border: 1px solid #81b59a; border-radius: 12px; background: #effbf1; color: #245b35; box-shadow: 0 3px 12px rgb(0 0 0 / 12%); font: 600 15px/1.4 system-ui, sans-serif; text-align: center; pointer-events: none; }
 [data-game-update] { min-height: 44px; white-space: normal; overflow-wrap: anywhere; }
 [data-game-update]:hover:not(:disabled) { background: #ffe284; }
 [data-game-update]:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }

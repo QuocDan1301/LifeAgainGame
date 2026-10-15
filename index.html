@@ -246,6 +246,7 @@
     </style>
   </head>
   <body>
+    <div id="game-update-toast" role="status" hidden></div>
      
     <div id="app-loader" role="status" aria-live="polite">
       <div class="app-loader-inner">
@@ -410,8 +411,8 @@
             >⬇️ Cài game vào máy</a
           >
         </p>
-        <div class="game-update-controls">
-          <button type="button" data-game-update>↻ Cập nhật bản mới nhất</button>
+        <div class="game-update-controls" hidden>
+          <button type="button" data-game-update hidden>↻ Cập nhật bản mới</button>
           <p data-game-update-status role="status"></p>
         </div>
         <p id="lobby-message" role="status"></p>
@@ -1306,7 +1307,7 @@
             <span data-sfx-icon aria-hidden="true">🔔</span>
             <span data-sfx-label>Hiệu ứng âm thanh: Bật</span>
           </button>
-          <button type="button" data-game-update>↻ Cập nhật bản mới nhất</button>
+          <button type="button" data-game-update hidden>↻ Cập nhật bản mới</button>
           <p data-game-update-status role="status"></p>
           <button type="button" id="restart-button">Về bến xe</button>
         </div>
