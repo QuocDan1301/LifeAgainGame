@@ -40,6 +40,7 @@ try {
   // Exercise native service-worker networking without request interception.
   // External font hosts are disabled by the launch-time resolver rules above.
   await context.addInitScript(() => {
+    Object.defineProperty(navigator, "standalone", { get: () => true });
     const note = (type, details) => console.debug('TESTER_SW ' + JSON.stringify({ type, details, ready: document.readyState }));
     const nativeRegister = navigator.serviceWorker.register.bind(navigator.serviceWorker);
     navigator.serviceWorker.register = (...args) => nativeRegister(...args).then(reg => {

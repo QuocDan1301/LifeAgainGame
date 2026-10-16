@@ -78,7 +78,7 @@ async function buildCss(file) {
  
 async function buildHtml(file) {
    
-  let html = fs.readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace('<html lang="vi">', '<html lang="vi" data-offline>');
+  let html = fs.readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace('<html lang="vi">', `<html lang="vi" data-offline${path.basename(file) === 'index.html' ? ' data-installed-only' : ''}>`);
   const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   for (const [whole, body] of scripts) {
     const { code } = await transform(body, { loader: 'js', minify: true, legalComments: 'none' });
@@ -113,7 +113,7 @@ async function buildServiceWorker() {
   const template = fs.readFileSync(path.join(ROOT, 'scripts', 'sw-template.js'), 'utf8');
   hash.update(template);
    
-  const urls = files.map(file => file === 'index.html' ? './' : './' + file);
+  const urls = [...new Set(['./', ...files.map(file => './' + file)])];
   const source = template
     .replace('__VERSION__', JSON.stringify(hash.digest('hex').slice(0, 12)))
     .replace('__PRECACHE__', JSON.stringify(urls))

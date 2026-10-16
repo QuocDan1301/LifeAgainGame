@@ -66,8 +66,10 @@ self.addEventListener("fetch", event => {
 async function openPage(request) {
   const cache = await caches.open(SHELL_CACHE);
    
-  const cached = await cache.match(request, { ignoreSearch: true }) ??
-    await cache.match(new URL(request.url).pathname + ".html");
+  const pathname = new URL(request.url).pathname;
+  const page = pathname === "/choi" || pathname === "/choi/" ? "./index.html"
+    : pathname === "/" ? "./gioi-thieu.html" : pathname + ".html";
+  const cached = await cache.match(request, { ignoreSearch: true }) ?? await cache.match(page);
   if (cached) return cached;
   try {
     return await fetch(request);

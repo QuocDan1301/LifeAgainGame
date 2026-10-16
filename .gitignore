@@ -5,3 +5,4 @@
 .tmp/life-archive-python/
 node_modules/
 dist/
+output/windows-release/

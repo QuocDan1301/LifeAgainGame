@@ -1,0 +1,33 @@
+[
+  {
+    "width": 390,
+    "expected": "tab-android",
+    "overflow": false,
+    "errors": [],
+    "backup": true,
+    "redirect": true
+  },
+  {
+    "width": 360,
+    "expected": "tab-ios",
+    "overflow": false,
+    "errors": [],
+    "backup": true,
+    "redirect": true
+  },
+  {
+    "width": 1280,
+    "expected": "tab-desktop",
+    "overflow": false,
+    "errors": [],
+    "backup": true,
+    "redirect": true
+  },
+  {
+    "installedPwaEntry": true
+  },
+  {
+    "nativeServiceWorkerOfflineEntry": true,
+    "savedLifeRetained": true
+  }
+]

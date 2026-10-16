@@ -9,6 +9,10 @@ try {
   assert.deepEqual(await (await fetch(base + '/health')).json(), { ok: true });
   const html = await (await fetch(base + '/')).text();
   assert.match(html, /<html/i);
+  assert.match(html, /id="cai-dat"/, "the website root is the installation page");
+  const gamePage = await (await fetch(base + "/choi")).text();
+  assert.match(gamePage, /id="lobby-screen"/);
+  assert.match(gamePage, /js\/entry\.js/);
   assert.doesNotMatch(html, /account\.css|account-dialog/);
   const boot = await (await fetch(base + '/js/boot.js')).text();
   assert.doesNotMatch(boot, /initAccountUI|account-ui/);
