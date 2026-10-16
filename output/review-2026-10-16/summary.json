@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-16",
+  "source": "Current local working tree; live migration inspected separately",
+  "browserHarnesses": {
+    "passed": 41,
+    "total": 47
+  },
+  "nodeSuites": {
+    "passed": 26,
+    "total": 29
+  },
+  "layout": {
+    "states": 144,
+    "sizes": [
+      "360x800",
+      "390x844",
+      "1280x900"
+    ],
+    "overflow": 0,
+    "clipped": 0,
+    "smallControls": [
+      "finance-tax-help summary:21px",
+      "garden-quick-help summary:35px"
+    ]
+  },
+  "startedGameplayLives": 10,
+  "completedGameplayLives": [
+    {
+      "strategy": "newcomer",
+      "age": 46,
+      "cause": "hepatitis-b",
+      "replay": true
+    },
+    {
+      "strategy": "serious",
+      "age": 76,
+      "cause": "coronary",
+      "replay": true
+    },
+    {
+      "strategy": "optimizer",
+      "age": 63,
+      "cause": "diabetes",
+      "replay": true
+    },
+    {
+      "strategy": "serious",
+      "age": 68,
+      "cause": "coronary",
+      "replay": true
+    },
+    {
+      "strategy": "optimizer",
+      "age": 37,
+      "cause": "pneumonia",
+      "replay": true
+    }
+  ],
+  "harnessAborts": 3,
+  "stoppedAtCareerGate": 2,
+  "reloads": 29,
+  "fuzz": {
+    "lives": 3,
+    "years": 86,
+    "maxAge": 32,
+    "deaths": 3
+  },
+  "limits": [
+    "No five fully realized human play styles",
+    "No successful full employed career through organic UI runs",
+    "No physical phone/Safari",
+    "External requests blocked in local fixture contexts",
+    "No current-build runtime PWA or installed update verification",
+    "Online/local byte parity not established"
+  ]
+}

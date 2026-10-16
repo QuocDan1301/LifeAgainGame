@@ -1,0 +1,5402 @@
+[
+  {
+    "size": "360x800",
+    "scene": "lobby",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      360,
+      800
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 800,
+      "clientH": 800,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 8,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "main",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      360,
+      800
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 800,
+      "clientH": 800,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "menu",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      360,
+      800
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 800,
+      "clientH": 800,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "achievements",
+    "scope": "#achievements-dialog",
+    "docOverflowX": 0,
+    "box": [
+      11,
+      142,
+      349,
+      658
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      312,
+      133,
+      352,
+      173
+    ],
+    "vertical": {
+      "scrollH": 510,
+      "clientH": 510,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "fortune",
+    "scope": "#fortune-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      99,
+      352,
+      701
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 597,
+      "clientH": 597,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 1,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      127,
+      352,
+      673
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      118,
+      355,
+      158
+    ],
+    "vertical": {
+      "scrollH": 540,
+      "clientH": 540,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-livestock-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      172,
+      352,
+      628
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      163,
+      355,
+      203
+    ],
+    "vertical": {
+      "scrollH": 450,
+      "clientH": 450,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-realestate-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      92,
+      352,
+      708
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      83,
+      355,
+      123
+    ],
+    "vertical": {
+      "scrollH": 610,
+      "clientH": 610,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-vehicles-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      184,
+      352,
+      616
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      175,
+      355,
+      215
+    ],
+    "vertical": {
+      "scrollH": 426,
+      "clientH": 426,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      172,
+      352,
+      628
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      163,
+      355,
+      203
+    ],
+    "vertical": {
+      "scrollH": 450,
+      "clientH": 450,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-licenses-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      172,
+      352,
+      628
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      163,
+      355,
+      203
+    ],
+    "vertical": {
+      "scrollH": 450,
+      "clientH": 450,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-box-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      172,
+      352,
+      628
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      163,
+      355,
+      203
+    ],
+    "vertical": {
+      "scrollH": 450,
+      "clientH": 450,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-auction-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      169,
+      352,
+      631
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      160,
+      355,
+      200
+    ],
+    "vertical": {
+      "scrollH": 457,
+      "clientH": 457,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-collection-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      172,
+      352,
+      628
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      163,
+      355,
+      203
+    ],
+    "vertical": {
+      "scrollH": 450,
+      "clientH": 450,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-keepsakes-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      184,
+      352,
+      616
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      175,
+      355,
+      215
+    ],
+    "vertical": {
+      "scrollH": 426,
+      "clientH": 426,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "assets-life-memories-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      160,
+      352,
+      640
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      151,
+      355,
+      191
+    ],
+    "vertical": {
+      "scrollH": 474,
+      "clientH": 474,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "budget",
+    "scope": "#finance-check-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1738,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [
+      "div#finance-check-body > details.finance-tax-help > summary 310x21 \"🧾 Cách tính thuế và tiền nhà\""
+    ],
+    "smallTargetCount": 1,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "relationships",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1025,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "relationships-relationship-family-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 2036,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 15,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "relationships-relationship-gifts-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      225,
+      352,
+      575
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      216,
+      355,
+      256
+    ],
+    "vertical": {
+      "scrollH": 344,
+      "clientH": 344,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "relationships-relationship-children-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      174,
+      352,
+      626
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      165,
+      355,
+      205
+    ],
+    "vertical": {
+      "scrollH": 445,
+      "clientH": 445,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "relationships-relationship-history-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      51,
+      352,
+      749
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      42,
+      355,
+      82
+    ],
+    "vertical": {
+      "scrollH": 692,
+      "clientH": 692,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "family-talk",
+    "scope": "#family-conversation-dialog",
+    "docOverflowX": 0,
+    "box": [
+      19,
+      70,
+      341,
+      730
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      304,
+      61,
+      344,
+      101
+    ],
+    "vertical": {
+      "scrollH": 653,
+      "clientH": 653,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "education",
+    "scope": "#education-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1086,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 0,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "activities",
+    "scope": "#activities-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      316,
+      2,
+      356,
+      42
+    ],
+    "vertical": {
+      "scrollH": 2098,
+      "clientH": 772,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 19,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "restart",
+    "scope": "#restart-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      289,
+      352,
+      511
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 216,
+      "clientH": 216,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 2,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-self-development",
+    "scope": "#self-development-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      110,
+      352,
+      690
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      101,
+      355,
+      141
+    ],
+    "vertical": {
+      "scrollH": 575,
+      "clientH": 575,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-hospital",
+    "scope": "#hospital-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1349,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-food",
+    "scope": "#food-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1473,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 6,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-beauty",
+    "scope": "#beauty-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1608,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-love",
+    "scope": "#love-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 829,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-degrees",
+    "scope": "#license-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      256,
+      352,
+      544
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      247,
+      355,
+      287
+    ],
+    "vertical": {
+      "scrollH": 281,
+      "clientH": 281,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-jobs",
+    "scope": "#job-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 2712,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 26,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-part-time",
+    "scope": "#side-job-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1167,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 7,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-repair-lessons",
+    "scope": "#activities-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      316,
+      2,
+      356,
+      42
+    ],
+    "vertical": {
+      "scrollH": 2098,
+      "clientH": 772,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 19,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-shopping",
+    "scope": "#shop-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      154,
+      352,
+      646
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      145,
+      355,
+      185
+    ],
+    "vertical": {
+      "scrollH": 485,
+      "clientH": 485,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-pets",
+    "scope": "#shop-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      210,
+      352,
+      590
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      201,
+      355,
+      241
+    ],
+    "vertical": {
+      "scrollH": 374,
+      "clientH": 374,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 4,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-travel",
+    "scope": "#travel-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1837,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-game-center",
+    "scope": "#game-center-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1073,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-tarot",
+    "scope": "#tarot-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      102,
+      352,
+      698
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      93,
+      355,
+      133
+    ],
+    "vertical": {
+      "scrollH": 589,
+      "clientH": 589,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 6,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-lottery",
+    "scope": "#lottery-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1607,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 56,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 13,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-detective",
+    "scope": "#detective-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1261,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-garden",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1838,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [
+      "section.garden-detail.garden-next-step > details.garden-quick-help > summary 278x35 \"📖 Cách chơi trong 30 giây\""
+    ],
+    "smallTargetCount": 1,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-garden-garden-tab-market",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 2547,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 25,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-garden-garden-tab-kitchen",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1645,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "act-garden-garden-tab-pantry",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 798,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "games-notice",
+    "scope": "#games-notice-dialog",
+    "docOverflowX": 0,
+    "box": [
+      19,
+      87,
+      341,
+      713
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      304,
+      78,
+      344,
+      118
+    ],
+    "vertical": {
+      "scrollH": 619,
+      "clientH": 619,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 1,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 18,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "scene": "games",
+    "scope": "#games-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      352,
+      788
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      315,
+      3,
+      355,
+      43
+    ],
+    "vertical": {
+      "scrollH": 857,
+      "clientH": 770,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 8,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "360x800",
+    "pageErrors": []
+  },
+  {
+    "size": "390x844",
+    "scene": "lobby",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      390,
+      844
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 844,
+      "clientH": 844,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 8,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "main",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      390,
+      844
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 844,
+      "clientH": 844,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "menu",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      390,
+      844
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 844,
+      "clientH": 844,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "achievements",
+    "scope": "#achievements-dialog",
+    "docOverflowX": 0,
+    "box": [
+      12,
+      156,
+      378,
+      688
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      341,
+      147,
+      381,
+      187
+    ],
+    "vertical": {
+      "scrollH": 526,
+      "clientH": 526,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "fortune",
+    "scope": "#fortune-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      153,
+      382,
+      691
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 531,
+      "clientH": 531,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 1,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      164,
+      382,
+      680
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      155,
+      385,
+      195
+    ],
+    "vertical": {
+      "scrollH": 510,
+      "clientH": 510,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-livestock-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      209,
+      382,
+      635
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      200,
+      385,
+      240
+    ],
+    "vertical": {
+      "scrollH": 420,
+      "clientH": 420,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-realestate-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      129,
+      382,
+      715
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      120,
+      385,
+      160
+    ],
+    "vertical": {
+      "scrollH": 580,
+      "clientH": 580,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-vehicles-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      221,
+      382,
+      623
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      212,
+      385,
+      252
+    ],
+    "vertical": {
+      "scrollH": 396,
+      "clientH": 396,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      209,
+      382,
+      635
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      200,
+      385,
+      240
+    ],
+    "vertical": {
+      "scrollH": 420,
+      "clientH": 420,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-licenses-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      209,
+      382,
+      635
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      200,
+      385,
+      240
+    ],
+    "vertical": {
+      "scrollH": 420,
+      "clientH": 420,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-box-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      209,
+      382,
+      635
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      200,
+      385,
+      240
+    ],
+    "vertical": {
+      "scrollH": 420,
+      "clientH": 420,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-auction-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      206,
+      382,
+      638
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      197,
+      385,
+      237
+    ],
+    "vertical": {
+      "scrollH": 427,
+      "clientH": 427,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-collection-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      209,
+      382,
+      635
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      200,
+      385,
+      240
+    ],
+    "vertical": {
+      "scrollH": 420,
+      "clientH": 420,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-keepsakes-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      221,
+      382,
+      623
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      212,
+      385,
+      252
+    ],
+    "vertical": {
+      "scrollH": 396,
+      "clientH": 396,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "assets-life-memories-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      197,
+      382,
+      647
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      188,
+      385,
+      228
+    ],
+    "vertical": {
+      "scrollH": 444,
+      "clientH": 444,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "budget",
+    "scope": "#finance-check-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1642,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [
+      "div#finance-check-body > details.finance-tax-help > summary 340x21 \"🧾 Cách tính thuế và tiền nhà\""
+    ],
+    "smallTargetCount": 1,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "relationships",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 974,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "relationships-relationship-family-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1819,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 15,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "relationships-relationship-gifts-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      259,
+      382,
+      585
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      250,
+      385,
+      290
+    ],
+    "vertical": {
+      "scrollH": 320,
+      "clientH": 320,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "relationships-relationship-children-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      220,
+      382,
+      624
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      211,
+      385,
+      251
+    ],
+    "vertical": {
+      "scrollH": 397,
+      "clientH": 397,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "relationships-relationship-history-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      109,
+      382,
+      735
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      100,
+      385,
+      140
+    ],
+    "vertical": {
+      "scrollH": 621,
+      "clientH": 621,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "family-talk",
+    "scope": "#family-conversation-dialog",
+    "docOverflowX": 0,
+    "box": [
+      19,
+      106,
+      371,
+      738
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      334,
+      97,
+      374,
+      137
+    ],
+    "vertical": {
+      "scrollH": 626,
+      "clientH": 626,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "education",
+    "scope": "#education-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1014,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 0,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "activities",
+    "scope": "#activities-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      346,
+      2,
+      386,
+      42
+    ],
+    "vertical": {
+      "scrollH": 2059,
+      "clientH": 816,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 19,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "restart",
+    "scope": "#restart-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      325,
+      382,
+      520
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 189,
+      "clientH": 189,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 2,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-self-development",
+    "scope": "#self-development-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      145,
+      382,
+      699
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      136,
+      385,
+      176
+    ],
+    "vertical": {
+      "scrollH": 547,
+      "clientH": 547,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-hospital",
+    "scope": "#hospital-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1301,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-food",
+    "scope": "#food-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1354,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 6,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-beauty",
+    "scope": "#beauty-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1513,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-love",
+    "scope": "#love-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      16,
+      382,
+      828
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      7,
+      385,
+      47
+    ],
+    "vertical": {
+      "scrollH": 805,
+      "clientH": 805,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-degrees",
+    "scope": "#license-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      278,
+      382,
+      566
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      269,
+      385,
+      309
+    ],
+    "vertical": {
+      "scrollH": 281,
+      "clientH": 281,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-jobs",
+    "scope": "#job-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 2647,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 26,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-part-time",
+    "scope": "#side-job-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1143,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 7,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-repair-lessons",
+    "scope": "#activities-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      346,
+      2,
+      386,
+      42
+    ],
+    "vertical": {
+      "scrollH": 2059,
+      "clientH": 816,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 19,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-shopping",
+    "scope": "#shop-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      197,
+      382,
+      647
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      188,
+      385,
+      228
+    ],
+    "vertical": {
+      "scrollH": 444,
+      "clientH": 444,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-pets",
+    "scope": "#shop-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      232,
+      382,
+      612
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      223,
+      385,
+      263
+    ],
+    "vertical": {
+      "scrollH": 374,
+      "clientH": 374,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 4,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-travel",
+    "scope": "#travel-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1837,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-game-center",
+    "scope": "#game-center-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1073,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-tarot",
+    "scope": "#tarot-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      130,
+      382,
+      714
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      121,
+      385,
+      161
+    ],
+    "vertical": {
+      "scrollH": 577,
+      "clientH": 577,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 6,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-lottery",
+    "scope": "#lottery-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1592,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 56,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 13,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-detective",
+    "scope": "#detective-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1176,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1799,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [
+      "section.garden-detail.garden-next-step > details.garden-quick-help > summary 308x35 \"📖 Cách chơi trong 30 giây\""
+    ],
+    "smallTargetCount": 1,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden-garden-tab-market",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1626,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 25,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden-garden-tab-kitchen",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 1623,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "act-garden-garden-tab-pantry",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      25,
+      382,
+      819
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      16,
+      385,
+      56
+    ],
+    "vertical": {
+      "scrollH": 788,
+      "clientH": 788,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "games-notice",
+    "scope": "#games-notice-dialog",
+    "docOverflowX": 0,
+    "box": [
+      19,
+      123,
+      371,
+      721
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      334,
+      114,
+      374,
+      154
+    ],
+    "vertical": {
+      "scrollH": 592,
+      "clientH": 592,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 1,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 18,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "scene": "games",
+    "scope": "#games-dialog",
+    "docOverflowX": 0,
+    "box": [
+      8,
+      12,
+      382,
+      832
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      345,
+      3,
+      385,
+      43
+    ],
+    "vertical": {
+      "scrollH": 837,
+      "clientH": 814,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 8,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "390x844",
+    "pageErrors": []
+  },
+  {
+    "size": "1280x900",
+    "scene": "lobby",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      1280,
+      900
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 900,
+      "clientH": 900,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 8,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "main",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      1280,
+      900
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 900,
+      "clientH": 900,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "menu",
+    "scope": "page",
+    "docOverflowX": 0,
+    "box": [
+      0,
+      0,
+      1280,
+      900
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 900,
+      "clientH": 900,
+      "overflowY": "hidden",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "ageUpInView": true,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "achievements",
+    "scope": "#achievements-dialog",
+    "docOverflowX": 0,
+    "box": [
+      370,
+      184,
+      910,
+      716
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      879,
+      171,
+      923,
+      215
+    ],
+    "vertical": {
+      "scrollH": 526,
+      "clientH": 526,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "fortune",
+    "scope": "#fortune-dialog",
+    "docOverflowX": 0,
+    "box": [
+      425,
+      171,
+      855,
+      729
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 551,
+      "clientH": 551,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 1,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      173,
+      900,
+      727
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      160,
+      913,
+      204
+    ],
+    "vertical": {
+      "scrollH": 547,
+      "clientH": 547,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-livestock-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      218,
+      900,
+      682
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      205,
+      913,
+      249
+    ],
+    "vertical": {
+      "scrollH": 457,
+      "clientH": 457,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-realestate-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      145,
+      900,
+      755
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      132,
+      913,
+      176
+    ],
+    "vertical": {
+      "scrollH": 603,
+      "clientH": 603,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-vehicles-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      218,
+      900,
+      682
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      205,
+      913,
+      249
+    ],
+    "vertical": {
+      "scrollH": 457,
+      "clientH": 457,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      218,
+      900,
+      682
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      205,
+      913,
+      249
+    ],
+    "vertical": {
+      "scrollH": 457,
+      "clientH": 457,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-licenses-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      218,
+      900,
+      682
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      205,
+      913,
+      249
+    ],
+    "vertical": {
+      "scrollH": 457,
+      "clientH": 457,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-box-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      206,
+      900,
+      694
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      193,
+      913,
+      237
+    ],
+    "vertical": {
+      "scrollH": 481,
+      "clientH": 481,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-auction-items-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      203,
+      900,
+      697
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      190,
+      913,
+      234
+    ],
+    "vertical": {
+      "scrollH": 488,
+      "clientH": 488,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-collection-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      206,
+      900,
+      694
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      193,
+      913,
+      237
+    ],
+    "vertical": {
+      "scrollH": 481,
+      "clientH": 481,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-keepsakes-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      218,
+      900,
+      682
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      205,
+      913,
+      249
+    ],
+    "vertical": {
+      "scrollH": 457,
+      "clientH": 457,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "assets-life-memories-panel-tab",
+    "scope": "#life-profile-dialog",
+    "docOverflowX": 0,
+    "box": [
+      380,
+      206,
+      900,
+      694
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      869,
+      193,
+      913,
+      237
+    ],
+    "vertical": {
+      "scrollH": 481,
+      "clientH": 481,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "budget",
+    "scope": "#finance-check-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1617,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [
+      "div#finance-check-body > details.finance-tax-help > summary 390x21 \"🧾 Cách tính thuế và tiền nhà\""
+    ],
+    "smallTargetCount": 1,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "relationships",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1032,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "relationships-relationship-family-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1866,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 15,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "relationships-relationship-gifts-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      261,
+      860,
+      639
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      248,
+      873,
+      292
+    ],
+    "vertical": {
+      "scrollH": 373,
+      "clientH": 373,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "relationships-relationship-children-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      222,
+      860,
+      678
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      209,
+      873,
+      253
+    ],
+    "vertical": {
+      "scrollH": 450,
+      "clientH": 450,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "relationships-relationship-history-panel-tab",
+    "scope": "#relationships-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      122,
+      860,
+      778
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      109,
+      873,
+      153
+    ],
+    "vertical": {
+      "scrollH": 650,
+      "clientH": 650,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "family-talk",
+    "scope": "#family-conversation-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      192,
+      860,
+      708
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      179,
+      873,
+      223
+    ],
+    "vertical": {
+      "scrollH": 510,
+      "clientH": 510,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "education",
+    "scope": "#education-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1023,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 0,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 14,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "activities",
+    "scope": "#activities-dialog",
+    "docOverflowX": 0,
+    "box": [
+      440,
+      90,
+      840,
+      810
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      810,
+      76,
+      854,
+      120
+    ],
+    "vertical": {
+      "scrollH": 2097,
+      "clientH": 716,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 19,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "restart",
+    "scope": "#restart-dialog",
+    "docOverflowX": 0,
+    "box": [
+      450,
+      345,
+      830,
+      556
+    ],
+    "scopeOverflowX": 0,
+    "vertical": {
+      "scrollH": 205,
+      "clientH": 205,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 2,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-self-development",
+    "scope": "#self-development-dialog",
+    "docOverflowX": 0,
+    "box": [
+      410,
+      165,
+      870,
+      735
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      839,
+      152,
+      883,
+      196
+    ],
+    "vertical": {
+      "scrollH": 563,
+      "clientH": 563,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-hospital",
+    "scope": "#hospital-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1342,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-food",
+    "scope": "#food-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1348,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 6,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-beauty",
+    "scope": "#beauty-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1562,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-love",
+    "scope": "#love-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 882,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-degrees",
+    "scope": "#license-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      288,
+      860,
+      612
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      275,
+      873,
+      319
+    ],
+    "vertical": {
+      "scrollH": 318,
+      "clientH": 318,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 3,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-jobs",
+    "scope": "#job-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 2760,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 26,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-part-time",
+    "scope": "#side-job-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1198,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 7,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-repair-lessons",
+    "scope": "#activities-dialog",
+    "docOverflowX": 0,
+    "box": [
+      440,
+      90,
+      840,
+      810
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      810,
+      76,
+      854,
+      120
+    ],
+    "vertical": {
+      "scrollH": 2097,
+      "clientH": 716,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 19,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-shopping",
+    "scope": "#shop-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      189,
+      860,
+      711
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      176,
+      873,
+      220
+    ],
+    "vertical": {
+      "scrollH": 516,
+      "clientH": 516,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-pets",
+    "scope": "#shop-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      240,
+      860,
+      660
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      227,
+      873,
+      271
+    ],
+    "vertical": {
+      "scrollH": 414,
+      "clientH": 414,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 4,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-travel",
+    "scope": "#travel-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1862,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 10,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-game-center",
+    "scope": "#game-center-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1071,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 13,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-tarot",
+    "scope": "#tarot-dialog",
+    "docOverflowX": 0,
+    "box": [
+      410,
+      136,
+      870,
+      764
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      839,
+      123,
+      883,
+      167
+    ],
+    "vertical": {
+      "scrollH": 621,
+      "clientH": 621,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 6,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 16,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-lottery",
+    "scope": "#lottery-dialog",
+    "docOverflowX": 0,
+    "box": [
+      420,
+      68,
+      860,
+      833
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      829,
+      55,
+      873,
+      99
+    ],
+    "vertical": {
+      "scrollH": 1625,
+      "clientH": 759,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 56,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 13,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-detective",
+    "scope": "#detective-dialog",
+    "docOverflowX": 0,
+    "box": [
+      340,
+      45,
+      940,
+      855
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      909,
+      32,
+      953,
+      76
+    ],
+    "vertical": {
+      "scrollH": 1039,
+      "clientH": 804,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-garden",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      320,
+      45,
+      960,
+      855
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      929,
+      32,
+      973,
+      76
+    ],
+    "vertical": {
+      "scrollH": 1460,
+      "clientH": 804,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [
+      "section.garden-detail.garden-next-step > details.garden-quick-help > summary 558x35 \"📖 Cách chơi trong 30 giây\""
+    ],
+    "smallTargetCount": 1,
+    "targetCount": 14,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-garden-garden-tab-market",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      320,
+      45,
+      960,
+      855
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      929,
+      32,
+      973,
+      76
+    ],
+    "vertical": {
+      "scrollH": 1344,
+      "clientH": 804,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 25,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-garden-garden-tab-kitchen",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      320,
+      45,
+      960,
+      855
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      929,
+      32,
+      973,
+      76
+    ],
+    "vertical": {
+      "scrollH": 1169,
+      "clientH": 804,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 12,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "act-garden-garden-tab-pantry",
+    "scope": "#garden-dialog",
+    "docOverflowX": 0,
+    "box": [
+      320,
+      54,
+      960,
+      846
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      929,
+      41,
+      973,
+      85
+    ],
+    "vertical": {
+      "scrollH": 785,
+      "clientH": 785,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 5,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 12,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "games-notice",
+    "scope": "#games-notice-dialog",
+    "docOverflowX": 0,
+    "box": [
+      410,
+      206,
+      870,
+      694
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      839,
+      193,
+      883,
+      237
+    ],
+    "vertical": {
+      "scrollH": 483,
+      "clientH": 483,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 1,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 18,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "scene": "games",
+    "scope": "#games-dialog",
+    "docOverflowX": 0,
+    "box": [
+      410,
+      54,
+      870,
+      846
+    ],
+    "scopeOverflowX": 0,
+    "closeInView": true,
+    "closeBox": [
+      839,
+      41,
+      883,
+      85
+    ],
+    "vertical": {
+      "scrollH": 887,
+      "clientH": 786,
+      "overflowY": "auto",
+      "beyondViewport": false
+    },
+    "overflowing": [],
+    "clipped": [],
+    "smallTargets": [],
+    "smallTargetCount": 0,
+    "targetCount": 8,
+    "smallText": [],
+    "smallTextCount": 0,
+    "minFont": 15,
+    "accessibility": {
+      "unlabeled": [],
+      "iconButtons": []
+    }
+  },
+  {
+    "size": "1280x900",
+    "pageErrors": []
+  }
+]

@@ -1,0 +1,1431 @@
+[
+  {
+    "test": "check-achievement-progress.html",
+    "result": "PASS: university and military unlock only on confirmation, persist to achievements and game save",
+    "pageErrors": [],
+    "milliseconds": 1759,
+    "diagnostic": null
+  },
+  {
+    "test": "check-adult-life.html",
+    "result": "FAIL: Error: Marriage story still receives annual salary\n    at assert (https://game.test/scripts/check-adult-life.html:8:66)\n    at https://game.test/scripts/check-adult-life.html:99:5",
+    "pageErrors": [],
+    "milliseconds": 2010,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "female",
+        "orientation": "bisexual",
+        "partner": {
+          "id": "admirer-27-400000000",
+          "name": "Hoàng Minh Khôi",
+          "gender": "male",
+          "birthDay": 13,
+          "birthMonth": 5,
+          "zodiac": "Kim Ngưu",
+          "ageAtMeeting": 26,
+          "metAtAge": 27,
+          "personality": "chu đáo, năng động",
+          "reason": "thích sự hài hước của tôi, kể cả những câu đùa hơi nhạt",
+          "relationship": 80,
+          "workplace": "nơi làm việc",
+          "stats": {
+            "health": 58,
+            "intelligence": 58,
+            "happiness": 58,
+            "appearance": 58
+          }
+        },
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "affairOpportunityCount": 0,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": 27,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 1,
+        "nextMarriageProposalAge": 34,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [
+          {
+            "age": 32,
+            "type": "marriage-postponed",
+            "person": {
+              "id": "admirer-27-400000000",
+              "name": "Hoàng Minh Khôi",
+              "gender": "male",
+              "birthDay": 13,
+              "birthMonth": 5,
+              "zodiac": "Kim Ngưu",
+              "ageAtMeeting": 26,
+              "metAtAge": 27,
+              "personality": "chu đáo, năng động",
+              "reason": "thích sự hài hước của tôi, kể cả những câu đùa hơi nhạt",
+              "relationship": 80,
+              "workplace": "nơi làm việc",
+              "stats": {
+                "health": 58,
+                "intelligence": 58,
+                "happiness": 58,
+                "appearance": 58
+              }
+            },
+            "text": "Tôi chưa muốn cưới Hoàng Minh Khôi. Cả hai hẹn nói lại chuyện cưới hỏi sau hai năm."
+          }
+        ],
+        "province": "",
+        "age": 32,
+        "money": 86400000,
+        "health": 88,
+        "happiness": 69,
+        "intelligence": 70,
+        "appearance": 70,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": "💻 Lập trình viên tập sự",
+        "employmentStatus": "employed",
+        "careerLevel": 1,
+        "lastSalaryAge": 32,
+        "nextPromotionAge": null,
+        "careerPath": {
+          "id": "programming",
+          "field": "Công nghệ thông tin"
+        },
+        "careerSpark": "programming",
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workTemptationCount": 0,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": {
+          "coins": 0,
+          "tickets": 0,
+          "collection": {},
+          "plushes": {},
+          "clawMachine": null,
+          "plays": null,
+          "giftAge": null,
+          "session": null
+        },
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {},
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school",
+          "age-30",
+          "money-1m",
+          "money-10m"
+        ],
+        "ending": null,
+        "relatives": [
+          {
+            "id": "father",
+            "role": "Bố",
+            "name": "Thanh Bình",
+            "ageAtPlayerBirth": 36,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán vé số",
+            "trackedFrom": 31,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          },
+          {
+            "id": "mother",
+            "role": "Mẹ",
+            "name": "Lan Anh",
+            "ageAtPlayerBirth": 33,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán hàng rong",
+            "trackedFrom": 31,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          }
+        ],
+        "lifeId": "legacy-63249233",
+        "careerHighestRanks": {
+          "programming": 1
+        },
+        "careerYears": {
+          "programming": 2
+        },
+        "careerTrackedAge": 32,
+        "partnerActions": {},
+        "partnerPromise": null,
+        "employedSince": 32,
+        "illnessPlan": [
+          {
+            "id": "early-cancer",
+            "age": 95
+          },
+          {
+            "id": "coronary",
+            "age": 95
+          }
+        ],
+        "moodEffects": [],
+        "lowHappinessYears": 0,
+        "strainedYears": 0,
+        "storyLoans": [],
+        "homeLoans": [],
+        "vietlottPot": {
+          "amount": 15000000000,
+          "updatedAge": 32
+        },
+        "economyPaidAge": 32,
+        "economyIncomeYear": {
+          "age": 32,
+          "salary": 120000000,
+          "sideIncome": 0,
+          "assetIncome": 0,
+          "retired": false,
+          "paidIncomeTax": 0,
+          "paidInsurance": 9600000
+        },
+        "familyBudgetPaidAge": 32
+      },
+      "pendingEvent": null,
+      "logs": [
+        {
+          "age": 32,
+          "content": "Trong một buổi trò chuyện yên tĩnh, Hoàng Minh Khôi nắm tay tôi và hỏi: “Mình đã cùng nhau trải qua nhiều chuyện. Bạn có muốn cưới tôi và xây dựng cuộc sống chung không?” Tôi cần trả lời thật lòng về điều mình muốn.\nBạn chọn: Tôi chưa muốn cưới\nTôi nói thật rằng mình chưa muốn cưới. Hoàng Minh Khôi đồng ý cho cả hai thêm thời gian và hẹn sẽ nói lại chuyện này sau hai năm, khi tôi 34 tuổi.\nHạnh phúc -1\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -2.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê.",
+          "summary": "💍 Mình cưới nhau nhé?\nChọn: Tôi chưa muốn cưới\n💬 Cần thêm thời gian\nHạnh phúc -1\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -2.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê."
+        }
+      ],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-auction.html",
+    "result": "PASS auction UI: preview; annual play count; durable hidden truth; resume; appraisal; buy; asset sale; duplicate protection; withdrawal; age and annual limits",
+    "pageErrors": [],
+    "milliseconds": 1494,
+    "diagnostic": null
+  },
+  {
+    "test": "check-appearance.html",
+    "result": "PASS: acquaintance 15% + (looks−50)×0.2 + 10% social, 5–35%, social settings only, friendship or romance by age and orientation, refusals respected; small first-impression edge; small casting/interview edge only for image careers; prep options with trade-offs, no permanent gains; mild avoidable ageing; free reach-out, personal care and style lesson; real gains shown before paying",
+    "pageErrors": [],
+    "milliseconds": 2338,
+    "diagnostic": null
+  },
+  {
+    "test": "check-beauty.html",
+    "result": "PASS: nail; three packages; age gate; success and failure; once per year; diary; save",
+    "pageErrors": [],
+    "milliseconds": 1643,
+    "diagnostic": null
+  },
+  {
+    "test": "check-career-salary.html",
+    "result": "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI",
+    "pageErrors": [],
+    "milliseconds": 1713,
+    "diagnostic": null
+  },
+  {
+    "test": "check-career-milestones.html",
+    "result": "PASS: age-16 chain (success, failure, stop); milestone promotion chain; retry; rank-3 gate",
+    "pageErrors": [],
+    "milliseconds": 4525,
+    "diagnostic": null
+  },
+  {
+    "test": "check-casual-life.html",
+    "result": "PASS male: age-18 route; service; asset requirements; both jobs; save",
+    "pageErrors": [],
+    "milliseconds": 1922,
+    "diagnostic": null
+  },
+  {
+    "test": "check-crime.html",
+    "result": "PASS: tool shopping; age limit; cancel/confirm; saved ownership; reusable tools; inventory/selling; crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release",
+    "pageErrors": [],
+    "milliseconds": 1703,
+    "diagnostic": null
+  },
+  {
+    "test": "check-dating-drama.html",
+    "result": "PASS: dialogue bubbles, denial branch, real reload, partner response, transcript, final consequences and double confirmation",
+    "pageErrors": [],
+    "milliseconds": 2529,
+    "diagnostic": null
+  },
+  {
+    "test": "check-earth-auction.html",
+    "result": "PASS: 7 scenes, 26 paths, illustrations, saved progress, rewards, diary, annual salary and both proposal deferrals.",
+    "pageErrors": [],
+    "milliseconds": 2044,
+    "diagnostic": null
+  },
+  {
+    "test": "check-family.html",
+    "result": "PASS: family, expenses, negative wallet, legacy debt migration, reload, salary, achievements, breakup and exclusivity",
+    "pageErrors": [],
+    "milliseconds": 1704,
+    "diagnostic": null
+  },
+  {
+    "test": "check-food.html",
+    "result": "PASS: five dishes; money and stat changes; max 100; once per year; diary; save",
+    "pageErrors": [],
+    "milliseconds": 1336,
+    "diagnostic": null
+  },
+  {
+    "test": "check-event-media.html",
+    "result": "PASS: 4395 reviewed scene/results; 4495 complete OpenMoji icons, animated SVGs, original posters, old-save migration and unlimited reuse.",
+    "pageErrors": [],
+    "milliseconds": 3846,
+    "diagnostic": null
+  },
+  {
+    "test": "check-game-center-progress.html",
+    "result": "PASS Game Center UI: three annual challenges; interrupted-result handling; personal best; claim and save; repeat-claim protection; full album; badge reward; annual reset with lifetime records",
+    "pageErrors": [],
+    "milliseconds": 1232,
+    "diagnostic": null
+  },
+  {
+    "test": "check-football.html",
+    "result": "PASS: football needs health 60% to be chosen at 18",
+    "pageErrors": [],
+    "milliseconds": 1874,
+    "diagnostic": null
+  },
+  {
+    "test": "check-games.html",
+    "result": "PASS: 7 games; payout tables 89–95%; outcomes fixed at start; blackjack rules; 18+; 5 plays/year; no probabilities shown; balance limit; tower stop; resume",
+    "pageErrors": [],
+    "milliseconds": 2415,
+    "diagnostic": null
+  },
+  {
+    "test": "check-happiness.html",
+    "result": "PASS: happiness bands; resilience for small setbacks; 3-year low streak opens support (free confide, schedule, professional, postpone with warning); no repeat while running; reset at 20; no death/firing/breakup from mood; work pressure and low-mood events; partner talk/time/space with kept or broken promises; free mood activities with yearly limit; travel repeats 100/75/50% shown before paying; lingering breakup grief with visible cause and time",
+    "pageErrors": [],
+    "milliseconds": 2242,
+    "diagnostic": null
+  },
+  {
+    "test": "check-health.html",
+    "result": "PASS: health bands; work limits by health; sick leave; emergency instead of a health floor; repeated exhaustion risk; rest year; no income after event death; old-age risk by age/health/illness; aging decline; football fitness; rescue choices; low-health card; free recovery with yearly limit; gym/yoga by health; pre-birthday choices",
+    "pageErrors": [],
+    "milliseconds": 2112,
+    "diagnostic": null
+  },
+  {
+    "test": "check-hospital.html",
+    "result": "PASS: 10 diseases with own stage configs; diagnosis; mild/severe/critical; low health speeds up; cost by stage; rest; emergency; visible card; warning before the birthday; death only when critical",
+    "pageErrors": [],
+    "milliseconds": 2099,
+    "diagnostic": null
+  },
+  {
+    "test": "check-intellect.html",
+    "result": "PASS: intellect bands; interview 60/35/10% + (I−50)×0.4 + 10% prep, 5–95%, weak answers stay weak; good answers acknowledged; exam prep (steady/group/cram/none), correct answers always pass, hints never change the truth, retake or change career; scholarship; promotion by handling + experience + intellect + merit; project bug options; risk offer red flags; free learning with yearly limit and diminishing returns; mild, varied cognitive aging without diagnosis",
+    "pageErrors": [],
+    "milliseconds": 2387,
+    "diagnostic": null
+  },
+  {
+    "test": "check-job-applications.html",
+    "result": "PASS: automatic interview only with the age-16 milestone, told by its mentor for all 22 careers (interview, result, retry); Xin việc lists every career, only the studied one opens after graduating; saved question; one try per year; hire pays the first salary; no retry popup",
+    "pageErrors": [],
+    "milliseconds": 2157,
+    "diagnostic": null
+  },
+  {
+    "test": "check-last-train.html",
+    "result": "FAIL: Error: Exact reward plus one annual salary\n    at assert (https://game.test/scripts/check-last-train.html:6:50)\n    at https://game.test/scripts/check-last-train.html:72:7",
+    "pageErrors": [],
+    "milliseconds": 1960,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": null,
+        "partner": null,
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "affairOpportunityCount": 0,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 45,
+        "money": 86400000,
+        "health": 79,
+        "happiness": 60,
+        "intelligence": 60,
+        "appearance": 50,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": "💻 Lập trình viên tập sự",
+        "employmentStatus": "employed",
+        "careerLevel": 1,
+        "lastSalaryAge": 45,
+        "nextPromotionAge": null,
+        "careerPath": {
+          "id": "programming",
+          "field": "Công nghệ thông tin"
+        },
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workTemptationCount": 0,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A00",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {
+          "story-last-train": true
+        },
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school",
+          "age-30",
+          "money-1m",
+          "money-10m",
+          "story-last-train"
+        ],
+        "ending": null,
+        "lifeId": "legacy-e405322e",
+        "specialChainsSeen": [
+          "last-train"
+        ],
+        "careerHighestRanks": {
+          "programming": 1
+        },
+        "careerYears": {
+          "programming": 2
+        },
+        "careerTrackedAge": 45,
+        "employedSince": 45,
+        "relatives": [
+          {
+            "id": "father",
+            "role": "Bố",
+            "name": "Thanh Bình",
+            "ageAtPlayerBirth": 36,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán vé số",
+            "trackedFrom": 45,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          },
+          {
+            "id": "mother",
+            "role": "Mẹ",
+            "name": "Lan Anh",
+            "ageAtPlayerBirth": 33,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán hàng rong",
+            "trackedFrom": 45,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          }
+        ],
+        "illnessPlan": [
+          {
+            "id": "early-cancer",
+            "age": 95
+          },
+          {
+            "id": "coronary",
+            "age": 95
+          }
+        ],
+        "moodEffects": [],
+        "lowHappinessYears": 0,
+        "strainedYears": 0,
+        "storyLoans": [],
+        "homeLoans": [],
+        "vietlottPot": {
+          "amount": 15000000000,
+          "updatedAge": 45
+        },
+        "economyPaidAge": 45,
+        "economyIncomeYear": {
+          "age": 45,
+          "salary": 120000000,
+          "sideIncome": 0,
+          "assetIncome": 0,
+          "retired": false,
+          "paidIncomeTax": 0,
+          "paidInsurance": 9600000
+        },
+        "familyBudgetPaidAge": 45,
+        "specialChainsCompleted": [
+          "last-train"
+        ]
+      },
+      "pendingEvent": null,
+      "logs": [
+        {
+          "age": 45,
+          "content": "🚉 Năm 45 tuổi, tôi lên chuyến tàu cuối lúc nửa đêm. Tấm ảnh chiếc vòng trăng khuyết trên vé giúp tôi nhận ra kẻ giả mạo. Tôi xuống đúng ga Bình An và trở về an toàn, hiểu rằng không phải ai gọi tên mình cũng là người đang chờ mình về.\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê.",
+          "summary": "🚉 Chuyến tàu âm giới\nTrí tuệ +10 · Hạnh phúc +10\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê."
+        }
+      ],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-licenses.html",
+    "result": "PASS: age 18+; 2 licences x 5 questions; random question; hidden answers; retry; licence in assets and diary",
+    "pageErrors": [],
+    "milliseconds": 1509,
+    "diagnostic": null
+  },
+  {
+    "test": "check-life-archive.html",
+    "result": "PASS: event death archives once; titles, convictions, special progress, lobby dialog and safe text rendering",
+    "pageErrors": [],
+    "milliseconds": 6225,
+    "diagnostic": null
+  },
+  {
+    "test": "check-life-events.html",
+    "result": "PASS: warning chain (problem → warning → review), misconduct warned, grief adds no warnings; firing keeps side jobs and experience; worry max 2 years; rare noticed layoffs with priced package; contract notice, renewal or switch; living floor and forecast; parents with names and ages; old saves safe; death by age and condition, care helps; grief by bond -5/-10/-15 then -3/-2/-1; real memories; widowed history; 5/year cap; stacked support; family tab with free calls and penalty-free postponing",
+    "pageErrors": [],
+    "milliseconds": 2111,
+    "diagnostic": null
+  },
+  {
+    "test": "check-life-fuzz.html",
+    "result": "PASS life fuzz: {\"lives\":3,\"years\":86,\"deaths\":3,\"reloads\":21,\"events\":114,\"maxAge\":32,\"causes\":{\"gastritis\":1,\"gout\":1,\"diabetes\":1},\"clicks\":818,\"unsaved\":{\"page › Quan hệ 👥 :: player.arcade\":1,\"page › Quan hệ 👥 :: player.arcade, player.relatives\":1,\"page › 💳 Tài sản :: player.arcade\":1}}",
+    "pageErrors": [],
+    "milliseconds": 12707,
+    "diagnostic": null
+  },
+  {
+    "test": "check-life-log.html",
+    "result": "PASS: same-age events merged; duplicate lines shown once with ×N; on load and live; save data unchanged",
+    "pageErrors": [],
+    "milliseconds": 1736,
+    "diagnostic": null
+  },
+  {
+    "test": "check-lottery.html",
+    "result": "PASS: prize tables; quick pick; age 18+; 30 tickets/year; draw saved with tickets; age-up pays once; one purchase line per year; old logs merged; diary",
+    "pageErrors": [],
+    "milliseconds": 1748,
+    "diagnostic": null
+  },
+  {
+    "test": "check-later-specials.html",
+    "result": "PASS: 208 complete branching paths; rewards, wallet losses, clues, assets, saved results, nonfatal injuries, fatal choices, keepsakes, memories, free lessons, spouse eligibility, proposal deferral and all 54 final endings.",
+    "pageErrors": [],
+    "milliseconds": 31277,
+    "diagnostic": null
+  },
+  {
+    "test": "check-love.html",
+    "result": "PASS: matchmaking, second partner, capacity, UI selection, individual interactions, breakup and persistence",
+    "pageErrors": [],
+    "milliseconds": 1531,
+    "diagnostic": null
+  },
+  {
+    "test": "check-milestone-priority.html",
+    "result": "PASS: age-18 career and age-24 chain keep priority over deferrable events; deferred support follows; relatives saved on load; contract notices after skipped or renewed terms; prisoners limited to remote family actions; family support paid once; paid matchmaking profile survives closing; no side jobs or job offers after retirement",
+    "pageErrors": [],
+    "milliseconds": 1798,
+    "diagnostic": null
+  },
+  {
+    "test": "check-old-house.html",
+    "result": "FAIL: Error: Exact final reward and one annual salary\n    at assert (https://game.test/scripts/check-old-house.html:6:50)\n    at https://game.test/scripts/check-old-house.html:65:7",
+    "pageErrors": [],
+    "milliseconds": 2098,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": null,
+        "partner": null,
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "affairOpportunityCount": 0,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 40,
+        "money": 186400000,
+        "health": 79,
+        "happiness": 65,
+        "intelligence": 50,
+        "appearance": 50,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": "💻 Lập trình viên tập sự",
+        "employmentStatus": "employed",
+        "careerLevel": 1,
+        "lastSalaryAge": 40,
+        "nextPromotionAge": null,
+        "careerPath": {
+          "id": "programming",
+          "field": "Công nghệ thông tin"
+        },
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workTemptationCount": 0,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A00",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {
+          "story-reincarnation": true
+        },
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school",
+          "age-30",
+          "money-1m",
+          "money-10m",
+          "money-100m",
+          "story-reincarnation"
+        ],
+        "ending": null,
+        "lifeId": "legacy-e405322e",
+        "specialChainsSeen": [
+          "old-house"
+        ],
+        "careerHighestRanks": {
+          "programming": 1
+        },
+        "careerYears": {
+          "programming": 2
+        },
+        "careerTrackedAge": 40,
+        "employedSince": 40,
+        "relatives": [
+          {
+            "id": "father",
+            "role": "Bố",
+            "name": "Thanh Bình",
+            "ageAtPlayerBirth": 36,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán vé số",
+            "trackedFrom": 40,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          },
+          {
+            "id": "mother",
+            "role": "Mẹ",
+            "name": "Lan Anh",
+            "ageAtPlayerBirth": 33,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán hàng rong",
+            "trackedFrom": 40,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          }
+        ],
+        "illnessPlan": [
+          {
+            "id": "early-cancer",
+            "age": 95
+          },
+          {
+            "id": "coronary",
+            "age": 95
+          }
+        ],
+        "moodEffects": [],
+        "lowHappinessYears": 0,
+        "strainedYears": 0,
+        "storyLoans": [],
+        "homeLoans": [],
+        "vietlottPot": {
+          "amount": 15000000000,
+          "updatedAge": 40
+        },
+        "economyPaidAge": 40,
+        "economyIncomeYear": {
+          "age": 40,
+          "salary": 120000000,
+          "sideIncome": 0,
+          "assetIncome": 0,
+          "retired": false,
+          "paidIncomeTax": 0,
+          "paidInsurance": 9600000
+        },
+        "familyBudgetPaidAge": 40,
+        "specialChainsCompleted": [
+          "old-house"
+        ]
+      },
+      "pendingEvent": null,
+      "logs": [
+        {
+          "age": 40,
+          "content": "🕯️ Năm 40 tuổi, tôi giúp một người mẹ gửi những lá thư đến đứa con thất lạc. Tôi được nhận một khoản tiền lớn, nhưng điều nhớ rõ nhất vẫn là nụ cười của bà bên khung cửa chiều hôm ấy.\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê.",
+          "summary": "🕯️ Năm 40 tuổi, tôi giúp một người mẹ gửi những lá thư đến đứa con thất lạc. Tôi được nhận một khoản tiền lớn, nhưng điều nhớ rõ nhất vẫn là nụ cười của bà bên khung cửa chiều hôm ấy.\nHạnh phúc +15 · Tiền +100.000.000 VNĐ\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê."
+        }
+      ],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-polish.html",
+    "result": "PASS: shared rank lock (success+same career / failure / other career), milestone chain replaces first promotion with fallback kept, rank-3 gate; age-16 odds shown and stat-based, random step kept, stop text; school minimum 80; diminishing training from 80; odds shown for promotion and casting; old-age death explained; lock note on career choice; yearly friend chat",
+    "pageErrors": [],
+    "milliseconds": 1839,
+    "diagnostic": null
+  },
+  {
+    "test": "check-save-life.html",
+    "result": "FAIL: Error: Danger is explicitly signposted\n    at assert (https://game.test/scripts/check-save-life.html:6:57)\n    at https://game.test/scripts/check-save-life.html:22:15",
+    "pageErrors": [],
+    "milliseconds": 1017,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": null,
+        "partner": null,
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "affairOpportunityCount": 0,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 0,
+        "money": 0,
+        "health": 0,
+        "happiness": 0,
+        "intelligence": 0,
+        "appearance": 0,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": null,
+        "employmentStatus": null,
+        "careerLevel": 0,
+        "lastSalaryAge": null,
+        "nextPromotionAge": 27,
+        "careerPath": null,
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workTemptationCount": 0,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": null,
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {},
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [],
+        "ending": null
+      },
+      "pendingEvent": null,
+      "logs": [],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-school-rewards.html",
+    "result": "PASS: random ranges, all four stats, cash, caps, once per life, saved results, diaries, UI, university and failed admission.",
+    "pageErrors": [],
+    "milliseconds": 1958,
+    "diagnostic": null
+  },
+  {
+    "test": "check-self-development.html",
+    "result": "PASS: 4 stats × 2 activities × 3 packages; price-based gains; immediate registration; once per year; max 100; Tarot wands/pentacles; diary; save",
+    "pageErrors": [],
+    "milliseconds": 1527,
+    "diagnostic": null
+  },
+  {
+    "test": "check-side-jobs.html",
+    "result": "PASS: age 16+; part-time/full-time rules; five stores; confirm; status title; achievement; yearly pay and health; current jobs; quitting",
+    "pageErrors": [],
+    "milliseconds": 1613,
+    "diagnostic": null
+  },
+  {
+    "test": "check-shop.html",
+    "result": "PASS: pet shop; petting companions; grouped assets; shopping groups; tools group; confirm/cancel; affordability; achievements; yearly income; 4-year leases; age-based animal resale; other assets at half price",
+    "pageErrors": [],
+    "milliseconds": 2045,
+    "diagnostic": null
+  },
+  {
+    "test": "check-tarot-animation.html",
+    "result": "PASS: close/reopen/finish during Tarot flip produces no stale callback or duplicate fee",
+    "pageErrors": [],
+    "milliseconds": 1049,
+    "diagnostic": null
+  },
+  {
+    "test": "check-study-abroad.html",
+    "result": "FAIL: Error: First year cost is visible\n    at assert (https://game.test/scripts/check-study-abroad.html:9:50)\n    at https://game.test/scripts/check-study-abroad.html:52:5",
+    "pageErrors": [],
+    "milliseconds": 1626,
+    "diagnostic": {
+      "player": {
+        "name": "Test",
+        "gender": "male",
+        "orientation": null,
+        "partner": null,
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "affairOpportunityCount": 0,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 17,
+        "money": 0,
+        "health": 80,
+        "happiness": 80,
+        "intelligence": 80,
+        "appearance": 80,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": null,
+        "employmentStatus": null,
+        "careerLevel": 0,
+        "lastSalaryAge": null,
+        "nextPromotionAge": 27,
+        "careerPath": null,
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workTemptationCount": 0,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": {
+          "coins": 0,
+          "tickets": 0,
+          "collection": {},
+          "plushes": {},
+          "clawMachine": null,
+          "plays": null,
+          "giftAge": null,
+          "session": null
+        },
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "TD",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {},
+        "keepsakes": [],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school"
+        ],
+        "ending": null,
+        "relatives": [],
+        "illnessPlan": [],
+        "lifeId": "legacy-754cfab8"
+      },
+      "pendingEvent": {
+        "stage": "result",
+        "category": "everyday",
+        "eventTagKind": "study-abroad-major",
+        "danger": false,
+        "outcome": "success",
+        "nonFatal": false,
+        "schoolReward": null,
+        "age": 18,
+        "title": "Bắt đầu học Kinh doanh tại Nhật Bản",
+        "mediaSceneTitle": "Chọn chuyên ngành tại Nhật Bản",
+        "mediaChoiceLabel": "Kinh doanh",
+        "image": "https://game.test/js/img/events/openmoji/animated/svg/1F9D1-200D-1F393.svg",
+        "imageAlt": "OpenMoji: Học tập",
+        "imageFallback": "https://game.test/js/img/events/openmoji/color/svg/1F9D1-200D-1F393.svg",
+        "imageFallbackAlt": "OpenMoji: Học tập",
+        "imageOptions": [
+          {
+            "url": "https://game.test/js/img/events/openmoji/animated/svg/1F9D1-200D-1F393.svg",
+            "poster": "https://game.test/js/img/events/openmoji/color/svg/1F9D1-200D-1F393.svg",
+            "alt": "OpenMoji: Học tập",
+            "source": "openmoji-1F9D1-200D-1F393",
+            "kind": "animated-openmoji",
+            "origin": "openmoji",
+            "plan": {
+              "code": "1F9D1-200D-1F393",
+              "action": "icon",
+              "label": "Học tập",
+              "key": "openmoji-1F9D1-200D-1F393",
+              "reviewRevision": 3,
+              "reviewText": "Du học tại Nhật Bản. Chuyên ngành: Kinh doanh.\nHọc phí 36 triệu VNĐ/năm; sinh hoạt 24 triệu VNĐ/năm từ tuổi 18–21. Năm đầu được giảm 50% học phí.\nTổng chi phí năm đầu: 42 triệu VNĐ.\nBạn bắt đầu với Ngoại ngữ 30, Học tập 50 và Hòa nhập 30 trên thang 100. Tốt nghiệp cần Ngoại ngữ và Học tập từ 50; thiếu điểm phải học bổ sung. Hòa nhập giúp phỏng vấn và thăng tiến.",
+              "reviewed": true
+            }
+          }
+        ],
+        "confirmText": "Xác nhận chuyên ngành và chi phí",
+        "content": "Du học tại Nhật Bản. Chuyên ngành: Kinh doanh.\nHọc phí 36 triệu VNĐ/năm; sinh hoạt 24 triệu VNĐ/năm từ tuổi 18–21. Năm đầu được giảm 50% học phí.\nTổng chi phí năm đầu: 42 triệu VNĐ.\nBạn bắt đầu với Ngoại ngữ 30, Học tập 50 và Hòa nhập 30 trên thang 100. Tốt nghiệp cần Ngoại ngữ và Học tập từ 50; thiếu điểm phải học bổ sung. Hòa nhập giúp phỏng vấn và thăng tiến.",
+        "achievementIds": [],
+        "logSummary": "Chọn chuyên ngành tại Nhật Bản\nChọn: Kinh doanh\nBắt đầu học Kinh doanh tại Nhật Bản",
+        "logContent": "Bạn sẽ học gì tại Nhật Bản? Chuyên ngành quyết định công việc sau tốt nghiệp. Học phí và sinh hoạt phí giữ nguyên theo nước đã chọn.\nBạn chọn: Kinh doanh\nDu học tại Nhật Bản. Chuyên ngành: Kinh doanh.\nHọc phí 36 triệu VNĐ/năm; sinh hoạt 24 triệu VNĐ/năm từ tuổi 18–21. Năm đầu được giảm 50% học phí.\nTổng chi phí năm đầu: 42 triệu VNĐ.\nBạn bắt đầu với Ngoại ngữ 30, Học tập 50 và Hòa nhập 30 trên thang 100. Tốt nghiệp cần Ngoại ngữ và Học tập từ 50; thiếu điểm phải học bổ sung. Hòa nhập giúp phỏng vấn và thăng tiến.",
+        "updates": {
+          "age": 18,
+          "careerPath": {
+            "id": "study-abroad",
+            "field": "Đi du học",
+            "status": "Học Kinh doanh tại Nhật Bản",
+            "school": {
+              "id": "abroad-japan",
+              "type": "international",
+              "countryId": "japan",
+              "countryName": "Nhật Bản",
+              "name": "Chương trình cử nhân quốc tế tại Nhật Bản",
+              "program": "Kinh doanh",
+              "majorId": "business"
+            }
+          },
+          "abroadProgress": {
+            "phase": "studying",
+            "language": 30,
+            "academic": 50,
+            "integration": 30,
+            "countryId": "japan",
+            "majorId": "business"
+          }
+        },
+        "outcomeSoundPlayed": true
+      },
+      "logs": [],
+      "dialogs": [
+        {
+          "id": "event-dialog",
+          "text": "\n      🌿 Đời thường\n      Bắt đầu học Kinh doanh tại Nhật Bản\n      \n      Du học tại Nhật Bản. Chuyên ngành: Kinh doanh.\nHọc phí 36 triệu VNĐ/năm; sinh hoạt 24 triệu VNĐ/năm từ tuổi 18–21. Năm đầu được giảm 50% học phí.\nTổng chi phí năm đầu: 42 triệu VNĐ.\nBạn bắt đầu với Ngoại ngữ 30, Học tập 50 và Hòa nhập 30 trên thang 100. Tốt nghiệp cần Ngoại ngữ và Học tập từ 50; thiếu điểm phải học bổ sung. Hòa nhập giúp phỏng vấn và thăng tiến.\n      \n\n      \n\n      ✅ Xác nhận chuyên ngành và chi phí\n    "
+        }
+      ]
+    }
+  },
+  {
+    "test": "check-tarot.html",
+    "result": "PASS: 78 cards; 312 different readings; 3 distinct face-down cards; fee and yearly turn; resume; hidden other cards; effects; collection across lives; 6 Tarot achievements",
+    "pageErrors": [],
+    "milliseconds": 1298,
+    "diagnostic": null
+  },
+  {
+    "test": "check-theater-luggage.html",
+    "result": "FAIL: Error: Both theater endings award stats, cash and annual salary once\n    at assert (https://game.test/scripts/check-theater-luggage.html:6:50)\n    at https://game.test/scripts/check-theater-luggage.html:62:7",
+    "pageErrors": [],
+    "milliseconds": 1852,
+    "diagnostic": {
+      "player": {
+        "name": "Dân",
+        "gender": "male",
+        "orientation": null,
+        "partner": null,
+        "otherPartners": [],
+        "affair": null,
+        "affairLastEventAge": null,
+        "affairOpportunityCount": 0,
+        "concurrentDatingStartedAtAge": null,
+        "concurrentDatingLastEventAge": null,
+        "relationshipStartedAtAge": null,
+        "marriageScheduleVersion": 2,
+        "marriedAtAge": null,
+        "children": [],
+        "childcareDebt": 0,
+        "childProposalDeclines": 0,
+        "nextChildProposalAge": null,
+        "childProposalStopped": false,
+        "childProposalCompleted": false,
+        "marriageProposalDeclines": 0,
+        "nextMarriageProposalAge": null,
+        "datingActivitiesOnly": false,
+        "relationshipHistory": [],
+        "province": "",
+        "age": 50,
+        "money": 146400000,
+        "health": 79,
+        "happiness": 65,
+        "intelligence": 55,
+        "appearance": 50,
+        "lifePath": "ordinary",
+        "prison": null,
+        "criminalRecord": [],
+        "crimeHeat": 0,
+        "crimeActionAge": null,
+        "job": "💻 Lập trình viên tập sự",
+        "employmentStatus": "employed",
+        "careerLevel": 1,
+        "lastSalaryAge": 50,
+        "nextPromotionAge": null,
+        "careerPath": {
+          "id": "programming",
+          "field": "Công nghệ thông tin"
+        },
+        "careerSpark": null,
+        "livestock": [],
+        "purchases": [],
+        "licenses": [],
+        "sideJobs": [],
+        "streetJobs": [],
+        "streetPaidAge": null,
+        "casualLife": false,
+        "casualService": null,
+        "illnesses": [],
+        "lastWorkTemptationAge": null,
+        "workTemptationCount": 0,
+        "workInvestigation": null,
+        "gameRound": null,
+        "gamePlays": null,
+        "tienLen": null,
+        "boxItems": [],
+        "auction": null,
+        "auctionItems": [],
+        "mealsEaten": {},
+        "tripsTaken": {},
+        "arcade": null,
+        "tarotUsedAge": null,
+        "tarotReading": null,
+        "tarotBuff": null,
+        "detective": null,
+        "garden": null,
+        "developmentDone": {},
+        "studyBlock": "A00",
+        "schoolRewardsReceived": {},
+        "fortune": null,
+        "isAlive": true,
+        "achievementFlags": {
+          "story-hero": true
+        },
+        "keepsakes": [
+          {
+            "id": "hero-certificate",
+            "name": "Bằng vinh danh người hùng",
+            "description": "Kỷ niệm về việc bình tĩnh phối hợp giúp mọi người thoát khỏi vụ cháy nhà hát.",
+            "receivedAtAge": 50
+          }
+        ],
+        "memories": [],
+        "unlockedActivities": [],
+        "lastRepairLessonAge": null,
+        "lifeAchievementIds": [
+          "primary-school",
+          "secondary-school",
+          "high-school",
+          "age-30",
+          "money-1m",
+          "money-10m",
+          "money-100m",
+          "story-hero"
+        ],
+        "ending": null,
+        "healthCheckAge": 49,
+        "lifeId": "legacy-e405322e",
+        "specialChainsSeen": [
+          "theater"
+        ],
+        "careerHighestRanks": {
+          "programming": 1
+        },
+        "careerYears": {
+          "programming": 2
+        },
+        "careerTrackedAge": 50,
+        "employedSince": 50,
+        "relatives": [
+          {
+            "id": "father",
+            "role": "Bố",
+            "name": "Thanh Bình",
+            "ageAtPlayerBirth": 36,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán vé số",
+            "trackedFrom": 50,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          },
+          {
+            "id": "mother",
+            "role": "Mẹ",
+            "name": "Lan Anh",
+            "ageAtPlayerBirth": 33,
+            "alive": true,
+            "diedAtAge": null,
+            "passedBeforeTracking": false,
+            "bond": 70,
+            "condition": "healthy",
+            "job": "Bán hàng rong",
+            "trackedFrom": 50,
+            "interactions": {
+              "calls": 0,
+              "visits": 0,
+              "cares": 0,
+              "helpers": 0,
+              "treatments": 0
+            },
+            "done": {},
+            "promise": null
+          }
+        ],
+        "illnessPlan": [
+          {
+            "id": "early-cancer",
+            "age": 95
+          },
+          {
+            "id": "coronary",
+            "age": 95
+          }
+        ],
+        "moodEffects": [],
+        "lowHappinessYears": 0,
+        "strainedYears": 0,
+        "storyLoans": [],
+        "homeLoans": [],
+        "vietlottPot": {
+          "amount": 15000000000,
+          "updatedAge": 50
+        },
+        "economyPaidAge": 50,
+        "economyIncomeYear": {
+          "age": 50,
+          "salary": 120000000,
+          "sideIncome": 0,
+          "assetIncome": 0,
+          "retired": false,
+          "paidIncomeTax": 0,
+          "paidInsurance": 9600000
+        },
+        "familyBudgetPaidAge": 50,
+        "specialChainsCompleted": [
+          "theater"
+        ]
+      },
+      "pendingEvent": null,
+      "logs": [
+        {
+          "age": 50,
+          "content": "🏅 Năm 50 tuổi, tôi được vinh danh sau một vụ cháy tại nhà hát. Tiền thưởng giúp gia đình bớt lo, còn bức tranh của bé Mai được tôi treo ngay phòng khách. Khách đến hỏi, tôi kể hơi lâu — chuyện này chắc đủ kể đến tám mươi tuổi.\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê.",
+          "summary": "🏅 Vinh danh người hùng\nHạnh phúc +15 · Trí tuệ +5 · Tiền +60.000.000 VNĐ\nNhận vật phẩm: Bằng vinh danh người hùng.\n💰 Nhận lương năm ở bậc 💻 Lập trình viên tập sự: +120 triệu VNĐ.\n⏳ Năm tháng bận rộn, chỉ số cao cần được giữ gìn: Sức khỏe -1.\n🛡️ Bảo hiểm theo lương (8%, có trần): -9,6 triệu VNĐ.\n🔑 Thuê nhà: -24 triệu VNĐ/năm. Có nhà để ở sẽ không phải thuê."
+        }
+      ],
+      "dialogs": []
+    }
+  },
+  {
+    "test": "check-tien-len-ui.html",
+    "result": "PASS Tien len UI: stake options; full hand; selection; clear; keyboard focus; sort; hint; legal play; turn states; center pile; forfeit confirmation and result",
+    "pageErrors": [],
+    "milliseconds": 787,
+    "diagnostic": null
+  },
+  {
+    "test": "check-travel.html",
+    "result": "PASS: nine destinations from the table; cost and happiness; max 100; one trip per year; diary",
+    "pageErrors": [],
+    "milliseconds": 1447,
+    "diagnostic": null
+  },
+  {
+    "test": "check-work-temptation.html",
+    "result": "PASS work temptation UI: real yearly event; four choices in debt; saved offer and result; arrest without wages; duplicate confirmation; prison year; refusal; delayed investigation after leaving job",
+    "pageErrors": [],
+    "milliseconds": 1366,
+    "diagnostic": null
+  },
+  {
+    "test": "check-tower-ui.html",
+    "result": "PASS tower UI: five milestones; named doors; reveal lock; current floor; accurate cash-out and next-floor amounts; saved door, reload, stale-timer rejection and single settlement",
+    "pageErrors": [],
+    "milliseconds": 4384,
+    "diagnostic": null
+  }
+]

@@ -1,0 +1,6 @@
+[
+  "PASS two real browser tabs: concurrent play is blocked.",
+  "PASS full storage: visible error, retry, exact money saved.",
+  "PASS keyboard: notice traps focus and Escape returns to activities.",
+  "PASS closing active tab releases the lock; remaining tab resumes latest save."
+]

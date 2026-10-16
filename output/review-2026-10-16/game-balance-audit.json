@@ -1,0 +1,446 @@
+{
+  "assumptions": {
+    "financial": "Controlled financial feasibility, not survival probabilities. Start with four years of actual tuition debt (plus overseas student costs), no initial wealth, jackpots or gifts; pay real progressive personal tax, insurance, asset/property taxes, rent, debt interest and family costs. Reserve 12m/year for care/activities; maintain health to isolate money. Entry/rank-2/rank-3 trajectories assume employment and successful eligible promotions at 27/37. Each expensive purchase is tested in a separate life. Investments follow catalog limits and renew four-year leases.",
+    "housing": "Separate cash-flow comparisons with income held constant, no children or existing assets, and 12m/year explicitly reserved for care. This does not simulate survival, unemployment or buying decisions.",
+    "oldAge": "Conditional on reaching age 69, hold health at 85 and no illnesses. Only the old-age mortality roll is multiplied; these are not whole-life survival rates."
+  },
+  "moneyGoals": [
+    {
+      "id": "money-1m",
+      "amount": 1000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 22,
+      "medianAge": 23
+    },
+    {
+      "id": "money-10m",
+      "amount": 10000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 22,
+      "medianAge": 23
+    },
+    {
+      "id": "money-100m",
+      "amount": 100000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 23,
+      "medianAge": 24
+    },
+    {
+      "id": "millionaire",
+      "amount": 500000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 27,
+      "medianAge": 28
+    },
+    {
+      "id": "billionaire",
+      "amount": 1000000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 172,
+      "routesBeforeRetirement": 172,
+      "earliestAge": 29,
+      "medianAge": 32
+    },
+    {
+      "id": "money-5b",
+      "amount": 5000000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 120,
+      "routesBeforeRetirement": 98,
+      "earliestAge": 42,
+      "medianAge": 50
+    },
+    {
+      "id": "money-10b",
+      "amount": 10000000000,
+      "totalRoutes": 174,
+      "reachableRoutes": 74,
+      "routesBeforeRetirement": 38,
+      "earliestAge": 53,
+      "medianAge": 61
+    }
+  ],
+  "assetGoals": [
+    {
+      "item": "motorbike",
+      "price": 30000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 22
+    },
+    {
+      "item": "big-bike",
+      "price": 400000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 26
+    },
+    {
+      "item": "car",
+      "price": 800000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 28
+    },
+    {
+      "item": "porsche",
+      "price": 8000000000,
+      "reachableRoutes": 132,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 63,
+      "earliestAge": 48
+    },
+    {
+      "item": "lamborghini",
+      "price": 10000000000,
+      "reachableRoutes": 125,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 21,
+      "earliestAge": 53
+    },
+    {
+      "item": "rolls-royce",
+      "price": 12000000000,
+      "reachableRoutes": 121,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 13,
+      "earliestAge": 57
+    },
+    {
+      "item": "private-jet",
+      "price": 15000000000,
+      "reachableRoutes": 106,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 0,
+      "earliestAge": 64
+    },
+    {
+      "item": "starter-apartment",
+      "price": 800000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 28
+    },
+    {
+      "item": "house",
+      "price": 5000000000,
+      "reachableRoutes": 150,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 140,
+      "earliestAge": 42
+    },
+    {
+      "item": "restaurant",
+      "price": 8000000000,
+      "reachableRoutes": 132,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 63,
+      "earliestAge": 48
+    },
+    {
+      "item": "hotel",
+      "price": 15000000000,
+      "reachableRoutes": 106,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 0,
+      "earliestAge": 64
+    },
+    {
+      "item": "resort",
+      "price": 30000000000,
+      "reachableRoutes": 50,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 0,
+      "earliestAge": 76
+    },
+    {
+      "item": "noodle-cart",
+      "price": 30000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 22
+    },
+    {
+      "item": "cafe",
+      "price": 1500000000,
+      "reachableRoutes": 174,
+      "totalRoutes": 174,
+      "routesBeforeRetirement": 174,
+      "earliestAge": 31
+    }
+  ],
+  "housing": {
+    "price": 600000000,
+    "deposit": 120000000,
+    "annualPayment": 38400000,
+    "years": 20,
+    "totalPaidIncludingDeposit": 888000000,
+    "annualRentSaved": 24000000,
+    "extraAnnualCashNeededDuringLoan": 14400000,
+    "apartmentCashPrice": 800000000,
+    "budgets": [
+      {
+        "annualIncome": 36000000,
+        "incomeType": "casual net work income",
+        "remainingWhileRenting": 0,
+        "remainingWhileFinancing": -14400000,
+        "careReserve": 12000000,
+        "excludes": "Children, family support, optional comfort, random events and initial deposit"
+      },
+      {
+        "annualIncome": 48000000,
+        "incomeType": "casual net work income",
+        "remainingWhileRenting": 12000000,
+        "remainingWhileFinancing": -2400000,
+        "careReserve": 12000000,
+        "excludes": "Children, family support, optional comfort, random events and initial deposit"
+      },
+      {
+        "annualIncome": 60000000,
+        "incomeType": "casual net work income",
+        "remainingWhileRenting": 24000000,
+        "remainingWhileFinancing": 9600000,
+        "careReserve": 12000000,
+        "excludes": "Children, family support, optional comfort, random events and initial deposit"
+      },
+      {
+        "annualIncome": 72000000,
+        "incomeType": "casual net work income",
+        "remainingWhileRenting": 36000000,
+        "remainingWhileFinancing": 21600000,
+        "careReserve": 12000000,
+        "excludes": "Children, family support, optional comfort, random events and initial deposit"
+      },
+      {
+        "annualIncome": 120000000,
+        "incomeType": "gross salary",
+        "remainingWhileRenting": 74400000,
+        "remainingWhileFinancing": 60000000,
+        "careReserve": 12000000,
+        "excludes": "Children, family support, optional comfort, random events and initial deposit"
+      },
+      {
+        "annualIncome": 180000000,
+        "incomeType": "gross salary",
+        "remainingWhileRenting": 127320000,
+        "remainingWhileFinancing": 112920000,
+        "careReserve": 12000000,
+        "excludes": "Children, family support, optional comfort, random events and initial deposit"
+      }
+    ]
+  },
+  "activities": {
+    "assumptions": "Constructive legal activity actions with an explicit 5m garden budget from employment; favorable nonzero weather and solved detective puzzles. This proves paths exist, not that random play always wins. Tarot collection persists across lives.",
+    "garden": {
+      "flags": [
+        "garden-first-harvest",
+        "garden-five-crops",
+        "garden-all-crops",
+        "cook-three-recipes",
+        "cook-complex-first",
+        "cook-all-complex",
+        "cook-all-recipes"
+      ],
+      "completedAtAge": 25,
+      "spent": 1550000,
+      "actions": "Only buy in-season seeds, plant up to three plots, water with three seasonal care points, harvest, buy cooking staples, cook recipes in tier order. No stock or cooking counters injected."
+    },
+    "detective": {
+      "flags": [
+        "detective-first",
+        "detective-streak",
+        "detective-ten",
+        "detective-hard-clean",
+        "detective-top-rank"
+      ],
+      "completedAtAge": 27,
+      "solved": 18,
+      "earnings": 81000000,
+      "assumptions": "Player solves the evidence puzzle; test uses the solver to choose valid clues within normal hours, rather than assigning solved/reputation counters."
+    },
+    "tarot": {
+      "flags": [
+        "tarot-first",
+        "tarot-ten",
+        "tarot-half",
+        "tarot-major",
+        "tarot-suits",
+        "tarot-all"
+      ],
+      "readings": 78,
+      "totalCost": 39000000,
+      "condition": "One selected card per yearly reading; 78 readings minimum across one or several lives. Collection persists across lives; reaching it in one life also requires survival."
+    }
+  },
+  "limits": {
+    "activitySlotsPerYear": 6,
+    "activityGainAbove70PerStat": 8,
+    "statWear": {
+      "minAge": 18,
+      "maxAge": 74,
+      "from": 70,
+      "step": 10
+    }
+  },
+  "oldAgeSurvival": [
+    {
+      "age": 80,
+      "probability": 0.9368434785087852
+    },
+    {
+      "age": 90,
+      "probability": 0.7849903997783897
+    },
+    {
+      "age": 100,
+      "probability": 0.3500102681436249
+    },
+    {
+      "age": 101,
+      "probability": 0.2712579578113093
+    },
+    {
+      "age": 105,
+      "probability": 0.09785641424056962
+    }
+  ],
+  "investments": [
+    {
+      "id": "pigeon",
+      "price": 100000,
+      "annualProfitBeforeTax": 30000,
+      "grossYield": 0.3,
+      "limit": 5
+    },
+    {
+      "id": "duck",
+      "price": 120000,
+      "annualProfitBeforeTax": 36000,
+      "grossYield": 0.3,
+      "limit": 5
+    },
+    {
+      "id": "chicken",
+      "price": 150000,
+      "annualProfitBeforeTax": 45000,
+      "grossYield": 0.3,
+      "limit": 5
+    },
+    {
+      "id": "turkey",
+      "price": 600000,
+      "annualProfitBeforeTax": 180000,
+      "grossYield": 0.3,
+      "limit": 5
+    },
+    {
+      "id": "goat",
+      "price": 3500000,
+      "annualProfitBeforeTax": 700000,
+      "grossYield": 0.2,
+      "limit": 5
+    },
+    {
+      "id": "pig",
+      "price": 4000000,
+      "annualProfitBeforeTax": 800000,
+      "grossYield": 0.2,
+      "limit": 5
+    },
+    {
+      "id": "sheep",
+      "price": 5000000,
+      "annualProfitBeforeTax": 1000000,
+      "grossYield": 0.2,
+      "limit": 5
+    },
+    {
+      "id": "cow",
+      "price": 18000000,
+      "annualProfitBeforeTax": 3600000,
+      "grossYield": 0.2,
+      "limit": 5
+    },
+    {
+      "id": "buffalo",
+      "price": 25000000,
+      "annualProfitBeforeTax": 5000000,
+      "grossYield": 0.2,
+      "limit": 5
+    },
+    {
+      "id": "horse",
+      "price": 40000000,
+      "annualProfitBeforeTax": 8000000,
+      "grossYield": 0.2,
+      "limit": 5
+    },
+    {
+      "id": "house",
+      "price": 5000000000,
+      "annualProfitBeforeTax": 300000000,
+      "grossYield": 0.06,
+      "limit": 3
+    },
+    {
+      "id": "restaurant",
+      "price": 8000000000,
+      "annualProfitBeforeTax": 640000000,
+      "grossYield": 0.08,
+      "limit": 2
+    },
+    {
+      "id": "hotel",
+      "price": 15000000000,
+      "annualProfitBeforeTax": 900000000,
+      "grossYield": 0.06,
+      "limit": 2
+    },
+    {
+      "id": "resort",
+      "price": 30000000000,
+      "annualProfitBeforeTax": 1800000000,
+      "grossYield": 0.06,
+      "limit": 1
+    },
+    {
+      "id": "cafe",
+      "price": 1500000000,
+      "annualProfitBeforeTax": 120000000,
+      "grossYield": 0.08,
+      "limit": 2
+    }
+  ],
+  "assessment": [
+    {
+      "area": "income",
+      "finding": "172/174 controlled employed paths reach 1b; this is a common mid-game milestone, not a rare end-game achievement."
+    },
+    {
+      "area": "housing",
+      "finding": "Financing costs 14.4m/year more than domestic renting during 20 years. Compare the explicit income scenarios before borrowing; care reserves are separate from the in-game forecast."
+    },
+    {
+      "area": "endgame",
+      "finding": "All shopping goals have a non-jackpot path, but the earliest resort purchase is age 78 and survival is not modeled in the financial routes."
+    },
+    {
+      "area": "tarot",
+      "finding": "The full deck needs at least 78 annual readings across one or more lives. Intermediate 10/39-card goals reduce gaps, but completion remains a long collection goal."
+    }
+  ]
+}
