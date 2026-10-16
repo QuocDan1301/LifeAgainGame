@@ -51,6 +51,9 @@ try {
         : route.abort(),
     );
     await page.goto(base + "/");
+    await page.locator("#hero-title").waitFor({ state: "visible" });
+    if (width === 1280) assert.equal(await page.locator("[data-install-cta]").innerText(), "Tải game");
+    await page.locator("[data-install-cta]").click();
     await page.locator(".device-picker").waitFor({ state: "visible" });
     assert.equal(await page.locator("#lobby-screen").count(), 0);
     const expected =
@@ -59,7 +62,6 @@ try {
       await page.locator("#" + expected).getAttribute("aria-selected"),
       "true",
     );
-    await page.locator('.hero-actions a[href="#cai-dat"]').click();
     await page.screenshot({
       path: `${out}/intro-${width}.png`,
       fullPage: true,
@@ -89,10 +91,6 @@ try {
       path: out + "/windows-download-" + width + ".png",
     });
     if (width === 1280) {
-      assert.equal(
-        await page.locator(".hero-actions [data-install-cta]").innerText(),
-        "Tải game",
-      );
       await page.evaluate(() =>
         window.dispatchEvent(
           new Event("beforeinstallprompt", { cancelable: true }),
@@ -104,11 +102,11 @@ try {
       () => document.documentElement.scrollWidth > innerWidth,
     );
     assert.equal(overflow, false);
-    await page.goto(base + "/gioi-thieu?nhan=ABC234#cai-dat");
+    await page.goto(base + "/caigame.html?nhan=ABC234#cai-dat");
     assert.equal(
       new URL(
         await page
-          .locator(".hero-actions [data-open-game]")
+          .locator("[data-open-game]")
           .getAttribute("href"),
       ).search,
       "?nhan=ABC234",
@@ -129,21 +127,21 @@ try {
     );
     await page.evaluate(() => localStorage.removeItem("lifeAgainSave"));
     await page.goto(base + "/choi");
-    await page.waitForURL("**/gioi-thieu#cai-dat");
+    await page.waitForURL("**/caigame.html#cai-dat");
     assert.equal(
-      await page.locator(".hero-actions [data-open-game]").isVisible(),
+      await page.locator("[data-open-game]").isVisible(),
       false,
     );
-    // Returning players must still see downloads at the home URL.
+    // Returning players see the introduction and can reach installation.
     await page.goto(base + "/");
-    await page.locator(".device-picker").waitFor({ state: "visible" });
+    await page.locator("#hero-title").waitFor({ state: "visible" });
     assert.equal(new URL(page.url()).pathname, "/");
-    assert.equal(await page.locator("#windows-download").count(), 1);
+    assert.equal(await page.locator("[data-install-cta]").count(), 1);
     await page.screenshot({
       path: out + "/browser-shortcut-" + width + ".png",
     });
     // Instructions and backups remain reachable after choosing to play.
-    await page.goto(base + "/gioi-thieu");
+    await page.goto(base + "/caigame.html");
     await page.locator(".device-picker").waitFor({ state: "visible" });
     assert.deepEqual(errors, []);
     rows.push({
@@ -200,14 +198,19 @@ try {
     await page.screenshot({ path: out + "/installed-launch-" + mode + ".png" });
     for (const blockBundle of [true, false]) {
       if (!blockBundle) await page.unroute("**/site/site.js");
-      for (const entry of ["/", "/gioi-thieu", "/gioi-thieu.html"]) {
+      for (const entry of ["/", "/gioi-thieu", "/gioi-thieu.html", "/caigame.html"]) {
         await page.goto(base + entry + "?from=installed#cai-dat");
-        await page.locator("#cai-dat").waitFor({ state: "visible" });
-        if (!blockBundle) {
-          await page.locator("#tab-desktop").click();
-          await page.locator("#windows-download").waitFor({ state: "visible" });
+        if (entry === "/caigame.html") {
+          await page.locator("#cai-dat").waitFor({ state: "visible" });
+          if (!blockBundle) {
+            await page.locator("#tab-desktop").click();
+            await page.locator("#windows-download").waitFor({ state: "visible" });
+          }
+          assert.equal(await page.locator("#windows-download").count(), 1);
+        } else {
+          await page.locator("#hero-title").waitFor({ state: "visible" });
+          assert.equal(await page.locator("[data-install-cta]").count(), 1);
         }
-        assert.equal(await page.locator("#windows-download").count(), 1);
         assert.equal(
           new URL(page.url()).pathname,
           entry,
@@ -260,8 +263,10 @@ try {
     savedLife,
   );
   await offlinePage.goto(base + "/");
+  await offlinePage.locator("#hero-title").waitFor({ state: "visible" });
+  await offlinePage.goto(base + "/caigame.html");
   await offlinePage.locator(".device-picker").waitFor({ state: "visible" });
-  assert.equal(new URL(offlinePage.url()).pathname, "/");
+  assert.equal(new URL(offlinePage.url()).pathname, "/caigame.html");
   await offlinePage.goto(base + "/choi");
   await offlinePage.locator("#continue-button").waitFor({ state: "visible" });
   rows.push({ nativeServiceWorkerOfflineEntry: true, savedLifeRetained: true });

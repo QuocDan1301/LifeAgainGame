@@ -18,7 +18,7 @@ try {
       userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36' });
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
-    await page.goto(base + '/gioi-thieu#cai-dat', { waitUntil: 'networkidle' });
+    await page.goto(base + '/caigame.html#cai-dat', { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);
     const button = page.locator('#windows-download');
     assert.equal(await button.isVisible(), true);

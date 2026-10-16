@@ -4,7 +4,7 @@ export function isInstalledApp({ navigator: nav = globalThis.navigator, matchMed
 }
 
 export function installationPage(location = globalThis.location) {
-  const url = new URL("./gioi-thieu", location.href);
+  const url = new URL("./caigame.html", location.href);
   url.search = location.search;
   url.hash = "cai-dat";
   return url.href;

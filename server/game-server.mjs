@@ -19,7 +19,7 @@ function defaultRoot() {
 }
 
 const PAGES = { '/': '/gioi-thieu.html', '/gioi-thieu': '/gioi-thieu.html', '/choi': '/index.html' };
-const STATIC_PATH = /^\/(?:index\.html|gioi-thieu\.html|manifest\.json|sw\.js|(?:js|css|img|site|music|audio|fonts|sounds|assets)\/)/;
+const STATIC_PATH = /^\/(?:index\.html|gioi-thieu\.html|caigame\.html|chuyenmay\.html|manifest\.json|sw\.js|(?:js|css|img|site|music|audio|fonts|sounds|assets)\/)/;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.woff2': 'font/woff2' };
 
 function sendJson(res, status, body) {

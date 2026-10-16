@@ -30,7 +30,7 @@ for (const [ua, installed, protocol, expected] of [
   assert.equal(loads, expected ? 1 : 0, ua + ' ' + protocol + ' installed=' + installed);
   assert.equal(redirects, expected ? 0 : 1);
 }
-assert.equal(installationPage(new URL('https://game.test/choi?nhan=ABC234')), 'https://game.test/gioi-thieu?nhan=ABC234#cai-dat');
+assert.equal(installationPage(new URL('https://game.test/choi?nhan=ABC234')), 'https://game.test/caigame.html?nhan=ABC234#cai-dat');
 const manifest = JSON.parse(fs.readFileSync(new URL('../manifest.json', import.meta.url)));
 assert.equal(manifest.id, './', 'preserve the old implicit app identity');
 assert.equal(manifest.start_url, './choi');

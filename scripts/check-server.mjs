@@ -9,7 +9,10 @@ try {
   assert.deepEqual(await (await fetch(base + '/health')).json(), { ok: true });
   const html = await (await fetch(base + '/')).text();
   assert.match(html, /<html/i);
-  assert.match(html, /id="cai-dat"/, "the website root is the installation page");
+  assert.match(html, /id="hero-title"/, "the website root is the introduction page");
+  for (const route of ["/caigame.html", "/chuyenmay.html"]) {
+    assert.equal((await fetch(base + route)).status, 200, route);
+  }
   const gamePage = await (await fetch(base + "/choi")).text();
   assert.match(gamePage, /id="lobby-screen"/);
   assert.match(gamePage, /js\/entry\.js/);
@@ -30,7 +33,7 @@ try {
    
   const intro = await fetch(base + '/gioi-thieu');
   assert.equal(intro.status, 200);
-  assert.match(await intro.text(), /id="cai-dat"/);
+  assert.match(await intro.text(), /id="hero-title"/);
   const post = (route, body) => fetch(base + route, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const pack = { app: 'life-again', v: 1, data: { lifeAgainSave: '{"player":{"name":"An","age":3}}', lifeAgainTickets: '{"tickets":2}' } };
   const created = await post('/api/transfer', pack);

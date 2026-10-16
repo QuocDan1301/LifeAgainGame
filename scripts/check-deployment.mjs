@@ -15,7 +15,8 @@ assert.equal(status.ok, true);
 const introduction = await (await read('/')).text();
 assert.doesNotMatch(introduction, /data-app-launch|location\.replace/, 'home must stay on the download page');
 assert.match(introduction, /data-open-game hidden/, 'ordinary browsers must not offer play');
-const intro = await (await read('/gioi-thieu')).text();
+const intro = await (await read('/caigame.html')).text();
+assert.match(await (await read('/chuyenmay.html')).text(), /id="transfer-title"/);
 const download = intro.match(/id="windows-download" href="([^"]+)"/)?.[1];
 assert.equal(download, 'https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe');
 const binary = await fetch(download, { method: 'HEAD', signal: AbortSignal.timeout(60000) });
@@ -27,7 +28,7 @@ assert.doesNotMatch(game, /data-installed-only/, 'browser-mode shortcuts must no
 const entry = await (await read('/js/entry.js')).text();
 assert.match(entry, /installationPage/, 'browser play must return to installation');
 assert.match((await read('/js/boot.js')).headers.get('content-type'), /javascript/);
-assert.match(await (await read('/gioi-thieu')).text(), /id="cai-dat"/);
+assert.match(await (await read('/caigame.html')).text(), /id="cai-dat"/);
 assert.match(await (await read('/sw.js')).text(), /life-again-/);
 for (const route of ['/.env', '/server/game-server.mjs', '/api/account/status', '/api/account/google', '/api/account/progress', '/admin', '/admin.html', '/js/account/account-ui.js', '/.ranking-data/rankings.json']) {
   const response = await fetch(new URL(route, base), { signal: AbortSignal.timeout(60000), redirect: 'error' });

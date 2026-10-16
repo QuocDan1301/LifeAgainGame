@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Life Again: game mô phỏng cuộc đời, cách cài và chuyển máy</title>
+    <meta
+      name="description"
+      content="Life Again là game mô phỏng cuộc đời bằng tiếng Việt. Cài trực tiếp từ website trên máy tính, Android và iPhone, rồi mang theo cuộc đời của bạn."
+    />
+    <meta name="theme-color" content="#bfefff" />
+    <meta name="copyright" content="© 2026 QuocDan. Mọi quyền được bảo lưu." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta
+      property="og:title"
+      content="Life Again: sống thêm một cuộc đời, từng năm một"
+    />
+    <meta
+      property="og:description"
+      content="Game mô phỏng cuộc đời bằng tiếng Việt. Cài Life Again vào máy và bắt đầu một hành trình mới."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./img/Icon/favicon-32x32.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./img/Icon/apple-icon-180x180.png"
+    />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Sriracha&display=swap"
+    />
+    <link rel="stylesheet" href="./site/site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#noi-dung">Bỏ qua phần đầu trang</a>
+    <header class="site-header">
+      <a
+        class="site-logo"
+        href="./gioi-thieu.html"
+        aria-label="Life Again, trang giới thiệu"
+      >
+        <img src="./img/logo.webp" alt="" width="90" height="70" />
+      </a>
+      <nav aria-label="Các phần của trang">
+        <a href="/gioi-thieu.html">Giới thiệu</a>
+        <a href="/caigame.html" aria-current="page">Cài vào máy</a>
+        <a href="/chuyenmay.html">Chuyển máy</a>
+      </nav>
+    </header>
+
+    <main id="noi-dung">
+    <section
+      class="band band-install"
+      id="cai-dat"
+      aria-labelledby="install-title"
+    >
+      <h1 id="install-title">Cài Life Again vào máy</h1>
+
+      <p id="transfer-pending" role="status" hidden>
+        Bạn có mã chuyển dữ liệu đang chờ. Cài và mở game trước khi nhận; nếu mã
+        hết hạn, hãy tạo mã mới trên máy cũ.
+      </p>
+      <div id="browser-backup" class="install-quick" hidden>
+        <p>
+          Bạn đã có dữ liệu Life Again trong trình duyệt này. Lưu một tệp sao
+          lưu trước khi chuyển sang ứng dụng, nhất là trên iPhone.
+        </p>
+        <button
+          type="button"
+          class="button button-quiet"
+          id="download-browser-backup"
+        >
+          Lưu bản sao cuộc đời hiện có
+        </button>
+        <p id="browser-backup-status" role="status"></p>
+      </div>
+      <p class="install-ready" id="install-ready" hidden>
+        Bạn đang mở Life Again từ biểu tượng đã cài.
+        <a href="./choi" data-open-game hidden>Mở game đã cài</a>.
+      </p>
+      <div class="install-quick" id="install-quick" hidden>
+        <button type="button" class="button button-play" id="install-button">
+          Cài Life Again ngay
+        </button>
+        <p>Trình duyệt của bạn hỗ trợ cài bằng một lần bấm.</p>
+      </div>
+      <p class="install-done" id="install-done" role="status" hidden>
+        Đã cài xong. Mở Life Again từ biểu tượng trên màn hình chính hoặc trong
+        danh sách ứng dụng.
+      </p>
+
+      <div class="device-picker" role="tablist" aria-label="Chọn thiết bị">
+        <button
+          type="button"
+          role="tab"
+          id="tab-android"
+          aria-controls="panel-android"
+          aria-selected="true"
+        >
+          Android
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-ios"
+          aria-controls="panel-ios"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          iPhone, iPad
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="tab-desktop"
+          aria-controls="panel-desktop"
+          aria-selected="false"
+          tabindex="-1"
+        >
+          Máy tính
+        </button>
+      </div>
+
+      <div
+        class="device-panel"
+        id="panel-android"
+        role="tabpanel"
+        aria-labelledby="tab-android"
+      >
+        <ol class="steps">
+          <li>
+            <b>Mở trang game bằng Chrome.</b> Mở trong Zalo hay Facebook thì bấm
+            “Mở bằng trình duyệt” trước.
+          </li>
+          <li>
+            <b>Bấm nút</b>
+            <span class="key" aria-label="ba chấm dọc">⋮</span> ở góc trên bên
+            phải.
+          </li>
+          <li>
+            <b>Chọn “Cài đặt ứng dụng”</b> hoặc “Thêm vào màn hình chính”.
+          </li>
+          <li>
+            <b>Bấm “Cài đặt”.</b> Biểu tượng Life Again xuất hiện trên màn hình
+            chính.
+          </li>
+        </ol>
+        <p class="device-note">
+          Dùng Samsung Internet: bấm
+          <span class="key" aria-label="ba gạch">≡</span>, chọn “Thêm trang
+          vào”, rồi “Màn hình chính”.
+        </p>
+      </div>
+
+      <div
+        class="device-panel"
+        id="panel-ios"
+        role="tabpanel"
+        aria-labelledby="tab-ios"
+        hidden
+      >
+        <ol class="steps">
+          <li>
+            <b>Mở trang game bằng Safari.</b> Mở trong Zalo hay Facebook thì
+            chọn “Mở trong Safari” trước.
+          </li>
+          <li>
+            <b>Bấm nút Chia sẻ</b>
+            <svg
+              class="key-icon"
+              viewBox="0 0 24 24"
+              aria-label="biểu tượng chia sẻ"
+              role="img"
+            >
+              <path d="M12 3v12M8 7l4-4 4 4" />
+              <path d="M6 11H5v10h14V11h-1" />
+            </svg>
+            ở thanh dưới (iPad: góc trên). Không thấy nút thì bấm
+            <span class="key" aria-label="ba chấm">⋯</span> trước.
+          </li>
+          <li>
+            <b>Chọn “Thêm vào MH chính”</b> (Add to Home Screen). Kéo danh sách
+            xuống nếu chưa thấy.
+          </li>
+          <li>
+            <b>Bật “Mở dưới dạng ứng dụng web” nếu có, rồi bấm “Thêm”.</b> Mở
+            game từ biểu tượng mới trên màn hình chính.
+          </li>
+        </ol>
+        <p class="device-note">
+          Nếu ứng dụng chưa có cuộc đời cũ, dùng tệp sao lưu và mục Chuyển thiết
+          bị để nhận lại. Không xóa dữ liệu Safari trước khi đã kiểm tra bản lưu
+          trong ứng dụng.
+        </p>
+      </div>
+
+      <div
+        class="device-panel"
+        id="panel-desktop"
+        role="tabpanel"
+        aria-labelledby="tab-desktop"
+        hidden
+      >
+        <p>
+          <b>Life Again cho Windows 64-bit</b> · Phiên bản 1.0.0 · Khoảng 165 MB
+        </p>
+        <p>
+          <a
+            class="button button-play"
+            id="windows-download"
+            href="https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe"
+            >Tải game Windows (.exe)</a
+          >
+        </p>
+        <ol class="steps">
+          <li>
+            <b>Tải file .exe</b> bằng nút ở trên và lưu vào một thư mục trên
+            máy.
+          </li>
+          <li>
+            <b>Bấm đúp vào file để chơi.</b> Game mở ngay, không cần cài đặt
+            thêm.
+          </li>
+          <li>
+            <b>Chơi ngay.</b> Tiến trình được lưu trên máy và giữ lại khi bạn mở
+            game lần sau.
+          </li>
+        </ol>
+      </div>
+    </section>
+
+      <section
+        class="band band-offline"
+        id="offline"
+        aria-labelledby="offline-title"
+      >
+        <div class="offline-layout">
+          <div>
+            <h2 id="offline-title">Chơi khi không có mạng</h2>
+            <p>
+              Bản Windows đã kèm sẵn dữ liệu game. Với ứng dụng cài từ trình
+              duyệt, lần đầu cần có mạng để tải game. Từ lần sau, trên xe buýt,
+              máy bay hay lúc mất Wi-Fi, bạn vẫn mở game và chơi tiếp bình
+              thường.
+            </p>
+          </div>
+          <ul class="offline-list">
+            <li>
+              <b>Khi không có mạng:</b> bến xe, tạo nhân vật, cả cuộc đời, các
+              trò chơi nhỏ, sổ các cuộc đời, lưu tiến trình.
+            </li>
+            <li>
+              <b>Khi có mạng:</b> tạo và nhận mã chuyển máy, ảnh minh họa của sự
+              kiện bạn chưa từng gặp (offline thì sự kiện vẫn hiện, chỉ thiếu
+              ảnh).
+            </li>
+            <li>
+              <b>Cập nhật:</b> khi game báo có bản mới, dùng nút “Cập nhật bản
+              mới” ở bến xe hoặc Cài đặt. Tiến trình được lưu trước khi tải lại.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <p>
+        © 2026 QuocDan. Mọi quyền được bảo lưu. Không sao chép, đăng lại game
+        hay nội dung khi chưa được cho phép.
+      </p>
+    </footer>
+    <script type="module" src="./site/site.js"></script>
+  </body>
+</html>

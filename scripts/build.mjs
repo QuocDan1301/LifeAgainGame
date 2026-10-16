@@ -13,7 +13,7 @@ const BANNER = `/*! Life Again © ${YEAR} QuocDan. Mọi quyền được bảo 
  
 const ASSET_DIRS = ['img', 'music', 'audio', 'fonts', 'sounds', 'assets'];
 const LOCKED_ENTRIES = ['boot.js', 'main.js'];
-const PAGES = ['index.html', 'gioi-thieu.html'];
+const PAGES = ['index.html', 'gioi-thieu.html', 'caigame.html', 'chuyenmay.html'];
 
  
 const hosts = [process.env.RENDER_EXTERNAL_HOSTNAME, ...(process.env.GAME_HOSTS ?? '').split(',')]
