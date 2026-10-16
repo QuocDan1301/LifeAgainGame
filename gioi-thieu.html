@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Life Again: game mô phỏng cuộc đời, cách cài và chuyển máy</title>
     <script data-app-launch>
-      // Installed shortcuts may still open /gioi-thieu instead of the manifest's start URL.
-      // Run before loading the site's cached scripts so the app never stays on this page.
+      // Only the home URL acts as an app launcher.
+      // Explicit introduction URLs remain available for downloads and instructions.
       let returnToGame = false;
       try {
         returnToGame = location.pathname === "/" && localStorage.getItem("lifeAgain:launchGame") === "true";
       } catch {}
-      if (returnToGame || navigator.standalone === true ||
+      if (location.pathname === "/" && (returnToGame || navigator.standalone === true ||
           ["standalone", "minimal-ui", "window-controls-overlay"].some(mode =>
-            window.matchMedia("(display-mode: " + mode + ")").matches)) {
+            window.matchMedia("(display-mode: " + mode + ")").matches))) {
         const game = new URL("./choi", location.href);
         game.search = location.search;
         location.replace(game.href);

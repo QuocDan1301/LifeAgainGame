@@ -86,7 +86,7 @@ try {
     const page = await context.newPage();
     // Even if the old site bundle is unavailable, the installed app must open the game.
     await page.route('**/site/site.js', route => route.abort());
-    for (const entry of ['/', '/gioi-thieu', '/gioi-thieu.html']) {
+    for (const entry of ['/']) {
       await page.goto(base + entry + '?from=installed');
       await page.waitForURL('**/choi?from=installed');
       await page.locator('#new-life-button').waitFor({ state: 'visible' });
@@ -97,7 +97,19 @@ try {
       await page.keyboard.press('Escape');
     }
     await page.screenshot({ path: out + '/installed-launch-' + mode + '.png' });
-    rows.push({ installedPwaEntry: true, mode, aliases: 3, worksWithoutSiteBundle: true });
+    for (const blockBundle of [true, false]) {
+      if (!blockBundle) await page.unroute('**/site/site.js');
+      for (const entry of ['/gioi-thieu', '/gioi-thieu.html']) {
+        await page.goto(base + entry + '?from=installed#cai-dat');
+        await page.locator('#cai-dat').waitFor({ state: 'visible' });
+        if (!blockBundle) await page.locator('#windows-download').waitFor({ state: 'visible' });
+        assert.equal(await page.locator('#windows-download').count(), 1);
+        assert.equal(new URL(page.url()).pathname, entry, 'explicit introduction must not redirect in ' + mode);
+        assert.equal(new URL(page.url()).hash, '#cai-dat');
+        assert.equal(await page.locator('#lobby-screen').count(), 0);
+      }
+    }
+    rows.push({ installedPwaEntry: true, mode, aliases: 1, worksWithoutSiteBundle: true, explicitIntroductionAccessible: true });
     await context.close();
   }
   const offlineContext = await browser.newContext();

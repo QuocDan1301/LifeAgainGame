@@ -16,8 +16,9 @@ for (const mode of ['standalone', 'minimal-ui', 'window-controls-overlay']) {
     let redirected;
     const current = new URL('https://game.test' + pathname + '?from=installed');
     vm.runInNewContext(launch, { navigator: {}, window: { matchMedia: media }, URL,
-      location: { href: current.href, search: current.search, replace: url => { redirected = url; } } });
-    assert.equal(redirected, 'https://game.test/choi?from=installed', mode + ' launch at ' + pathname);
+      location: { pathname, href: current.href, search: current.search, replace: url => { redirected = url; } } });
+    assert.equal(redirected, pathname === '/' ? 'https://game.test/choi?from=installed' : undefined,
+      mode + ' keeps explicit introduction accessible at ' + pathname);
   }
 }
 {

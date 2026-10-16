@@ -36,7 +36,7 @@ const gameUrl = new URL("./choi", location.href);
 gameUrl.search = location.search;
 get("transfer-pending").hidden = !new URL(location.href).searchParams.has("nhan");
 for (const link of document.querySelectorAll("[data-open-game]")) { link.href = gameUrl.href; link.hidden = false; }
-if (standalone) location.replace(gameUrl.href);
+if (standalone && location.pathname === "/") location.replace(gameUrl.href);
 get("install-ready").hidden = !standalone;
 
 let installEvent = null;
