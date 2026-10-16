@@ -621,15 +621,66 @@
   pointer-events: none;
 }
 .lobby-life-stages svg { display: block; width: 100%; height: auto; }
-.lobby-footer { position: relative; z-index: 1; }
+/* Keep artwork in the footer's flow so short windows and zoom cannot
+   place it over the lobby controls. */
+#lobby-screen > .lobby-brand,
+#lobby-screen > .lobby-footer {
+  flex-shrink: 0;
+}
+.lobby-footer {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+.lobby-footer .lobby-life-stages {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
 @media (min-width: 900px) {
-  .lobby-life-stages {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: min(38vw, 540px);
-    margin: 0;
-    transform: translateX(-50%);
+  .lobby-footer {
+    display: flex;
+  }
+  .lobby-footer .lobby-life-stages {
+    order: 1;
+    flex: 0 1 38%;
+    min-width: 0;
+    max-width: 540px;
+    margin: 0 0 0 auto;
+  }
+  .lobby-footer > p {
+    flex-shrink: 0;
+  }
+}
+@media (min-width: 900px) and (max-height: 700px) {
+  #lobby-screen {
+    padding-top: 12px;
+  }
+  .lobby-brand img {
+    height: 50px;
+  }
+  #lobby-title {
+    font-size: clamp(32px, 4vw, 40px);
+  }
+  #new-life-button,
+  #continue-button,
+  #open-life-archive {
+    min-height: 50px;
+    padding: 8px 18px;
+    font-size: 23px;
+  }
+  .lobby-footer .lobby-life-stages {
+    max-width: 300px;
+  }
+  #lobby-screen .lobby-intro {
+    margin: 8px 0 14px;
+  }
+  #lobby-screen .lobby-ticket-count {
+    margin-top: 8px;
+    font-size: 20px;
+  }
+  #ticket-seller img {
+    height: 90px;
   }
 }
 @keyframes life-stage-in {
