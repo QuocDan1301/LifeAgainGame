@@ -5,7 +5,7 @@
     "overflow": false,
     "errors": [],
     "backup": true,
-    "redirect": true
+    "browserShortcut": true
   },
   {
     "width": 360,
@@ -13,7 +13,7 @@
     "overflow": false,
     "errors": [],
     "backup": true,
-    "redirect": true
+    "browserShortcut": true
   },
   {
     "width": 1280,
@@ -21,10 +21,31 @@
     "overflow": false,
     "errors": [],
     "backup": true,
-    "redirect": true
+    "browserShortcut": true
   },
   {
-    "installedPwaEntry": true
+    "installedPwaEntry": true,
+    "mode": "standalone",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "minimal-ui",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "window-controls-overlay",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "ios",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
   },
   {
     "nativeServiceWorkerOfflineEntry": true,

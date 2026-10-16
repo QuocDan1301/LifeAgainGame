@@ -1,0 +1,54 @@
+[
+  {
+    "width": 390,
+    "expected": "tab-android",
+    "overflow": false,
+    "errors": [],
+    "backup": true,
+    "redirect": true
+  },
+  {
+    "width": 360,
+    "expected": "tab-ios",
+    "overflow": false,
+    "errors": [],
+    "backup": true,
+    "redirect": true
+  },
+  {
+    "width": 1280,
+    "expected": "tab-desktop",
+    "overflow": false,
+    "errors": [],
+    "backup": true,
+    "redirect": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "standalone",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "minimal-ui",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "window-controls-overlay",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "installedPwaEntry": true,
+    "mode": "ios",
+    "aliases": 3,
+    "worksWithoutSiteBundle": true
+  },
+  {
+    "nativeServiceWorkerOfflineEntry": true,
+    "savedLifeRetained": true
+  }
+]
