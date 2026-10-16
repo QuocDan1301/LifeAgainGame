@@ -26,26 +26,30 @@
   {
     "installedPwaEntry": true,
     "mode": "standalone",
-    "aliases": 3,
-    "worksWithoutSiteBundle": true
+    "aliases": 1,
+    "worksWithoutSiteBundle": true,
+    "explicitIntroductionAccessible": true
   },
   {
     "installedPwaEntry": true,
     "mode": "minimal-ui",
-    "aliases": 3,
-    "worksWithoutSiteBundle": true
+    "aliases": 1,
+    "worksWithoutSiteBundle": true,
+    "explicitIntroductionAccessible": true
   },
   {
     "installedPwaEntry": true,
     "mode": "window-controls-overlay",
-    "aliases": 3,
-    "worksWithoutSiteBundle": true
+    "aliases": 1,
+    "worksWithoutSiteBundle": true,
+    "explicitIntroductionAccessible": true
   },
   {
     "installedPwaEntry": true,
     "mode": "ios",
-    "aliases": 3,
-    "worksWithoutSiteBundle": true
+    "aliases": 1,
+    "worksWithoutSiteBundle": true,
+    "explicitIntroductionAccessible": true
   },
   {
     "nativeServiceWorkerOfflineEntry": true,
