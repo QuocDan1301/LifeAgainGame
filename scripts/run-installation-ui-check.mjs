@@ -52,12 +52,9 @@ try {
     const contents=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.equal(contents.data.lifeAgainSave,'test-save-kept');
     assert.equal(await page.evaluate(()=>localStorage.getItem('lifeAgainSave')),'test-save-kept');
     await page.evaluate(() => localStorage.removeItem('lifeAgainSave'));
-    await page.goto(base + '/gioi-thieu');
-    if (width !== 360) await page.evaluate(() => window.dispatchEvent(new Event('appinstalled')));
-    else await page.locator('.hero-actions [data-open-game]').click();
-    await page.waitForURL('**/choi');
-    await page.locator('#new-life-button').waitFor({ state: 'visible' });
-    assert.equal(await page.evaluate(() => localStorage.getItem('lifeAgain:launchGame')), 'true');
+    await page.goto(base + '/choi');
+    await page.waitForURL('**/gioi-thieu#cai-dat');
+    assert.equal(await page.locator('.hero-actions [data-open-game]').isVisible(), false);
     // Returning players must still see downloads at the home URL.
     await page.goto(base + '/');
     await page.locator('.device-picker').waitFor({ state: 'visible' });
@@ -71,7 +68,7 @@ try {
     await context.close();
   }
   for (const mode of ['standalone', 'minimal-ui', 'window-controls-overlay', 'ios']) {
-    const context = await browser.newContext({ serviceWorkers: 'block' });
+    const context = await browser.newContext({ serviceWorkers: 'block', userAgent: 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/130.0.0.0 Mobile Safari/537.36' });
     await context.addInitScript(mode => {
       if (mode === 'ios') Object.defineProperty(navigator, 'standalone', { get: () => true });
       else {
@@ -102,7 +99,10 @@ try {
       for (const entry of ['/', '/gioi-thieu', '/gioi-thieu.html']) {
         await page.goto(base + entry + '?from=installed#cai-dat');
         await page.locator('#cai-dat').waitFor({ state: 'visible' });
-        if (!blockBundle) await page.locator('#windows-download').waitFor({ state: 'visible' });
+        if (!blockBundle) {
+          await page.locator('#tab-desktop').click();
+          await page.locator('#windows-download').waitFor({ state: 'visible' });
+        }
         assert.equal(await page.locator('#windows-download').count(), 1);
         assert.equal(new URL(page.url()).pathname, entry, 'explicit introduction must not redirect in ' + mode);
         assert.equal(new URL(page.url()).hash, '#cai-dat');
@@ -112,7 +112,8 @@ try {
     rows.push({ installedPwaEntry: true, mode, aliases: 1, worksWithoutSiteBundle: true, explicitIntroductionAccessible: true });
     await context.close();
   }
-  const offlineContext = await browser.newContext();
+  const offlineContext = await browser.newContext({ userAgent: 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/130.0.0.0 Mobile Safari/537.36' });
+  await offlineContext.addInitScript(() => Object.defineProperty(navigator, 'standalone', { get: () => true }));
   const offlinePage = await offlineContext.newPage();
   await offlinePage.goto(base + '/choi');
   await offlinePage.locator('#new-life-button').waitFor({ state: 'visible' });

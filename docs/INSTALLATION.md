@@ -1,9 +1,9 @@
 # Cài Life Again từ website
 
 - `/` và `/gioi-thieu` dùng trang giới thiệu hiện có, hướng dẫn cài trên máy tính, Android và iPhone.
-- `/choi` luôn mở phần chơi, kể cả khi biểu tượng trên máy tính mở bằng tab trình duyệt. Trang giới thiệu luôn có nút Mở game.
+- `/choi` chỉ mở phần chơi trên ứng dụng điện thoại đã cài hoặc bản Windows dùng giao thức `lifeagain:`. PC và tab trình duyệt điện thoại trở về trang cài đặt; dữ liệu cũ được giữ để xuất sao lưu.
 - `/`, `/gioi-thieu` và `/gioi-thieu.html` luôn mở trang tải game, kể cả người đã chơi hoặc mở từ cửa sổ ứng dụng. Chỉ `/choi` mở phần chơi; ứng dụng dùng đường dẫn này trong manifest.
-- Khi trình duyệt báo cài hoàn tất (`appinstalled`), mở `/choi` ngay trong cửa sổ hiện tại.
+- Khi trình duyệt báo cài hoàn tất (`appinstalled`), người chơi mở từ biểu tượng ứng dụng trên điện thoại. Tab web không tự mở phần chơi.
 - Manifest giữ `id: "./"` để nhận diện cùng PWA cũ, đổi `start_url` thành `./choi`. Ứng dụng cũ khởi chạy `/` được chuyển vào game. Không đổi origin hoặc khóa bản lưu.
 - Nút cài dùng lời mời cài thật của trình duyệt khi có. Nếu chưa có lời mời hoặc người dùng từ chối, vẫn có hướng dẫn bằng menu. iPhone hướng dẫn Safari → Chia sẻ → Thêm vào Màn hình chính; máy tính dùng Chrome/Edge hoặc Thêm vào Dock trên Safari hỗ trợ.
 

@@ -35,8 +35,8 @@ const standalone = isInstalledApp();
 const gameUrl = new URL("./choi", location.href);
 gameUrl.search = location.search;
 get("transfer-pending").hidden = !new URL(location.href).searchParams.has("nhan");
-for (const link of document.querySelectorAll("[data-open-game]")) { link.href = gameUrl.href; link.hidden = false; }
-get("install-ready").hidden = !standalone;
+for (const link of document.querySelectorAll("[data-open-game]")) { link.href = gameUrl.href; link.hidden = !(standalone && (isIos || isAndroid)); }
+get("install-ready").hidden = !(standalone && (isIos || isAndroid));
 
 let installEvent = null;
 window.addEventListener("beforeinstallprompt", event => {
@@ -62,7 +62,6 @@ window.addEventListener("appinstalled", () => {
   get("install-quick").hidden = true;
   get("install-done").hidden = false;
   try { localStorage.setItem("lifeAgain:launchGame", "true"); } catch {}
-  location.replace(gameUrl.href);
 });
 
  
