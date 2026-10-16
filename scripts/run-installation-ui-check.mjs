@@ -46,10 +46,36 @@ try {
     assert.deepEqual(errors,[]);rows.push({width,expected,overflow,errors,backup:true,redirect:true});
     await context.close();
   }
-  const context=await browser.newContext({serviceWorkers:'block'});
-  await context.addInitScript(()=>Object.defineProperty(navigator,'standalone',{get:()=>true}));
-  const page=await context.newPage();await page.goto(base+'/');await page.waitForURL('**/choi');await page.locator('#new-life-button').waitFor({state:'visible'});
-  assert.equal(await page.locator('#lobby-screen').isVisible(),true);rows.push({installedPwaEntry:true});await context.close();
+  for (const mode of ['standalone', 'minimal-ui', 'window-controls-overlay', 'ios']) {
+    const context = await browser.newContext({ serviceWorkers: 'block' });
+    await context.addInitScript(mode => {
+      if (mode === 'ios') Object.defineProperty(navigator, 'standalone', { get: () => true });
+      else {
+        const nativeMedia = window.matchMedia.bind(window);
+        window.matchMedia = query => {
+          const result = nativeMedia(query);
+          if (query === '(display-mode: ' + mode + ')') Object.defineProperty(result, 'matches', { value: true });
+          return result;
+        };
+      }
+    }, mode);
+    const page = await context.newPage();
+    // Even if the old site bundle is unavailable, the installed app must open the game.
+    await page.route('**/site/site.js', route => route.abort());
+    for (const entry of ['/', '/gioi-thieu', '/gioi-thieu.html']) {
+      await page.goto(base + entry + '?from=installed');
+      await page.waitForURL('**/choi?from=installed');
+      await page.locator('#new-life-button').waitFor({ state: 'visible' });
+      assert.equal(await page.locator('#lobby-screen').isVisible(), true);
+      await page.waitForFunction(() => getComputedStyle(document.getElementById('app-loader')).opacity === '0');
+      await page.locator('#ticket-seller').click();
+      await page.locator('#tickets-dialog').waitFor({ state: 'visible' });
+      await page.keyboard.press('Escape');
+    }
+    await page.screenshot({ path: out + '/installed-launch-' + mode + '.png' });
+    rows.push({ installedPwaEntry: true, mode, aliases: 3, worksWithoutSiteBundle: true });
+    await context.close();
+  }
   const offlineContext = await browser.newContext();
   await offlineContext.addInitScript(() => Object.defineProperty(navigator, 'standalone', { get: () => true }));
   const offlinePage = await offlineContext.newPage();

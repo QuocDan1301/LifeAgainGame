@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Life Again: game mô phỏng cuộc đời, cách cài và chuyển máy</title>
+    <script data-app-launch>
+      // Installed shortcuts may still open /gioi-thieu instead of the manifest's start URL.
+      // Run before loading the site's cached scripts so the app never stays on this page.
+      if (navigator.standalone === true ||
+          ["standalone", "minimal-ui", "window-controls-overlay"].some(mode =>
+            window.matchMedia("(display-mode: " + mode + ")").matches)) {
+        const game = new URL("./choi", location.href);
+        game.search = location.search;
+        location.replace(game.href);
+      }
+    </script>
     <meta name="description" content="Life Again là game mô phỏng cuộc đời bằng tiếng Việt. Cài trực tiếp từ website trên máy tính, Android và iPhone, rồi mang theo cuộc đời của bạn." />
     <meta name="theme-color" content="#bfefff" />
     <meta name="copyright" content="© 2026 QuocDan. Mọi quyền được bảo lưu." />
