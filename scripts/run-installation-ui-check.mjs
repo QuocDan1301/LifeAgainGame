@@ -58,11 +58,11 @@ try {
     await page.waitForURL('**/choi');
     await page.locator('#new-life-button').waitFor({ state: 'visible' });
     assert.equal(await page.evaluate(() => localStorage.getItem('lifeAgain:launchGame')), 'true');
-    // A desktop shortcut can reopen the root in browser display mode.
+    // Returning players must still see downloads at the home URL.
     await page.goto(base + '/');
-    await page.waitForURL('**/choi');
-    await page.locator('#new-life-button').waitFor({ state: 'visible' });
-    await page.waitForFunction(() => getComputedStyle(document.getElementById('app-loader')).opacity === '0');
+    await page.locator('.device-picker').waitFor({ state: 'visible' });
+    assert.equal(new URL(page.url()).pathname, '/');
+    assert.equal(await page.locator('#windows-download').count(), 1);
     await page.screenshot({ path: out + '/browser-shortcut-' + width + '.png' });
     // Instructions and backups remain reachable after choosing to play.
     await page.goto(base + '/gioi-thieu');
@@ -86,7 +86,7 @@ try {
     const page = await context.newPage();
     // Even if the old site bundle is unavailable, the installed app must open the game.
     await page.route('**/site/site.js', route => route.abort());
-    for (const entry of ['/']) {
+    for (const entry of ['/choi']) {
       await page.goto(base + entry + '?from=installed');
       await page.waitForURL('**/choi?from=installed');
       await page.locator('#new-life-button').waitFor({ state: 'visible' });
@@ -99,7 +99,7 @@ try {
     await page.screenshot({ path: out + '/installed-launch-' + mode + '.png' });
     for (const blockBundle of [true, false]) {
       if (!blockBundle) await page.unroute('**/site/site.js');
-      for (const entry of ['/gioi-thieu', '/gioi-thieu.html']) {
+      for (const entry of ['/', '/gioi-thieu', '/gioi-thieu.html']) {
         await page.goto(base + entry + '?from=installed#cai-dat');
         await page.locator('#cai-dat').waitFor({ state: 'visible' });
         if (!blockBundle) await page.locator('#windows-download').waitFor({ state: 'visible' });
@@ -129,7 +129,9 @@ try {
   await offlinePage.locator('#continue-button').waitFor({ state: 'visible' });
   assert.equal(await offlinePage.evaluate(() => JSON.parse(localStorage.getItem('lifeAgainSave')).player.lifeId), savedLife);
   await offlinePage.goto(base + '/');
-  await offlinePage.waitForURL('**/choi');
+  await offlinePage.locator('.device-picker').waitFor({ state: 'visible' });
+  assert.equal(new URL(offlinePage.url()).pathname, '/');
+  await offlinePage.goto(base + '/choi');
   await offlinePage.locator('#continue-button').waitFor({ state: 'visible' });
   rows.push({ nativeServiceWorkerOfflineEntry: true, savedLifeRetained: true });
   await offlineContext.close();

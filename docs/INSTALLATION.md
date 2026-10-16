@@ -2,7 +2,7 @@
 
 - `/` và `/gioi-thieu` dùng trang giới thiệu hiện có, hướng dẫn cài trên máy tính, Android và iPhone.
 - `/choi` luôn mở phần chơi, kể cả khi biểu tượng trên máy tính mở bằng tab trình duyệt. Trang giới thiệu luôn có nút Mở game.
-- Sau khi cài hoặc mở game một lần, ghi nhớ lựa chọn trên máy bằng `lifeAgain:launchGame`; biểu tượng cũ mở `/` sẽ vào game. `/gioi-thieu` và `/gioi-thieu.html` luôn mở hướng dẫn, nút tải Windows và sao lưu, kể cả trong cửa sổ ứng dụng đã cài. Nếu trình duyệt chặn lưu trữ, `/choi` vẫn chơi được.
+- `/`, `/gioi-thieu` và `/gioi-thieu.html` luôn mở trang tải game, kể cả người đã chơi hoặc mở từ cửa sổ ứng dụng. Chỉ `/choi` mở phần chơi; ứng dụng dùng đường dẫn này trong manifest.
 - Khi trình duyệt báo cài hoàn tất (`appinstalled`), mở `/choi` ngay trong cửa sổ hiện tại.
 - Manifest giữ `id: "./"` để nhận diện cùng PWA cũ, đổi `start_url` thành `./choi`. Ứng dụng cũ khởi chạy `/` được chuyển vào game. Không đổi origin hoặc khóa bản lưu.
 - Nút cài dùng lời mời cài thật của trình duyệt khi có. Nếu chưa có lời mời hoặc người dùng từ chối, vẫn có hướng dẫn bằng menu. iPhone hướng dẫn Safari → Chia sẻ → Thêm vào Màn hình chính; máy tính dùng Chrome/Edge hoặc Thêm vào Dock trên Safari hỗ trợ.

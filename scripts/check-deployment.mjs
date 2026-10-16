@@ -13,8 +13,7 @@ async function read(route) {
 const status = await (await read('/health')).json();
 assert.equal(status.ok, true);
 const introduction = await (await read('/')).text();
-assert.match(introduction, /data-app-launch/);
-assert.match(introduction, /lifeAgain:launchGame/, 'root must remember desktop shortcuts');
+assert.doesNotMatch(introduction, /data-app-launch|location\.replace/, 'home must stay on the download page');
 assert.match(introduction, /data-open-game>Mở game</, 'a manual play link must always be available');
 const intro = await (await read('/gioi-thieu')).text();
 const download = intro.match(/id="windows-download" href="([^"]+)"/)?.[1];
