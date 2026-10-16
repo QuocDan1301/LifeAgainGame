@@ -766,6 +766,8 @@ body::before {
 .community-facebook { background: #eaf2ff; color: #1464ce; }
 .community-discord { background: #eeeeff; color: #4c51c6; }
 .community-threads { background: #f0efeb; color: #252525; }
+.community-donate { grid-column: 1 / -1; justify-self: center; flex-direction: row; gap: 6px; min-height: 36px; padding: 7px 14px; border-radius: 10px; font-size: 13px; background: #fff0f3; color: #b4375b; }
+.community-channel.community-donate svg { width: 20px; height: 20px; }
 .community-channel:disabled { cursor: default; }
 .community-channel:focus-visible, .menu-community:focus-visible { outline: 3px solid #285a91; outline-offset: 3px; }
 .community-channel:hover:not(:disabled) { filter: brightness(0.95); }
