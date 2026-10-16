@@ -29,18 +29,37 @@ for (const mode of ['standalone', 'minimal-ui', 'window-controls-overlay']) {
   assert.equal(redirects, 0, 'ordinary browsers keep the public introduction');
 }
 
-const source = fs.readFileSync(new URL('../js/entry.js', import.meta.url), 'utf8').replace(/^import .*;\r?\n/, '').replace('import("./boot.js")', 'loadBoot()');
-for (const installed of [false, true]) {
-  const redirects = []; let loads = 0;
-  const context = vm.createContext({ document: { documentElement: { hasAttribute: () => true } },
-    isInstalledApp: () => installed, installationPage: () => 'https://game.test/gioi-thieu#cai-dat',
-    location: { replace: url => redirects.push(url) }, loadBoot: () => { loads++; return Promise.resolve(); } });
+const source = fs.readFileSync(new URL('../js/entry.js', import.meta.url), 'utf8').replace('import("./boot.js")', 'loadBoot()');
+for (const storageBlocked of [false, true]) {
+  let loads = 0;
+  const context = vm.createContext({
+    localStorage: { setItem(key, value) {
+      if (storageBlocked) throw new Error('Storage disabled');
+      assert.equal(key, 'lifeAgain:launchGame');
+      assert.equal(value, 'true');
+    } },
+    loadBoot: () => { loads++; return Promise.resolve(); }
+  });
   vm.runInContext(source, context);
-  assert.equal(loads, installed ? 1 : 0, 'ordinary browser must not initialize the game');
-  assert.equal(redirects.length, installed ? 0 : 1);
+  assert.equal(loads, 1, 'shortcuts must boot even in browser mode or with storage blocked');
+}
+{
+  const html = fs.readFileSync(new URL('../gioi-thieu.html', import.meta.url), 'utf8');
+  const launch = html.match(/<script data-app-launch>([\s\S]*?)<\/script>/)[1];
+  for (const pathname of ['/', '/gioi-thieu', '/gioi-thieu.html']) {
+    let redirected;
+    const current = new URL('https://game.test' + pathname + '?nhan=ABC234');
+    vm.runInNewContext(launch, {
+      navigator: {}, window: { matchMedia: options.matchMedia }, URL,
+      localStorage: { getItem: () => 'true' },
+      location: { pathname, href: current.href, search: current.search, replace: url => { redirected = url; } }
+    });
+    assert.equal(redirected, pathname === '/' ? 'https://game.test/choi?nhan=ABC234' : undefined,
+      'remembered browser shortcuts open the game; explicit instructions stay available');
+  }
 }
 assert.equal(installationPage(new URL('https://game.test/choi?nhan=ABC234')), 'https://game.test/gioi-thieu?nhan=ABC234#cai-dat');
 const manifest = JSON.parse(fs.readFileSync(new URL('../manifest.json', import.meta.url)));
 assert.equal(manifest.id, './', 'preserve the old implicit app identity');
 assert.equal(manifest.start_url, './choi');
-console.log('PASS installed entry: browser redirect without boot; iOS and standalone entry; transfer query retained; stable PWA identity.');
+console.log('PASS installed entry: browser shortcuts boot; remembered root launch; explicit instructions accessible; iOS and standalone entry; stable PWA identity.');

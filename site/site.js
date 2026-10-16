@@ -33,7 +33,7 @@ const standalone = isInstalledApp();
 const gameUrl = new URL("./choi", location.href);
 gameUrl.search = location.search;
 get("transfer-pending").hidden = !new URL(location.href).searchParams.has("nhan");
-for (const link of document.querySelectorAll("[data-open-game]")) { link.href = gameUrl.href; link.hidden = !standalone; }
+for (const link of document.querySelectorAll("[data-open-game]")) { link.href = gameUrl.href; link.hidden = false; }
 if (standalone) location.replace(gameUrl.href);
 get("install-ready").hidden = !standalone;
 
@@ -60,6 +60,8 @@ window.addEventListener("appinstalled", () => {
   installEvent = null;
   get("install-quick").hidden = true;
   get("install-done").hidden = false;
+  try { localStorage.setItem("lifeAgain:launchGame", "true"); } catch {}
+  location.replace(gameUrl.href);
 });
 
  

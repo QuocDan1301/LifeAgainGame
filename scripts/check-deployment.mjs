@@ -12,7 +12,15 @@ async function read(route) {
 }
 const status = await (await read('/health')).json();
 assert.equal(status.ok, true);
-assert.match(await (await read('/')).text(), /<html/i);
+const introduction = await (await read('/')).text();
+assert.match(introduction, /data-app-launch/);
+assert.match(introduction, /lifeAgain:launchGame/, 'root must remember desktop shortcuts');
+assert.match(introduction, /data-open-game>Mở game</, 'a manual play link must always be available');
+const game = await (await read('/choi')).text();
+assert.match(game, /id="new-life-button"/);
+assert.doesNotMatch(game, /data-installed-only/, 'browser-mode shortcuts must not be blocked');
+const entry = await (await read('/js/entry.js')).text();
+assert.doesNotMatch(entry, /installationPage/, 'play must not redirect back to installation');
 assert.match((await read('/js/boot.js')).headers.get('content-type'), /javascript/);
 assert.match(await (await read('/gioi-thieu')).text(), /id="cai-dat"/);
 assert.match(await (await read('/sw.js')).text(), /life-again-/);

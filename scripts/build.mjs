@@ -78,7 +78,7 @@ async function buildCss(file) {
  
 async function buildHtml(file) {
    
-  let html = fs.readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace('<html lang="vi">', `<html lang="vi" data-offline${path.basename(file) === 'index.html' ? ' data-installed-only' : ''}>`);
+  let html = fs.readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace('<html lang="vi">', '<html lang="vi" data-offline>');
   const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
   for (const [whole, body] of scripts) {
     const { code } = await transform(body, { loader: 'js', minify: true, legalComments: 'none' });

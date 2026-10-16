@@ -7,7 +7,11 @@
     <script data-app-launch>
       // Installed shortcuts may still open /gioi-thieu instead of the manifest's start URL.
       // Run before loading the site's cached scripts so the app never stays on this page.
-      if (navigator.standalone === true ||
+      let returnToGame = false;
+      try {
+        returnToGame = location.pathname === "/" && localStorage.getItem("lifeAgain:launchGame") === "true";
+      } catch {}
+      if (returnToGame || navigator.standalone === true ||
           ["standalone", "minimal-ui", "window-controls-overlay"].some(mode =>
             window.matchMedia("(display-mode: " + mode + ")").matches)) {
         const game = new URL("./choi", location.href);
@@ -54,7 +58,7 @@
           </p>
           <div class="hero-actions">
             <a class="button button-play" href="#cai-dat">Cài Life Again</a>
-            <a class="button button-quiet" href="./choi" data-open-game hidden>Mở game đã cài</a>
+            <a class="button button-quiet" href="./choi" data-open-game>Mở game</a>
           </div>
           <p class="hero-note">Miễn phí, không cần tài khoản. Dữ liệu lưu ngay trên máy của bạn.</p>
         </div>

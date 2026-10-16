@@ -31,19 +31,34 @@ try {
       });
       await page.locator('#install-button').click();
       assert.equal(await page.evaluate(() => window.installPromptCalls), 1);
-      await page.evaluate(() => window.dispatchEvent(new Event('appinstalled')));
-      assert.equal(await page.locator('#install-done').isVisible(), true);
     }
     await page.locator('#tab-ios').click();assert.equal(await page.locator('#panel-ios').isVisible(),true);
     await page.locator('#tab-ios').press('ArrowRight');assert.equal(await page.locator('#panel-desktop').isVisible(),true);
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert.equal(overflow,false);
-    await page.goto(base+'/choi?nhan=ABC234');await page.waitForURL('**/gioi-thieu?nhan=ABC234#cai-dat');
+    await page.goto(base+'/gioi-thieu?nhan=ABC234#cai-dat');
+    assert.equal(new URL(await page.locator('.hero-actions [data-open-game]').getAttribute('href')).search, '?nhan=ABC234');
     assert.equal(await page.locator('#transfer-pending').isVisible(),true);
     await page.evaluate(()=>localStorage.setItem('lifeAgainSave','test-save-kept'));await page.reload();
     const downloadPromise=page.waitForEvent('download');await page.locator('#download-browser-backup').click();const download=await downloadPromise;
     const contents=JSON.parse(fs.readFileSync(await download.path(),'utf8'));assert.equal(contents.data.lifeAgainSave,'test-save-kept');
     assert.equal(await page.evaluate(()=>localStorage.getItem('lifeAgainSave')),'test-save-kept');
-    assert.deepEqual(errors,[]);rows.push({width,expected,overflow,errors,backup:true,redirect:true});
+    await page.evaluate(() => localStorage.removeItem('lifeAgainSave'));
+    await page.goto(base + '/gioi-thieu');
+    if (width !== 360) await page.evaluate(() => window.dispatchEvent(new Event('appinstalled')));
+    else await page.locator('.hero-actions [data-open-game]').click();
+    await page.waitForURL('**/choi');
+    await page.locator('#new-life-button').waitFor({ state: 'visible' });
+    assert.equal(await page.evaluate(() => localStorage.getItem('lifeAgain:launchGame')), 'true');
+    // A desktop shortcut can reopen the root in browser display mode.
+    await page.goto(base + '/');
+    await page.waitForURL('**/choi');
+    await page.locator('#new-life-button').waitFor({ state: 'visible' });
+    await page.waitForFunction(() => getComputedStyle(document.getElementById('app-loader')).opacity === '0');
+    await page.screenshot({ path: out + '/browser-shortcut-' + width + '.png' });
+    // Instructions and backups remain reachable after choosing to play.
+    await page.goto(base + '/gioi-thieu');
+    await page.locator('.device-picker').waitFor({ state: 'visible' });
+    assert.deepEqual(errors,[]);rows.push({width,expected,overflow,errors,backup:true,browserShortcut:true});
     await context.close();
   }
   for (const mode of ['standalone', 'minimal-ui', 'window-controls-overlay', 'ios']) {
@@ -77,7 +92,6 @@ try {
     await context.close();
   }
   const offlineContext = await browser.newContext();
-  await offlineContext.addInitScript(() => Object.defineProperty(navigator, 'standalone', { get: () => true }));
   const offlinePage = await offlineContext.newPage();
   await offlinePage.goto(base + '/choi');
   await offlinePage.locator('#new-life-button').waitFor({ state: 'visible' });
@@ -98,5 +112,5 @@ try {
   await offlinePage.locator('#continue-button').waitFor({ state: 'visible' });
   rows.push({ nativeServiceWorkerOfflineEntry: true, savedLifeRetained: true });
   await offlineContext.close();
-  console.log('PASS installation UI: three device layouts; platform tabs and keyboard; desktop/Android install prompt; browser entry gate; backup download preserves data; installed PWA root migration; real offline worker retains saved life.');
+  console.log('PASS installation UI: three device layouts; platform tabs and keyboard; desktop/Android install prompt; browser shortcuts and immediate post-install entry; backup download preserves data; installed PWA root migration; real offline worker retains saved life.');
 } finally {fs.writeFileSync(`${out}/results.json`,JSON.stringify(rows,null,2));await browser.close();await new Promise(resolve=>server.close(resolve));}
