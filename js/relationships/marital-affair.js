@@ -26,13 +26,18 @@ export function createMaritalAffairEvent(player, age, random = Math.random) {
       (player.prison && player.prison.releaseAge > age)) return null;
   const spouse = player.partner;
   const affair = getActiveAffair(player);
+  const opportunities = player.affairOpportunityCount ?? Math.max(
+    Number.isInteger(player.affairLastEventAge) ? 1 : 0,
+    (player.relationshipHistory ?? []).filter(entry => entry.type === 'affair').length,
+  );
   const event = { id: `marital-affair-${age}`, kind: 'marital-affair', category: 'love',
     age, priority: true, ...art };
   const choice = (label, title, text, effects, playerUpdates) => ({
-    label, title, text, effects, playerUpdates: { ...playerUpdates, affairLastEventAge: age }, ...art,
+    label, title, text, effects, playerUpdates: { ...playerUpdates, affairLastEventAge: age,
+      ...(!affair ? { affairOpportunityCount: opportunities + 1 } : {}) }, ...art,
   });
   if (!affair) {
-    if (age <= player.marriedAtAge || random() >= AFFAIR_OPPORTUNITY_CHANCE) return null;
+    if (opportunities >= 2 || age <= player.marriedAtAge || random() >= AFFAIR_OPPORTUNITY_CHANCE) return null;
     const person = createAdmirer(player, age, random);
     return { ...event, title: 'Một lời hẹn riêng',
       text: `${person.name}, người tôi quen ở ${person.workplace}, thường tìm tôi tâm sự. Hôm nay người ấy nói có tình cảm với tôi và muốn gặp riêng. Tôi biết mình đang có gia đình với ${spouse.name}.`,

@@ -18,7 +18,6 @@ import {
   buy,
   buyPlot,
   canFertilize,
-  canWaterAll,
   canWaterPlot,
   careLeft,
   careMax,
@@ -52,7 +51,6 @@ import {
   seasons,
   sell,
   sellPriceOf,
-  waterAll,
   waterPlot,
   weathers,
   workDiligently,
@@ -268,42 +266,18 @@ export function initGarden(
     const leaves = element("span", "garden-care-leaves");
     const max = careMax(g);
     for (let index = 0; index < max; index++)
-      leaves.append(
-        element("span", index < careLeft(g) ? "is-left" : "", "🌿"),
-      );
+      leaves.append(element("span", index < careLeft(g) ? "is-left" : "", "🌿"));
     row.append(
       element("span", "garden-care-label", "Công chăm mùa này"),
       leaves,
       element("span", "garden-care-value", `${careLeft(g)}/${max}`),
     );
-
-    const growing = g.plots.filter(
-      (plot) => plot && !plot.withered && !isReady(plot),
-    );
     const dry = dryCount(g);
-    const label = canWaterAll(g)
-      ? `💧 Tưới ${dry} luống khô · ${dry} công`
-      : isResting(g)
-        ? "🛌 Vườn đang nghỉ đông"
-        : !growing.length
-          ? "💧 Chưa có cây cần tưới"
-          : !dry
-            ? g.weather === "rain"
-              ? "🌧️ Mưa đã tưới cả vườn"
-              : "✅ Cả vườn đã được tưới"
-            : careLeft(g)
-              ? `💧 Còn ${careLeft(g)} công, chưa đủ tưới ${dry} luống: chạm từng luống để chọn`
-              : `💧 Hết công: ${dry} luống chưa được tưới`;
-    const water = button("garden-action garden-water", label, () => {
-      if (!waterAll(garden())) return;
-      commit(
-        "💧 Bạn tưới đẫm từng luống. Đất sẫm màu, lá rau tươi lại.",
-        ".garden-water",
-      );
-      flashWatered();
-    });
-    water.disabled = !canWaterAll(g);
-    return [row, water, diligentCard()];
+    const note = isResting(g) ? "🛌 Vườn đang nghỉ đông"
+      : dry ? `🚿 ${dry} luống chưa tưới. Chạm vòi tưới trên từng cây · 1 công/luống.${careLeft(g) ? "" : " Đã hết công chăm mùa này."}`
+        : g.weather === "rain" ? "🌧️ Mưa đã tưới cả vườn"
+          : "Chạm biểu tượng trên cây để tưới, bắt sâu hoặc thu hoạch.";
+    return [row, element("p", "garden-note", note), diligentCard()];
   }
   function flashWatered() {
     if (!reducedMotion.matches)
@@ -349,7 +323,7 @@ export function initGarden(
             );
             commit(
               `🧑‍🌾 Mùa này bạn có thêm ${DILIGENT_CARE_BONUS} công chăm.`,
-              ".garden-water",
+              ".garden-plot-tool:not(:disabled)",
             );
           },
         ),
@@ -371,68 +345,84 @@ export function initGarden(
   function plotTile(plot, index) {
     const g = garden();
     const tile = element("div", "garden-plot");
-    tile.setAttribute("role", "button");
-    tile.tabIndex = 0;
+    tile.setAttribute("role", "group");
+    tile.tabIndex = -1;
     tile.dataset.plot = index;
     const crop = plot && cropOf(plot.crop);
     let label;
     if (!plot) {
       tile.classList.add("is-empty");
-      tile.append(
-        element("span", "garden-plot-plus", "＋"),
-        element("span", "garden-plot-name", "Gieo hạt"),
-      );
+      tile.append(element("span", "garden-plot-plus", "＋"), element("span", "garden-plot-name", "Gieo hạt"));
       label = `Luống ${index + 1}: đất trống`;
     } else if (plot.withered) {
       tile.classList.add("is-withered");
-      tile.append(
-        element("span", "garden-sprite", "🥀"),
-        element("span", "garden-plot-name", `${crop.name} héo`),
-      );
+      tile.append(element("span", "garden-sprite", "🥀"), element("span", "garden-plot-name", `${crop.name} héo`));
       label = `Luống ${index + 1}: ${crop.name} đã héo`;
     } else {
       const ready = isReady(plot);
       const stage = ready ? crop.icon : plot.growth === 0 ? "🌱" : "🌿";
-      const sprite = element(
-        "span",
-        `garden-sprite stage-${ready ? "ready" : plot.growth}`,
-        stage,
-      );
       tile.classList.toggle("is-ready", ready);
       tile.classList.toggle("is-watered", plot.watered && !ready);
       tile.append(
-        sprite,
-        element(
-          "span",
-          "garden-plot-name",
-          ready ? `${crop.name} chín` : crop.name,
-        ),
+        element("span", `garden-sprite stage-${ready ? "ready" : plot.growth}`, stage),
+        element("span", "garden-plot-name", ready ? `${crop.name} chín` : crop.name),
       );
       const progress = element("span", "garden-plot-progress");
       for (let step = 0; step < crop.grow; step++)
         progress.append(element("span", step < plot.growth ? "is-done" : ""));
       tile.append(progress);
-      if (plot.watered && !ready)
-        tile.append(element("span", "garden-badge is-water", "💧"));
-      if (plot.pest) tile.append(element("span", "garden-badge is-pest", "🐛"));
-      if (plot.fert)
-        tile.append(element("span", "garden-badge is-fert", `🪱${plot.fert}`));
+      if (plot.watered && !ready) tile.append(element("span", "garden-badge is-water", "💧"));
+      if (plot.fert) tile.append(element("span", "garden-badge is-fert", `🪱${plot.fert}`));
       label = `Luống ${index + 1}: ${crop.name}${ready ? ", đã chín" : `, đã lớn ${plot.growth}/${crop.grow} mùa`}${plot.watered && !ready ? ", đã tưới" : ""}${plot.pest ? ", có sâu" : ""}`;
     }
-    if (selected === index) tile.classList.add("is-selected");
+    tile.classList.toggle("is-selected", selected === index);
     tile.setAttribute("aria-label", label);
-    tile.setAttribute("aria-pressed", String(selected === index));
-    const choose = () => {
+    const choose = button("garden-plot-select", "", () => {
       selected = selected === index ? null : index;
       toast = null;
-      render({ keepScroll: true, focusSelector: `[data-plot="${index}"]` });
-    };
-    tile.addEventListener("click", choose);
-    tile.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      choose();
+      render({ keepScroll: true, focusSelector: `[data-plot="${index}"] .garden-plot-select` });
     });
+    choose.setAttribute("aria-label", `${label}. Chọn luống`);
+    choose.setAttribute("aria-pressed", String(selected === index));
+    tile.append(choose);
+
+    if (plot && !plot.withered) {
+      const tools = element("div", "garden-plot-tools");
+      const addTool = (kind, icon, name, disabled, action) => {
+        const control = button(`garden-plot-tool garden-plot-${kind}`, icon, action);
+        control.setAttribute("aria-label", `${name} · Luống ${index + 1}: ${crop.name}`);
+        control.title = disabled ? `${name} — ${isResting(g) ? "Vườn đang nghỉ đông" : "Đã hết công chăm mùa này"}` : name;
+        control.disabled = disabled;
+        tools.append(control);
+      };
+      const focusAfterCare = () => {
+        const target = `[data-plot="${index}"] .garden-plot-tool:not(:disabled)`;
+        return body.querySelector(target) ? target : `[data-plot="${index}"] .garden-plot-select`;
+      };
+      if (isReady(plot)) {
+        addTool("harvest", "🧺", `Thu hoạch ${yieldOf(plot)} phần`, false, () => {
+          const amount = harvest(garden(), index);
+          if (!amount) return;
+          if (selected === index) selected = null;
+          commit(`🧺 Bạn thu được ${amount} phần ${lower(crop.name)}. Nông sản đã vào kho.`, `[data-plot="${index}"] .garden-plot-select`);
+        });
+      } else {
+        if (!plot.watered)
+          addTool("water", "🚿", "Tưới cây · 1 công", !canWaterPlot(g, index) || isResting(g), () => {
+            if (isResting(garden()) || !waterPlot(garden(), index)) return;
+            commit("💧 Bạn tưới đẫm luống này.", `[data-plot="${index}"] .garden-plot-select`);
+            body.querySelector(focusAfterCare())?.focus({ preventScroll: true });
+            flashWatered();
+          });
+        if (plot.pest)
+          addTool("pest", "🐛", "Bắt sâu · 1 công", careLeft(g) === 0 || isResting(g), () => {
+            if (isResting(garden()) || !removePest(garden(), index)) return;
+            commit("🐛 Bạn lật từng chiếc lá, bắt sạch sâu.", `[data-plot="${index}"] .garden-plot-select`);
+            body.querySelector(focusAfterCare())?.focus({ preventScroll: true });
+          });
+      }
+      tile.append(tools);
+    }
     if (isResting(g) && !plot) tile.classList.add("is-sleeping");
     return tile;
   }
@@ -464,6 +454,29 @@ export function initGarden(
     );
     tile.disabled = player().money < price;
     return tile;
+  }
+
+  function plantAndAdvance(index, crop) {
+    const g = garden();
+    if (!plant(g, index, crop.id)) return;
+    selected = null;
+    for (let offset = 1; offset < g.plotsOwned; offset++) {
+      const next = (index + offset) % g.plotsOwned;
+      if (!g.plots[next]) {
+        selected = next;
+        break;
+      }
+    }
+    const nextNote = selected === null ? "" : ` Chọn hạt cho luống ${selected + 1} để trồng tiếp.`;
+    commit(
+      `🌱 Bạn gieo ${lower(crop.name)} xuống luống ${index + 1}. Sau ${crop.grow} mùa chăm sẽ thu hoạch được.${nextNote}`,
+      `[data-plot="${selected ?? index}"] .garden-plot-select`,
+    );
+    if (selected !== null) {
+      const detail = body.querySelector(".garden-detail:not(.garden-next-step)");
+      detail?.querySelector("button:not(:disabled)")?.focus({ preventScroll: true });
+      detail?.scrollIntoView({ block: "nearest" });
+    }
   }
 
   function plotDetail(index) {
@@ -507,13 +520,7 @@ export function initGarden(
       const seeds = element("div", "garden-seed-picks");
       for (const crop of owned) {
         const blocker = getPlantBlocker(g, index, crop.id);
-        const pick = button("garden-seed-pick", "", () => {
-          if (!plant(garden(), index, crop.id)) return;
-          commit(
-            `🌱 Bạn gieo ${lower(crop.name)} xuống luống ${index + 1}. Sau ${crop.grow} mùa chăm sẽ thu hoạch được.`,
-            `[data-plot="${index}"]`,
-          );
-        });
+        const pick = button("garden-seed-pick", "", () => plantAndAdvance(index, crop));
         pick.append(
           element("span", "garden-seed-icon", crop.icon),
           element("span", "", `${crop.name} ×${g.seeds[crop.id]}`),
@@ -581,57 +588,18 @@ export function initGarden(
     if (plot.penalty)
       fact(`Sâu bệnh đã làm mất ${plot.penalty} phần thu hoạch.`, "is-warn");
     card.append(facts);
-    const actions = element("div", "garden-actions");
-    if (ready) {
-      actions.append(
-        button(
-          "garden-action is-primary garden-harvest",
-          `🧺 Thu hoạch ${yieldOf(plot)} phần`,
-          () => {
-            const amount = harvest(garden(), index);
-            if (!amount) return;
-            commit(
-              `🧺 Bạn thu được ${amount} phần ${lower(crop.name)}. Nông sản đã vào kho.`,
-              `[data-plot="${index}"]`,
-            );
-          },
-        ),
-      );
-    } else {
-      const water = button(
-        "garden-action garden-water-one",
-        plot.watered ? "✅ Đã tưới" : "💧 Tưới luống · 1 công",
-        () => {
-          if (!waterPlot(garden(), index)) return;
-          commit("💧 Bạn tưới đẫm luống này.", `[data-plot="${index}"]`);
-          flashWatered();
-        },
-      );
-      water.disabled = !canWaterPlot(g, index);
-      actions.append(water);
-      const pest = button("garden-action", "🐛 Bắt sâu · 1 công", () => {
-        if (!removePest(garden(), index)) return;
-        commit(
-          "🐛 Bạn lật từng chiếc lá, bắt sạch sâu.",
-          `[data-plot="${index}"]`,
-        );
-      });
-      pest.disabled = !plot.pest || careLeft(g) === 0 || isResting(g);
+    if (!ready) {
       const fert = button(
         "garden-action",
         `🪱 Bón phân · 1 công (còn ${g.goods.phan ?? 0} bao)`,
         () => {
           if (!fertilize(garden(), index)) return;
-          commit(
-            "🪱 Bạn vun phân quanh gốc. Lứa này sẽ sai quả hơn.",
-            `[data-plot="${index}"]`,
-          );
+          commit("🪱 Bạn vun phân quanh gốc. Lứa này sẽ sai quả hơn.", `[data-plot="${index}"]`);
         },
       );
       fert.disabled = !canFertilize(g, index);
-      actions.append(pest, fert);
+      card.append(fert);
     }
-    card.append(actions);
     return card;
   }
 
@@ -720,12 +688,7 @@ export function initGarden(
     if (ready >= 0) {
       const crop = cropOf(g.plots[ready].crop);
       title = `🧺 ${crop.name} đã chín!`;
-      note = "Thu hoạch để đưa nông sản vào Kho. Bạn có thể bán hoặc giữ lại nấu ăn.";
-      label = `Thu hoạch luống ${ready + 1}`;
-      action = () => {
-        const amount = harvest(garden(), ready);
-        if (amount) commit(`🧺 Thu được ${amount} phần ${lower(crop.name)}. Vào Bếp để xem món có thể nấu.`);
-      };
+      note = "Chạm giỏ 🧺 ngay trên cây chín để thu hoạch vào Kho. Bạn có thể bán hoặc giữ lại nấu ăn.";
     } else if (isResting(g)) {
       title = "🛌 Đã chăm vườn xong năm nay";
       note = "Bạn không cần chờ thời gian thực. Đóng vườn và tăng tuổi để bắt đầu mùa xuân mới. Nông sản trong kho vẫn được giữ.";
@@ -737,12 +700,7 @@ export function initGarden(
         ? "Cây chưa tưới sẽ héo nếu sang mùa lúc này. Ưu tiên tưới trước khi bắt sâu hoặc bón phân."
         : "Mỗi luống cần 1 công tưới. Sau khi tưới, bấm Sang mùa để cây lớn; không phải chờ ngoài đời.";
       if (careLeft(g) > 0) {
-        label = canWaterAll(g) ? `Tưới ${dryCount(g)} luống · ${dryCount(g)} công` : `Tưới luống ${dry + 1} · 1 công`;
-        action = () => {
-          const current = garden();
-          const count = canWaterAll(current) ? waterAll(current) : Number(waterPlot(current, dry));
-          if (count) { commit(`💧 Đã tưới ${count} luống. Cây sẽ lớn khi bạn sang mùa.`); flashWatered(); }
-        };
+        note += " Chạm vòi 🚿 ngay trên cây chưa tưới.";
       } else {
         const blocker = getDiligentBlocker(player());
         note += blocker
@@ -758,8 +716,7 @@ export function initGarden(
     } else if (pest >= 0 && careLeft(g) > 0) {
       title = "🐛 Bắt sâu để giữ sản lượng";
       note = "Luống này còn sâu. Bắt sâu tốn 1 công; bỏ qua sẽ mất 1 phần thu hoạch khi sang mùa.";
-      label = `Bắt sâu luống ${pest + 1} · 1 công`;
-      action = () => { if (removePest(garden(), pest)) commit("🐛 Đã bắt sâu. Luống được bảo vệ cho mùa này."); };
+      note += " Chạm biểu tượng 🐛 ngay trên cây để bắt.";
     } else if (!firstMeal && recipes.some((recipe) => !getCookBlocker(g, recipe))) {
       title = "🍳 Đủ nguyên liệu cho món đầu tiên";
       note = "Vào Bếp, chọn món có thể nấu. Ăn món đã nấu giúp tăng chỉ số và dùng 1 lượt rảnh.";
@@ -773,10 +730,7 @@ export function initGarden(
         : "Chợ chỉ hiện hạt gieo được mùa này. Mua một gói rồi quay lại chạm vào luống trống.";
       label = seed ? `Gieo ${lower(seed.name)} · 1 gói hạt` : "Đến chợ mua hạt";
       action = seed ? () => {
-        if (plant(garden(), empty, seed.id)) {
-          selected = empty;
-          commit(`🌱 Đã gieo ${lower(seed.name)}. ${g.weather === "rain" ? "Mưa đã tưới sẵn, bạn có thể sang mùa." : "Tiếp theo: tưới luống để cây lớn."}`);
-        }
+        plantAndAdvance(empty, seed);
       } : () => { activeTab = "market"; marketView = "seeds"; render({ tabs: true }); };
     } else if (withered >= 0) {
       title = "🧹 Dọn luống để bắt đầu lại";
@@ -789,8 +743,8 @@ export function initGarden(
       label = "Xem nút sang mùa";
       action = () => { const next = body.querySelector(".garden-advance"); next?.scrollIntoView({ block: "center" }); next?.focus({ preventScroll: true }); };
     }
-    card.append(element("h4", "", title), element("p", "garden-note", note),
-      button("garden-action is-primary garden-next-action", label, action));
+    card.append(element("h4", "", title), element("p", "garden-note", note));
+    if (action) card.append(button("garden-action is-primary garden-next-action", label, action));
     const help = element("details", "garden-quick-help");
     help.append(element("summary", "", "📖 Cách chơi trong 30 giây"),
       element("p", "garden-note", "Gieo → tưới → sang mùa → thu hoạch. Mỗi năm có 4 mùa; bạn chủ động bấm chuyển mùa. Công chăm được làm mới mỗi mùa. Tưới, bắt sâu và bón phân đều tốn 1 công mỗi luống; gieo và thu hoạch không tốn công."),
@@ -813,7 +767,7 @@ export function initGarden(
         element(
           "p",
           "garden-note garden-hint",
-          "Chạm vào một luống để gieo hạt, tưới, bắt sâu, bón phân hoặc thu hoạch. Mỗi việc chăm tốn 1 công cho một luống.",
+          "Chạm luống trống để chọn hạt. Chạm 🚿, 🐛 hoặc 🧺 ngay trên cây để tưới, bắt sâu hoặc thu hoạch. Chọn cây để xem chi tiết và bón phân.",
         ),
       );
     nodes.push(seasonButton());

@@ -85,4 +85,26 @@ const safe = { ...player(), ...noCase.playerUpdates };
 const closure = createWorkInvestigationEvent(safe, 33);
 assert.equal(closure.choices[0].playerUpdates.workInvestigation, null);
 assert.equal(closure.choices[0].playerUpdates.prison, undefined);
+// Each offer counts once regardless of the chosen answer, career changes or reloads.
+for (let choiceIndex = 0; choiceIndex < 4; choiceIndex++) {
+  const limited = player();
+  for (const age of [31, 34]) {
+    const event = createWorkTemptationEvent(limited, age, () => 0);
+    assert.ok(event);
+    const saved = JSON.parse(JSON.stringify(event));
+    assert.equal(saved.choices[choiceIndex].playerUpdates.workTemptationCount, (limited.workTemptationCount ?? 0) + 1);
+    Object.assign(limited, saved.choices[choiceIndex].playerUpdates);
+    // Restore eligibility to prove quitting or a new job does not reset the lifetime cap.
+    Object.assign(limited, { employmentStatus: 'employed', prison: null, workInvestigation: null,
+      crimeActionAge: null, careerPath: { id: 'medicine' } });
+  }
+  assert.equal(limited.workTemptationCount, 2);
+  assert.equal(createWorkTemptationEvent(JSON.parse(JSON.stringify(limited)), 40, () => 0), null);
+}
+const legacy = player();
+delete legacy.workTemptationCount;
+legacy.lastWorkTemptationAge = 25;
+assert.equal(createWorkTemptationEvent(legacy, 31, () => 0).choices[0].playerUpdates.workTemptationCount, 2);
+const pendingCase = { ...player(), workTemptationCount: 2, workInvestigation: successful.choices[0].playerUpdates.workInvestigation };
+assert.ok(createWorkInvestigationEvent(pendingCase, 33), 'The cap does not erase an existing investigation');
 console.log('PASS work temptation: nine career dilemmas; employment and age gates; frequency; all options available in debt; refusal cost; reporting risk; resignation; saved outcomes; delayed recovery; arrest year without wages; prison continuation; repeat-offense penalties');

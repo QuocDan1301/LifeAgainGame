@@ -1,7 +1,12 @@
 [
   {
-    "result": "PASS: tool shopping; age limit; cancel/confirm; saved ownership; reusable tools; inventory/selling; crime UI; arrest; saved sentence; activity restrictions; prison priority at age 25; release",
-    "pageErrors": [],
-    "test": "check-crime.html"
+    "test": "check-career-milestones.html",
+    "result": "PASS: age-16 chain (success, failure, stop); milestone promotion chain; retry; rank-3 gate",
+    "pageErrors": []
+  },
+  {
+    "test": "check-career-salary.html",
+    "result": "PASS: 22 careers, all salary tiers, annual payment, hiring, promotion, reload, spending, diary and wallet UI",
+    "pageErrors": []
   }
 ]

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import { createInitialState } from '../js/core/state.js';
+import { getEventTags } from '../js/events/event-category.js';
 import { createMaritalAffairEvent, getActiveAffair } from '../js/relationships/marital-affair.js';
 import { getBreakupUpdates, canStartRelationship } from '../js/relationships/relationships.js';
 import { createRelativeDeathEvent } from '../js/relationships/family-members.js';
@@ -99,7 +100,7 @@ test('Game handler stages serialized choices, applies happiness and guards repea
     const ctx = vm.createContext({ state, canAffordChoice: () => true, softenSetback: (_, c) => c,
       statNames: { happiness: 'Hạnh phúc' }, createSchoolEntryReward: () => null,
       createEventLogSummary: ({ changes }) => changes.join(' '), getChoiceOutcome: () => null,
-      saveEventProgress() {}, showPendingEvent() {} });
+      getEventTags, saveEventProgress() {}, showPendingEvent() {} });
     vm.runInContext(handler, ctx);
     vm.runInContext(`chooseEventAction(${index})`, ctx);
     assert.equal(JSON.stringify(p), before);
@@ -112,5 +113,42 @@ test('Game handler stages serialized choices, applies happiness and guards repea
     vm.runInContext('chooseEventAction(0)', ctx);
     assert.equal(JSON.stringify(state.pendingEvent), snapshot);
   }
+});
+test('Only two invitations per life, including refusals, remarriage and reloads', () => {
+  const p = makePlayer();
+  for (const age of [30, 31]) {
+    const event = createMaritalAffairEvent(p, age, () => 0);
+    assert.ok(event);
+    assert.equal(event.choices[0].playerUpdates.affairOpportunityCount, age - 29);
+    assert.equal(event.choices[1].playerUpdates.affairOpportunityCount, age - 29);
+    apply(p, JSON.parse(JSON.stringify(event)), 0);
+  }
+  const restored = JSON.parse(JSON.stringify(p));
+  restored.partner = { ...spouse, id: 'new-spouse' };
+  restored.marriedAtAge = 32;
+  assert.equal(createMaritalAffairEvent(restored, 34, () => 0), null);
+});
+test('Second invitation still allows discovery and consequences of an active affair', () => {
+  const p = makePlayer();
+  apply(p, createMaritalAffairEvent(p, 30, () => 0), 0);
+  apply(p, createMaritalAffairEvent(p, 31, () => 0), 1);
+  assert.equal(p.affairOpportunityCount, 2);
+  const continuation = createMaritalAffairEvent(p, 32, () => 0.9);
+  assert.equal(continuation.title, 'Bí mật vẫn còn đó');
+  apply(p, continuation, 1);
+  assert.equal(p.affairOpportunityCount, 2);
+  const discovery = createMaritalAffairEvent(p, 33, () => 0);
+  assert.equal(discovery.title, 'Tin nhắn không thể giấu');
+  apply(p, discovery, 0);
+  assert.equal(p.affair, null);
+  assert.equal(createMaritalAffairEvent(p, 34, () => 0), null);
+});
+test('Older saves retain known invitation history', () => {
+  const p = makePlayer();
+  delete p.affairOpportunityCount;
+  p.affairLastEventAge = 29;
+  assert.equal(createMaritalAffairEvent(p, 30, () => 0).choices[0].playerUpdates.affairOpportunityCount, 2);
+  p.relationshipHistory = [{ type: 'affair' }, { type: 'affair' }];
+  assert.equal(createMaritalAffairEvent(p, 30, () => 0), null);
 });
 console.log(`${count} marital affair checks passed.`);

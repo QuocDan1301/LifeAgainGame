@@ -77,7 +77,7 @@ import {
   getHealthBand,
   getOldAgeDeathChance,
 } from "./stats/health-rules.js";
-import { eventCategories, getEventCategory } from "./events/event-category.js";
+import { getEventCategory, getEventTags, renderEventTags } from "./events/event-category.js";
 import { getSpecialDialogue } from "./events/special-dialogue.js";
 import { state } from "./core/state.js";
 import {
@@ -1197,9 +1197,6 @@ function showPendingEvent() {
   }
   clearResultAnimations();
   pending.category = getEventCategory(pending);
-  const categoryNote = document.getElementById("event-category");
-  categoryNote.textContent = eventCategories[pending.category].label;
-  categoryNote.dataset.category = pending.category;
   delete pending.mediaPresentationId;
   // Replace an unresolved age-25 story from an older save with the dating milestone.
   if (
@@ -1332,6 +1329,8 @@ function showPendingEvent() {
         choice[key] = fillStoryText(choice[key], textPlayer);
     }
   }
+  pending.category = getEventCategory(pending);
+  renderEventTags(document.getElementById("event-category"), pending);
   reviewPendingMedia(pending);
   // Remove the old introductory line from events already saved mid-choice.
   if (
@@ -2099,6 +2098,8 @@ function chooseEventAction(index) {
     specialId: pending.specialId,
     specialStep: pending.specialStep,
     category: pending.category,
+    eventTagKind: pending.eventTagKind ?? pending.kind,
+    danger: getEventTags(pending).some(tag => tag.id === "danger"),
     outcome: getChoiceOutcome(pending, choice),
     nonFatal: choice.nonFatal === true,
     schoolReward: createSchoolEntryReward(state.player, pending.age, updates),

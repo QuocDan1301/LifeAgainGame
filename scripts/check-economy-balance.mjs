@@ -30,7 +30,8 @@ const actualYear = (p, age, updates = {}) => {
 };
 test('Investment yields and quantity limits constrain compounding', () => {
   for (const item of shopCatalog.filter(item => item.profit)) {
-    assert.ok(item.profit / item.price <= 0.100001, item.id);
+    const maxYield = item.group === "poultry" ? 0.3 : item.group === "cattle" ? 0.2 : 0.1;
+    assert.ok(item.profit / item.price <= maxYield + 0.000001, item.id);
     assert.ok(item.limit > 0, item.id);
   }
   assert.equal(shopCatalog.find(item => item.id === 'noodle-cart').profit, undefined);
@@ -44,11 +45,11 @@ test('Forecast includes rentals, businesses, livestock, pet upkeep and the loan 
     years: 15, startedAtAge: 50, lastPaidAge: 50, paymentsMade: 0 }];
   const before = JSON.stringify(p); const forecast = forecastNextYear(p);
   assert.equal(JSON.stringify(p), before);
-  assert.equal(forecast.assets, 421_800_000);
-  assert.equal(forecast.upkeep, 3_500_000);
+  assert.equal(forecast.assets, 423_600_000);
+  assert.equal(forecast.upkeep, 2_450_000);
   assert.equal(forecast.living, 0, 'No percentage-based living charge');
   assert.equal(forecast.rent, 24_000_000, 'The only house is leased out');
-  assert.equal(forecast.economy.assetTax, 20_490_000);
+  assert.equal(forecast.economy.assetTax, 20_580_000);
   assert.equal(forecast.economy.propertyTax, 5_000_000);
   assert.ok(forecast.tax > 0 && forecast.insurance > 0);
   actualYear(p, 51);

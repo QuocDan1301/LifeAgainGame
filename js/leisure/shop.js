@@ -17,33 +17,33 @@ export const shopCatalog = [
    
    
   { id: "hamster", shop: "pets", group: "companion", icon: "🐹", name: "Chuột hamster", price: 300_000, happiness: 1, limit: 1,
-    food: 600_000, description: "Nhỏ xíu, má phồng, chạy vòng quay lách cách suốt đêm." },
+    food: 420_000, description: "Nhỏ xíu, má phồng, chạy vòng quay lách cách suốt đêm." },
   { id: "cat", shop: "pets", group: "companion", icon: "🐱", name: "Mèo", price: 2_500_000, happiness: 2, limit: 1,
-    food: 3_000_000, vaccine: 500_000, description: "Hay cuộn tròn bên cửa sổ, kêu rừ rừ mỗi khi được gãi cằm." },
+    food: 2_100_000, vaccine: 350_000, description: "Hay cuộn tròn bên cửa sổ, kêu rừ rừ mỗi khi được gãi cằm." },
   { id: "dog", shop: "pets", group: "companion", icon: "🐶", name: "Chó", price: 6_000_000, happiness: 3, limit: 1,
-    food: 5_000_000, vaccine: 600_000, description: "Trung thành, lần nào bạn về nhà cũng vẫy đuôi chạy ra đón." },
+    food: 3_500_000, vaccine: 420_000, description: "Trung thành, lần nào bạn về nhà cũng vẫy đuôi chạy ra đón." },
   { id: "capybara", shop: "pets", group: "companion", icon: "🦫", name: "Capybara", price: 30_000_000, happiness: 4, limit: 1,
-    food: 8_000_000, description: "Chuột lang nước điềm tĩnh nhất thế giới, ngồi cạnh thôi cũng thấy bình yên." },
+    food: 5_600_000, description: "Chuột lang nước điềm tĩnh nhất thế giới, ngồi cạnh thôi cũng thấy bình yên." },
    
-  { id: "pigeon", shop: "pets", group: "poultry", icon: "🕊️", name: "Bồ câu", price: 100_000, profit: 10_000, limit: 5,
+  { id: "pigeon", shop: "pets", group: "poultry", icon: "🕊️", name: "Bồ câu", price: 100_000, profit: 30_000, limit: 5,
     description: "Nhỏ gọn, sinh sản nhanh, chỉ cần một chiếc chuồng nhỏ trên mái nhà." },
-  { id: "duck", shop: "pets", group: "poultry", icon: "🦆", name: "Vịt", price: 120_000, profit: 12_000, limit: 5,
+  { id: "duck", shop: "pets", group: "poultry", icon: "🦆", name: "Vịt", price: 120_000, profit: 36_000, limit: 5,
     description: "Thích bơi lội, đẻ trứng đều. Nuôi gần ao thì càng khỏe." },
-  { id: "chicken", shop: "pets", group: "poultry", icon: "🐔", name: "Gà ta", price: 150_000, profit: 15_000, limit: 5,
+  { id: "chicken", shop: "pets", group: "poultry", icon: "🐔", name: "Gà ta", price: 150_000, profit: 45_000, limit: 5,
     description: "Dễ nuôi, ăn tạp, mỗi sáng đều có trứng tươi." },
-  { id: "turkey", shop: "pets", group: "poultry", icon: "🦃", name: "Gà tây", price: 600_000, profit: 60_000, limit: 5,
+  { id: "turkey", shop: "pets", group: "poultry", icon: "🦃", name: "Gà tây", price: 600_000, profit: 180_000, limit: 5,
     description: "To con, được giá vào dịp lễ cuối năm." },
-  { id: "goat", shop: "pets", group: "cattle", icon: "🐐", name: "Dê", price: 3_500_000, profit: 350_000, limit: 5,
+  { id: "goat", shop: "pets", group: "cattle", icon: "🐐", name: "Dê", price: 3_500_000, profit: 700_000, limit: 5,
     description: "Leo trèo giỏi, ăn cỏ đồi, cho sữa đều." },
-  { id: "pig", shop: "pets", group: "cattle", icon: "🐖", name: "Lợn", price: 4_000_000, profit: 400_000, limit: 5,
+  { id: "pig", shop: "pets", group: "cattle", icon: "🐖", name: "Lợn", price: 4_000_000, profit: 800_000, limit: 5,
     description: "Lớn nhanh, mỗi lứa đều mang lại khoản thu ổn định." },
-  { id: "sheep", shop: "pets", group: "cattle", icon: "🐑", name: "Cừu", price: 5_000_000, profit: 500_000, limit: 5,
+  { id: "sheep", shop: "pets", group: "cattle", icon: "🐑", name: "Cừu", price: 5_000_000, profit: 1_000_000, limit: 5,
     description: "Hiền lành, mỗi năm cho một mùa lông." },
-  { id: "cow", shop: "pets", group: "cattle", icon: "🐄", name: "Bò", price: 18_000_000, profit: 1_800_000, limit: 5,
+  { id: "cow", shop: "pets", group: "cattle", icon: "🐄", name: "Bò", price: 18_000_000, profit: 3_600_000, limit: 5,
     description: "Cho sữa và sức kéo, là tài sản lớn của nhà nông." },
-  { id: "buffalo", shop: "pets", group: "cattle", icon: "🐃", name: "Trâu", price: 25_000_000, profit: 2_500_000, limit: 5,
+  { id: "buffalo", shop: "pets", group: "cattle", icon: "🐃", name: "Trâu", price: 25_000_000, profit: 5_000_000, limit: 5,
     description: "Khỏe mạnh, bền bỉ, người bạn của đồng ruộng." },
-  { id: "horse", shop: "pets", group: "cattle", icon: "🐎", name: "Ngựa", price: 40_000_000, profit: 4_000_000, limit: 5,
+  { id: "horse", shop: "pets", group: "cattle", icon: "🐎", name: "Ngựa", price: 40_000_000, profit: 8_000_000, limit: 5,
     description: "Nhanh nhẹn, được thuê kéo xe và phục vụ du lịch." },
    
    
@@ -112,7 +112,15 @@ export const ownedSections = [
 ];
 
 export const getShopItem = (id) => shopCatalog.find((item) => item.id === (id === "story-small-home" ? "story-home" : id));
-export const getSellPrice = (item) => Math.floor(item.price / 2);
+// Animals retain 90% initially, lose 5 percentage points per year, and floor at 50%.
+// Other assets keep their existing resale rule.
+export const getSellPrice = (item, owned = null, age = owned?.boughtAtAge) => {
+  if (item.shop !== "pets") return Math.floor(item.price / 2);
+  const years = Number.isFinite(age) && Number.isFinite(owned?.boughtAtAge)
+    ? Math.max(0, Math.floor(age - owned.boughtAtAge)) : 0;
+  const percent = Math.max(50, 90 - years * 5);
+  return Math.floor(item.price * percent / 100);
+};
 
  
 export const LEASE_YEARS = 4;
@@ -284,11 +292,16 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
       : isCompanion(item) ? `💖 Vuốt ve mỗi năm: Hạnh phúc +${item.happiness}`
       : `🔁 Bán lại: ${formatMoney(getSellPrice(item))}`);
     if (item.profit) figures.push("Lợi nhuận sau chi phí vận hành, trước thuế tài sản; thu từ năm sau.");
+    if (item.shop === "pets") {
+      figures.push(`🔁 Bán lại ngay: ${formatMoney(getSellPrice(item))} (90% giá mua); giảm 5 điểm % mỗi năm nuôi, thấp nhất 50%.`);
+      if (item.profit) figures.push(`⏳ Thu hồi vốn bằng tiền lãi: khoảng ${Math.ceil(item.price / item.profit)} năm, chưa tính thuế và tiền bán lại.`);
+    }
     if (item.residential) figures.push("🏠 Nếu dùng để ở: không phải trả tiền thuê nhà. Nhà đang cho thuê không được tính là chỗ ở.");
     if (item.group === "realestate") figures.push("🧾 Thuế bất động sản 0,1%/năm; có nhà để ở được giảm trừ 1 tỷ giá trị tính thuế.");
     if (isRental(item) && item.profit) figures.push(`🔑 Vào Tài sản để cho thuê, mỗi lần ${LEASE_YEARS} năm`);
     if (isCompanion(item)) {
-      figures.push(`🍖 Thức ăn: -${formatMoney(item.food)}/năm`,
+      figures.push(`🍖 Tổng phí nuôi: -${formatMoney(getPetUpkeep(item))}/năm, bắt đầu từ năm sau`,
+        `🍖 Thức ăn: -${formatMoney(item.food)}/năm`,
         item.vaccine ? `💉 Tiêm ngừa: -${formatMoney(item.vaccine)}/năm` : "💉 Không cần tiêm ngừa");
     }
     if (item.license) figures.push(`🪪 Cần ${getLicenseType(item.license).name.toLocaleLowerCase("vi-VN")}`);
@@ -313,7 +326,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
           : item.profit ? `Lãi mỗi năm: +${formatMoney(item.profit)}, bắt đầu từ năm sau.\n`
           : isCompanion(item) ? `Mỗi năm vuốt ve một lần: Hạnh phúc +${item.happiness}.\n` +
             `Chi phí ${describeUpkeep(item)}: -${formatMoney(getPetUpkeep(item))}/năm, bắt đầu từ năm sau.\n` : "") +
-        (financing ? `Được miễn tiền thuê nhà ngay khi mua. Chỉ có thể bán sau khi trả hết nợ; giá bán lại ${formatMoney(getSellPrice(item))}.` : `Nếu bán lại chỉ nhận ${formatMoney(getSellPrice(item))}.`),
+        (financing ? `Được miễn tiền thuê nhà ngay khi mua. Chỉ có thể bán sau khi trả hết nợ; giá bán lại ${formatMoney(getSellPrice(item))}.` : `Nếu bán lại ngay nhận ${formatMoney(getSellPrice(item))}.${item.shop === "pets" ? " Giá bán giảm 5 điểm % mỗi năm nuôi, từ 90% xuống tối thiểu 50% giá mua." : ""}`),
       "Xác nhận mua",
       () => purchase(item, 1),
     ));
@@ -329,7 +342,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
         `⏫ Mua ${count} ${item.name}?`,
         `Bạn muốn mua ${count} ${item.icon} ${item.name} với tổng giá ${formatMoney(item.price * count)}?\n` +
           `Lãi mỗi năm: +${formatMoney(item.profit * count)}, bắt đầu từ năm sau.\n` +
-          `Nếu bán lại mỗi con chỉ nhận ${formatMoney(getSellPrice(item))}.`,
+          `Bán lại ngay: ${formatMoney(getSellPrice(item))}/con (90%); giảm 5 điểm % mỗi năm nuôi, thấp nhất 50% giá mua.`,
         "Xác nhận mua",
         () => purchase(item, count),
       ));
@@ -428,19 +441,21 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
          
         const owned = units.at(-1);
         const many = units.length > 1;
+        const sellPrice = getSellPrice(item, owned, age);
         const row = element("li", "shop-owned");
         row.dataset.count = units.length;
         const income = item.profit && !isRental(item)
           ? ` · Lãi +${formatMoney(item.profit * units.length)}/năm${many ? ` (${units.length} × ${formatMoney(item.profit)})` : ""}`
           : isCompanion(item) ? ` · Chăm sóc -${formatMoney(getPetUpkeep(item) * units.length)}/năm` : "";
-        const sell = element("button", "shop-sell", `${many ? "Bán bớt 1" : "Bán"} · ${formatMoney(getSellPrice(item))}`);
+        const sell = element("button", "shop-sell", `${many ? "Bán bớt 1" : "Bán"} · ${formatMoney(sellPrice)}`);
         sell.type = "button";
         const loan = state.player.homeLoans?.find(entry => units.some(unit => unit.uid === entry.assetUid) && entry.outstanding > 0);
         sell.disabled = state.player.isAlive === false || Boolean(loan);
         if (loan) row.append(element("span", "", `Nợ nhà: ${formatMoney(loan.outstanding)} · ${formatMoney(loan.annualPayment)}/năm · ${loan.years - loan.paymentsMade} kỳ còn lại`));
         sell.addEventListener("click", () => ask(
           `💸 Bán ${item.name}?`,
-          `Bạn muốn bán ${many ? "1 " : ""}${item.icon} ${item.name} với giá ${formatMoney(getSellPrice(item))} (một nửa giá mua)?` +
+          `Bạn muốn bán ${many ? "1 " : ""}${item.icon} ${item.name} với giá ${formatMoney(sellPrice)} (${Math.round(sellPrice / item.price * 100)}% giá mua)?` +
+            (item.shop === "pets" ? `\nCon được bán mua lúc ${owned.boughtAtAge} tuổi; giá bán giảm theo số năm nuôi.` : "") +
             (many ? `\nBạn còn lại ${units.length - 1} ${item.name.toLocaleLowerCase("vi-VN")}.` : "") +
             (item.profit ? "\nSau khi bán sẽ không còn nhận lãi từ tài sản này."
               : isCompanion(item) ? "\nBạn sẽ phải chia tay người bạn nhỏ này." : ""),
@@ -450,8 +465,8 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
             const before = state.player[key] ?? [];
             if (!before.some((entry) => entry.uid === owned.uid)) return;
             state.player[key] = before.filter((entry) => entry.uid !== owned.uid);
-            state.player.money += getSellPrice(item);
-            record(`💸 Bán ${item.icon} ${item.name}: Tiền +${formatMoneyAmount(getSellPrice(item))} VNĐ.`);
+            state.player.money += sellPrice;
+            record(`💸 Bán ${item.icon} ${item.name}: Tiền +${formatMoneyAmount(sellPrice)} VNĐ.`);
             renderOwned();
           },
         ));

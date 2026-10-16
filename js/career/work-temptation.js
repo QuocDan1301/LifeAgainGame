@@ -50,6 +50,8 @@ function conviction(player, age, offense, recovered = 0) {
 }
 
 export function createWorkTemptationEvent(player, age, random = Math.random) {
+  const appearances = player.workTemptationCount ?? (Number.isInteger(player.lastWorkTemptationAge) ? 1 : 0);
+  if (appearances >= 2) return null;
   if (player.isAlive === false || age < 18 || age >= RETIREMENT_AGE || player.employmentStatus !== 'employed' ||
       player.crimeActionAge === age || isInPrison(player) || isServing(player, age) || abroadStudent(player) || player.workInvestigation ||
       age - (player.lastWorkTemptationAge ?? -100) < 3 || random() >= 0.22) return null;
@@ -62,7 +64,7 @@ export function createWorkTemptationEvent(player, age, random = Math.random) {
   const laterRisk = Math.min(0.85, 0.25 + (player.crimeHeat ?? 0) * 0.01 + (player.criminalRecord?.length ?? 0) * 0.05);
   // All branches are saved with the offer, so reloading either screen cannot redraw consequences.
   const caught = random() < risk, investigated = random() < laterRisk, retaliation = random() < 0.35;
-  const lastOffer = { lastWorkTemptationAge: age };
+  const lastOffer = { lastWorkTemptationAge: age, workTemptationCount: appearances + 1 };
   const withheld = roundMoney(salary * 0.05);
   const canAdvance = (Number(player.careerLevel) || 1) < 3;
   const accepted = caught

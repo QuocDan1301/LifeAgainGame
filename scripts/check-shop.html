@@ -24,10 +24,24 @@
       "All 13 shopping items unlock their existing achievement");
     assert(getSellPrice({ price: 150_000 }) === 75_000, "Sell price is half the purchase price");
     const pigeon = shopCatalog.find(item => item.id === "pigeon");
+    assert(getSellPrice(pigeon) === 90_000, "New animals sell for 90%");
+    assert(getSellPrice(pigeon, { boughtAtAge: 20 }, 21) === 85_000, "Resale loses five percentage points each year");
+    assert(getSellPrice(pigeon, { boughtAtAge: 20 }, 28) === 50_000 &&
+      getSellPrice(pigeon, { boughtAtAge: 20 }, 80) === 50_000, "Resale floors at 50%");
+    for (const animal of shopCatalog.filter(item => item.shop === "pets")) {
+      const owned = JSON.parse(JSON.stringify({ id: animal.id, boughtAtAge: 20 }));
+      let previous = animal.price;
+      for (let year = 0; year <= 50; year++) {
+        const value = getSellPrice(animal, owned, 20 + year);
+        assert(value <= previous && value >= animal.price / 2 && value <= animal.price * 0.9,
+          "Every animal depreciates gradually within the resale bounds");
+        previous = value;
+      }
+    }
     const five = { livestock: Array.from({ length: 5 }, (_, i) => ({ uid: `p${i}`, id: "pigeon", boughtAtAge: 20 })) };
     assert(isAtLimit(five, pigeon) && !isAtLimit({ livestock: five.livestock.slice(1) }, pigeon), "At most 5 of each animal");
-    assert(shopCatalog.filter(item => ["cattle", "poultry"].includes(item.group)).every(item => item.limit === 5 && item.profit / item.price <= 0.2),
-      "Animals earn at most 20% a year");
+    assert(shopCatalog.filter(item => ["cattle", "poultry"].includes(item.group)).every(item => item.limit === 5 && item.profit / item.price === (item.group === "poultry" ? 0.3 : 0.2)),
+      "Poultry earns 30% and cattle earns 20% yearly");
     const companions = shopCatalog.filter(isCompanion);
     assert(companions.map(item => item.id).join() === "hamster,cat,dog,capybara", "Hamster, cat, dog and capybara are companions");
     assert(companions.every((item, i) => !item.profit && item.happiness > 0 && item.limit === 1 && (!i || item.price > companions[i - 1].price)),
@@ -36,17 +50,17 @@
       "Every companion eats; only cats and dogs need vaccines");
     const owner = { money: 0, livestock: [{ uid: "h", id: "hamster", boughtAtAge: 30 }, { uid: "d", id: "dog", boughtAtAge: 31 },
       { uid: "g", id: "goat", boughtAtAge: 30 }] };
-    assert(collectAssetIncome(owner, 31).amount === 350_000 - 600_000 && owner.money === -250_000,
+    assert(collectAssetIncome(owner, 31).amount === 700_000 - 420_000 && owner.money === 280_000,
       "Pet food is paid from the year after buying, netted with animal income");
     const yearTwo = collectAssetIncome(owner, 32);
-    assert(yearTwo.amount === 350_000 - 600_000 - 5_600_000 && yearTwo.content.includes("Chó: thức ăn và tiêm ngừa") &&
-      yearTwo.content.includes("Chuột hamster: thức ăn;") && yearTwo.content.includes("Tiền -6,2 triệu"), "Dogs also pay vaccines");
+    assert(yearTwo.amount === 700_000 - 420_000 - 3_920_000 && yearTwo.content.includes("Chó: thức ăn và tiêm ngừa") &&
+      yearTwo.content.includes("Chuột hamster: thức ăn;") && yearTwo.content.includes("Tiền -4,34 triệu"), "Dogs also pay vaccines");
     assert(shopCatalog.find(item => item.id === "house").limit === 3, "At most three rental houses");
     const sample = { money: 0, livestock: [{ uid: "a", id: "cow", boughtAtAge: 30 }],
       purchases: [{ uid: "b", id: "cafe", boughtAtAge: 30, rentedAtAge: 30 }, { uid: "c", id: "car", boughtAtAge: 30 },
         { uid: "d", id: "house", boughtAtAge: 29 }, { uid: "e", id: "noodle-cart", boughtAtAge: 30 }] };
     const income = collectAssetIncome(sample, 31);
-    assert(income.amount === 1_800_000 + 120_000_000 && sample.money === income.amount,
+    assert(income.amount === 3_600_000 + 120_000_000 && sample.money === income.amount,
       "Animals and cafe earn automatically; noodle carts require active work; real estate only while rented");
     assert(shopCatalog.filter(item => item.group === "business").map(item => item.id).sort().join() === "cafe,noodle-cart",
       "Cafe and noodle cart share the business group");
@@ -175,6 +189,7 @@
     assert(document.querySelector("#life-livestock .shop-pet").disabled, "A pet can only be petted once a year");
     $("close-life-profile").click();
      
+    state.player.age = 25;
     state.player.livestock = [20, 21, 22].map(age => ({ uid: `test-pigeon-${age}`, id: "pigeon", boughtAtAge: age }));
     state.player.purchases = ["a", "b"].map(uid => ({ uid: `test-house-${uid}`, id: "house", boughtAtAge: 30 }));
     $("assets").click();
@@ -184,12 +199,15 @@
     assert($("life-realestate").children.length === 1 && $("life-realestate").textContent.includes("Cho thuê 1 căn"), "Unrented houses share one row");
     document.querySelector("#life-realestate .shop-lease").click();
     assert($("life-realestate").children.length === 2, "A leased house moves to its own row");
+    const beforeAnimalSale = state.player.money;
     document.querySelector("#life-livestock .shop-sell").click();
+    assert($("shop-confirm-dialog").textContent.includes("75%"), "Confirmation uses the sold animal age");
     $("shop-confirm").click();
+    assert(state.player.money === beforeAnimalSale + 75_000, "Selling the newest grouped animal pays its actual age-based price");
     assert(state.player.livestock.length === 2 && !state.player.livestock.some(entry => entry.boughtAtAge === 22) &&
       $("life-livestock").textContent.includes("Bồ câu ×2"), "Selling from a group sells the newest one");
     $("close-life-profile").click();
-    result.textContent = "PASS: pet shop; petting companions; grouped assets; shopping groups; tools group; confirm/cancel; affordability; achievements; yearly income; 4-year leases; sell at half price";
+    result.textContent = "PASS: pet shop; petting companions; grouped assets; shopping groups; tools group; confirm/cancel; affordability; achievements; yearly income; 4-year leases; age-based animal resale; other assets at half price";
   } catch (error) {
     result.textContent = `FAIL: ${error.stack}`;
   } finally {
