@@ -439,6 +439,8 @@ img {
   max-width: 760px;
   margin-top: 24px;
 }
+#panel-desktop > p + p { margin-top: 16px; }
+#panel-desktop > .steps { margin-top: 24px; }
 .steps {
   display: grid;
   gap: 14px;

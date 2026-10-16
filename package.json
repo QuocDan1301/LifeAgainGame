@@ -9,6 +9,11 @@
   },
   "scripts": {
     "start": "node --env-file-if-exists=.env server/game-server.mjs",
+    "desktop:prepare": "node scripts/prepare-desktop.mjs",
+    "desktop:build": "npm run desktop:prepare && node scripts/package-desktop.mjs",
+    "desktop:start": "electron desktop/app",
+    "test:desktop": "node scripts/check-desktop.mjs",
+    "test:desktop:portable": "node scripts/check-desktop-portable.mjs",
     "build": "node --env-file-if-exists=.env scripts/build.mjs",
     "preview": "npm run build && node --env-file-if-exists=.env server/game-server.mjs --dist",
     "test:game-center": "node scripts/check-game-center-progress.mjs",
@@ -21,12 +26,15 @@
     "test:balance": "npm run test:economy && node scripts/check-wealth-reachability.mjs && node scripts/check-activity-reachability.mjs && node scripts/check-achievement-progress.mjs && node scripts/check-achievement-balance.mjs && node scripts/check-special-order.mjs && node scripts/audit-achievement-sources.mjs",
     "test:server": "node scripts/check-server.mjs && node scripts/check-installed-entry.mjs",
     "test:installation:ui": "node scripts/run-installation-ui-check.mjs",
+    "test:windows-download:ui": "node scripts/check-windows-download-ui.mjs",
     "test:offline": "node scripts/check-offline-updates.mjs",
     "test:family": "node scripts/check-family-conversations.mjs",
     "test:dating": "node scripts/check-dating-expenses.mjs",
     "check:deployment": "node --env-file-if-exists=.env scripts/check-deployment.mjs"
   },
   "devDependencies": {
+    "electron": "44.8.0",
+    "electron-builder": "26.15.3",
     "esbuild": "0.28.2"
   }
 }

@@ -24,4 +24,4 @@ Service worker tải cả trang giới thiệu lẫn phần chơi, và định t
 
 Kiểm thử UI bao gồm biểu tượng mở bằng tab thường, mở ngay sau cài, ghi nhớ lần chơi, các chế độ standalone và giữ bản lưu khi ngoại tuyến; không thay cho cài thật trên Android/iPhone.
 
-Triển khai bằng quy trình Render hiện tại khi đã duyệt thay đổi. Không cần bộ cài `.exe`, domain mới hoặc chuyển dữ liệu sang máy chủ. Chưa tự động deploy/push trong tác vụ này.
+Website triển khai bằng quy trình Render hiện tại. Bản Windows `.exe` được tạo riêng bằng `npm run desktop:build`; xem [hướng dẫn Windows](../desktop/README.md). File phát hành nằm trong `output/windows-release/`, không đưa vào Git và cần tải lên kênh phân phối trước khi gắn link tải trên website.

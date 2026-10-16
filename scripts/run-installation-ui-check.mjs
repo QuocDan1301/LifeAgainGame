@@ -22,7 +22,7 @@ try {
     assert.equal(await page.locator('#'+expected).getAttribute('aria-selected'),'true');
     await page.locator('.hero-actions a[href="#cai-dat"]').click();
     await page.screenshot({path:`${out}/intro-${width}.png`,fullPage:true});
-    if (width !== 360) {
+    if (width === 390) {
       await page.evaluate(() => {
         const event = new Event('beforeinstallprompt', { cancelable: true });
         event.prompt = async () => { window.installPromptCalls = (window.installPromptCalls ?? 0) + 1; };
@@ -34,6 +34,15 @@ try {
     }
     await page.locator('#tab-ios').click();assert.equal(await page.locator('#panel-ios').isVisible(),true);
     await page.locator('#tab-ios').press('ArrowRight');assert.equal(await page.locator('#panel-desktop').isVisible(),true);
+    assert.equal(await page.locator('#windows-download').getAttribute('href'),
+      'https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe');
+    await page.locator('#windows-download').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: out + '/windows-download-' + width + '.png' });
+    if (width === 1280) {
+      assert.equal(await page.locator('.hero-actions [data-install-cta]').innerText(), 'Tải game Windows');
+      await page.evaluate(() => window.dispatchEvent(new Event('beforeinstallprompt', { cancelable: true })));
+      assert.equal(await page.locator('#install-quick').isVisible(), false);
+    }
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert.equal(overflow,false);
     await page.goto(base+'/gioi-thieu?nhan=ABC234#cai-dat');
     assert.equal(new URL(await page.locator('.hero-actions [data-open-game]').getAttribute('href')).search, '?nhan=ABC234');

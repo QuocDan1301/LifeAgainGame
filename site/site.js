@@ -27,6 +27,8 @@ document.querySelector(".device-picker").addEventListener("keydown", event => {
 const ua = navigator.userAgent;
 const isIos = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
 const isAndroid = /Android/.test(ua);
+const isWindows = /Windows NT/.test(ua);
+if (isWindows) for (const link of document.querySelectorAll("[data-install-cta]")) link.textContent = "Tải game Windows";
 selectTab(get(isIos ? "tab-ios" : isAndroid ? "tab-android" : "tab-desktop"));
 
 const standalone = isInstalledApp();
@@ -41,7 +43,7 @@ let installEvent = null;
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   installEvent = event;
-  get("install-quick").hidden = standalone;
+  get("install-quick").hidden = standalone || isWindows;
 });
 get("install-button").addEventListener("click", async () => {
   if (!installEvent) return;

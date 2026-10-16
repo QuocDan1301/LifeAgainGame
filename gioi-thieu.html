@@ -43,7 +43,7 @@
       <nav aria-label="Các phần của trang">
         <a href="#cai-dat">Cài vào máy</a>
         <a href="#chuyen-may">Chuyển máy</a>
-        <a class="nav-play" href="#cai-dat">Cài Life Again</a>
+        <a class="nav-play" href="#cai-dat" data-install-cta>Cài Life Again</a>
       </nav>
     </header>
 
@@ -57,7 +57,7 @@
             <b class="age-chip">+ Tuổi</b> là một năm trôi qua, và lựa chọn của bạn viết tiếp nhật ký.
           </p>
           <div class="hero-actions">
-            <a class="button button-play" href="#cai-dat">Cài Life Again</a>
+            <a class="button button-play" href="#cai-dat" data-install-cta>Cài Life Again</a>
             <a class="button button-quiet" href="./choi" data-open-game>Mở game</a>
           </div>
           <p class="hero-note">Miễn phí, không cần tài khoản. Dữ liệu lưu ngay trên máy của bạn.</p>
@@ -134,8 +134,8 @@
       <section class="band band-install" id="cai-dat" aria-labelledby="install-title">
         <h2 id="install-title">Cài Life Again vào máy</h2>
         <p class="section-lead">
-          Cài trực tiếp từ website trên máy tính, Android và iPhone, không cần tải bộ cài riêng.
-          Sau khi cài, mở Life Again từ biểu tượng trên máy để chơi. Lần đầu cần có mạng để tải game.
+          Trên Windows, tải file .exe và mở để vào game. Trên Android và iPhone, cài ứng dụng từ trình duyệt.
+          Chọn thiết bị của bạn để xem cách tải và chơi.
         </p>
 
         <p id="transfer-pending" role="status" hidden>Bạn có mã chuyển dữ liệu đang chờ. Cài và mở game trước khi nhận; nếu mã hết hạn, hãy tạo mã mới trên máy cũ.</p>
@@ -189,12 +189,17 @@
         </div>
 
         <div class="device-panel" id="panel-desktop" role="tabpanel" aria-labelledby="tab-desktop" hidden>
+          <p><b>Life Again cho Windows 64-bit</b> · Phiên bản 1.0.0 · Khoảng 165 MB</p>
+          <p>
+            <a class="button button-play" id="windows-download" href="https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe">Tải game Windows (.exe)</a>
+          </p>
           <ol class="steps">
-            <li><b>Mở trang này bằng Chrome hoặc Edge</b> trên máy tính.</li>
-            <li><b>Bấm “Cài Life Again ngay”</b> nếu có nút ở trên; hoặc dùng biểu tượng cài ứng dụng ở thanh địa chỉ hay mục cài ứng dụng trong menu trình duyệt.</li>
-            <li><b>Xác nhận “Cài đặt”.</b> Mở Life Again từ biểu tượng ứng dụng hoặc menu Start.</li>
+            <li><b>Tải file .exe</b> bằng nút ở trên và lưu vào một thư mục trên máy.</li>
+            <li><b>Bấm đúp vào file để chơi.</b> Game mở ngay, không cần cài đặt thêm.</li>
+            <li><b>Chơi cả khi không có mạng.</b> Tiến trình được lưu trên máy và giữ lại khi bạn mở game lần sau.</li>
           </ol>
-          <p class="device-note">Trên Mac với Safari hỗ trợ ứng dụng web: chọn Tệp → Thêm vào Dock. Nếu trình duyệt hiện tại không có mục cài, hãy mở trang bằng Chrome hoặc Edge.</p>
+          <p class="device-note">Đã chơi trên web? Dùng mục Chuyển thiết bị để xuất bản lưu rồi nhập vào bản Windows. Bản Windows hiện chưa được ký số.</p>
+          <p class="device-note">Trên Mac, dùng Chrome/Edge để cài ứng dụng web, hoặc chọn Tệp → Thêm vào Dock trong Safari hỗ trợ.</p>
         </div>
       </section>
 
@@ -203,7 +208,7 @@
           <div>
             <h2 id="offline-title">Chơi khi không có mạng</h2>
             <p>
-              Lần đầu mở game khi có mạng, Life Again tự lưu sẵn mọi thứ cần để chơi. Từ lần sau,
+              Bản Windows đã kèm sẵn dữ liệu game. Với ứng dụng cài từ trình duyệt, lần đầu cần có mạng để tải game. Từ lần sau,
               trên xe buýt, máy bay hay lúc mất Wi-Fi, bạn vẫn mở game và chơi tiếp bình thường.
             </p>
           </div>
@@ -283,7 +288,7 @@
     </main>
 
     <footer class="site-footer">
-      <a class="button button-play" href="#cai-dat">Cài Life Again vào máy</a>
+      <a class="button button-play" href="#cai-dat" data-install-cta>Cài Life Again vào máy</a>
       <p>© 2026 QuocDan. Mọi quyền được bảo lưu. Không sao chép, đăng lại game hay nội dung khi chưa được cho phép.</p>
     </footer>
     <script type="module" src="./site/site.js"></script>

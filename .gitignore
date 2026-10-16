@@ -6,3 +6,9 @@
 node_modules/
 dist/
 output/windows-release/
+output/desktop-check/
+output/windows-download-inspect/
+output/installation/windows-download-*.png
+desktop/app/
+.tmp/desktop-fonts/
+.tmp/life-again-desktop-test-*/

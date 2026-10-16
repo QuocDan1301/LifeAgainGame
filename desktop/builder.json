@@ -1,0 +1,16 @@
+{
+  "appId": "com.quocdan.lifeagain",
+  "productName": "Life Again",
+  "copyright": "Copyright © 2026 QuocDan",
+  "directories": { "app": "desktop/app", "output": "output/windows-release" },
+  "files": ["main.mjs", "runtime.mjs", "package.json", "icon.png", "game/**/*"],
+  "asar": true,
+  "npmRebuild": false,
+  "win": {
+    "target": [{ "target": "portable", "arch": ["x64"] }],
+    "icon": "img/Icon/android-icon-512x512.png",
+    "artifactName": "LifeAgain-Windows-x64.exe",
+    "signExecutable": false
+  },
+  "portable": { "requestExecutionLevel": "user", "useZip": true }
+}
