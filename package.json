@@ -1,6 +1,6 @@
 {
   "name": "life-again-game",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
@@ -13,6 +13,7 @@
     "desktop:build": "npm run desktop:prepare && node scripts/package-desktop.mjs",
     "desktop:start": "electron desktop/app",
     "test:desktop": "node scripts/check-desktop.mjs",
+    "test:desktop:updater": "node scripts/check-desktop-updater.mjs",
     "test:desktop:portable": "node scripts/check-desktop-portable.mjs",
     "build": "node --env-file-if-exists=.env scripts/build.mjs",
     "preview": "npm run build && node --env-file-if-exists=.env server/game-server.mjs --dist",

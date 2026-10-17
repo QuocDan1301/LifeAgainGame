@@ -14,7 +14,7 @@ if (path.relative(root, destination) !== path.join('desktop', 'app')) throw new 
 fs.rmSync(destination, { recursive: true, force: true });
 fs.mkdirSync(destination, { recursive: true });
 fs.cpSync(path.join(root, 'dist'), path.join(destination, 'game'), { recursive: true });
-for (const file of ['main.mjs', 'runtime.mjs']) fs.copyFileSync(path.join(root, 'desktop', file), path.join(destination, file));
+for (const file of ['main.mjs', 'runtime.mjs', 'updater.mjs']) fs.copyFileSync(path.join(root, 'desktop', file), path.join(destination, file));
 fs.copyFileSync(path.join(root, 'img/Icon/android-icon-512x512.png'), path.join(destination, 'icon.png'));
 fs.writeFileSync(path.join(destination, 'package.json'), JSON.stringify({
   name: 'life-again-desktop', productName: 'Life Again', version: metadata.version,

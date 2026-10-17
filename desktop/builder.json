@@ -3,7 +3,7 @@
   "productName": "Life Again",
   "copyright": "Copyright © 2026 QuocDan",
   "directories": { "app": "desktop/app", "output": "output/windows-release" },
-  "files": ["main.mjs", "runtime.mjs", "package.json", "icon.png", "game/**/*"],
+  "files": ["main.mjs", "runtime.mjs", "updater.mjs", "package.json", "icon.png", "game/**/*"],
   "asar": true,
   "npmRebuild": false,
   "win": {

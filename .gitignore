@@ -12,3 +12,4 @@ output/installation/windows-download-*.png
 desktop/app/
 .tmp/desktop-fonts/
 .tmp/life-again-desktop-test-*/
+.tmp/lifeagain-update-test-*/

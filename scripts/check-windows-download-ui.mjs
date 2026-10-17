@@ -22,7 +22,7 @@ try {
     await page.evaluate(() => document.fonts.ready);
     const button = page.locator('#windows-download');
     assert.equal(await button.isVisible(), true);
-    assert.equal(await button.getAttribute('href'), 'https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe');
+    assert.equal(await button.getAttribute('href'), 'https://github.com/QuocDan1301/LifeAgainGame/releases/latest/download/LifeAgain-Windows-x64.exe');
     const bounds = await button.boundingBox();
     const steps = await page.locator('#panel-desktop .steps').boundingBox();
     assert.ok(steps.y - (bounds.y + bounds.height) >= 20, 'download button and instructions need breathing room');

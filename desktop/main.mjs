@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { GAME_ORIGIN, GAME_URL, HOME_URL, TRANSFER_PATHS, localFile, externalUrl } from './runtime.mjs';
+import { createDesktopUpdater } from './updater.mjs';
 
 app.setName('Life Again');
 // A stable profile and origin preserve saves when the portable EXE moves or updates.
@@ -67,15 +68,18 @@ else {
     });
     window.webContents.on('will-attach-webview', event => event.preventDefault());
     window.once('ready-to-show', () => window.show());
+    const updater = createDesktopUpdater({ app, dialog, net, getWindow: () => window });
     Menu.setApplicationMenu(Menu.buildFromTemplate([
       { label: 'Life Again', submenu: [
-        { label: 'Tải phiên bản mới', click: () => openExternal(HOME_URL + 'gioi-thieu#cai-dat') },
+        { label: 'Kiểm tra cập nhật', click: () => void updater.check(true) },
+        { label: 'Trang tải Windows', click: () => openExternal(HOME_URL + 'gioi-thieu#cai-dat') },
         { type: 'separator' }, { role: 'quit', label: 'Thoát' }
       ] },
       { label: 'Hiển thị', submenu: [{ role: 'togglefullscreen', label: 'Toàn màn hình' },
         { role: 'resetZoom', label: 'Kích thước mặc định' }, { role: 'zoomIn', label: 'Phóng to' }, { role: 'zoomOut', label: 'Thu nhỏ' }] }
     ]));
     await window.loadURL(GAME_URL);
+    void updater.start().catch(error => console.warn('Life Again update: ' + error.message));
   }).catch(error => {
     dialog.showErrorBox('Chưa mở được Life Again', 'Hãy tải lại bản Windows đầy đủ.\n' + error.message);
     app.quit();

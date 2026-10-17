@@ -84,7 +84,7 @@ try {
     assert.equal(await page.locator("#panel-desktop").isVisible(), true);
     assert.equal(
       await page.locator("#windows-download").getAttribute("href"),
-      "https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe",
+      "https://github.com/QuocDan1301/LifeAgainGame/releases/latest/download/LifeAgain-Windows-x64.exe",
     );
     await page.locator("#windows-download").scrollIntoViewIfNeeded();
     await page.screenshot({

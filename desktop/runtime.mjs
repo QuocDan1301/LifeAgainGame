@@ -1,7 +1,7 @@
 import path from "node:path";
 
 export const GAME_ORIGIN = "lifeagain://game.lifeagain";
-export const GAME_URL = GAME_ORIGIN;
+export const GAME_URL = GAME_ORIGIN + "/choi";
 export const HOME_URL = "https://life-again-game.onrender.com/";
 export const TRANSFER_PATHS = new Set(["/api/transfer", "/api/transfer/claim"]);
 

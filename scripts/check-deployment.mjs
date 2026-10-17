@@ -18,7 +18,7 @@ assert.match(introduction, /data-open-game hidden/, 'ordinary browsers must not 
 const intro = await (await read('/caigame.html')).text();
 assert.match(await (await read('/chuyenmay.html')).text(), /id="transfer-title"/);
 const download = intro.match(/id="windows-download" href="([^"]+)"/)?.[1];
-assert.equal(download, 'https://github.com/QuocDan1301/LifeAgainGame/releases/download/windows-v1.0.0/LifeAgain-Windows-x64.exe');
+assert.equal(download, 'https://github.com/QuocDan1301/LifeAgainGame/releases/latest/download/LifeAgain-Windows-x64.exe');
 const binary = await fetch(download, { method: 'HEAD', signal: AbortSignal.timeout(60000) });
 assert.equal(binary.status, 200, 'Windows download must be publicly available');
 assert.ok(Number(binary.headers.get('content-length')) > 100000000, 'Windows download must be the full EXE');

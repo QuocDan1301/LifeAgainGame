@@ -9,6 +9,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const stage = fs.mkdtempSync(path.join(os.tmpdir(), 'life-again-windows-'));
 const config = JSON.parse(fs.readFileSync(path.join(root, 'desktop/builder.json'), 'utf8'));
 config.directories = { app: path.join(root, 'desktop/app'), output: stage };
+// npm already installed this exact Electron runtime; do not download it again for packaging.
+config.electronDist = path.join(root, 'node_modules/electron/dist');
 const artifacts = await build({ targets: Platform.WINDOWS.createTarget(['portable'], Arch.x64), config, publish: 'never' });
 const destination = path.join(root, 'output/windows-release');
 fs.mkdirSync(destination, { recursive: true });
