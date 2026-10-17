@@ -50,6 +50,12 @@ button:focus-visible,
   outline: 3px solid #7347cf;
   outline-offset: -4px;
 }
+
+@media (hover: none) and (pointer: coarse) {
+  #event-dialog .event-choice:focus-visible {
+    outline: none;
+  }
+}
 button {
   transition:
     filter 0.15s ease,
