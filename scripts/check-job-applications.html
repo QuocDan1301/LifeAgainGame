@@ -38,7 +38,7 @@
       assert(createInterviewResult(linked, true, 22).content.includes(challenge) &&
         createInterviewResult(linked, false, 22).content.toLowerCase().includes(data.mentor.toLowerCase()), `Result comes from the mentor: ${id}`);
       assert(createInterviewRetryPrompt({ ...linked, age: 23 }).text.includes(data.mentor), `Retry call comes from the mentor: ${id}`);
-      assert(interview.choices.filter(c => c.correct).length === 2 && interview.choices.length === 3, `Interview keeps its answers: ${id}`);
+      assert(interview.choices.filter(c => c.correct).length === 1 && interview.choices.length === 3, `Interview keeps its answers: ${id}`);
     }
     assert(!createJobInterview(student({ age: 22 })).text.includes("16 tuổi"), "Applicants without the milestone get the normal interview");
      

@@ -147,13 +147,20 @@ assert.equal(eat(player, 'canh-chua-ca'), null, 'Hết lượt rảnh thì khôn
 
  
 plant(g, 0, 'hanh-la') || (g.plots[0] = { crop: 'hanh-la', growth: 0, watered: false, pest: false, fert: 0, penalty: 0, withered: false });
+g.dishes['banh-xeo'] = 2;
+g.eaten['banh-xeo'] = 20;
+const dishesBeforeNewYear = { ...g.dishes };
+const goodsBeforeNewYear = { ...g.goods };
 player.age = 21;
 gardenOf(player, calm);
 assert.equal(g.season, 0);
 assert.equal(g.year, 21);
-assert.deepEqual(g.dishes, {});
+assert.deepEqual(g.dishes, dishesBeforeNewYear, 'Món chưa ăn vẫn còn khi sang năm');
+assert.deepEqual(g.goods, goodsBeforeNewYear, 'Nguyên liệu vẫn còn khi sang năm');
 assert.equal(g.plots[0].crop, 'hanh-la');
-assert.ok(eat(player, 'banh-xeo') === null, 'Không còn món để ăn');
+assert.ok(eat(player, 'banh-xeo') !== null, 'Sang năm vẫn ăn được món đã nấu từ năm trước');
+assert.equal(g.dishes['banh-xeo'], 1, 'Ăn chỉ trừ một phần đã giữ lại');
+assert.equal(eat(player, 'banh-xeo'), null, 'Mỗi món vẫn chỉ ăn được một lần mỗi năm');
 assert.deepEqual(JSON.parse(JSON.stringify(g)), g, 'Vườn lưu được bằng JSON');
 assert.ok(crops.every((crop) => crop.plant.length && crop.grow >= 1));
 

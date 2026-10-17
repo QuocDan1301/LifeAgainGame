@@ -1,4 +1,5 @@
 import { getCareerAnnualSalary, formatSalary, RETIREMENT_AGE } from "./career-salary.js";
+import { careerInterviewQuestions } from "./career-interview-questions.js";
 import { careerMilestones, hasCareerMilestone, getRankLock } from "./career-milestones.js";
 import { FOOTBALL_MIN_HEALTH, failsFootballFitness } from "../stats/health-rules.js";
 import { INTERVIEW, PROMOTION, getPromotionChance } from "../stats/intellect-rules.js";
@@ -139,6 +140,7 @@ export function getCareerProfile(careerId, careerPath = null) {
   return profiles[careerId] ?? fallbackProfile;
 }
 
+// Dữ liệu cho sự kiện mất việc; câu hỏi phỏng vấn nằm trong career-interview-questions.js.
 const careerInterviewTopics = {
   "study-abroad": { task: "điều phối một dự án có thành viên từ nhiều quốc gia", prep: "đọc yêu cầu, chuẩn bị ngoại ngữ và thống nhất lịch làm việc", standard: "giao tiếp rõ ràng, tiến độ và ngân sách", issue: "hai nhóm hiểu khác nhau về yêu cầu bàn giao", fix: "xác nhận bằng văn bản và thống nhất lại trách nhiệm", joke: "gửi một biểu tượng cảm xúc rồi chờ mọi người tự hiểu" },
   acting: {
@@ -352,102 +354,20 @@ export function getEmploymentContext(careerId, careerPath = null) {
   return getOverseasEmploymentContext(careerPath) ?? employmentContexts[careerId] ?? fallbackEmploymentContext;
 }
 
-function createCareerSpecificQuestions(career, profile) {
-  const topic = careerInterviewTopics[career.id === "study-abroad" ? getStudyAbroadMajor(career).domesticCareer : career.id];
-  if (!topic) return null;
-  const context = getEmploymentContext(career.id, career);
-  return [
-    {
-      text: `Nếu được giao việc ${topic.task}, em sẽ bắt đầu thế nào?`,
-      answers: [
-        `${topic.prep}, rồi mới bắt tay làm để đỡ phải cầu may.`,
-        `Em chốt yêu cầu, ưu tiên ${topic.standard} và báo tiến độ rõ ràng.`,
-        `Em sẽ ${topic.joke}; nhanh gọn, còn kết quả tính sau ạ.`,
-      ],
-    },
-    {
-      text: `Đang làm việc thì ${topic.issue}. Em xử lý sao?`,
-      answers: [
-        `Em sẽ ${topic.fix}, đồng thời báo người phụ trách trước khi vấn đề lớn thêm.`,
-        `Em bình tĩnh kiểm tra nguyên nhân, ưu tiên ${topic.standard} rồi mới quyết định.`,
-        `Em sẽ ${topic.joke}; biết đâu sự tự tin thắng được chuyên môn.`,
-      ],
-    },
-    {
-      text: `Theo em, điều gì quan trọng nhất để làm lâu dài trong ngành ${career.field}?`,
-      answers: [
-        `Em nghĩ phải giữ được ${topic.standard}, vì làm nhanh mà sai thì chỉ nhanh tới đoạn làm lại.`,
-        `Ngoài ${profile.strength}, em còn phải học liên tục và chịu trách nhiệm với kết quả.`,
-        `Quan trọng nhất là nhớ mang sạc điện thoại; còn nghiệp vụ có đồng nghiệp lo.`,
-      ],
-    },
-    {
-      text: `${context.leader} muốn làm thật nhanh và bảo bỏ qua một bước liên quan đến ${topic.standard}. Em nói gì?`,
-      answers: [
-        "Em trình bày rủi ro, đề xuất cách rút gọn an toàn và xin xác nhận phương án rõ ràng.",
-        `Em vẫn giữ bước kiểm tra cốt lõi, đồng thời sắp xếp lại phần việc để kịp tiến độ.`,
-        "Em gật đầu thật nhanh; nếu có chuyện thì giả vờ hôm đó là ngày đầu đi làm.",
-      ],
-    },
-    {
-      text: `Một câu thôi: vì sao ${context.place} nên nhận em vào ngành ${career.field}?`,
-      answers: [
-        `Vì em có ${profile.strength}, chưa biết thì hỏi và làm xong vẫn kiểm tra lại.`,
-        `Em hiểu nghề này cần ${topic.standard}; em sẵn sàng bắt đầu từ việc nhỏ để chứng minh bằng kết quả.`,
-        `Vì mẹ em đã khoe với cả xóm là em sắp vào ${context.place}, mọi người đừng làm mẹ em quê ạ.`,
-      ],
-    },
-  ];
+function createCareerSpecificQuestions(career) {
+  const careerId = career.id === "study-abroad"
+    ? getStudyAbroadMajor(career).domesticCareer
+    : career.id;
+  return careerInterviewQuestions[careerId] ?? null;
 }
 
 function createInterviewQuestion(career, profile, random) {
-  const careerQuestions = createCareerSpecificQuestions(career, profile);
+  const careerQuestions = createCareerSpecificQuestions(career);
   if (careerQuestions) {
     return careerQuestions[Math.floor(random() * careerQuestions.length)];
   }
   const firstRank = profile.ranks[0].replace(/^\S+\s/u, "");
-  const questions = career.id === "esports" ? [
-    {
-      text: "Đội đang ăn Tà Thần, nhưng ba tướng địch mất dạng trên bản đồ. Em sẽ call thế nào?",
-      answers: [
-        "Dừng đánh hoặc kéo mục tiêu ra, kiểm tra tầm nhìn rồi mới quyết định ăn tiếp.",
-        "Call hỗ trợ kiểm tra bụi, giữ Trừng Trị và sẵn sàng quay ra giao tranh.",
-        "Em núp bụi chờ highlight, Tà Thần để đồng đội tự lo.",
-      ],
-    },
-    {
-      text: "Sau hai ván scrim thua liên tiếp, không khí cả đội bắt đầu căng. Em làm gì?",
-      answers: [
-        "Xem lại replay, nhận phần lỗi của mình và thống nhất lại cách call mục tiêu.",
-        "Cho cả đội nghỉ vài phút rồi chốt một lỗi quan trọng để sửa ở ván sau.",
-        "Đổi tên trong game lấy vía, biết đâu ván sau hệ thống thương.",
-      ],
-    },
-    {
-      text: "Đến lượt chọn tướng, đội hình đang thiếu chống chịu nhưng tướng tủ của em là sát thủ. Em chọn gì?",
-      answers: [
-        "Trao đổi với đội và chọn tướng phù hợp bài đánh đã tập.",
-        "Báo rõ bể tướng của mình để huấn luyện viên chọn phương án đội hình an toàn nhất.",
-        "Bấm chọn ngẫu nhiên để đối thủ không thể đọc chiến thuật.",
-      ],
-    },
-    {
-      text: "Còn 30 giây nữa Caesar xuất hiện, đường lính đang đẩy ngược về phía đội mình. Em ưu tiên gì?",
-      answers: [
-        "Đẩy hoặc xử lý đường lính, kiểm soát tầm nhìn rồi tập trung đúng nhịp mục tiêu.",
-        "Call người phù hợp dọn lính, những người còn lại giữ vị trí quanh Caesar và tránh lộ tầm nhìn.",
-        "Đi săn mạng lẻ, Caesar thấy mình xanh chắc tự về đội.",
-      ],
-    },
-    {
-      text: "Huấn luyện viên hỏi điểm yếu lớn nhất của em trước khi xét lên đội 1. Em trả lời sao?",
-      answers: [
-        "Đôi lúc em call hơi vội; em đang sửa bằng cách xem replay và nói thông tin ngắn, rõ hơn.",
-        "Bể tướng của em còn hẹp; em đang luyện thêm hai tướng đúng vai trò đội cần.",
-        "Em không có điểm yếu, chỉ có Wi-Fi đôi lúc thiếu ý chí.",
-      ],
-    },
-  ] : [
+  const questions = [
     {
       text: `Em thấy mình như thế nào khi bắt đầu ở vị trí ${firstRank}?`,
       answers: [
@@ -495,9 +415,9 @@ function createInterviewQuestion(career, profile, random) {
 function shuffledAnswers(question, random) {
   const answers = question.answers.map((label, index) => ({
     label,
-    correct: index < 2,
+    correct: index === 0,
      
-    quality: ["good", "acceptable", "weak"][index],
+    quality: index === 0 ? "good" : index === 1 ? "acceptable" : "weak",
   }));
   for (let index = answers.length - 1; index > 0; index -= 1) {
     const swapIndex = Math.floor(random() * (index + 1));
@@ -569,7 +489,7 @@ export function createInterviewResult(player, passed, age, assessment = null) {
   const notes = [];
   if (overseasBlocker) notes.push(overseasBlocker);
   if (unfit) notes.push(`⚽ Bạn không qua bài kiểm tra thể lực: Sức khỏe ${player.health}%, ngành Bóng đá cần từ ${FOOTBALL_MIN_HEALTH}%.`);
-  if (assessment && !hired && !unfit && assessment.quality !== "weak") {
+  if (assessment && !hired && !unfit && assessment.quality === "good") {
     notes.push(`Câu trả lời của bạn được đánh giá ${INTERVIEW.qualityLabel[assessment.quality].toLowerCase()}, nhưng lần này hội đồng chọn ứng viên khác.`);
   }
   const tail = [

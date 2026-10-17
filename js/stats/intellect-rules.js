@@ -88,11 +88,11 @@ export function getInterviewChance(
     looks,
     abroad,
     recordPenalty,
-    chance: clamp(
+    chance: quality === "good" ? clamp(
       base + intellect + prep + looks + abroad - recordPenalty,
       INTERVIEW.min,
       INTERVIEW.max,
-    ),
+    ) : 0,
   };
 }
 export function describeInterviewChance(info, quality) {

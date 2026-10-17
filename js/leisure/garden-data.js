@@ -140,7 +140,6 @@ export function gardenOf(player, random = Math.random) {
   if (garden.year !== player.age) {
     garden.year = player.age;
     garden.season = 0;
-    garden.dishes = {};
     garden.forecast = null;
     startSeason(garden, random);
   }

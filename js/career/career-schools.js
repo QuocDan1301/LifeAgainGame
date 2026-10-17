@@ -134,9 +134,9 @@ function createSchoolEventData(careerPath, player = {}) {
   if (schools.length) {
     return {
       title: "🏫 Chọn trường theo học",
-      text: `Bạn đã chọn ${careerPath.field}. Hãy chọn trường bạn muốn theo học.\nVí hiện có: ${formatMoney(player.money ?? 0)} VNĐ. Học phí được trừ mỗi năm từ 18–21 tuổi. Nếu ví không đủ, phần thiếu trở thành nợ (ví âm), thu nhập sau này sẽ trả dần; không mất quyền học. Kiểm tra học phí và thu nhập trước khi chọn.${isContentCreator ? "\nNgành Truyền thông đa phương tiện giúp bạn học kỹ năng sản xuất nội dung cho hướng này." : ""}`,
+      text: `Bạn đã chọn ${careerPath.field}. Hãy chọn trường bạn muốn theo học.\nVí hiện có: ${formatMoney(player.money ?? 0)} VNĐ. ${careerPath.id === "teaching" ? "Ngành Sư phạm được miễn học phí trong suốt thời gian học." : "Học phí được trừ mỗi năm từ 18–21 tuổi. Nếu ví không đủ, phần thiếu trở thành nợ (ví âm), thu nhập sau này sẽ trả dần; không mất quyền học. Kiểm tra học phí và thu nhập trước khi chọn."}${isContentCreator ? "\nNgành Truyền thông đa phương tiện giúp bạn học kỹ năng sản xuất nội dung cho hướng này." : ""}`,
       choices: schools.slice(0, 3).map((entry) => ({
-        label: `🏫 ${entry.name} (${entry.city}) · Học phí ${formatMoney(getAnnualTuition({ id: careerPath.id, school: entry }))}/năm (${TUITION_FIRST_AGE}–${TUITION_LAST_AGE} tuổi)`,
+        label: `🏫 ${entry.name} (${entry.city}) · ${careerPath.id === "teaching" ? "Miễn học phí" : `Học phí ${formatMoney(getAnnualTuition({ id: careerPath.id, school: entry }))}/năm (${TUITION_FIRST_AGE}–${TUITION_LAST_AGE} tuổi)`}`,
         title: "🎓 Bắt đầu học tại trường mới",
         text: `Bạn chọn ${careerPath.field}.\nTrường: ${entry.name} (${entry.city}).\nChương trình: ${entry.program}.\nHành trình học tập của bạn bắt đầu!`,
         careerPath: {

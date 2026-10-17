@@ -24,9 +24,9 @@
      
     const chance = (intelligence, quality, extra = {}) => I.getInterviewChance({ age: 22, intelligence, ...extra }, quality, "programming").chance;
     assert(near(chance(30, "good"), 0.52) && near(chance(80, "good"), 0.72), "Good answer, unprepared: 52% at 30, 72% at 80");
-    assert(near(chance(50, "acceptable"), 0.35) && near(chance(50, "weak"), 0.10), "Acceptable 35%, weak 10% at 50");
+    assert(chance(50, "acceptable") === 0 && chance(50, "weak") === 0, "Only the good answer can pass");
     assert(near(chance(50, "good", { interviewPrepAge: 22 }), 0.7), "Preparation adds 10 points");
-    assert(chance(100, "weak", { interviewPrepAge: 22 }) <= 0.4 && chance(0, "weak") >= 0.05, "High intellect cannot rescue an irresponsible answer; 5–95% bounds");
+    assert(chance(100, "weak", { interviewPrepAge: 22 }) === 0 && chance(0, "weak") === 0 && chance(100, "acceptable", { interviewPrepAge: 22 }) === 0, "Intellect and preparation cannot make an incorrect answer pass");
     assert(chance(100, "good", { interviewPrepAge: 22 }) <= 0.95, "Upper bound 95%");
     assert(I.getInterviewChance({ intelligence: 90 }, "good", "acting").chance < I.getInterviewChance({ intelligence: 90 }, "good", "programming").chance,
       "Intellect weighs less in talent careers");

@@ -118,7 +118,7 @@ export const LIVING_SHORTFALL_HAPPINESS = 3;
 export const TUITION_FIRST_AGE = 18;
 export const TUITION_LAST_AGE = 21;
 export const TUITION_PER_YEAR = 20_000_000;
-const tuitionByCareer = { medicine: 40_000_000 };
+const tuitionByCareer = { medicine: 40_000_000, teaching: 0 };
 export function getAnnualTuition(careerPath) {
   if (!careerPath?.school || careerPath.school.type === "academy") return 0;
   if (careerPath.id === "study-abroad") return getStudyAbroadCountry(careerPath)?.tuition ?? 0;
