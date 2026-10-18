@@ -1,4 +1,5 @@
 import { getDatingExpenses } from "./dating-expenses.js";
+import { getChildActions, getChildActionBlock, interactWithChild } from "./child-interactions.js";
 import { createFamilyConversation, rememberFamilyConversation } from "./family-conversations.js";
 import { getDatingPartners, addDatingPartnerUpdates, selectDatingPartnerUpdates, removeDatingPartnerUpdates } from './concurrent-dating.js';
 import { maleNames, femaleNames } from "../core/character-data.js";
@@ -697,6 +698,46 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
       const age = getChildAge(child, state.player.age);
       const bond = Number.isFinite(child.relationship) ? child.relationship : Number.isFinite(child.bond) ? child.bond : 80;
       item.textContent = `${child.name} · ${child.adopted ? "Con nuôi" : "Con ruột"} · ${age} tuổi · Gắn kết ${Math.max(0, Math.min(100, bond))}% · ${age <= 18 ? `Chi phí: ${formatSalary(getAnnualChildcareCost(age))}/năm` : "Đã hết thời gian tính phí nuôi con"}`;
+      const childActions = document.createElement("div");
+      childActions.className = "family-actions";
+      for (const [type, action] of Object.entries(getChildActions(state.player, child))) {
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "shop-group relationship-action";
+        option.dataset.child = child.id;
+        option.dataset.action = type;
+        option.textContent = action.label;
+        const note = document.createElement("span");
+        note.className = "side-job-note";
+        const blocked = getChildActionBlock(state.player, child, type);
+        note.textContent = blocked || `${action.cost ? formatMoney(action.cost) : "Miễn phí"} · Gắn kết +${action.bond}% · Hạnh phúc tối đa +${action.happiness} · Mỗi năm một lần.`;
+        option.disabled = Boolean(blocked);
+        option.append(note);
+        option.addEventListener("click", () => {
+          const log = interactWithChild(state.player, child.id, type);
+          if (!log) return;
+          state.logs.push(log);
+          save();
+          render();
+          onChange(log);
+        });
+        childActions.append(option);
+      }
+      item.append(childActions);
+      if (child.memories?.length) {
+        const memories = document.createElement("details");
+        memories.className = "family-shared-memories";
+        const heading = document.createElement("summary");
+        heading.textContent = "Kỷ niệm cùng con";
+        const list = document.createElement("ol");
+        for (const memory of [...child.memories].reverse()) {
+          const entry = document.createElement("li");
+          entry.textContent = `${memory.age} tuổi · ${memory.text}`;
+          list.append(entry);
+        }
+        memories.append(heading, list);
+        item.append(memories);
+      }
       children.append(item);
     }
     for (const entry of state.player.relationshipHistory ?? []) {

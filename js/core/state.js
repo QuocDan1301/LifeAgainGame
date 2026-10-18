@@ -71,6 +71,7 @@ export function createInitialState() {
       detective: null,
       garden: null,
       developmentDone: {},
+    developmentPasses: {},
       studyBlock: null,
       schoolRewardsReceived: {},
       fortune: null,

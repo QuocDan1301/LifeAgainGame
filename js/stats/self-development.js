@@ -41,6 +41,19 @@ export const packageTiers = [
   { id: "premium", label: "Cao cấp", price: 4_000_000, gain: 6 },
 ];
 
+export const PASS_YEARS = 3;
+export const PASS_PRICE_RATE = 0.85;
+export const getPassPrice = (tier) =>
+  Math.round(tier.price * PASS_YEARS * PASS_PRICE_RATE);
+export const getActivePass = (player, id) => {
+  const pass = player.developmentPasses?.[id];
+  return pass &&
+    pass.until >= player.age &&
+    packageTiers.some((tier) => tier.id === pass.tier)
+    ? pass
+    : null;
+};
+
 export const developmentStats = [
   { id: "health", icon: "💪", name: "Sức khỏe" },
   { id: "intelligence", icon: "🧠", name: "Trí tuệ" },
@@ -259,10 +272,18 @@ export function initSelfDevelopment(
     return null;
   }
 
-  function train(activity, tier, statId) {
+  function train(activity, tier, statId, mode = "single") {
     const player = state.player;
-    const { fee, discount } = getTarotDiscountedFee(player, tier.price);
+    const prepaid = mode === "prepaid";
+    const price = mode === "pass" ? getPassPrice(tier) : tier.price;
+    const { fee: fullFee, discount: fullDiscount } = getTarotDiscountedFee(
+      player,
+      price,
+    );
+    const fee = prepaid ? 0 : fullFee;
+    const discount = prepaid ? 0 : fullDiscount;
     if (
+      (prepaid && !getActivePass(player, activity.id)) ||
       player.isAlive === false ||
       player.money < fee ||
       hasTrainedThisYear(player, activity.id) ||
@@ -276,11 +297,21 @@ export function initSelfDevelopment(
       ...(player.developmentDone ?? {}),
       [activity.id]: player.age,
     };
+    if (mode === "pass")
+      player.developmentPasses = {
+        ...(player.developmentPasses ?? {}),
+        [activity.id]: { tier: tier.id, until: player.age + PASS_YEARS - 1 },
+      };
     if (discount) consumeTarotBuff(player, "pentacles");
     if (bonus) consumeTarotBuff(player, "wands");
     const gained = applyActivityGain(player, activity.stat, gain + bonus);
+    const label = prepaid
+      ? " (gói trả trước)"
+      : mode === "pass"
+        ? ` (gói ${PASS_YEARS} năm)`
+        : "";
     const content =
-      `${activity.icon} ${activity.name} (${activity.packages[packageTiers.indexOf(tier)]}): ` +
+      `${activity.icon} ${activity.name} (${activity.packages[packageTiers.indexOf(tier)]})${label}: ` +
       `Tiền -${formatMoneyAmount(fee)} VNĐ${gained ? ` · ${statName(activity.stat)} +${gained}` : ""}` +
       `${bonus ? " (có lá Gậy hỗ trợ)" : ""}${discount ? ` (lá Tiền giảm ${formatMoneyAmount(discount)} VNĐ)` : ""}.`;
     const log = { age: player.age, content, summary: content };
@@ -477,7 +508,42 @@ export function initSelfDevelopment(
           ),
         );
       const list = element("div", "dev-packages");
+      const pass = getActivePass(player, activity.id);
+      if (pass) {
+        const passTier = packageTiers.find((tier) => tier.id === pass.tier);
+        const passIndex = packageTiers.indexOf(passTier);
+        const row = element("div", "dev-package dev-pass");
+        const info = element("div", "dev-package-info");
+        const gain = realGain(
+          getTrainingGain(player, activity, passTier.gain).gain +
+            getTarotStatBonus(player),
+        );
+        info.append(
+          element(
+            "strong",
+            "",
+            `🎟️ Gói ${passTier.label}: ${activity.packages[passIndex]}`,
+          ),
+          element(
+            "span",
+            "shop-figures",
+            `Đã trả trước, còn ${pass.until - player.age + 1} năm (kể cả năm nay) · ✨ ${stat.name} +${gain} · không tốn thêm phí`,
+          ),
+        );
+        const free = getActivitySlotsLeft(player) > 0;
+        const action = button(
+          "shop-buy dev-buy dev-use-pass",
+          done ? "Đã tham gia" : !free ? NO_SLOT_LABEL : "Tham gia",
+          () => train(activity, passTier, statId, "prepaid"),
+        );
+        action.dataset.activity = activity.id;
+        action.dataset.tier = passTier.id;
+        action.disabled = done || !free || player.isAlive === false;
+        row.append(info, action);
+        list.append(row);
+      }
       packageTiers.forEach((tier, index) => {
+        if (pass) return;
         const { fee, discount } = getTarotDiscountedFee(player, tier.price);
         const bonus = getTarotStatBonus(player);
         const row = element("div", "dev-package");
@@ -519,6 +585,38 @@ export function initSelfDevelopment(
           done || !free || player.money < fee || player.isAlive === false;
         row.append(info, action);
         list.append(row);
+
+        const passFee = getTarotDiscountedFee(player, getPassPrice(tier)).fee;
+        const passRow = element("div", "dev-package dev-pass-offer");
+        const passInfo = element("div", "dev-package-info");
+        passInfo.append(
+          element("strong", "", `🎟️ Gói ${PASS_YEARS} năm: ${tier.label}`),
+          element(
+            "span",
+            "shop-figures",
+            `💰 ${formatMoney(passFee)} trả một lần (rẻ hơn ${Math.round((1 - PASS_PRICE_RATE) * 100)}% so với mua lẻ ${PASS_YEARS} năm) · các năm sau chỉ cần bấm Tham gia`,
+          ),
+        );
+        const passAction = button(
+          "shop-buy dev-buy dev-buy-pass",
+          done
+            ? "Đã tham gia"
+            : !free
+              ? NO_SLOT_LABEL
+              : player.money < passFee
+                ? "Không đủ tiền"
+                : "Mua gói",
+          () => train(activity, tier, statId, "pass"),
+        );
+        passAction.dataset.activity = activity.id;
+        passAction.dataset.tier = `${tier.id}-pass`;
+        passAction.disabled =
+          done ||
+          !free ||
+          player.money < passFee ||
+          player.isAlive === false;
+        passRow.append(passInfo, passAction);
+        list.append(passRow);
       });
       card.append(list);
       nodes.push(card);
