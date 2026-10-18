@@ -42,7 +42,10 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
     location.reload();
   }
   function offerUpdate() {
-    if (!registration?.waiting || !navigator.serviceWorker.controller || updating || pendingUpdate || available) return;
+    // Offer the update as soon as a new release is detected. The button rebuilds
+    // the cache itself, so players need not wait for the background precache.
+    if (!(registration?.waiting || registration?.installing) || !navigator.serviceWorker.controller ||
+        updating || pendingUpdate || available) return;
     available = true;
     show("");
   }
@@ -123,7 +126,10 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
       });
       if (worker.state === "installed") offerUpdate();
     }
-    registration.addEventListener("updatefound", () => watch(registration.installing));
+    registration.addEventListener("updatefound", () => {
+      watch(registration.installing);
+      offerUpdate();
+    });
     watch(registration.installing);
     watch(registration.active);
     completeUpdate();

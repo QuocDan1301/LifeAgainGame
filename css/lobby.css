@@ -39,6 +39,13 @@
   letter-spacing: 2px;
   line-height: 1.6;
 }
+.lobby-version {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: #547071;
+}
 .lobby-center {
   flex: 1 0 auto;
   width: min(100%, 760px);
