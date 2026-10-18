@@ -54,6 +54,38 @@ export const getActivePass = (player, id) => {
     : null;
 };
 
+export function collectDevelopmentPassesYear(player, age) {
+  const passes = player.developmentPasses ?? {};
+  const lines = [];
+  const realAge = player.age;
+  for (const [id, pass] of Object.entries(passes)) {
+    const activity = developmentActivities.find((entry) => entry.id === id);
+    const tier = packageTiers.find((entry) => entry.id === pass.tier);
+    if (!activity || !tier || pass.until < age) {
+      delete passes[id];
+      if (activity)
+        lines.push(
+          `🎟️ Gói ${activity.name} đã hết hạn. Vào Phát triển bản thân để gia hạn nếu muốn tiếp tục.`,
+        );
+      continue;
+    }
+    if (player.isAlive === false) continue;
+    player.age = age;
+    try {
+      if (hasTrainedThisYear(player, id) || !useActivitySlot(player)) continue;
+      const { gain } = getTrainingGain(player, activity, tier.gain);
+      const gained = applyActivityGain(player, activity.stat, gain);
+      player.developmentDone = { ...(player.developmentDone ?? {}), [id]: age };
+      lines.push(
+        `${activity.icon} ${activity.name} (gói ${tier.label}, tự tham gia)${gained ? `: ${statName(activity.stat)} +${gained}` : ""}. Còn ${pass.until - age} năm.`,
+      );
+    } finally {
+      player.age = realAge;
+    }
+  }
+  return lines.length ? { content: lines.join("\n") } : null;
+}
+
 export const developmentStats = [
   { id: "health", icon: "💪", name: "Sức khỏe" },
   { id: "intelligence", icon: "🧠", name: "Trí tuệ" },
@@ -527,13 +559,13 @@ export function initSelfDevelopment(
           element(
             "span",
             "shop-figures",
-            `Đã trả trước, còn ${pass.until - player.age + 1} năm (kể cả năm nay) · ✨ ${stat.name} +${gain} · không tốn thêm phí`,
+            `Đã trả trước, còn ${pass.until - player.age + 1} năm (kể cả năm nay) · mỗi năm tự tham gia · ✨ ${stat.name} +${gain}/năm`,
           ),
         );
         const free = getActivitySlotsLeft(player) > 0;
         const action = button(
           "shop-buy dev-buy dev-use-pass",
-          done ? "Đã tham gia" : !free ? NO_SLOT_LABEL : "Tham gia",
+          done ? "Đã tham gia" : !free ? NO_SLOT_LABEL : "Tham gia ngay",
           () => train(activity, passTier, statId, "prepaid"),
         );
         action.dataset.activity = activity.id;
@@ -594,7 +626,7 @@ export function initSelfDevelopment(
           element(
             "span",
             "shop-figures",
-            `💰 ${formatMoney(passFee)} trả một lần (rẻ hơn ${Math.round((1 - PASS_PRICE_RATE) * 100)}% so với mua lẻ ${PASS_YEARS} năm) · các năm sau chỉ cần bấm Tham gia`,
+            `💰 ${formatMoney(passFee)} trả một lần (rẻ hơn ${Math.round((1 - PASS_PRICE_RATE) * 100)}% so với mua lẻ ${PASS_YEARS} năm) · các năm sau tự tham gia, hết hạn mới cần gia hạn`,
           ),
         );
         const passAction = button(

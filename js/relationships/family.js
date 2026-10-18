@@ -22,6 +22,7 @@ import { getAnnualEconomy } from "../core/economy.js";
 import { collectReformationYear } from '../events/crime-consequences.js';
 import { getFamilyBudget, collectFamilyBudget } from './family-budget.js';
 import { applyActivityGain } from '../core/stat-budget.js';
+import { collectDevelopmentPassesYear } from '../stats/self-development.js';
 export const getChildAge = (child, age) => child.initialAge + Math.max(0, age - child.joinedAtAge);
 
 // Yearly game costs: 12 million at birth, increasing by 2 million per age.
@@ -364,8 +365,10 @@ export function completeLifeYear(player, age, updates = {}, schoolReward) {
   }
    
    
+  const passes = collectDevelopmentPassesYear(player, age);
   const wear = collectStatWearYear(player, age);
-  const health = yearHealth && wear ? { content: `${yearHealth.content}\n${wear.content}` } : yearHealth ?? wear;
+  let health = yearHealth && wear ? { content: `${yearHealth.content}\n${wear.content}` } : yearHealth ?? wear;
+  if (passes) health = health ? { ...health, content: `${health.content}\n${passes.content}` } : passes;
   return { salary, childcare, schooling, tuition, employment, family, health, mood, livestock, sideJobs, living, illness, lottery, graduation, cognition: aging };
 }
 
