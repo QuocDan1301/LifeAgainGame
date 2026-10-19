@@ -30,8 +30,8 @@ export function getAnnualChildcareCost(age) {
   return Number.isInteger(age) && age >= 0 && age <= 18 ? 12_000_000 + age * 2_000_000 : 0;
 }
 
-// No one in the family raises the topic of a new child after the player turns 90.
-export const CHILD_PROPOSAL_MAX_AGE = 90;
+// No one in the family raises the topic of a new child after the player turns 65.
+export const CHILD_PROPOSAL_MAX_AGE = 65;
 const NEXT_CHILD_DELAY = 5;
 
 const getSharedChildren = (player, person = player.partner) =>

@@ -1,8 +1,8 @@
 import { recordAchievementFlags } from '../achievements/achievements-data.js';
 import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
-import { SCRATCH_CARDS, buyScratch, canBuyScratch, getOpenScratchCard, getScratchCard, scratchCells, scratchThisYear, scratchTopPrize,
-  scratchWinChance } from "./scratch-cards.js";
+import { SCRATCH_CARDS, SCRATCH_CELLS, SCRATCH_LUCKY, buyScratch, canBuyScratch, formatScratchNumber, getOpenScratchCard, getScratchCard,
+  getSettledScratchCard, scratchCells, scratchSpotWins, scratchThisYear, scratchTopPrize, scratchWinChance } from "./scratch-cards.js";
 
  
  
@@ -288,21 +288,36 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     const kind = getScratchCard(card.type);
     const board = element("div", `scratch-board${card.settled ? " is-done" : ""}${card.settled && card.prize ? " is-win" : ""}`);
     board.append(element("p", "scratch-board-title", `${kind.icon} ${kind.name} · ${card.settled ? "đã cào xong" : "chạm từng ô để cào"}`));
-    const grid = element("div", "scratch-grid");
-    card.cells.forEach((amount, index) => {
+    const cell = (index, className, hidden, label, parts) => {
       const open = card.revealed[index];
-      const match = card.settled && card.prize === amount;
-      const cell = button(`scratch-cell${open ? " is-revealed" : ""}${match ? " is-match" : ""}`, open ? formatMoneyAmount(amount) : "?", () => scratch([index]));
-      cell.dataset.index = index;
-      cell.disabled = open || card.settled;
-      cell.setAttribute("aria-label", open ? `Ô ${index + 1}: ${formatMoney(amount)}` : `Cào ô ${index + 1}`);
-      grid.append(cell);
+      const node = button(`scratch-cell ${className}${open ? " is-revealed" : ""}`, open ? undefined : "?", () => scratch([index]));
+      if (open) node.append(...parts.map(([partClass, text]) => element("span", partClass, text)));
+      node.dataset.index = index;
+      node.disabled = open || card.settled;
+      node.setAttribute("aria-label", open ? label : hidden);
+      return node;
+    };
+    const winning = card.settled ? card.spots.find((spot) => scratchSpotWins(card, spot)) : null;
+    const lucky = element("div", "scratch-lucky");
+    card.lucky.forEach((number, index) => {
+      const shown = formatScratchNumber(number);
+      const node = cell(index, "is-lucky", `Cào số của bạn thứ ${index + 1}`, `Số của bạn: ${shown}`, [["scratch-number", shown]]);
+      if (winning?.number === number) node.classList.add("is-match");
+      lucky.append(node);
     });
-    board.append(grid);
-    if (!card.settled) board.append(button("shop-back scratch-all", "🪙 Cào hết", () => scratch(card.cells.map((_, index) => index))));
-    else board.append(element("p", `scratch-result${card.prize ? " is-win" : ""}`, card.prize
-      ? `Ba ô ${formatMoney(card.prize)}: trúng ${formatMoney(card.prize)}, tiền đã vào ví.`
-      : "Không có ba ô trùng nhau. Vé này không trúng."));
+    const grid = element("div", "scratch-grid");
+    card.spots.forEach((spot, offset) => {
+      const shown = formatScratchNumber(spot.number);
+      const node = cell(SCRATCH_LUCKY + offset, "is-spot", `Cào ô dò ${offset + 1}`, `Ô dò ${offset + 1}: số ${shown}, ${formatMoney(spot.amount)}`,
+        [["scratch-number", shown], ["scratch-amount", formatMoneyAmount(spot.amount)]]);
+      if (spot === winning) node.classList.add("is-match");
+      grid.append(node);
+    });
+    board.append(element("p", "scratch-label", "Số của bạn"), lucky, element("p", "scratch-label", "Số cào trúng"), grid);
+    if (!card.settled) board.append(button("shop-back scratch-all", "🪙 Cào hết", () => scratch([...Array(SCRATCH_CELLS).keys()])));
+    else board.append(element("p", `scratch-result${card.prize ? " is-win" : ""}`, winning
+      ? `Số ${formatScratchNumber(winning.number)} trùng số của bạn: trúng ${formatMoney(card.prize)}, tiền đã vào ví.`
+      : "Không ô nào trùng số của bạn. Vé này không trúng."));
     return board;
   }
 
@@ -420,7 +435,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     const scratchCard = element("section", "dialog-card scratch-section");
     const openCard = getOpenScratchCard(player);
     scratchCard.append(element("h3", "", "🪙 Vé số cào"),
-      element("p", "side-job-intro", "Mua là cào ngay. Ba ô cùng số tiền thì trúng đúng số tiền đó. Tiền thưởng vào ví khi cào hết vé; cào xong vé đang cầm mới mua được vé tiếp."));
+      element("p", "side-job-intro", "Mua là cào ngay. Cào 2 ô “Số của bạn”, rồi cào 6 ô dò bên dưới: ô nào có số trùng số của bạn thì trúng đúng số tiền in ở ô đó. Tiền thưởng vào ví khi cào hết vé; cào xong vé đang cầm mới mua được vé tiếp."));
     const kinds = element("div", "scratch-kinds");
     for (const card of SCRATCH_CARDS) {
       const choice = button(`shop-buy scratch-buy scratch-${card.id}`, "", () => buyScratchCard(card.id));
@@ -431,7 +446,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
       kinds.append(choice);
     }
     scratchCard.append(kinds);
-    const shownCard = openCard ?? (player.scratchCard?.settled ? player.scratchCard : null);
+    const shownCard = openCard ?? getSettledScratchCard(player);
     if (shownCard && getScratchCard(shownCard.type)) scratchCard.append(scratchBoard(shownCard));
     else if (openCard === null && player.age >= LOTTERY_MIN_AGE) scratchCard.append(element("p", "lottery-empty", "Chọn một loại vé để bắt đầu cào."));
 

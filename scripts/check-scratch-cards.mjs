@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createInitialState } from '../js/core/state.js';
-import { SCRATCH_CARDS, SCRATCH_CELLS, buyScratch, canBuyScratch, createScratchCard, getOpenScratchCard, scratchCells,
+import { SCRATCH_CARDS, SCRATCH_CELLS, SCRATCH_LUCKY, SCRATCH_NUMBER_MAX, SCRATCH_SPOTS, buyScratch, canBuyScratch, createScratchCard, getOpenScratchCard, scratchCells,
   scratchExpectedReturn, scratchThisYear, scratchWinChance, scratchWinner } from '../js/leisure/scratch-cards.js';
 import { buyTicket, canBuyTicket, scratchRules, ticketsUsedThisYear, MAX_TICKETS_PER_YEAR, LOTTERY_MIN_AGE } from '../js/leisure/lottery.js';
 import { shopCatalog, getShopItem, getSellPrice } from '../js/leisure/shop.js';
@@ -24,7 +24,8 @@ test('Ba loại vé: giá tăng thì giải lớn hơn nhưng hiếm hơn; trung
   }
 });
 
-test('Xếp ô trên 200.000 vé: vé trúng có đúng một bộ ba, vé trượt không có; tần suất trúng khớp tỷ lệ', () => {
+test('In 200.000 vé: 2 số của bạn + 6 ô dò, mọi số khác nhau; vé trúng có đúng một ô trùng; tần suất trúng khớp tỷ lệ', () => {
+  assert.equal(SCRATCH_CELLS, SCRATCH_LUCKY + SCRATCH_SPOTS);
   for (const card of SCRATCH_CARDS) {
     const random = seeded(card.price);
     let wins = 0;
@@ -32,13 +33,17 @@ test('Xếp ô trên 200.000 vé: vé trúng có đúng một bộ ba, vé trư�
     const runs = 200_000;
     for (let i = 0; i < runs; i++) {
       const ticket = createScratchCard(card.id, 30, random);
-      assert.equal(ticket.cells.length, SCRATCH_CELLS);
-      const counts = new Map();
-      for (const amount of ticket.cells) counts.set(amount, (counts.get(amount) ?? 0) + 1);
-      const triples = [...counts].filter(([, count]) => count >= 3);
-      assert.ok(triples.length === (ticket.prize ? 1 : 0) && [...counts.values()].every(count => count <= 3), 'không có hai bộ ba hay bộ bốn');
-      assert.equal(scratchWinner(ticket.cells), ticket.prize);
-      assert.ok(ticket.cells.every(amount => card.prizes.some(([value]) => value === amount)), 'chỉ in số tiền có trong bảng giải');
+      assert.equal(ticket.lucky.length, SCRATCH_LUCKY);
+      assert.equal(ticket.spots.length, SCRATCH_SPOTS);
+      assert.equal(ticket.revealed.length, SCRATCH_CELLS);
+      const numbers = [...ticket.lucky, ...ticket.spots.map(spot => spot.number)];
+      assert.ok(numbers.every(n => Number.isInteger(n) && n >= 1 && n <= SCRATCH_NUMBER_MAX), 'số nằm trong 01–30');
+      const matches = ticket.spots.filter(spot => ticket.lucky.includes(spot.number));
+      assert.equal(matches.length, ticket.prize ? 1 : 0, 'vé trúng có đúng một ô trùng, vé trượt không có');
+      assert.equal(new Set(numbers).size, numbers.length - matches.length, 'ngoài ô trùng, mọi số trên vé khác nhau');
+      if (ticket.prize) assert.equal(matches[0].amount, ticket.prize, 'ô trùng in đúng tiền thưởng');
+      assert.equal(scratchWinner(ticket), ticket.prize);
+      assert.ok(ticket.spots.every(spot => card.prizes.some(([value]) => value === spot.amount)), 'chỉ in số tiền có trong bảng giải');
       if (ticket.prize) { wins++; tally.set(ticket.prize, (tally.get(ticket.prize) ?? 0) + 1); }
     }
     const rate = wins / runs, expected = scratchWinChance(card);
@@ -82,7 +87,7 @@ test('Cào: tiền thưởng vào ví đúng một lần khi cào ô cuối; t�
   assert.equal(player.money, afterBuy, 'chưa cào hết thì chưa trả thưởng');
   const reloaded = JSON.parse(JSON.stringify(player));
   assert.deepEqual(getOpenScratchCard(reloaded).revealed.slice(0, 3), [true, true, true], 'tải lại giữ các ô đã cào');
-  assert.deepEqual(getOpenScratchCard(reloaded).cells, card.cells, 'tải lại không đổi vận may');
+  assert.deepEqual([getOpenScratchCard(reloaded).lucky, getOpenScratchCard(reloaded).spots], [card.lucky, card.spots], 'tải lại không đổi vận may');
   const result = scratchCells(reloaded, [...Array(SCRATCH_CELLS).keys()]);
   assert.ok(result.done && reloaded.money === afterBuy + card.prize, 'trả đúng số tiền của bộ ba');
   assert.equal(reloaded.scratchYear.won, card.prize);
@@ -103,7 +108,8 @@ test('Cào: tiền thưởng vào ví đúng một lần khi cào ô cuối; t�
 
 test('Bản lưu hỏng hay cũ không làm vỡ vé số', () => {
   for (const scratchCard of [null, 42, { type: 'loc' }, { type: 'x', cells: [], revealed: [] },
-    { type: 'loc', cells: [1, 1, 1, 2, 2, 3, 3, 4, 4], revealed: Array(9).fill(false), prize: 0 }]) {
+    { type: 'loc', cells: [1, 1, 1, 2, 2, 3, 3, 4, 4], revealed: Array(9).fill(false), prize: 0 },
+    { type: 'loc', lucky: [5, 9], spots: Array.from({ length: 6 }, (_, i) => ({ number: i === 0 ? 5 : 20 + i, amount: 10_000 })), revealed: Array(8).fill(false), prize: 0 }]) {
     const player = adult({ scratchCard });
     assert.equal(getOpenScratchCard(player), null);
     assert.ok(canBuyScratch(player, 'loc', scratchRules(player)), 'vẫn mua được vé mới');

@@ -5775,6 +5775,14 @@ dialog .scratch-cell:not(:disabled):hover, dialog .scratch-cell:focus-visible { 
 dialog .scratch-cell.is-revealed { background: #fffaf0; color: #b71c1c; font-size: 1.6rem; cursor: default; opacity: 1; }
 dialog .scratch-cell.is-match { background: #ffe082; color: #7a1fa2; box-shadow: 0 0 0 3px #fff, 0 0 12px rgb(255 214 64 / 90%); }
 dialog .scratch-board .scratch-all { margin: 0; justify-self: center; }
+.scratch-label { margin: 0 0 -4px; font-size: 1.2rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; }
+.scratch-lucky { display: grid; grid-template-columns: repeat(2, minmax(0, 96px)); justify-content: center; gap: 10px; }
+dialog .scratch-cell.is-lucky { border-color: #fff3b0; border-radius: 50%; aspect-ratio: 1; min-height: 0; }
+dialog .scratch-cell.is-lucky.is-revealed { background: #fff3b0; color: #7a1fa2; }
+dialog .scratch-cell.is-revealed { display: grid; place-content: center; gap: 2px; }
+dialog .scratch-cell.is-lucky.is-match { background: #ffe082; box-shadow: 0 0 0 3px #fff, 0 0 14px rgb(255 214 64 / 95%); }
+.scratch-number { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+.scratch-amount { font-size: 1.2rem; font-weight: 600; color: #5d4037; }
 .scratch-result { margin: 0; padding: 8px 10px; border-radius: 10px; background: rgb(0 0 0 / 18%); font-weight: 700; text-align: center; }
 .scratch-result.is-win { background: #fff3b0; color: #7a1fa2; }
 @media (prefers-reduced-motion: reduce) { dialog .scratch-cell { transition: none; } }
