@@ -284,17 +284,122 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     if (result.done) renderMoney();
     render(result.done ? ".scratch-buy:not(:disabled)" : ".scratch-cell:not(:disabled)");
   }
+  // Mở một ô đã cạo đủ (hoặc bấm Enter). Chỉ vẽ lại cả vé khi ô cuối mở, để các ô đang cạo dở không bị phủ lại.
+  function revealCell(index, cell) {
+    const result = scratchCells(state.player, [index]);
+    if (!result) return;
+    saveGame(state);
+    if (result.done) {
+      recordScratchLog();
+      renderMoney();
+    }
+    cell.querySelector(".scratch-cover")?.classList.add("is-gone");
+    cell.classList.replace("is-covered", "is-revealed");
+    cell.disabled = true;
+    cell.setAttribute("aria-label", cell.dataset.label);
+    if (result.done) setTimeout(() => render(".scratch-buy:not(:disabled)"), 450);
+    else if (document.activeElement === cell || document.activeElement === document.body) {
+      cell.closest(".scratch-board")?.querySelector(".scratch-cell.is-covered")?.focus({ preventScroll: true });
+    }
+  }
+  const SCRATCH_CLEARED = 0.55;
+  function paintCover(canvas) {
+    const { width, height } = canvas.getBoundingClientRect();
+    if (!width || !height) return null;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.scale(ratio, ratio);
+    const shine = ctx.createLinearGradient(0, 0, width, height);
+    shine.addColorStop(0, "#9aa1aa");
+    shine.addColorStop(0.45, "#e3e6ea");
+    shine.addColorStop(1, "#a3a9b2");
+    ctx.fillStyle = shine;
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = "rgb(255 255 255 / 35%)";
+    ctx.lineWidth = 2;
+    for (let x = -height; x < width; x += 9) {
+      ctx.beginPath();
+      ctx.moveTo(x, height);
+      ctx.lineTo(x + height, 0);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#5d6670";
+    ctx.font = `700 ${Math.round(Math.min(24, height * 0.42))}px ${getComputedStyle(canvas).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("?", width / 2, height / 2);
+    // Từ đây mọi nét vẽ đều xóa lớp bạc.
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineCap = "round";
+    return ctx;
+  }
+  // Lớp bạc thật: kéo chuột hay ngón tay để cạo; cạo quá nửa ô thì ô tự lộ hẳn.
+  function addScratchCover(cell, index) {
+    const canvas = element("canvas", "scratch-cover");
+    canvas.setAttribute("aria-hidden", "true");
+    cell.append(canvas);
+    let ctx = null;
+    let last = null;
+    let strokes = 0;
+    const ready = () => ctx ?? (ctx = paintCover(canvas));
+    requestAnimationFrame(ready);
+    const cleared = () => {
+      const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let open = 0;
+      let total = 0;
+      for (let alpha = 3; alpha < data.length; alpha += 4 * 7) {
+        total++;
+        if (data[alpha] < 60) open++;
+      }
+      return total ? open / total : 0;
+    };
+    const check = () => {
+      if (ctx && !cell.disabled && cleared() >= SCRATCH_CLEARED) revealCell(index, cell);
+    };
+    const scrape = (event) => {
+      if (!(event.buttons & 1) || cell.disabled || !ready()) { last = null; return; }
+      const box = canvas.getBoundingClientRect();
+      const point = [event.clientX - box.left, event.clientY - box.top];
+      const radius = Math.max(8, box.height * 0.17);
+      ctx.lineWidth = radius * 2;
+      ctx.beginPath();
+      ctx.moveTo(...(last ?? point));
+      ctx.lineTo(...point);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(...point, radius, 0, Math.PI * 2);
+      ctx.fill();
+      last = point;
+      if (++strokes % 5 === 0) check();
+    };
+    canvas.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      // Thả bắt con trỏ để kéo một nét qua nhiều ô liền nhau (cảm ứng tự bắt vào ô đầu tiên).
+      if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+      last = null;
+      scrape(event);
+    });
+    canvas.addEventListener("pointermove", scrape);
+    canvas.addEventListener("pointerleave", () => { last = null; check(); });
+    canvas.addEventListener("pointerup", () => { last = null; check(); });
+  }
   function scratchBoard(card) {
     const kind = getScratchCard(card.type);
     const board = element("div", `scratch-board${card.settled ? " is-done" : ""}${card.settled && card.prize ? " is-win" : ""}`);
-    board.append(element("p", "scratch-board-title", `${kind.icon} ${kind.name} · ${card.settled ? "đã cào xong" : "chạm từng ô để cào"}`));
+    board.append(element("p", "scratch-board-title", `${kind.icon} ${kind.name} · ${card.settled ? "đã cào xong" : "kéo chuột hoặc ngón tay để cào"}`));
     const cell = (index, className, hidden, label, parts) => {
       const open = card.revealed[index];
-      const node = button(`scratch-cell ${className}${open ? " is-revealed" : ""}`, open ? undefined : "?", () => scratch([index]));
-      if (open) node.append(...parts.map(([partClass, text]) => element("span", partClass, text)));
+      const node = button(`scratch-cell ${className} ${open ? "is-revealed" : "is-covered"}`, undefined,
+        // Bấm chuột không mở ô (phải cào); Enter/Space trên bàn phím thì mở luôn.
+        (event) => { if (event.detail === 0 && !node.disabled) revealCell(index, node); });
+      node.append(...parts.map(([partClass, text]) => element("span", partClass, text)));
       node.dataset.index = index;
+      node.dataset.label = label;
       node.disabled = open || card.settled;
       node.setAttribute("aria-label", open ? label : hidden);
+      if (!open && !card.settled) addScratchCover(node, index);
       return node;
     };
     const winning = card.settled ? card.spots.find((spot) => scratchSpotWins(card, spot)) : null;
@@ -435,7 +540,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     const scratchCard = element("section", "dialog-card scratch-section");
     const openCard = getOpenScratchCard(player);
     scratchCard.append(element("h3", "", "🪙 Vé số cào"),
-      element("p", "side-job-intro", "Mua là cào ngay. Cào 2 ô “Số của bạn”, rồi cào 6 ô dò bên dưới: ô nào có số trùng số của bạn thì trúng đúng số tiền in ở ô đó. Tiền thưởng vào ví khi cào hết vé; cào xong vé đang cầm mới mua được vé tiếp."));
+      element("p", "side-job-intro", "Mua là cào ngay: kéo chuột hoặc ngón tay để cạo lớp bạc. Cào 2 ô “Số của bạn”, rồi cào 6 ô dò bên dưới: ô nào có số trùng số của bạn thì trúng đúng số tiền in ở ô đó. Tiền thưởng vào ví khi cào hết vé; cào xong vé đang cầm mới mua được vé tiếp."));
     const kinds = element("div", "scratch-kinds");
     for (const card of SCRATCH_CARDS) {
       const choice = button(`shop-buy scratch-buy scratch-${card.id}`, "", () => buyScratchCard(card.id));
