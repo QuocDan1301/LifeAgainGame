@@ -13,10 +13,12 @@ import { stage90To104 } from './stage-90-104.js';
 
 import { studyAbroadStories } from './study-abroad.js';
 import { afterPrisonStories } from './after-prison.js';
+import { lineageStories } from './lineage-stories.js';
 export const lifeStoryCatalog = [
   ...studyAbroadStories,
    
   ...afterPrisonStories,
+  ...lineageStories,
   ...stage01To10,
   ...stage11To23,
   ...stage01To14Extra,

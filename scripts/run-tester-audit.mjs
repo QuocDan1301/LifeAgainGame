@@ -23,7 +23,7 @@ async function worker() {
     page.on('pageerror', error => errors.push(error.stack ?? error.message));
     await context.route('**/*', async route => {
       const url = new URL(route.request().url());
-      if (url.hostname !== 'game.test') return route.abort();
+      if (url.hostname !== 'localhost') return route.abort();
       const relative = url.pathname === '/' ? '/index.html' : url.pathname;
       let file;
       try { file = path.resolve(root, '.' + decodeURIComponent(relative)); } catch { return route.fulfill({ status: 400, body: '' }); }
@@ -42,7 +42,7 @@ async function worker() {
     });
     let result;
     try {
-      await page.goto('https://game.test/scripts/' + test, { waitUntil: 'domcontentloaded', timeout: 20000 });
+      await page.goto('http://localhost:5599/scripts/' + test, { waitUntil: 'domcontentloaded', timeout: 20000 });
       await page.waitForFunction(() => [...document.querySelectorAll('pre')].some(el => /^(PASS|FAIL)/.test(el.textContent)), null,
         { timeout: test.includes('fuzz') ? 180000 : 45000 });
       result = await page.locator('pre').first().textContent();

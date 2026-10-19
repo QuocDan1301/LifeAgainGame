@@ -3,7 +3,6 @@ import { createInitialState } from "../core/state.js";
 import { ensureRelatives, ensureBirthFamilyLog } from "../relationships/family-members.js";
 import { initLifeArchive } from "./life-archive.js";
 import { initTransfer } from "./transfer-ui.js";
-import { initInstallButton } from "./install-button.js";
 import { initMoveHome } from "./move-home.js";
 import { archiveLife } from "../core/life-archive.js";
 import {
@@ -21,13 +20,13 @@ import {
   MAX_TICKETS_PER_PURCHASE,
   readSavedGame,
   canContinue,
+  hasPendingSuccession,
   startLife,
 } from "../core/ticket-store.js";
 
 export function initLobby(enterGame) {
   initLifeArchive();
   initTransfer();
-  initInstallButton();
   initMoveHome();
   const get = (id) => document.getElementById(id);
   const home = get("lobby-screen");
@@ -63,6 +62,11 @@ export function initLobby(enterGame) {
         archiveLife(saved, undefined, describeDeathCause(saved.player));
       }
       continueButton.hidden = !canContinue(saved);
+      continueButton.textContent = hasPendingSuccession(saved) ? "Chọn người tiếp nối" : "Chơi tiếp";
+      // Vừa tiếp quản người con: vào thẳng đời con.
+      let autoContinue = false;
+      try { autoContinue = sessionStorage.getItem("lifeAgainAutoContinue") === "1"; sessionStorage.removeItem("lifeAgainAutoContinue"); } catch { /* Optional. */ }
+      if (autoContinue && !continueButton.hidden) queueMicrotask(() => continueButton.click());
       storageReady = true;
     } catch (e) {
       storageReady = false;

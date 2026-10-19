@@ -134,7 +134,7 @@ export const stage80To89 = [
     text: 'Tôi còn một khoản tiền tiết kiệm. Người thân không thiếu thốn. Tôi muốn dùng nó cho một việc gì đó ý nghĩa, trong lúc mình còn tự quyết được.',
     choices: [
       { label: 'Góp xây thư viện cho trường làng', effects: { happiness: 4 }, money: -50000000, flags: ['thu_vien_truong_lang'],
-        text: 'Thư viện nhỏ, có mấy trăm cuốn sách. Ngày khánh thành, tôi ngồi xe lăn, nhìn tụi nhỏ ùa vào. Một đứa ngồi bệt xuống sàn, mở cuốn đầu tiên nó vớ được.' },
+        text: 'Thư viện nhỏ, có mấy trăm cuốn sách. Ngày khánh thành, tôi ngồi hàng ghế đầu, nhìn tụi nhỏ ùa vào. Một đứa ngồi bệt xuống sàn, mở cuốn đầu tiên nó vớ được.' },
       { label: 'Tặng mỗi đứa cháu một ít', effects: { happiness: 2 }, money: -50000000,
         text: 'Mỗi đứa cháu một phong bì, kèm một lá thư tay. Có đứa dùng đóng học phí, có đứa mua sách, có đứa cất phong bì không mở, nói giữ chữ của tôi.' },
     ],

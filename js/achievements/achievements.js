@@ -8,7 +8,7 @@ import {
   achievementGroups,
   meetsAchievement,
 } from "./achievements-data.js";
-import { recordAchievementFlags } from "./achievements-data.js";
+import { recordAchievementFlags, trackInferredSavings } from "./achievements-data.js";
 import { activityAchievementIds } from "./activity-achievements.js";
 export { recordAchievementFlags } from "./achievements-data.js";
 
@@ -141,6 +141,7 @@ export function initAchievements(state) {
 export function checkAchievements() {
   if (!initialized || !gameState?.player) return;
   recordAchievementFlags(gameState, activityAchievementIds(gameState.player));
+  trackInferredSavings(gameState.player);
   let changed = false;
   const lifeIds = new Set(gameState.player.lifeAchievementIds ?? []);
   const previousCount = lifeIds.size;

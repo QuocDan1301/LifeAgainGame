@@ -1,0 +1,153 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Succession checks</title>
+<pre id="succession-result">Running…</pre>
+<script type="module">
+// Two phases around the real page reload that happens after taking over a child.
+const result = document.getElementById("succession-result");
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainLifeArchive"];
+const phase = sessionStorage.getItem("successionCheckPhase") ?? "will";
+const restoreKey = "successionCheckRestore";
+if (phase === "will") sessionStorage.setItem(restoreKey, JSON.stringify(keys.map(key => localStorage.getItem(key))));
+const restore = () => {
+  const saved = JSON.parse(sessionStorage.getItem(restoreKey) ?? "[]");
+  keys.forEach((key, index) => saved[index] == null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  sessionStorage.removeItem(restoreKey);
+  sessionStorage.removeItem("successionCheckPhase");
+  sessionStorage.removeItem("lifeAgainAutoContinue");
+};
+async function mountGame(setup) {
+  const { createInitialState, state } = await import("../js/core/state.js");
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  localStorage.setItem("lifeAgainAchievements", localStorage.getItem("lifeAgainAchievements") ?? "{}");
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  document.getElementById("game-screen").hidden = false;
+  document.getElementById("lobby-screen").hidden = true;
+  Object.assign(state, createInitialState());
+  setup(state);
+  await import("../js/main.js");
+  return state;
+}
+const $ = id => document.getElementById(id);
+const die = (state, age) => {
+  state.pendingEvent = { stage: "result", age, title: "Khép lại", content: "Hành trình khép lại.", confirmText: "Tiếp tục",
+    updates: { age, isAlive: false }, achievementIds: [], logSummary: "Khép lại." };
+};
+try {
+  if (phase === "will") {
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.removeItem("lifeAgainLifeArchive");
+    const state = await mountGame(state => {
+      Object.assign(state.player, { name: "Nguyễn Quốc Dân", gender: "male", province: "Huế", age: 80, lifeSeed: 7, lifeId: "founder-life",
+        health: 30, happiness: 60, intelligence: 60, appearance: 50, money: 900_000_000, employmentStatus: "retired", studyBlock: "A00",
+        partner: { id: "p1", name: "Lê Minh Thư", gender: "female", relationship: 80, ageAtMeeting: 26, metAtAge: 27 }, marriedAtAge: 28,
+        children: [
+          { id: "a", name: "Phạm Gia Bảo", gender: "male", initialAge: 0, joinedAtAge: 32, relationship: 75, coParent: { id: "p1", name: "Lê Minh Thư" } },
+          { id: "b", name: "Phạm Minh Anh", gender: "female", initialAge: 0, joinedAtAge: 35, relationship: 80, coParent: { id: "p1", name: "Lê Minh Thư" },
+            dreamSeed: { id: "trip", interest: "eager", age: 10, text: "trải bản đồ ra sàn, đánh dấu những nơi muốn tới." } },
+          { id: "c", name: "Phạm Nhỏ", gender: "male", initialAge: 0, joinedAtAge: 70, relationship: 80, coParent: { id: "p1", name: "Lê Minh Thư" } },
+        ],
+        purchases: [{ uid: "house-1", id: "house", boughtAtAge: 50 }],
+        livestock: [{ uid: "cow-1", id: "cow", boughtAtAge: 79 }, { uid: "cow-2", id: "cow", boughtAtAge: 79 }, { uid: "cow-3", id: "cow", boughtAtAge: 79 }],
+        keepsakes: [{ id: "watch", name: "Chiếc đồng hồ của ông", receivedAtAge: 40 }],
+        relatives: [{ id: "father", role: "Bố", name: "Nguyễn Văn Cả", alive: false, ageAtPlayerBirth: 25, diedAtAge: 50 }] });
+    });
+    // Lập di chúc qua giao diện: 50% cho Minh Anh, nhà cho Gia Bảo.
+    $("assets").click();
+    assert(!$("open-will").hidden, "Will button from age 50");
+    $("open-will").click();
+    assert($("will-dialog").open, "Will dialog opens");
+    const share = document.querySelector('#will-body input[data-share="child:b"]');
+    share.value = "50"; share.dispatchEvent(new Event("change"));
+    const house = document.querySelector('#will-body select[data-asset="purchase:house-1"]');
+    house.value = "child:a"; house.dispatchEvent(new Event("change"));
+    // Ba con bò gộp một dòng; chọn người nhận áp cho cả ba.
+    assert(!document.querySelector('#will-body select[data-asset="livestock:cow-1"]'), "Identical assets share one row");
+    const cows = document.querySelector('#will-body select[data-asset-group]');
+    assert(cows && cows.closest(".will-item").textContent.includes("×3"), "Grouped row shows the count");
+    cows.value = "child:b"; cows.dispatchEvent(new Event("change"));
+    assert(document.querySelector("#will-body .will-preview-box").textContent.includes("×3"), "Preview groups identical assets");
+    const over = document.querySelector('#will-body input[data-share="child:a"]');
+    over.value = "60"; over.dispatchEvent(new Event("change"));
+    assert(document.querySelector("#will-body .will-save").disabled && $("will-body").textContent.includes("vượt quá 100%"), "Over 100% blocks saving");
+    const fix = document.querySelector('#will-body input[data-share="child:a"]');
+    fix.value = "0"; fix.dispatchEvent(new Event("change"));
+    assert($("will-body").textContent.includes("50% còn lại") && $("will-body").textContent.includes("chia đều cho Lê Minh Thư"), "Unassigned share explained with names");
+    assert(document.querySelector('#will-body [data-share="child:b"]').closest(".will-share").textContent.includes("≈"), "Share shows its amount");
+    assert($("will-body").textContent.includes("Nếu qua đời hôm nay") && $("will-body").textContent.includes("Có thay đổi chưa lưu"), "Preview and unsaved notice shown");
+    // Nút −/+ đổi phần riêng 5%; dòng hiện tổng nhận = phần riêng + phần chia đều.
+    document.querySelector('#will-body .will-plus[data-for="child:a"]').click();
+    assert(document.querySelector('#will-body [data-share="child:a"]').value === "5" && document.activeElement?.dataset.for === "child:a", "Plus adds 5% and keeps focus");
+    assert(/phần riêng 50% ≈ .* \+ phần chia đều ≈/.test(document.querySelector('#will-body [data-share="child:b"]').closest(".will-share").textContent), "Row explains own share plus equal part");
+    document.querySelector('#will-body .will-minus[data-for="child:a"]').click();
+    assert(!state.player.will && document.querySelector('#will-body [data-share="child:a"]').value === "0", "Minus returns to 0 without saving");
+    assert(document.querySelector("#will-body .will-actions .will-unsaved"), "Unsaved notice sits in the sticky save bar");
+    document.querySelector("#will-body .will-reset").click();
+    const again = document.querySelector('#will-body input[data-share="child:b"]');
+    again.value = "50"; again.dispatchEvent(new Event("change"));
+    document.querySelector("#will-body .will-save").click();
+    assert(state.player.will?.shares["child:b"] === 50 && state.player.will.assets["purchase:house-1"] === "child:a", "Will saved");
+    assert(["cow-1", "cow-2", "cow-3"].every(uid => state.player.will.assets[`livestock:${uid}`] === "child:b"), "Group choice saved per unit");
+    assert(state.player.money === 900_000_000 && state.player.purchases.length === 1, "Will does not lock money or assets");
+    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+    // Qua đời qua luồng xác nhận sự kiện thật.
+    die(state, 81);
+    state.player.age = 80;
+    document.getElementById("event-dialog").showModal?.();
+    document.getElementById("event-confirm").click();
+    assert(state.player.isAlive === false && $("death-dialog").open, "Death summary opens");
+    assert(state.player.estate?.settled && state.player.money === 0, "Estate settled once, founder holdings cleared");
+    assert($("death-succession").textContent.includes("Thực hiện theo di chúc"), "Inheritance result shown");
+    assert(/Bò ×3/.test($("death-succession").textContent), "Result groups identical assets");
+    assert($("death-summary").textContent.includes("900 triệu"), "Life summary still shows money at death");
+    const cards = [...document.querySelectorAll(".heir-card")].map(card => card.dataset.heir);
+    assert(cards.join() === "a,b", "Only adult living children are offered: " + cards.join());
+    assert($("return-after-death").textContent === "Kết thúc lượt chơi", "End run option");
+    const saved = JSON.parse(localStorage.getItem("lifeAgainSave"));
+    assert(saved.player.estate.settled && saved.player.isAlive === false, "Settlement saved before choosing");
+    // Gia Bảo chưa ghi nhận mầm ước mơ: hồi tưởng một lần rồi tiếp quản (trang tải lại).
+    document.querySelector('.heir-card[data-heir="a"] .heir-choose').click();
+    const recall = document.querySelector('.heir-recall-option[data-recall="music"]');
+    assert(recall, "Recall step for missing dream data");
+    sessionStorage.setItem("successionCheckPhase", "heir");
+    recall.click();
+  } else if (phase === "heir") {
+    const raw = JSON.parse(localStorage.getItem("lifeAgainSave"));
+    assert(raw.player.name === "Phạm Gia Bảo" && raw.player.age === 49 && raw.player.isAlive === true, "Saved heir at current age: " + [raw.player.name, raw.player.age, raw.player.isAlive].join());
+    assert(raw.player.lineage.generation === 2 && raw.player.achievementFlags["heir-takeover"], "Lineage and takeover flag saved");
+    assert(raw.player.purchases.some(item => item.uid === "house-1"), "House inherited by the chosen heir");
+    assert(raw.player.dreams.roots.sourceKind === "recall" && raw.player.dreams.roots.id === "music", "Recall stored once");
+    assert(raw.logs.length === 1, "New diary for the heir");
+    const { readSavedGame, canContinue } = await import("../js/core/ticket-store.js");
+    assert(canContinue(readSavedGame()), "Lobby can continue the heir");
+    const state = await mountGame(state => { Object.assign(state, raw, { player: { ...state.player, ...raw.player } }); });
+    assert($("player-lineage").textContent.includes("Đời con") && $("player-lineage").textContent.includes("bố Dân"), "Lineage badge");
+    assert($("player-name").textContent === "Phạm Gia Bảo", "Heir is the active character");
+    assert($("achievement-unlock-dialog").open, "Takeover achievement announced");
+    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+    $("assets").click();
+    assert($("open-will").hidden, "Will button stays hidden for the heir under 50");
+    assert($("life-keepsakes").textContent.includes("Album gia đình") && $("life-keepsakes").textContent.includes("của bố Dân"), "Family album keeps the founder's keepsake with its owner");
+    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+    // Đời con khép lại: tổng kết hai đời, không có đời cháu.
+    die(state, 70);
+    document.getElementById("event-confirm").click();
+    assert($("death-dialog").open && $("death-succession").textContent.includes("Hai cuộc đời"), "Two-life summary");
+    assert(!document.querySelector(".heir-card") && $("return-after-death").textContent === "Về bến xe", "No grandchild takeover");
+    assert(state.player.achievementFlags["two-lives"], "Two lives achievement flag");
+    const { readLifeArchive } = await import("../js/core/life-archive.js");
+    const archive = readLifeArchive();
+    assert(archive.length >= 2 && archive.at(-1).lineage?.generation === 2 && archive.at(-2).name === "Nguyễn Quốc Dân", "Both lives archived with owners");
+    restore();
+    result.textContent = "PASS: will editor (limits, preview, no lock), death → estate once → heir choice (adults only) → recall → reload as heir at 49 with own share, badge, album → heir death → two-life summary, no third generation, archive";
+  }
+} catch (error) {
+  restore();
+  result.textContent = `FAIL: ${error.stack}`;
+}
+</script>

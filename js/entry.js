@@ -1,9 +1,9 @@
-import { isInstalledApp, installationPage } from "./core/app-mode.js";
+import { isInstalledApp, installationPage, isLocalPreview } from "./core/app-mode.js";
 
 const mobile = /Android|iPhone|iPad|iPod/.test(navigator.userAgent) ||
   (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
 const desktopApp = location.protocol === "lifeagain:";
-if (!desktopApp && !(mobile && isInstalledApp())) {
+if (!desktopApp && !(mobile && isInstalledApp()) && !isLocalPreview()) {
   location.replace(installationPage());
 } else {
 try { localStorage.setItem("lifeAgain:launchGame", "true"); } catch {}

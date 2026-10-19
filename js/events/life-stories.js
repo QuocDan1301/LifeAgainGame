@@ -1,14 +1,17 @@
  
  
 import { lifeStoryCatalog } from './life-stories/index.js';
+import { elderLifeStories } from './life-stories/elder-everyday.js';
+import { getDreamStory } from './dreams.js';
 import { openMojiArt } from '../media/event-art.js';
 import { prepareStoryChoice } from '../core/story-transactions.js';
 import { getEmploymentType } from '../career/job-loss.js';
 import { RETIREMENT_AGE } from '../career/career-salary.js';
 import { getChildAge } from '../relationships/family.js';
+import { getShopItem } from '../leisure/shop.js';
 
 const relative = (player, id) => player.relatives?.find(person => person.id === id);
-const ROAD_VEHICLES = new Set(['motorbike', 'big-bike', 'car', 'porsche', 'lamborghini', 'rolls-royce']);
+const ROAD_VEHICLES = new Set(['motorbike', 'big-bike', 'car', 'porsche', 'lamborghini', 'rolls-royce', 'tesla-roadster']);
 const isEmployed = (player, age) => player.employmentStatus === 'employed' && age < RETIREMENT_AGE;
 
  
@@ -42,6 +45,11 @@ export const NEEDS = {
   vehicle: player => player.purchases?.some(item => ROAD_VEHICLES.has(item.id)) === true,
   mobile: player => (player.health ?? 0) >= 30,
   frail: player => (player.health ?? 0) < 30,
+  // Đời con tiếp quản (xem js/core/succession.js). Chỉ dựa trên dữ liệu đã lưu, không suy đoán.
+  heir: player => player.lineage?.generation === 2 && Boolean(player.lineage.founder),
+  inheritedHome: player => (player.purchases ?? []).some(entry => entry.inherited && getShopItem(entry.id)?.residential),
+  siblings: player => (player.lineage?.siblings ?? []).some(sibling => sibling.alive),
+  parentHelped: player => Boolean(player.lineage?.founder?.deed),
 };
 
 function meetsNeeds(story, age, player) {
@@ -49,6 +57,7 @@ function meetsNeeds(story, age, player) {
    
   if (story.needs?.includes('employed') && getEmploymentType(player.careerPath?.id) === 'service' && /công ty|sếp|khách hàng/iu.test(story.text)) return false;
   if (story.minMoney > 0 && (player.money ?? 0) < story.minMoney) return false;
+  if (Number.isFinite(story.maxMoney) && (player.money ?? 0) > story.maxMoney) return false;
   if (!(story.needs ?? []).every(need => NEEDS[need]?.(player, age))) return false;
   if (story.choices?.some(choice => choice.repayLoan) && !story.choices.some(choice => player.storyLoans?.some(loan => loan.id === choice.repayLoan && loan.outstanding > 0))) return false;
   if (story.childAge) {
@@ -69,6 +78,8 @@ export const POOL_SIZE = 4;
  
 export const MAX_CHAINS_IN_POOL = 2;
 export const CHAIN_WEIGHT = 3;
+// Sự kiện tuổi già bổ sung: mỗi năm thêm tối đa một ứng viên, tránh chủ đề vừa gặp trong vài năm.
+export const ELDER_THEME_GAP = 3;
 
 const isChain = story => Array.isArray(story.ages);
 const inWindow = (story, age) => isChain(story)
@@ -95,6 +106,16 @@ const givenName = fullName => String(fullName ?? '').trim().split(/\s+/u).at(-1)
 
  
  
+// Tên và vai trò của bố/mẹ đã mất, anh chị em và việc tốt đời trước, cho sự kiện liên thế hệ.
+function lineageNames(player) {
+  const founder = player.lineage?.founder;
+  const role = founder?.role === 'mẹ' ? 'mẹ' : 'bố';
+  const sibling = (player.lineage?.siblings ?? []).find(item => item.alive);
+  return { tenNguoiMat: founder?.given || role, vaiNguoiMat: role, VaiNguoiMat: role === 'mẹ' ? 'Mẹ' : 'Bố',
+    ongBaNguoiMat: role === 'mẹ' ? 'bà' : 'ông', tenAnhChiEm: givenName(sibling?.name) || 'anh chị em',
+    viecTot: founder?.deed || 'giúp đỡ người khác' };
+}
+
 export function fillStoryText(text, player = {}, child = player.children?.[0]) {
   const names = {
     tenBa: givenName(relative(player, 'father')?.name) || 'ba',
@@ -105,8 +126,9 @@ export function fillStoryText(text, player = {}, child = player.children?.[0]) {
     tuoiBanDoi: player.partner ? (player.partner.ageAtMeeting ?? player.partner.metAtAge ?? player.relationshipStartedAtAge ?? player.age ?? 0) + (player.storyAge ?? player.age ?? 0) - (player.partner.metAtAge ?? player.relationshipStartedAtAge ?? player.age ?? 0) : 'chưa rõ',
     soNamKetHon: player.marriedAtAge != null ? Math.max(0, (player.storyAge ?? player.age ?? player.marriedAtAge) - player.marriedAtAge) : 'nhiều',
     soNamConThuyen: Math.max(0, (player.storyAge ?? player.age ?? 3) - 3),
+    ...lineageNames(player),
   };
-  return String(text).replace(/\{(tenBa|tenMe|tenBanDoi|tenCon|tuoiCon|tuoiBanDoi|soNamKetHon|soNamConThuyen)\}/gu, (_, key) => names[key]);
+  return String(text).replace(/\{(tenBa|tenMe|tenBanDoi|tenCon|tuoiCon|tuoiBanDoi|soNamKetHon|soNamConThuyen|tenNguoiMat|vaiNguoiMat|VaiNguoiMat|ongBaNguoiMat|tenAnhChiEm|viecTot)\}/gu, (_, key) => names[key]);
 }
 
  
@@ -200,8 +222,9 @@ function toGameEvent(story, age, player) {
     id: story.id, age, title: fillStoryText(story.title, player, child), mode: 'choice',
     text: `${fillStoryText(story.text, player, child)} ${situationFace}`,
     ...art,
-    kind: 'everyday', category: 'everyday', catalogVersion: 3, lifeStory: true,
-    chain: isChain(story), weight: isChain(story) ? CHAIN_WEIGHT : 1,
+    kind: story.kind ?? 'everyday', category: 'everyday', catalogVersion: 3, lifeStory: true,
+    ...(story.dreamId ? { dreamId: story.dreamId, dreamStep: story.dreamStep } : {}),
+    chain: isChain(story) && !story.elder, weight: story.weight ?? (isChain(story) && !story.elder ? CHAIN_WEIGHT : 1),
     conditions: { age, alive: true, required: requirements, minimumMoney: story.minMoney ?? 0 },
     conditionText: `Tuổi ${age}; còn sống${requirements.length ? '; ' + requirements.join(', ') : ''}.`,
     automaticResult: false,
@@ -216,14 +239,17 @@ function toGameEvent(story, age, player) {
       effects: { ...(choice.effects ?? {}) },
       ...(choice.money === undefined ? {} : { money: choice.money }),
       ...(choice.keepsake ? { keepsake: { ...choice.keepsake } } : {}),
+      ...(choice.dream ? { dream: { ...choice.dream } } : {}),
       ...art,
-      achievementIds: [],
+      achievementIds: Array.isArray(choice.achievementIds) ? [...choice.achievementIds] : [],
       everydayRewardsApplied: true,
       confirmText: 'Tiếp tục',
        
       playerUpdates: {
         ...choice.playerUpdates,
-        storyFlags: [...new Set([...owned, seenFlag(story.id), ...(choice.flags ?? [])])],
+        // Bước ước mơ được quản lý bằng player.dreams nên không cần dấu đã gặp.
+        storyFlags: [...new Set([...owned, ...(story.repeatable ? [] : [seenFlag(story.id)]), ...(choice.flags ?? [])])],
+        ...(story.theme ? { elderThemes: [...(player.elderThemes ?? []).slice(-5), { theme: story.theme, age }] } : {}),
       },
     }); }),
   };
@@ -236,6 +262,14 @@ function lifeSeed(player, age) {
   return hash;
 }
 
+export function pickElderStory(age, player = {}) {
+  const eligible = elderLifeStories.filter(story => isLifeStoryEligible(story, age, player));
+  const recent = new Set((player.elderThemes ?? []).filter(entry => age - entry.age < ELDER_THEME_GAP).map(entry => entry.theme));
+  const fresh = eligible.filter(story => !recent.has(story.theme));
+  const list = fresh.length ? fresh : eligible;
+  return list.length ? list[(lifeSeed(player, age) >>> 3) % list.length] : null;
+}
+
 export function createLifeStoryEvents(age, player = {}) {
   if (player.isAlive === false || EXCLUDED_AGES.has(age)) return [];
   const eligible = lifeStoryCatalog.filter(story => isLifeStoryEligible(story, age, player));
@@ -245,7 +279,11 @@ export function createLifeStoryEvents(age, player = {}) {
   const shift = base.length ? lifeSeed(player, age) % base.length : 0;
   const rotated = [...base.slice(shift), ...base.slice(0, shift)];
   const kept = rotated.slice(0, Math.max(0, POOL_SIZE - chains.length));
-  return [...chains, ...base.filter(story => kept.includes(story))]
+  // Kho sự kiện theo tuổi giữ nguyên tối đa POOL_SIZE chỗ như trước; tuổi già có thêm
+  // một sự kiện bổ sung và, khi đang theo đuổi, một bước ước mơ.
+  const elder = pickElderStory(age, player);
+  const dream = getDreamStory(player, age);
+  return [...chains, ...base.filter(story => kept.includes(story)), ...(elder ? [elder] : []), ...(dream ? [dream] : [])]
     .map(story => toGameEvent(story, age, player));
 }
 

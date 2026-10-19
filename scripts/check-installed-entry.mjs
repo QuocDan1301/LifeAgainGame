@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import { isInstalledApp, installationPage } from '../js/core/app-mode.js';
+import { isInstalledApp, installationPage, isLocalPreview } from '../js/core/app-mode.js';
 
 const options = { navigator: {}, matchMedia: () => ({ matches: false }) };
 assert.equal(isInstalledApp(options), false);
@@ -13,17 +13,25 @@ const site = fs.readFileSync(new URL('../site/site.js', import.meta.url), 'utf8'
 assert.doesNotMatch(site, /if \(standalone.*location\.replace/, 'installed mode must keep the download page');
 const source = fs.readFileSync(new URL('../js/entry.js', import.meta.url), 'utf8')
   .replace(/^import .*;\r?\n/, '').replace('import("./boot.js")', 'loadBoot()');
-for (const [ua, installed, protocol, expected] of [
+const page = built => ({ documentElement: { hasAttribute: name => built && name === 'data-offline' } });
+for (const host of ['127.0.0.1', 'localhost', '192.168.1.5', '10.0.0.2', '[::1]']) {
+  assert.equal(isLocalPreview({ location: { hostname: host }, document: page(false) }), true, host + ' source preview');
+  assert.equal(isLocalPreview({ location: { hostname: host }, document: page(true) }), false, host + ' built page');
+}
+for (const host of ['life-again-game.onrender.com', 'quocdan1301.github.io', '172.20.0.1'])
+  assert.equal(isLocalPreview({ location: { hostname: host }, document: page(false) }), false, host + ' published');
+for (const [ua, installed, protocol, expected, preview = false] of [
   ['Windows NT 10.0', false, 'https:', false], ['Windows NT 10.0', true, 'https:', false],
   ['Android', false, 'https:', false], ['Android', true, 'https:', true],
   ['iPhone', false, 'https:', false], ['iPhone', true, 'https:', true],
-  ['Macintosh', true, 'https:', false], ['Windows NT 10.0', false, 'lifeagain:', true]
+  ['Macintosh', true, 'https:', false], ['Windows NT 10.0', false, 'lifeagain:', true],
+  ['Windows NT 10.0', false, 'http:', true, true], ['Android', false, 'http:', true, true]
 ]) {
   let loads = 0, redirects = 0;
   vm.runInNewContext(source, {
     navigator: { userAgent: ua, maxTouchPoints: 0 },
     location: { protocol, replace: () => redirects++ },
-    localStorage: { setItem() {} }, isInstalledApp: () => installed,
+    localStorage: { setItem() {} }, isInstalledApp: () => installed, isLocalPreview: () => preview,
     installationPage: () => 'https://game.test/gioi-thieu#cai-dat',
     loadBoot: () => { loads++; return Promise.resolve(); }
   });
@@ -34,4 +42,4 @@ assert.equal(installationPage(new URL('https://game.test/choi?nhan=ABC234')), 'h
 const manifest = JSON.parse(fs.readFileSync(new URL('../manifest.json', import.meta.url)));
 assert.equal(manifest.id, './', 'preserve the old implicit app identity');
 assert.equal(manifest.start_url, './choi');
-console.log('PASS installed entry: PC web blocked; mobile browser blocked; installed mobile and Windows EXE allowed; home stays on downloads.');
+console.log('PASS installed entry: PC web blocked; mobile browser blocked; installed mobile, Windows EXE and local source preview allowed; home stays on downloads.');

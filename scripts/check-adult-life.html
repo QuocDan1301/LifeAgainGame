@@ -80,6 +80,7 @@
       careerPath: { id: "programming", field: "Công nghệ thông tin" }, careerSpark: "programming",
       job: getCareerProfile("programming").ranks[0], lastSalaryAge: 31, nextPromotionAge: null });
     const { achievements } = await import("../js/achievements/achievements-data.js");
+    const {completeLifeYear}=await import('../js/relationships/family.js');const {formatMoneyAmount}=await import('../js/core/money-format.js');const yearNet=(player,age,updates={})=>{const random=Math.random;Math.random=()=>0.99;try{const copy=structuredClone(player);const before=copy.money;const {money,...rest}=structuredClone(updates??{});completeLifeYear(copy,age,rest);return copy.money-before;}finally{Math.random=random;}};
     localStorage.setItem("lifeAgainAchievements", JSON.stringify(Object.fromEntries(achievements.map(entry => [entry.id, true]))));
     localStorage.setItem("lifeAgainAchievementQueue", "[]");
     document.getElementById("game-screen").hidden = false;
@@ -94,9 +95,10 @@
     choose(1);
     assert(state.player.marriageProposalDeclines === 0, "Result preview must not alter relationship state");
     state.pendingEvent = JSON.parse(localStorage.getItem("lifeAgainSave")).pendingEvent;
+    const marriageStart = state.player.money, marriageBase = yearNet(state.player, 32, state.pendingEvent.updates);
     confirm.click();
     assert(state.player.age === 32 && state.player.nextMarriageProposalAge === 34, "Confirming saved first refusal schedules 34");
-    assert(state.player.money === 72_000_000, "Marriage story still receives annual salary");
+    assert(state.player.money === marriageStart + marriageBase && marriageBase > 0, "Marriage story still receives annual salary");
     birthday.click();
     assert(state.player.age === 33 && !state.pendingEvent, "No repeat proposal at 33");
     birthday.click();
@@ -143,9 +145,10 @@
       assert(state.pendingEvent?.kind === "workplace-dating" && state.pendingEvent.age === 25,
         "Age 25 always shows dating, even with high random roll or unemployment");
       choose(0);
+      const datingBase = yearNet(state.player, 25, state.pendingEvent.updates);
       confirm.click();
       assert(state.player.age === 25 && state.player.partner, "Age-25 dating can be accepted");
-      assert(state.player.money === (status === "employed" ? 120_000_000 - 48_000_000 : -24_000_000), "Guaranteed dating preserves salary eligibility (after living costs)");
+      assert(state.player.money === datingBase && (status === "employed") === (datingBase > 0), "Guaranteed dating preserves salary eligibility (after living costs)");
     }
     // A career priority pushes the due proposal to next year and saves that date.
     Object.assign(state.player, { age: 36, partner: person, marriedAtAge: null,

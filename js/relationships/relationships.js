@@ -1,6 +1,7 @@
 import { getDatingExpenses } from "./dating-expenses.js";
 import { getChildActions, getChildActionBlock, interactWithChild } from "./child-interactions.js";
 import { createFamilyConversation, rememberFamilyConversation } from "./family-conversations.js";
+import { createChildConversation } from "./child-conversations.js";
 import { getDatingPartners, addDatingPartnerUpdates, selectDatingPartnerUpdates, removeDatingPartnerUpdates } from './concurrent-dating.js';
 import { maleNames, femaleNames } from "../core/character-data.js";
 import { getEmploymentContext } from "../career/career-jobs.js";
@@ -409,6 +410,56 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
     conversationDialog.showModal();
     conversationDialog.scrollTop = 0;
   }
+  // Trò chuyện với con dùng chung hộp “Chuyện nhà” với bố mẹ.
+  function openChildConversation(child) {
+    if (conversationDialog.open) return;
+    const scene = createChildConversation(state.player, child);
+    if (!scene) return;
+    conversationDraft = scene;
+    document.getElementById("family-conversation-title").textContent = scene.title;
+    conversationBody.replaceChildren(conversationText(scene.greeting));
+    if (scene.recall) conversationBody.append(conversationText(scene.recall, "family-conversation-recall"));
+    const prompt = conversationText(scene.prompt);
+    prompt.id = "family-conversation-prompt";
+    conversationBody.append(prompt);
+    const choices = document.createElement("div");
+    choices.className = "family-conversation-choices";
+    for (const choice of scene.choices) {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "shop-group";
+      option.dataset.childChoice = choice.id;
+      option.textContent = choice.label;
+      option.addEventListener("click", () => {
+        if (!conversationDialog.open || conversationDraft !== scene) return;
+        const log = interactWithChild(state.player, child.id, "talk", { sceneId: scene.id, age: scene.age, choiceId: choice.id });
+        conversationDraft = null;
+        if (!log) {
+          conversationDialog.close();
+          return;
+        }
+        state.logs.push(log);
+        save();
+        render();
+        onChange(log);
+        conversationBody.replaceChildren(conversationText(`Bạn: “${choice.label}”`));
+        const reply = conversationText(choice.reply);
+        reply.id = "family-conversation-prompt";
+        conversationBody.append(reply, conversationText("Câu chuyện đã được lưu trong kỷ niệm cùng con.", "side-job-note"));
+        const back = document.createElement("button");
+        back.type = "button";
+        back.className = "shop-group";
+        back.textContent = "Về với gia đình";
+        back.addEventListener("click", () => conversationDialog.close());
+        conversationBody.append(back);
+        back.focus();
+      });
+      choices.append(option);
+    }
+    conversationBody.append(choices, conversationText("Chọn cách đáp lời để tiếp tục. Đóng lại sẽ chưa tính lượt trò chuyện năm nay.", "side-job-note"));
+    conversationDialog.showModal();
+    conversationDialog.scrollTop = 0;
+  }
   document.getElementById("close-family-conversation").addEventListener("click", () => conversationDialog.close());
   conversationDialog.addEventListener("close", () => {
     if (conversationDialog.open) return;
@@ -710,10 +761,13 @@ export function initRelationships(state, save = () => {}, onChange = () => {}) {
         const note = document.createElement("span");
         note.className = "side-job-note";
         const blocked = getChildActionBlock(state.player, child, type);
-        note.textContent = blocked || `${action.cost ? formatMoney(action.cost) : "Miễn phí"} · Gắn kết +${action.bond}% · Hạnh phúc tối đa +${action.happiness} · Mỗi năm một lần.`;
+        note.textContent = blocked || (action.conversation
+          ? `Miễn phí · Con mở lời, bạn chọn cách đáp · Gắn kết +${action.bond}%, tăng hoặc giảm thêm tùy câu trả lời · Mỗi năm một lần.`
+          : `${action.cost ? formatMoney(action.cost) : "Miễn phí"} · Gắn kết +${action.bond}% · Hạnh phúc tối đa +${action.happiness} · Mỗi năm một lần.`);
         option.disabled = Boolean(blocked);
         option.append(note);
         option.addEventListener("click", () => {
+          if (action.conversation) return openChildConversation(child);
           const log = interactWithChild(state.player, child.id, type);
           if (!log) return;
           state.logs.push(log);

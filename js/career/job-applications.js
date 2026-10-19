@@ -12,6 +12,17 @@ import { getRehireLevel, startEmploymentRecord } from "./job-loss.js";
 import { canChooseCareer } from "../education/study-blocks.js";
 import { INTERVIEW, getInterviewChance, hasInterviewPrep, formatPercent, rollInterview } from "../stats/intellect-rules.js";
 
+const ANSWER_KEYS = "ABCDEFGH";
+const signed = (value) => `${value >= 0 ? "+" : "−"}${Math.abs(Math.round(value * 100))}`;
+
+// Interviews saved before the structured fields existed keep the question at the end of the text.
+export function splitInterviewText(interview) {
+  if (interview.question) return interview;
+  const parts = interview.text.split(/\n\n/);
+  const question = parts.length > 1 ? parts.pop().replace(/^“|”$/gu, "") : interview.text;
+  return { ...interview, intro: parts.join(" ").replace(/\s*[^.]*hỏi( bạn)?:\s*$/u, "").trim(), question };
+}
+
  
  
  
@@ -149,8 +160,8 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     if (player.jobInterview?.age !== player.age) {
       if (careerId === "study-abroad" && player.careerPath?.id !== careerId) return renderList();
       const target = targetPath(player, careerId);
-      const { id, title, text, choices } = createJobInterview({ ...player, careerPath: target });
-      player.jobInterview = { age: player.age, id, title, text, careerId: target.id,
+      const { id, title, text, choices, interviewer, place, round, intro, question } = createJobInterview({ ...player, careerPath: target });
+      player.jobInterview = { age: player.age, id, title, text, careerId: target.id, interviewer, place, round, intro, question,
         choices: choices.map(({ label, correct, quality }) => ({ label, correct, quality })) };
       player.jobAppliedAtAge = player.age;
       save();
@@ -160,15 +171,36 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
   }
 
   function renderInterview() {
-    const interview = state.player.jobInterview;
-    const card = element("section", "dialog-card job-interview");
-    card.append(element("h3", "", interview.title), element("p", "side-job-intro", interview.text));
-    const answers = element("div", "shop-groups");
+    const player = state.player;
+    const interview = splitInterviewText(player.jobInterview);
+    const room = element("section", "job-room");
+    const head = element("div", "job-room-head");
+    const who = element("div", "job-room-who");
+    who.append(
+      element("strong", "", interview.interviewer ?? "Người phỏng vấn"),
+      element("span", "", [interview.place, interview.round].filter(Boolean).join(" · ").replace(/^\p{Ll}/u, (letter) => letter.toLocaleUpperCase("vi-VN"))),
+    );
+    head.append(element("span", "job-room-avatar", "🧑‍💼"), who);
+    const answers = element("ol", "job-answers");
     interview.choices.forEach((choice, index) => {
-      answers.append(button("shop-group job-answer", choice.label, () => answer(index)));
+      const option = button("job-answer", "", () => answer(index));
+      option.append(element("span", "job-answer-key", ANSWER_KEYS[index] ?? String(index + 1)),
+        element("span", "job-answer-text", choice.label));
+      const item = element("li");
+      item.append(option);
+      answers.append(item);
     });
-    card.append(answers);
-    body.replaceChildren(card);
+    room.append(
+      element("h3", "job-room-title", interview.title),
+      head,
+      ...(interview.intro ? [element("p", "job-room-intro", interview.intro)] : []),
+      element("blockquote", "job-room-question", `“${interview.question}”`),
+      element("p", "job-room-prompt", "Bạn sẽ trả lời thế nào?"),
+      answers,
+      element("p", "job-room-foot", `🎓 Trí tuệ ${player.intelligence ?? 50}% · 🎤 ${hasInterviewPrep(player)
+        ? `Đã luyện phỏng vấn (+${Math.round(INTERVIEW.prepBonus * 100)}%)` : "Chưa luyện phỏng vấn"}`),
+    );
+    body.replaceChildren(room);
   }
 
   function answer(index) {
@@ -215,13 +247,47 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
     renderEducation();
     renderLogEntry(log);
     checkAchievements();
-    renderResult(result, salary, passed);
+    renderResult(result, salary, passed, assessment);
   }
 
-  function renderResult(result, salary, passed) {
-    const card = element("section", `dialog-card game-result ${passed ? "is-win" : "is-lose"}`);
-    card.append(element("h3", "", result.title), element("p", "side-job-intro", result.content));
-    if (salary) card.append(element("p", "side-job-intro", salary.content));
+  function scorecard(assessment) {
+    const card = element("div", "job-score");
+    const rows = [["Câu trả lời", `${INTERVIEW.qualityLabel[assessment.quality]}${assessment.quality === "good" ? ` · ${formatPercent(assessment.base)}` : ""}`]];
+    if (assessment.quality === "good") {
+      rows.push(["Trí tuệ", signed(assessment.intellect)], ["Luyện phỏng vấn", signed(assessment.prep)]);
+      if (assessment.looks) rows.push(["Ấn tượng ngoại hình", signed(assessment.looks)]);
+      if (assessment.abroad) rows.push(["Ngoại ngữ, học tập, hòa nhập", signed(assessment.abroad)]);
+      if (assessment.recordPenalty) rows.push(["Tiền án", signed(-assessment.recordPenalty)]);
+    }
+    const list = element("dl", "job-score-rows");
+    for (const [label, value] of rows) list.append(element("dt", "", label), element("dd", "", value));
+    const meter = element("div", "job-meter");
+    const fill = element("span", "job-meter-fill");
+    fill.style.width = `${Math.round(assessment.chance * 100)}%`;
+    meter.append(fill);
+    card.append(
+      element("h4", "", "📊 Bảng đánh giá"),
+      list,
+      element("p", "job-score-total", `Khả năng đỗ: ${formatPercent(assessment.chance)}`),
+      meter,
+      ...(assessment.quality === "good" ? [] : [element("p", "job-score-note", "Chỉ câu trả lời tốt mới có cơ hội được nhận.")]),
+    );
+    return card;
+  }
+
+  function renderResult(result, salary, passed, assessment = null) {
+    const card = element("section", `job-verdict ${passed ? "is-pass" : "is-fail"}`);
+    card.append(
+      element("span", "job-verdict-stamp", passed ? "Đã đậu" : "Chưa đậu"),
+      element("h3", "", result.title),
+      element("p", "job-verdict-text", result.mainContent ?? result.content),
+    );
+    if (assessment) card.append(scorecard(assessment));
+    if (salary?.content) {
+      const pay = element("ul", "job-pay");
+      for (const line of salary.content.split("\n").filter(Boolean)) pay.append(element("li", "", line));
+      card.append(pay);
+    }
     const nodes = [card];
     if (!passed) {
       const next = element("div", "shop-groups");
@@ -242,7 +308,7 @@ export function initJobApplications(state, { renderMoney, renderLogEntry, render
           renderList();
         }),
       );
-      nodes.push(next);
+      nodes.push(element("p", "job-next-title", "Bước tiếp theo"), next);
     }
     body.replaceChildren(...nodes, button("shop-buy game-primary", result.confirmText, () => dialog.close()));
     focusFirst();

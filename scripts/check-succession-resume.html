@@ -1,0 +1,70 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Succession resume checks</title>
+<pre id="resume-result">Running…</pre>
+<script type="module">
+// A save left at the heir-choice screen reopens there; ending the run is remembered across reloads.
+const result = document.getElementById("resume-result");
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainLifeArchive"];
+const phase = sessionStorage.getItem("resumeCheckPhase") ?? "pending";
+const restoreKey = "resumeCheckRestore";
+if (phase === "pending") sessionStorage.setItem(restoreKey, JSON.stringify(keys.map(key => localStorage.getItem(key))));
+const restore = () => {
+  const saved = JSON.parse(sessionStorage.getItem(restoreKey) ?? "[]");
+  keys.forEach((key, index) => saved[index] == null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  sessionStorage.removeItem(restoreKey);
+  sessionStorage.removeItem("resumeCheckPhase");
+};
+const $ = id => document.getElementById(id);
+async function mountGame(raw) {
+  const { createInitialState, state } = await import("../js/core/state.js");
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  $("game-screen").hidden = false;
+  $("lobby-screen").hidden = true;
+  Object.assign(state, createInitialState(), raw, { player: { ...createInitialState().player, ...raw.player } });
+  await import("../js/main.js");
+  await new Promise(resolve => setTimeout(resolve, 50));
+  return state;
+}
+try {
+  const { applyEstateOnce } = await import("../js/core/inheritance.js");
+  const { readSavedGame, canContinue, hasPendingSuccession } = await import("../js/core/ticket-store.js");
+  if (phase === "pending") {
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.removeItem("lifeAgainLifeArchive");
+    const player = { name: "Trần Thu Hà", gender: "female", age: 76, isAlive: false, lifeSeed: 3, lifeId: "resume-life", money: 300_000_000,
+      health: 0, happiness: 50, intelligence: 50, appearance: 50,
+      children: [{ id: "k1", name: "Đỗ An Khang", gender: "male", initialAge: 7, joinedAtAge: 40, adopted: true, relationship: 70 },
+        { id: "k2", name: "Đỗ Bình", gender: "male", initialAge: 0, joinedAtAge: 62, relationship: 70 }] };
+    applyEstateOnce(player);
+    localStorage.setItem("lifeAgainSave", JSON.stringify({ player, logs: [{ age: 76, content: "Hành trình khép lại." }], pendingEvent: null }));
+    assert(hasPendingSuccession(readSavedGame()) && canContinue(readSavedGame()), "Lobby offers to continue a pending choice");
+    const state = await mountGame(JSON.parse(localStorage.getItem("lifeAgainSave")));
+    assert($("death-dialog").open, "Reload reopens the death summary");
+    const cards = [...document.querySelectorAll(".heir-card")].map(card => card.dataset.heir);
+    assert(cards.join() === "k1", "Adopted adult child offered, minor not: " + cards.join());
+    assert($("death-succession").textContent.includes("con nuôi"), "Adopted child marked but equal");
+    const estate = state.player.estate;
+    assert(estate.allocations.find(item => item.key === "child:k1").cash === estate.allocations.find(item => item.key === "child:k2").cash, "Adopted and birth children share equally");
+    assert(state.player.money === 0 && JSON.stringify(estate) === JSON.stringify(JSON.parse(localStorage.getItem("lifeAgainSave")).player.estate), "Estate not settled twice on reload");
+    assert($("age-up").disabled, "Cannot age a dead character");
+    sessionStorage.setItem("resumeCheckPhase", "declined");
+    $("return-after-death").click();
+  } else {
+    const saved = readSavedGame();
+    assert(saved.player.lineage?.declined === true, "Ending the run is saved");
+    assert(!hasPendingSuccession(saved) && !canContinue(saved), "No succession offer after ending the run");
+    restore();
+    result.textContent = "PASS: reload at heir choice reopens it without resettling, adopted adult equal, minors excluded, ending the run is remembered";
+  }
+} catch (error) {
+  restore();
+  result.textContent = `FAIL: ${error.stack}`;
+}
+</script>

@@ -38,7 +38,7 @@ for (let run = 0; run < 2; run++) {
     await page.locator('#new-life-button').waitFor({ state: 'visible', timeout: 60000 });
     await page.waitForFunction(() => getComputedStyle(document.getElementById('app-loader')).opacity === '0');
     assert.equal(page.url(), GAME_URL);
-    assert.equal(await page.locator('#install-link').isVisible(), false);
+    assert.equal(await page.locator('#install-link').count(), 0);
     assert.equal(await page.evaluate(() => typeof window.require), 'undefined');
     assert.equal(await page.evaluate(() => typeof window.process), 'undefined');
     assert.equal(await page.evaluate(() => document.documentElement.hasAttribute('data-offline')), false);

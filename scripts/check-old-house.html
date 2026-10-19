@@ -11,7 +11,7 @@
     const {getAgeEvents}=await import('../js/events/events.js');
     const {state,createInitialState}=await import('../js/core/state.js');
     const {achievements}=await import('../js/achievements/achievements-data.js');
-    const {getCareerProfile}=await import('../js/career/career-jobs.js');
+    const {getCareerProfile}=await import('../js/career/career-jobs.js');const {completeLifeYear}=await import('../js/relationships/family.js');const {formatMoneyAmount}=await import('../js/core/money-format.js');const yearNet=(player,age,updates={})=>{const random=Math.random;Math.random=()=>0.99;try{const copy=structuredClone(player);const before=copy.money;const {money,...rest}=structuredClone(updates??{});completeLifeYear(copy,age,rest);return copy.money-before;}finally{Math.random=random;}};
     assert(getAgeEvents(40).length===5&&getAgeEvents(40).filter(e=>!e.specialId).length===4,'Two ordinary stories plus one special');
     const achievement=achievements.find(e=>e.id==='story-reincarnation');
     assert(achievement.title==='Lời hẹn âm dương'&&achievement.description.includes('con về'),'Stable achievement ID and new description');
@@ -60,17 +60,17 @@
       assert(state.pendingEvent.text.includes('Mẹ ơi, con về rồi.'),'Reunion is presented before the final choice');
       choose(finalChoice);resume();
       assert(state.player.money===0&&!state.player.achievementFlags['story-reincarnation'],'Reward applies only on confirmation');
-      confirm.click();
-      const money=72000000+(finalChoice===0?100000000:50000000);
+      const base=yearNet(state.player,40,state.pendingEvent.updates);confirm.click();
+      const money=base+(finalChoice===0?100000000:50000000);
       assert(state.player.age===40&&state.player.isAlive&&state.player.money===money&&state.player.happiness===(finalChoice===0?65:70),'Exact final reward and one annual salary');
       assert(state.player.achievementFlags['story-reincarnation']&&state.logs.at(-1).content.includes('nụ cười của bà bên khung cửa'),'Achievement and supplied diary saved');
-      assert(document.getElementById('money-value').textContent===`${money/1000000} triệu`,'Wallet shows reward');
+      assert(document.getElementById('money-value').textContent===formatMoneyAmount(money),'Wallet shows reward');
       confirm.click();assert(state.player.money===money,'Repeated confirmation cannot duplicate reward');
     }
     for(let exitStep=1;exitStep<=6;exitStep++){
       start();for(let i=1;i<exitStep;i++)choose(0);
-      choose(1);resume();confirm.click();
-      assert(state.player.age===40&&state.player.isAlive&&state.player.money===72000000&&state.player.happiness===50&&!state.player.achievementFlags['story-reincarnation'],'All six early exits end safely, pay salary only and grant no achievement');
+      choose(1);resume();const exitBase=yearNet(state.player,40,state.pendingEvent.updates);confirm.click();
+      assert(state.player.age===40&&state.player.isAlive&&state.player.money===exitBase&&state.player.happiness===50&&!state.player.achievementFlags['story-reincarnation'],'All six early exits end safely, pay salary only and grant no achievement');
     }
     result.textContent='PASS: 7 scenes, 6 early exits, 2 rewards, illustrations, saved progress, salary once, wallet, achievement and diary.';
   }catch(error){result.textContent='FAIL: '+error.stack;}

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createInitialState } from '../js/core/state.js';
-import { getStudyAbroadLivingCost, createStudyAbroadSchoolEvent } from '../js/education/study-abroad.js';
+import { getStudyAbroadLivingCost, createStudyAbroadSchoolEvent, createStudyAbroadMajorEvent, studyAbroadCountries } from '../js/education/study-abroad.js';
 import { getFamilyBudget, collectFamilyBudget } from '../js/relationships/family-budget.js';
 import { getPartnerRelationship } from '../js/special-events/special-later-life.js';
 import { archiveLife, readLifeArchive, getArchiveDiscovery, readLifeDiscovery } from '../js/core/life-archive.js';
@@ -13,9 +13,12 @@ const path = { id: 'study-abroad', school: { type: 'international', countryId: '
 const income = 600_000_000;
 const actualCost = getStudyAbroadLivingCost(path, 35, income);
 const describedCost = 0;
-const admissionText = createStudyAbroadSchoolEvent({ id: "study-abroad" }, { intelligence: 100, money: 0 })
-  .choices.find(choice => choice.careerPath.school.countryId === "china").text;
-assert.ok(admissionText.includes("thuê nhà 36 triệu/năm"));
+// Chọn nước đi thẳng sang chọn chuyên ngành (không có màn kết quả riêng); chi phí hiện trên nhãn và ở bước chuyên ngành.
+const admission = createStudyAbroadSchoolEvent({ id: "study-abroad" }, { intelligence: 100, money: 0 })
+  .choices.find(choice => choice.careerPath.school.countryId === "china");
+const china = studyAbroadCountries.find(country => country.id === "china");
+const admissionText = `${admission.label}\n${createStudyAbroadMajorEvent(admission.careerPath, { intelligence: 100 }).choices[0].text}`;
+for (const amount of [china.tuition, china.living]) assert.ok(admissionText.includes(`${amount / 1_000_000} triệu`), `chi phí ${amount} hiện trước khi xác nhận`);
 assert.ok(!admissionText.includes("55%"));
 assert.equal(actualCost, 0);
 assert.equal(describedCost, actualCost);
@@ -59,14 +62,20 @@ const parent = { ...createInitialState().player, age: 30, gender: 'male', partne
   marriedAtAge: 25, nextChildProposalAge: 30, health: 80 };
 assert.ok(createChildProposalEvent(parent, 30));
 Object.assign(parent, getChildProposalUpdates(parent, spouse, 30, 'accept', () => 0.4));
-assert.equal(createChildProposalEvent(parent, 40), null);
+assert.equal(createChildProposalEvent(parent, 34), null);
+assert.deepEqual(createChildProposalEvent(parent, 35).choices.map(choice => choice.childDecision), ['birth', 'adopt', 'decline']);
+Object.assign(parent, getChildProposalUpdates(parent, spouse, 35, 'adopt', () => 0.4));
+assert.equal(parent.children.length, 2);
+assert.ok(createChildProposalEvent(parent, 40));
+Object.assign(parent, getChildProposalUpdates(parent, spouse, 40, 'decline'));
+assert.equal(createChildProposalEvent(parent, 45), null);
 Object.assign(parent, getBreakupUpdates(parent));
 const nextSpouse = { ...spouse, id: 'p2', name: 'Bình' };
 Object.assign(parent, getDatingUpdates(parent, nextSpouse, 40));
 Object.assign(parent, getMarriageUpdates(parent, nextSpouse, 45, 'accept'));
 assert.ok(createChildProposalEvent(parent, 50));
-results.push({ id: 'one-child-per-marriage', severity: 'design-note', confirmed: true,
-  description: 'Mỗi hôn nhân dừng đề nghị con cái sau người con đầu tiên. Có thêm con bằng hôn nhân mới; danh hiệu đại gia đình không mở theo lộ trình một hôn nhân thông thường.' });
+results.push({ id: 'children-every-five-years', severity: 'design-note', confirmed: true,
+  description: 'Sau con đầu, cứ 5 năm kể từ đứa con gần nhất, bạn đời hỏi sinh thêm hoặc nhận nuôi thêm cho tới khi người chơi từ chối. Không có đề nghị sau 90 tuổi.' });
 
 fs.writeFileSync('output/mechanics-edge-cases.json', JSON.stringify(results, null, 2));
 for (const row of results) console.log(`${row.status === 'fixed' ? 'PASS regression' : 'DESIGN NOTE'}: ${row.id}`);

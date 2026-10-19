@@ -16,6 +16,8 @@ Toàn bộ sự kiện đời thường của game nằm ở `js/events/life-sto
 | `stage-80-89.js` | 80–89 |
 | `stage-90-104.js` | 90–104 |
 | `after-prison.js` | 19–104, chuỗi sau tiền án |
+| `elder-everyday.js` | 55–104, sự kiện tuổi già bổ sung (theo khoảng tuổi, có `theme`) |
+| `lineage-stories.js` | 19–104, chuỗi chỉ dành cho đời con sau khi tiếp quản (cần `heir`) |
 
 ## 1. Cách game chọn sự kiện
 
@@ -25,6 +27,9 @@ Toàn bộ sự kiện đời thường của game nằm ở `js/events/life-sto
 - Mỗi sự kiện chỉ xuất hiện một lần trong một đời (dấu `seen:<id>` được ghi tự động).
 - **Không có sự kiện đời thường** ở các tuổi 15, 16, 18, 22, 24, 25, 105, vì đây là năm có sự kiện đặc biệt không thể thay thế (18 tuổi luôn là sự kiện chọn ngành).
 - Sự kiện đặc biệt (lạc đường năm 10 tuổi, mỏ kim cương, chuyến tàu cuối…) vẫn do `js/events/events.js` lo, không nằm trong bộ này.
+- **Tuổi già bổ sung** (`elder-everyday.js`): ngoài 4 chỗ của kho theo tuổi, mỗi năm từ 55 tuổi game thêm **tối đa một** sự kiện ở file này vào nhóm bốc, ưu tiên chủ đề (`theme`) chưa gặp trong 3 năm gần nhất. Kho cũ giữ nguyên số chỗ. Mỗi sự kiện ở đây phải có ít nhất một lựa chọn không tốn tiền.
+- **Ước mơ dang dở** (`js/events/dreams.js`): từ 55 tuổi, chuyện thường ngày có thể gợi một trong ba ước mơ (chuyến đi đã hẹn, làm điều từng yêu thích, trở về nơi cũ). Các bước được sinh theo `player.dreams`, không dùng dấu `seen:`, mỗi năm nhiều nhất một bước, và chỉ chiếm thêm một chỗ trong nhóm bốc. Kiểm tra bằng `node scripts/check-dreams.mjs` và `scripts/check-dreams.html`.
+- **Ước mơ từ tuổi nhỏ** (`js/events/dream-roots.js`): gieo mầm 6–14 tuổi (tối đa hai lần gợi, có thể từ chối), thử sức 17–23, ngã rẽ 26–40 (giữ ở quy mô nhỏ, tạm gác hoặc thôi hẳn), giữ lửa hoặc được gợi lại 41–54, cách nhau ít nhất 2 năm. Người gợi cảm hứng chỉ là bố mẹ thật còn sống lúc gieo mầm, nếu không thì là thầy cô. Từ 55 tuổi, lời gợi ước mơ tuổi già nhắc lại đúng các dấu mốc này, và có kết thúc riêng tùy người thân còn sống hay đã mất. Kiểm tra bằng `node scripts/check-dream-roots.mjs` và `scripts/check-dream-roots.html`.
 
 ### Những điều game tự quyết: không viết vào sự kiện đời thường
 
@@ -100,6 +105,8 @@ Thà dùng thêm vài chữ để liền mạch, còn hơn ngắn mà khó hiể
 
 Chỗ điền tên tự động: `{tenBa}`, `{tenMe}`, `{tenBanDoi}`, `{tenCon}` (lấy tên gọi, ví dụ “Quốc Dân” → “Dân”). `{tenCon}` là đứa con hợp với `childAge` của sự kiện.
 
+Ở đời con còn có: `{vaiNguoiMat}` / `{VaiNguoiMat}` (“bố” / “Bố” hoặc “mẹ” / “Mẹ” của người đã khuất), `{tenNguoiMat}` (tên gọi), `{ongBaNguoiMat}` (“ông” hoặc “bà”, cách cháu gọi), `{tenAnhChiEm}` (một anh chị em còn sống), `{viecTot}` (việc tốt đời trước đã làm, lấy từ dấu thật).
+
 ## 6. Các tuyến chạy suốt đời
 
 - **Bà:** gần bà → bà trao nhẫn, bà mất (11–14) → chiếc nhẫn trong đám cưới em họ (30–45) → chính mình gọi nhầm tên cháu (82–100).
@@ -150,12 +157,19 @@ Còn rất nhiều dấu đã gieo nhưng chưa có sự kiện nối: xem [SO-D
 | Con | `children`, `noChildren` (kết hợp với `childAge`) |
 | Việc làm | `employed`, `notEmployed` (dưới 62 tuổi), `retired` (từ 62), `student`, `notStudent` (18–21) |
 | Khác | `vehicle`, `mobile` (sức khỏe từ 30), `frail` (sức khỏe dưới 30) |
+| Đời con | `heir` (đang chơi đời con), `inheritedHome` (được trao nhà ở), `siblings` (còn anh chị em), `parentHelped` (đời trước để lại việc tốt có dấu) |
 | Tiền án | `criminalRecord` (có tiền án), `outsidePrison` (không còn bản án đang chấp hành), `reformationReady` (đang hoàn lương, ít nhất 3 năm giữ mình ngoài trại, không có điều tra đang chờ, chưa nhận thư) |
 
 - Viết theo **cặp bổ sung nhau** để không ai bị thiếu sự kiện: `partner` đi với `single`, `employed` đi với `notEmployed`, `student` đi với `notStudent`.
 - Câu viết “ba mẹ” thì cần cả `father` và `mother`, đừng dùng `anyParent`.
 - Đặt id: `ls<tuổi>-<tên>` cho sự kiện cố định, `ls-<tuyến>-<tên>` cho sự kiện chuỗi.
 - Đặt tên dấu: chữ thường không dấu, nối bằng `_`, mô tả việc đã xảy ra (`nhan_thay_phong`, không đặt `flag1`). Dấu không bao giờ bị xóa.
+
+### Chuỗi đời con
+
+`lineage-stories.js` chỉ mở khi người chơi đã tiếp quản một người con (`needs: ['heir', ...]`). Sự kiện nói về người đã khuất bằng tên thật qua chỗ điền tên, không giả định điều đời trước chưa làm. Đời đầu không bao giờ gặp các sự kiện này. `check-life-stories.mjs` có phần mô phỏng hai đời riêng: dựng đời đầu lúc qua đời, chia thừa kế, dựng người con rồi chạy đời con tới khi mất bằng bộ chọn sự kiện thật, và in số năm đủ điều kiện / vào nhóm bốc / được bốc / đã xử lý của từng sự kiện. `scripts/check-lineage-play.html` chơi thật qua giao diện năm kịch bản hai đời.
+
+Hoàn cảnh gia đình của người con lúc tiếp quản: nếu đời đầu đã gặp `ls50-con-cuoi` hoặc `ls68-chat-nho` thì đứa con được kể trong sự kiện ấy đã cưới hoặc đã có con; còn lại suy ra một lần theo tuổi (có người độc thân, có người đã cưới, có người có con). Viết sự kiện đời con theo cặp `children` / `noChildren`, không giả định người con đã có gia đình.
 
 ### Tuyến trở về sau tiền án
 
@@ -166,7 +180,7 @@ Còn rất nhiều dấu đã gieo nhưng chưa có sự kiện nối: xem [SO-D
 ## 8. Sửa hoặc viết thêm
 
 1. Sửa trong file giai đoạn tương ứng. Viết giai đoạn mới thì import trong `js/events/life-stories/index.js`.
-2. Chạy `node scripts/check-life-stories.mjs --registry`. Script kiểm tra:
+2. Chạy `node scripts/check-life-stories.mjs --registry` (kiểm tra cả `elder-everyday.js` và mọi lời kể của ước mơ). Script kiểm tra:
    - độ dài, lối viết cấm, dấu hợp lệ, tiền không bị âm;
    - mọi hoàn cảnh (ba mẹ còn hay mất, độc thân hay có gia đình hay góa, có con nhỏ hay con lớn hay không con, có việc hay không, khỏe hay yếu, có tiền hay không) đều nhận ít nhất 3 sự kiện mỗi tuổi;
    - mô phỏng 4000 cuộc đời, báo sự kiện nào chưa từng xuất hiện;

@@ -11,7 +11,7 @@
     const {getAgeEvents}=await import('../js/events/events.js');
     const {state,createInitialState}=await import('../js/core/state.js');
     const {achievements}=await import('../js/achievements/achievements-data.js');
-    const {getCareerProfile}=await import('../js/career/career-jobs.js');
+    const {getCareerProfile}=await import('../js/career/career-jobs.js');const {completeLifeYear}=await import('../js/relationships/family.js');const {formatMoneyAmount}=await import('../js/core/money-format.js');const yearNet=(player,age,updates={})=>{const random=Math.random;Math.random=()=>0.99;try{const copy=structuredClone(player);const before=copy.money;const {money,...rest}=structuredClone(updates??{});completeLifeYear(copy,age,rest);return copy.money-before;}finally{Math.random=random;}};
     {const pool=getAgeEvents(45),ordinary=pool.filter(e=>!e.specialId).length;assert(pool.filter(e=>e.specialId).length===1&&ordinary>=3&&ordinary<=4,'Ordinary stories (up to four) plus the special');}
     assert(!step(0)&&!step(5),'Invalid scenes rejected');
     const images=new Set();
@@ -68,9 +68,9 @@
       choose(0);resume();
       assert(state.pendingEvent.content.includes('Bà An gọi')===reunited,'Only connected character receives the call');
       assert(state.player.money===0&&!state.player.achievementFlags['story-last-train'],'Rewards wait for confirmation');
-      confirm.click();const expected=reunited?132000000:72000000;
+      const base=yearNet(state.player,45,state.pendingEvent.updates);confirm.click();const expected=(reunited?60000000:0)+base;
       assert(state.player.age===45&&state.player.isAlive&&state.player.money===expected&&state.player.intelligence===60&&state.player.happiness===60,'Exact reward plus one annual salary');
-      assert(state.player.achievementFlags['story-last-train']&&document.getElementById('money-value').textContent===`${expected/1000000} triệu`,'Achievement and wallet updated');
+      assert(state.player.achievementFlags['story-last-train']&&document.getElementById('money-value').textContent===formatMoneyAmount(expected),'Achievement and wallet updated');
       assert(state.logs.at(-1).content.includes('tặng tôi 60.000.000')===reunited,'Diary follows the right ending');
       confirm.click();assert(state.player.money===expected,'No duplicate reward');
       for(let deathStep=1;deathStep<=4;deathStep++){
@@ -80,8 +80,8 @@
         assert(!state.player.achievementFlags['story-last-train']&&state.player.money===0,'Fatal branch receives no special reward and no salary for the year of death');
         assert(JSON.parse(localStorage.getItem('lifeAgainSave')).player.isAlive===false,'Death persists');
       }
-      start(reunited);choose(2);confirm.click();
-      assert(state.player.isAlive&&state.player.age===45&&state.player.money===72000000&&state.player.happiness===50&&!state.player.achievementFlags['story-last-train'],'Leaving the station safely grants only annual salary (after living costs)');
+      start(reunited);choose(2);const exitBase=yearNet(state.player,45,state.pendingEvent.updates);confirm.click();
+      assert(state.player.isAlive&&state.player.age===45&&state.player.money===exitBase&&state.player.happiness===50&&!state.player.achievementFlags['story-last-train'],'Leaving the station safely grants only annual salary (after living costs)');
     }
     result.textContent='PASS: 4 scenes, both age-40 histories, photo clues, per-life reward gating, all deaths, safe exit, saves, salary, wallet and achievement.';
   }catch(error){result.textContent='FAIL: '+error.stack;}

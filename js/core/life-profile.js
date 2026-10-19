@@ -4,6 +4,7 @@ import { saveGame } from "./save-store.js";
 import { getDatingPartners } from '../relationships/concurrent-dating.js';
 import { formatMoney, formatMoneyText } from "./money-format.js";
 import { getShopItem } from "../leisure/shop.js";
+import { summarizeAssets } from "./inheritance.js";
 import { getLicenseType } from "../career/licenses.js";
 import { destinations } from "../leisure/travel.js";
 import { applyActivityGain } from "./stat-budget.js";
@@ -13,6 +14,7 @@ import { RETIREMENT_AGE } from "../career/career-salary.js";
 import { describeJobLossCause } from "../career/job-loss.js";
 import { getRelativeAge } from "../relationships/family-members.js";
 import { initPanelTabs } from "../ui/panel-tabs.js";
+import { describeDreams, describeDreamEnding, setDreamPaused, describeDreamRoot, setDreamRootStatus } from "../events/dreams.js";
 
 const node = (tag, text) => {
   const element = document.createElement(tag);
@@ -128,15 +130,20 @@ export function renderLifeSummary(state) {
   ]);
 
    
-  const owned = [...(player.livestock ?? []), ...(player.purchases ?? [])];
+  // Sau khi chia thừa kế, tổng kết vẫn kể đúng tài sản lúc qua đời.
+  const held = player.estate?.before ? { ...player, ...player.estate.before } : player;
+  const owned = [...(held.livestock ?? []), ...(held.purchases ?? [])];
   const counts = new Map();
   for (const entry of owned) counts.set(entry.id, (counts.get(entry.id) ?? 0) + 1);
   const items = [...counts].map(([id, count]) => [getShopItem(id), count]).filter(([item]) => item);
   const assetValue = items.reduce((sum, [item, count]) => sum + item.price * count, 0);
   const assets = factList([
-    [(player.money ?? 0) < 0 ? "Khoản nợ còn lại" : "Tiền trong ví", formatMoney(Math.abs(player.money ?? 0))],
-    ["Nợ vay nhà", formatMoney((player.homeLoans ?? []).reduce((sum, loan) => sum + loan.outstanding, 0))],
-    ["Khoản cho vay chưa thu", formatMoney((player.storyLoans ?? []).reduce((sum, loan) => sum + loan.outstanding, 0))],
+    [(held.money ?? 0) < 0 ? "Khoản nợ còn lại" : "Tiền trong ví", formatMoney(Math.abs(held.money ?? 0))],
+    ["Nợ vay nhà", formatMoney((held.homeLoans ?? []).reduce((sum, loan) => sum + loan.outstanding, 0))],
+    ["Đời", player.lineage?.generation === 2 && player.lineage.founder
+      ? `Đời con · tiếp quản năm ${player.lineage.takeoverAge} tuổi sau khi ${player.lineage.founder.role} ${player.lineage.founder.given} qua đời` : ""],
+    ["Đã nhận thừa kế", player.lineage?.inheritance ? `${formatMoney(player.lineage.inheritance.cash)}${player.lineage.inheritance.assets.length ? ` và ${summarizeAssets(player.lineage.inheritance.assets)}` : ""}` : ""],
+    ["Khoản cho vay chưa thu", formatMoney((held.storyLoans ?? player.storyLoans ?? []).reduce((sum, loan) => sum + loan.outstanding, 0))],
     ["Tài sản", items.length
       ? items.map(([item, count]) => `${item.icon} ${item.name}${count > 1 ? ` ×${count}` : ""}`).join(", ")
       : "Không có tài sản đứng tên"],
@@ -174,6 +181,7 @@ export function renderLifeSummary(state) {
     ["Đã đi du lịch", trips.join(", ")],
     ["Kỷ niệm", player.memories?.length ? `${player.memories.length} trang kỷ niệm` : ""],
     ["Kỷ vật", (player.keepsakes ?? []).map((item) => item.name).join(", ")],
+    ["Ước mơ dang dở", describeDreamEnding(player).join("\n")],
     ["Tưởng nhớ", (player.familyMemories ?? []).map((memory) => `${memory.role} ${memory.name}: ${memory.text}`).join("\n")],
     ["Thú bông", plushes ? `${plushes} thú bông trong bộ sưu tập` : ""],
     ["Nhật ký", `${new Set(state.logs.map((log) => log.age)).size} năm có ghi chép`],
@@ -191,6 +199,90 @@ export function renderLifeSummary(state) {
   dialog.scrollTop = 0;
 }
 
+// Bảng ước mơ: tên, trạng thái, tiến độ, bước tiếp theo, và nút tạm gác hoặc tiếp tục.
+function renderDreams(state, renderLogEntry) {
+  const list = document.getElementById("life-dreams");
+  const hint = document.getElementById("life-dreams-hint");
+  if (!list) return;
+  const dreams = describeDreams(state.player);
+  const someoneActive = dreams.some((dream) => dream.active);
+  const root = describeDreamRoot(state.player);
+  list.replaceChildren();
+  if (hint) hint.hidden = dreams.length > 0 || Boolean(root);
+  if (root) {
+    const item = node("li");
+    item.className = `dream-entry dream-root is-${root.status}`;
+    const meta = node("span", `Từ tuổi nhỏ · ${({ growing: "Đang nuôi dưỡng", paused: "Đang tạm gác", dropped: "Đã buông" })[root.status]}`);
+    meta.className = "dream-meta";
+    const steps = node("ol");
+    steps.className = "dream-milestones";
+    for (const step of root.milestones) steps.append(node("li", `${step.age} tuổi: ${step.text}`));
+    item.append(node("strong", `🌱 ${root.icon} ${root.name}`), meta, steps);
+    if (root.toggle) {
+      const button = node("button", root.toggleLabel);
+      button.type = "button";
+      button.className = "dream-toggle";
+      button.dataset.dreamRoot = root.toggle;
+      button.disabled = Boolean(state.pendingEvent) || state.player.isAlive === false;
+      button.addEventListener("click", () => {
+        const next = setDreamRootStatus(state.player, root.toggle);
+        if (!next || state.pendingEvent) return;
+        state.player.dreams = next;
+        const content = root.toggle === "paused"
+          ? `🌱 Tôi tạm gác ước mơ từ thuở nhỏ: ${root.name.toLowerCase()}. Những gì đã có vẫn còn đó.`
+          : `🌱 Tôi quay lại với ước mơ từ thuở nhỏ: ${root.name.toLowerCase()}.`;
+        const log = { age: state.player.age, content, summary: content };
+        state.logs.push(log);
+        saveGame(state);
+        renderLogEntry(log);
+        renderDreams(state, renderLogEntry);
+      });
+      item.append(button);
+    }
+    list.append(item);
+  }
+  for (const dream of dreams) {
+    const item = node("li");
+    item.className = `dream-entry is-${dream.status}`;
+    const meta = node("span", [dream.statusLabel, dream.status === "declined" ? "" : `Bước ${dream.progress}/${dream.total}`,
+      dream.scale, dream.spent ? `Đã chi ${formatMoney(dream.spent)}` : ""].filter(Boolean).join(" · "));
+    meta.className = "dream-meta";
+    item.append(node("strong", `${dream.icon} ${dream.name}`), meta);
+    if (dream.status !== "declined") {
+      const progress = node("progress");
+      progress.max = dream.total;
+      progress.value = dream.progress;
+      progress.setAttribute("aria-label", `Tiến độ ${dream.progress}/${dream.total}`);
+      item.append(progress);
+    }
+    if (dream.summary) item.append(node("p", dream.summary));
+    if (dream.nextStep) item.append(node("p", dream.nextStep));
+    if (dream.status === "active" || dream.status === "paused") {
+      const pausing = dream.status === "active";
+      const button = node("button", pausing ? "⏸️ Tạm gác" : someoneActive ? "▶️ Tiếp tục, gác ước mơ kia" : "▶️ Tiếp tục");
+      button.type = "button";
+      button.className = "dream-toggle";
+      button.dataset.dream = dream.id;
+      button.disabled = Boolean(state.pendingEvent) || state.player.isAlive === false;
+      button.addEventListener("click", () => {
+        const next = setDreamPaused(state.player, dream.id, pausing);
+        if (!next || state.pendingEvent) return;
+        state.player.dreams = next;
+        const content = pausing
+          ? `🌟 Tôi tạm gác ước mơ “${dream.name}”. Những gì đã chuẩn bị vẫn còn đó.`
+          : `🌟 Tôi quay lại với ước mơ “${dream.name}”.`;
+        const log = { age: state.player.age, content, summary: content };
+        state.logs.push(log);
+        saveGame(state);
+        renderLogEntry(log);
+        renderDreams(state, renderLogEntry);
+      });
+      item.append(button);
+    }
+    list.append(item);
+  }
+}
+
 export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements }) {
   const dialog = document.getElementById("life-profile-dialog");
 
@@ -199,10 +291,15 @@ export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchie
 
   document.getElementById("assets").addEventListener("click", () => {
     if (document.querySelector("dialog[open]")) return;
+    renderDreams(state, renderLogEntry);
     const items = document.getElementById("life-keepsakes");
     items.replaceChildren();
     for (const item of state.player.keepsakes ?? []) {
-      items.append(node("li", `${item.name} · ${item.receivedAtAge} tuổi${item.description ? ` — ${item.description}` : ""}`));
+      items.append(node("li", `${item.name} · ${item.receivedAtAge} tuổi${item.inherited ? " · được trao lại" : ""}${item.description ? ` — ${item.description}` : ""}`));
+    }
+    // Album gia đình: kỷ vật và kỷ niệm của đời trước, ghi rõ chủ nhân, không tính là trải nghiệm của người con.
+    for (const item of state.player.lineage?.familyKeepsakes ?? []) {
+      items.append(node("li", `📒 Album gia đình · ${item.name} · của ${item.owner}, nhận năm ${item.receivedAtAge} tuổi${item.holder ? ` · ${item.holder} đang giữ` : ""}`));
     }
     const memories = document.getElementById("life-memories");
     memories.replaceChildren();
@@ -234,6 +331,11 @@ export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchie
       if (memory.people?.length) card.append(node("p", `Cùng: ${memory.people.join(", ")}`));
       memories.append(card);
     }
+    for (const memory of state.player.lineage?.familyMemories ?? []) {
+      const card = node("figure");
+      card.append(node("h4", `📒 ${memory.title} · của ${memory.owner}, năm ${memory.receivedAtAge} tuổi`), node("figcaption", memory.text));
+      memories.append(card);
+    }
     selectTab();
     dialog.showModal();
   });
@@ -241,11 +343,19 @@ export function initLifeProfile(state, { renderStats, renderLogEntry, checkAchie
   const teach = document.getElementById("activity-repair-lessons");
   const feedback = document.getElementById("activity-repair-feedback");
   if (!teach || !feedback) return;
+  const note = teach.querySelector(".activity-note");
+  // The button states its effect and, when locked, the reason, before the player taps it.
   const refresh = () => {
-    teach.hidden = !(state.player.unlockedActivities ?? []).includes("free-repair-lessons");
-    teach.disabled = state.player.isAlive === false || Boolean(state.pendingEvent) || state.player.lastRepairLessonAge === state.player.age;
-    feedback.textContent = !teach.hidden && state.player.lastRepairLessonAge === state.player.age
-      ? "Bạn đã dạy một buổi trong năm nay. Năm sau có thể tiếp tục." : "";
+    const player = state.player;
+    const jailed = Boolean(player.prison && player.prison.releaseAge > player.age);
+    const taught = player.lastRepairLessonAge === player.age;
+    teach.hidden = !(player.unlockedActivities ?? []).includes("free-repair-lessons");
+    teach.disabled = player.isAlive === false || Boolean(state.pendingEvent) || jailed || taught;
+    const status = player.isAlive === false ? "" : jailed ? "⛓️ Đang thụ án nên chưa thể dạy."
+      : taught ? "✅ Năm nay đã dạy, sang năm dạy tiếp." : "✨ Năm nay còn một buổi.";
+    if (note) note.textContent = `Miễn phí, không tốn lượt rảnh: Trí tuệ +1, Hạnh phúc +1. ${status}`;
+    feedback.textContent = !teach.hidden && (jailed || taught)
+      ? (jailed ? "Dạy sửa đồ miễn phí sẽ mở lại sau khi mãn hạn tù." : "Bạn đã dạy một buổi trong năm nay. Năm sau có thể tiếp tục.") : "";
   };
   document.getElementById("activities").addEventListener("click", refresh);
   teach.addEventListener("click", () => {

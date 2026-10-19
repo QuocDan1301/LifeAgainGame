@@ -1,4 +1,5 @@
 // Local-only history. No save, achievement or account keys are changed here.
+import { describeRootJourney, normalizeRoots } from '../events/dream-roots.js';
 export const LIFE_ARCHIVE_KEY = 'lifeAgainLifeArchive';
 export const LIFE_ARCHIVE_LIMIT = 50;
 export const SPECIAL_CATALOG = [
@@ -100,6 +101,15 @@ export function buildLifeSummary(state, cause) {
     children: array(p.children).length,
     criminalRecord: array(p.criminalRecord).map(({ crime, age, years }) => ({ crime, age, years })),
     lifePath: p.lifePath ?? 'ordinary', titles,
+    lineage: p.lineage?.generation === 2 && p.lineage.founder
+      ? { generation: 2, founderName: p.lineage.founder.name, founderRole: p.lineage.founder.role, takeoverAge: p.lineage.takeoverAge }
+      : { generation: 1 },
+    dreams: Object.entries(p.dreams?.entries ?? {}).filter(([, entry]) => entry && typeof entry === 'object')
+      .map(([id, entry]) => ({ id, status: entry.status, scale: entry.scale ?? null, outcome: entry.outcome ?? null })),
+    // Hành trình ước mơ để đọc lại trong sổ: từ tuổi nhỏ và những ước mơ tuổi già đã hoàn thành.
+    dreamJourney: [describeRootJourney(normalizeRoots(p.dreams?.roots)),
+      ...Object.values(p.dreams?.entries ?? {}).filter(entry => entry?.status === 'done' && typeof entry.summary === 'string')
+        .map(entry => `🌟 ${entry.summary}`)].filter(Boolean),
     specialSeen: unique(array(p.specialChainsSeen)), specialCompleted: unique(array(p.specialChainsCompleted)),
     achievements: unique(array(p.lifeUnlockedAchievementIds ?? p.lifeAchievementIds)),
   };
@@ -119,6 +129,7 @@ export function readLifeArchive(storage) {
         specialSeen: array(entry.specialSeen).filter(id => typeof id === 'string'),
         specialCompleted: array(entry.specialCompleted).filter(id => typeof id === 'string'),
         achievements: array(entry.achievements).filter(id => typeof id === 'string'),
+        dreamJourney: array(entry.dreamJourney).filter(line => typeof line === 'string').slice(0, 5),
         criminalRecord: array(entry.criminalRecord).filter(record => record && typeof record === 'object'),
       }));
   } catch { return []; }

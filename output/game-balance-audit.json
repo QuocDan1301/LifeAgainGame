@@ -97,23 +97,23 @@
     {
       "item": "porsche",
       "price": 8000000000,
-      "reachableRoutes": 131,
+      "reachableRoutes": 132,
       "totalRoutes": 174,
-      "routesBeforeRetirement": 50,
+      "routesBeforeRetirement": 63,
       "earliestAge": 48
     },
     {
       "item": "lamborghini",
       "price": 10000000000,
-      "reachableRoutes": 106,
+      "reachableRoutes": 125,
       "totalRoutes": 174,
-      "routesBeforeRetirement": 20,
+      "routesBeforeRetirement": 21,
       "earliestAge": 53
     },
     {
       "item": "rolls-royce",
       "price": 12000000000,
-      "reachableRoutes": 99,
+      "reachableRoutes": 121,
       "totalRoutes": 174,
       "routesBeforeRetirement": 13,
       "earliestAge": 57
@@ -121,7 +121,7 @@
     {
       "item": "private-jet",
       "price": 15000000000,
-      "reachableRoutes": 85,
+      "reachableRoutes": 106,
       "totalRoutes": 174,
       "routesBeforeRetirement": 0,
       "earliestAge": 64
@@ -139,21 +139,21 @@
       "price": 5000000000,
       "reachableRoutes": 150,
       "totalRoutes": 174,
-      "routesBeforeRetirement": 123,
+      "routesBeforeRetirement": 140,
       "earliestAge": 42
     },
     {
       "item": "restaurant",
       "price": 8000000000,
-      "reachableRoutes": 131,
+      "reachableRoutes": 132,
       "totalRoutes": 174,
-      "routesBeforeRetirement": 50,
+      "routesBeforeRetirement": 63,
       "earliestAge": 48
     },
     {
       "item": "hotel",
       "price": 15000000000,
-      "reachableRoutes": 85,
+      "reachableRoutes": 106,
       "totalRoutes": 174,
       "routesBeforeRetirement": 0,
       "earliestAge": 64
@@ -161,10 +161,10 @@
     {
       "item": "resort",
       "price": 30000000000,
-      "reachableRoutes": 38,
+      "reachableRoutes": 50,
       "totalRoutes": 174,
       "routesBeforeRetirement": 0,
-      "earliestAge": 78
+      "earliestAge": 76
     },
     {
       "item": "noodle-cart",
@@ -322,71 +322,71 @@
     {
       "id": "pigeon",
       "price": 100000,
-      "annualProfitBeforeTax": 10000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 30000,
+      "grossYield": 0.3,
       "limit": 5
     },
     {
       "id": "duck",
       "price": 120000,
-      "annualProfitBeforeTax": 12000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 36000,
+      "grossYield": 0.3,
       "limit": 5
     },
     {
       "id": "chicken",
       "price": 150000,
-      "annualProfitBeforeTax": 15000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 45000,
+      "grossYield": 0.3,
       "limit": 5
     },
     {
       "id": "turkey",
       "price": 600000,
-      "annualProfitBeforeTax": 60000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 180000,
+      "grossYield": 0.3,
       "limit": 5
     },
     {
       "id": "goat",
       "price": 3500000,
-      "annualProfitBeforeTax": 350000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 700000,
+      "grossYield": 0.2,
       "limit": 5
     },
     {
       "id": "pig",
       "price": 4000000,
-      "annualProfitBeforeTax": 400000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 800000,
+      "grossYield": 0.2,
       "limit": 5
     },
     {
       "id": "sheep",
       "price": 5000000,
-      "annualProfitBeforeTax": 500000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 1000000,
+      "grossYield": 0.2,
       "limit": 5
     },
     {
       "id": "cow",
       "price": 18000000,
-      "annualProfitBeforeTax": 1800000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 3600000,
+      "grossYield": 0.2,
       "limit": 5
     },
     {
       "id": "buffalo",
       "price": 25000000,
-      "annualProfitBeforeTax": 2500000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 5000000,
+      "grossYield": 0.2,
       "limit": 5
     },
     {
       "id": "horse",
       "price": 40000000,
-      "annualProfitBeforeTax": 4000000,
-      "grossYield": 0.1,
+      "annualProfitBeforeTax": 8000000,
+      "grossYield": 0.2,
       "limit": 5
     },
     {

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, net, protocol, session, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, net, protocol, session, shell } from 'electron';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -56,7 +56,8 @@ else {
     window = new BrowserWindow({
       title: 'Life Again', width: 1280, height: 900, minWidth: 800, minHeight: 600,
       show: false, backgroundColor: '#fff8dc', icon: path.join(app.getAppPath(), 'icon.png'),
-      webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true }
+      webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true,
+        preload: path.join(app.getAppPath(), 'preload.cjs') }
     });
     const openExternal = address => {
       const allowed = externalUrl(address);
@@ -68,7 +69,19 @@ else {
     });
     window.webContents.on('will-attach-webview', event => event.preventDefault());
     window.once('ready-to-show', () => window.show());
-    const updater = createDesktopUpdater({ app, dialog, net, getWindow: () => window });
+    const updater = createDesktopUpdater({ app, dialog, net, getWindow: () => window,
+      onReady: version => window?.webContents.send('update-ready', version) });
+    // Only the game page itself may ask for update status or a restart.
+    const fromGame = event => event.sender === window?.webContents &&
+      Boolean(event.senderFrame?.url.startsWith(GAME_ORIGIN + '/'));
+    ipcMain.on('update-status', event => {
+      const version = updater.readyVersion();
+      if (fromGame(event) && version) event.sender.send('update-ready', version);
+    });
+    ipcMain.handle('install-update', event => {
+      if (!fromGame(event)) throw new Error('Không được phép.');
+      return updater.restartAndInstall();
+    });
     Menu.setApplicationMenu(Menu.buildFromTemplate([
       { label: 'Life Again', submenu: [
         { label: 'Kiểm tra cập nhật', click: () => void updater.check(true) },

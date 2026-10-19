@@ -791,8 +791,7 @@
   gap: 10px;
   margin: 14px 0 0;
 }
-#lobby-screen #open-transfer,
-#lobby-screen #install-link {
+#lobby-screen #open-transfer {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -804,11 +803,6 @@
   font: 400 16px "Sriracha", cursive;
   text-decoration: none;
   cursor: pointer;
-}
- 
-#lobby-screen #install-link[hidden] { display: none; }
-@media (display-mode: standalone) {
-  #lobby-screen #install-link { display: none; }
 }
 #transfer-dialog [hidden] { display: none !important; }
 #transfer-dialog p { margin: 0; }
@@ -933,8 +927,7 @@
     gap: 8px;
     margin-top: 10px;
   }
-  #lobby-screen #open-transfer,
-  #lobby-screen #install-link {
+  #lobby-screen #open-transfer {
     min-height: 40px;
     padding: 4px 10px;
     font-size: 14px;

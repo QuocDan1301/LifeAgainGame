@@ -8,8 +8,6 @@ export function initMoveHome() {
   const button = document.getElementById("move-home-button");
   const status = document.getElementById("move-home-status");
   banner.hidden = false;
-   
-  document.getElementById("install-link").hidden = true;
   button.addEventListener("click", async () => {
     if (!hasSaveData()) {
       location.href = HOME_URL;

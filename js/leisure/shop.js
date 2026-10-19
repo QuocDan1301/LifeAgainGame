@@ -61,6 +61,8 @@ export const shopCatalog = [
     achievement: "own-rolls-royce", description: "Biểu tượng của sự sang trọng bậc nhất." },
   { id: "private-jet", shop: "shopping", group: "vehicles", icon: "✈️", name: "Máy bay riêng", price: 15_000_000_000,
     achievement: "own-private-jet", description: "Bầu trời là của riêng bạn, bay đi đâu tùy thích." },
+  { id: "tesla-roadster", shop: "shopping", group: "vehicles", icon: "⚡", name: "Tesla Roadster", price: 25_000_000_000, license: "car",
+    achievement: "own-tesla-roadster", description: "Siêu xe điện tăng tốc như tên lửa, chạy êm gần như không một tiếng động." },
    
   { id: "starter-apartment", shop: "shopping", group: "realestate", icon: "🏡", name: "Căn hộ đầu tiên", price: 800_000_000, residential: true, limit: 1,
     description: "Căn hộ để ở. Mua xong không còn tiền thuê nhà hằng năm; không tự sinh lãi. Được giảm trừ thuế nhà ở." },
@@ -143,6 +145,15 @@ export function groupOwned(entries, age) {
   return [...groups.values()];
 }
  
+// Tài sản thừa kế giữ tuổi mua quy đổi để giá bán lại không đổi; người chơi chỉ thấy năm nhận thừa kế.
+function describeOrigin(units, player) {
+  const bought = units.filter((unit) => !unit.inherited);
+  const inherited = units.filter((unit) => unit.inherited);
+  return [bought.length ? `Mua lúc ${describeAges(bought.map((unit) => unit.boughtAtAge))}` : "",
+    inherited.length ? `Thừa kế năm ${describeAges(inherited.map((unit) => unit.inheritedAtAge ?? player.lineage?.takeoverAge ?? player.age))}` : ""]
+    .filter(Boolean).join(" · ");
+}
+
 export function describeAges(ages) {
   const unique = [...new Set(ages)].sort((a, b) => a - b);
   return unique.length > 3 ? `${unique[0]}–${unique.at(-1)} tuổi` : `${unique.join(", ")} tuổi`;
@@ -455,7 +466,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
         sell.addEventListener("click", () => ask(
           `💸 Bán ${item.name}?`,
           `Bạn muốn bán ${many ? "1 " : ""}${item.icon} ${item.name} với giá ${formatMoney(sellPrice)} (${Math.round(sellPrice / item.price * 100)}% giá mua)?` +
-            (item.shop === "pets" ? `\nCon được bán mua lúc ${owned.boughtAtAge} tuổi; giá bán giảm theo số năm nuôi.` : "") +
+            (item.shop === "pets" ? `\nCon được bán ${owned.inherited ? "là con được thừa kế" : `mua lúc ${owned.boughtAtAge} tuổi`}; giá bán giảm theo số năm nuôi.` : "") +
             (many ? `\nBạn còn lại ${units.length - 1} ${item.name.toLocaleLowerCase("vi-VN")}.` : "") +
             (item.profit ? "\nSau khi bán sẽ không còn nhận lãi từ tài sản này."
               : isCompanion(item) ? "\nBạn sẽ phải chia tay người bạn nhỏ này." : ""),
@@ -471,7 +482,7 @@ export function initShop(state, { renderMoney, renderStats, renderLogEntry, chec
           },
         ));
         row.append(element("span", "",
-          `${item.icon} ${item.name}${many ? ` ×${units.length}` : ""} · Mua lúc ${describeAges(units.map((unit) => unit.boughtAtAge))}${income}`));
+          `${item.icon} ${item.name}${many ? ` ×${units.length}` : ""} · ${describeOrigin(units, state.player)}${income}`));
         if (item.residential && units.some(unit => !Number.isInteger(unit.rentedAtAge) || age > getLeaseEndAge(unit))) {
           row.append(element("span", "shop-lease-status", "🏠 Có thể dùng để ở · không phải thuê nhà."));
         }

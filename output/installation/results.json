@@ -43,16 +43,5 @@
     "aliases": 1,
     "worksWithoutSiteBundle": true,
     "explicitIntroductionAccessible": true
-  },
-  {
-    "installedPwaEntry": true,
-    "mode": "ios",
-    "aliases": 1,
-    "worksWithoutSiteBundle": true,
-    "explicitIntroductionAccessible": true
-  },
-  {
-    "nativeServiceWorkerOfflineEntry": true,
-    "savedLifeRetained": true
   }
 ]

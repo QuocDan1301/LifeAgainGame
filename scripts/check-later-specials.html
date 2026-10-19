@@ -95,7 +95,10 @@
       confirm.click();
       assert(state.player.age===age&&!state.pendingEvent,'Path completes exactly one year');
        
-      assert(state.player.money===START_MONEY+(choice.money??0)-(choice.death?0:24_000_000),'Exact wallet reward or loss '+age);
+      // Qua đời thì tiền chuyển vào phần chia thừa kế; số dư lúc mất nằm ở estate.moneyBefore.
+      const wallet=state.player.estate?.settled?state.player.estate.moneyBefore:state.player.money;
+      assert(wallet===START_MONEY+(choice.money??0)-(choice.death?0:24_000_000),'Exact wallet reward or loss '+age);
+      if(choice.death)assert(state.player.estate?.settled&&state.player.money===0,'Death settles the estate once '+age);
       for (const stat of ['health','intelligence','happiness','appearance']) {
         const expected=choice.statTargets?.[stat]??Math.max(stat==='health'?(choice.minimumHealth??0):0,Math.min(100,50+(choice.effects?.[stat]??0)));
          

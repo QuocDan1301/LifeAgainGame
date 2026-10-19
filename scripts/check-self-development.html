@@ -37,7 +37,7 @@
     open();
     assert($("self-development-dialog").open && body().querySelectorAll(".shop-group").length === 4, "Four stat groups");
     body().querySelector('.shop-group[data-stat="health"]').click();
-    assert(body().querySelectorAll(".dev-activity:not(.dev-recovery)").length === 2 && body().querySelectorAll(".dev-buy").length === 6, "Two activities with three packages");
+    assert(body().querySelectorAll(".dev-activity:not(.dev-recovery)").length === 2 && body().querySelectorAll(".dev-buy[data-tier]:not(.dev-use-pass):not(.dev-buy-pass)").length === 6, "Two activities with three packages");
     assert(body().querySelectorAll(".dev-recovery .dev-recover").length === 2, "Health also offers two free recovery activities");
     assert(buy("gym", "premium").disabled && !buy("gym", "standard").disabled, "Cannot afford the premium package");
     buy("gym", "standard").click();

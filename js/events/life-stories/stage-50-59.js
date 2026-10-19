@@ -659,10 +659,10 @@ export const stage50To59 = [
   {
     id: 'ls58-giu-gin-nha', age: 58,
     title: 'Sửa lại căn nhà',
-    text: 'Căn nhà tôi ở hai mươi năm đã xuống cấp: thấm dột, điện cũ, cầu thang dốc. Sửa lớn thì tốn gần hết tiền dành dụm. Không sửa thì ở tạm cũng được, nhưng càng già càng khó.',
+    text: 'Căn nhà tôi ở hai mươi năm đã xuống cấp: thấm dột, điện cũ, cầu thang dốc. Sửa lớn thì tốn một khoản không nhỏ. Không sửa thì ở tạm cũng được, nhưng càng già càng khó.',
     choices: [
       { label: 'Sửa lại cho người già ở', money: -100000000, effects: { health: 2, happiness: 1 }, flags: ['sua_nha_cho_gia'],
-        text: 'Thợ làm ba tháng. Cầu thang thoai thoải hơn, có tay vịn, phòng ngủ dời xuống tầng trệt. Tài khoản gần trống, nhưng nhà như mới. Tôi đi lại dễ dàng.' },
+        text: 'Thợ làm ba tháng. Cầu thang thoai thoải hơn, có tay vịn, phòng ngủ dời xuống tầng trệt. Khoản chi lớn, nhưng nhà như mới. Tôi đi lại dễ dàng.' },
       { label: 'Sửa những chỗ hỏng thôi', money: -20000000, effects: { intelligence: 1 },
         text: 'Tôi sửa mái dột, thay dây điện. Cầu thang vẫn dốc, mỗi lần lên xuống tôi đi chậm, vịn tường. Tiền vẫn còn, để dành.' },
     ],

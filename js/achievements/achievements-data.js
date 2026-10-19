@@ -338,6 +338,15 @@ export const achievements = [
     "Sở hữu máy bay riêng của bạn.",
     flag(),
   ),
+  item(
+    "own-tesla-roadster",
+    "assets",
+    "Phương tiện",
+    "⚡",
+    "Tia chớp không tiếng động",
+    "Sở hữu một chiếc Tesla Roadster.",
+    flag(),
+  ),
 
   item(
     "side-job-all-stores",
@@ -856,14 +865,35 @@ export const achievements = [
     "Nấu đủ mọi món trong sổ tay bếp.",
     flag(),
   ),
+  // Hai đời trong một lượt chơi (xem js/core/succession.js). Không có thành tựu ba thế hệ.
+  item("heir-takeover", "milestones", "Tình yêu và gia đình", "🌱", "Người tiếp nối",
+    "Lần đầu tiếp quản cuộc đời của một người con.", flag()),
+  item("promise-kept", "milestones", "Tình yêu và gia đình", "🤝", "Lời hẹn được giữ",
+    "Hoàn thành câu chuyện tiếp nối ước nguyện của bố hoặc mẹ.", flag()),
+  item("two-lives", "milestones", "Tình yêu và gia đình", "👪", "Hai cuộc đời",
+    "Đi trọn đời đầu và đời con trong cùng một lượt chơi.", flag()),
 ];
+
+// Tiền tiết kiệm suy ra lúc tiếp quản đời con không tính cho thành tựu tiền; tiền thừa kế và tiền tự kiếm thì có.
+// Phần suy ra còn lại giảm dần khi số dư từng xuống thấp hơn nó (xem trackInferredSavings).
+export function inferredMoney(player = {}) {
+  const inferred = player.lineage?.inferred;
+  if (!inferred || !Number.isFinite(inferred.savings)) return 0;
+  const left = Number.isFinite(inferred.savingsLeft) ? inferred.savingsLeft : inferred.savings;
+  return Math.max(0, Math.min(left, Number(player.money) || 0));
+}
+export function trackInferredSavings(player = {}) {
+  const inferred = player.lineage?.inferred;
+  if (!inferred || !Number.isFinite(inferred.savings)) return;
+  inferred.savingsLeft = inferredMoney(player);
+}
 
 export function meetsAchievement(achievement, player = {}) {
   const rule = achievement.rule;
   if (rule.kind === "flag") {
     return player.achievementFlags?.[achievement.id] === true;
   }
-  const value = player[rule.field];
+  const value = rule.field === "money" ? player.money - inferredMoney(player) : player[rule.field];
   return (
     Number.isFinite(value) &&
     (rule.strict ? value > rule.value : value >= rule.value)

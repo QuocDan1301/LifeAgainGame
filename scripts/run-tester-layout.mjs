@@ -31,7 +31,7 @@ try {
     page.on('pageerror', error => errors.push(error.message));
     await context.route('**/*', async route => {
       const url = new URL(route.request().url());
-      if (url.hostname !== 'game.test') return route.abort();
+      if (url.hostname !== 'localhost') return route.abort();
       const file = path.resolve(root, '.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
       if (!file.startsWith(root + path.sep)) return route.abort();
       const types = { '.js': 'text/javascript; charset=utf-8', '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg' };
@@ -58,7 +58,7 @@ try {
       write();
       return scope;
     }
-    await page.goto('https://game.test/index.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:5599/index.html', { waitUntil: 'domcontentloaded' });
     await page.evaluate('(' + seed + ')()');
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.locator('#continue-button').waitFor({ state: 'visible' });

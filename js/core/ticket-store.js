@@ -73,7 +73,16 @@ export function readSavedGame() {
       !Number.isInteger(log.age) || log.age < 0 || log.age > 105)) return null;
   return saved;
 }
+// Đời đầu đã qua đời, đã chia thừa kế và còn quyền tiếp nối: được mở lại để chọn người con.
+export function hasPendingSuccession(saved) {
+  const player = saved?.player;
+  const lineage = player?.lineage ?? {};
+  return Boolean(player && player.isAlive === false && player.estate?.settled === true && (lineage.generation ?? 1) === 1 &&
+    !lineage.successionUsed && !lineage.declined && (player.children ?? []).some(child => child && child.alive !== false &&
+      Number(child.initialAge) + Math.max(0, Number(player.age) - Number(child.joinedAtAge)) >= 18));
+}
 export function canContinue(saved) {
+  if (hasPendingSuccession(saved)) return true;
   return Boolean(saved?.player && saved.player.isAlive !== false &&
     saved.player.isDead !== true && saved.player.dead !== true &&
     Number.isFinite(saved.player.health) && saved.player.health > 0);

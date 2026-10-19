@@ -24,6 +24,7 @@ const eventDetails = {
   "career-test": { id: "exam", label: "📝 Kiểm tra" },
   "marriage-proposal": { id: "proposal", label: "💍 Cầu hôn" },
   "child-proposal": { id: "children", label: "👶 Đón con" },
+  dream: { id: "dream", label: "🌟 Ước mơ dang dở" },
   "workplace-dating": { id: "dating", label: "💌 Hẹn hò" },
   "happiness-support": { id: "support", label: "🤝 Hỗ trợ" },
   "low-mood": { id: "support", label: "🤝 Hỗ trợ" },

@@ -1,6 +1,8 @@
 import { recordAchievementFlags } from '../achievements/achievements-data.js';
 import { saveGame, isSavePaused } from "../core/save-store.js";
 import { formatMoney, formatMoneyAmount } from "../core/money-format.js";
+import { SCRATCH_CARDS, buyScratch, canBuyScratch, getOpenScratchCard, getScratchCard, scratchCells, scratchThisYear, scratchTopPrize,
+  scratchWinChance } from "./scratch-cards.js";
 
  
  
@@ -90,9 +92,12 @@ const isValidTicket = (ticket) => ticket.type === "kien-thiet"
     new Set(ticket.numbers).size === VIETLOTT_PICKS &&
     ticket.numbers.every((number) => Number.isInteger(number) && number >= 1 && number <= VIETLOTT_MAX);
 
+export const ticketsUsedThisYear = (player) => ticketsThisYear(player).length + scratchThisYear(player);
+export const scratchRules = (player) => ({ minAge: LOTTERY_MIN_AGE, ticketsUsed: ticketsUsedThisYear(player), maxTickets: MAX_TICKETS_PER_YEAR });
+
 export function canBuyTicket(player) {
   return player.isAlive !== false && player.age >= LOTTERY_MIN_AGE && player.money >= TICKET_PRICE &&
-    ticketsThisYear(player).length < MAX_TICKETS_PER_YEAR;
+    ticketsUsedThisYear(player) < MAX_TICKETS_PER_YEAR;
 }
 
 export function buyTicket(player, ticket) {
@@ -252,6 +257,55 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     isNew ? renderLogEntry(log) : updateLogEntry(log);
   }
 
+  // Một dòng nhật ký mỗi năm cho vé cào, cập nhật sau mỗi lần mua và mỗi vé cào xong.
+  function recordScratchLog() {
+    const year = state.player.scratchYear;
+    if (!year || year.age !== state.player.age) return;
+    let log = state.logs.findLast((entry) => entry.age === year.age && entry.scratchLog);
+    const isNew = !log;
+    if (isNew) log = { age: year.age, scratchLog: true };
+    log.content = log.summary = `🪙 Vé số cào: ${year.bought} vé, Tiền -${formatMoneyAmount(year.spent)} VNĐ.` +
+      (year.won ? ` Trúng tổng cộng +${formatMoneyAmount(year.won)} VNĐ.` : " Chưa trúng vé nào.");
+    if (isNew) state.logs.push(log);
+    isNew ? renderLogEntry(log) : updateLogEntry(log);
+  }
+  function buyScratchCard(id) {
+    if (!buyScratch(state.player, id, scratchRules(state.player))) return;
+    recordScratchLog();
+    saveGame(state);
+    renderMoney();
+    render(".scratch-cell:not(:disabled)");
+  }
+  function scratch(indexes) {
+    const result = scratchCells(state.player, indexes);
+    if (!result) return;
+    if (result.done) recordScratchLog();
+    saveGame(state);
+    if (result.done) renderMoney();
+    render(result.done ? ".scratch-buy:not(:disabled)" : ".scratch-cell:not(:disabled)");
+  }
+  function scratchBoard(card) {
+    const kind = getScratchCard(card.type);
+    const board = element("div", `scratch-board${card.settled ? " is-done" : ""}${card.settled && card.prize ? " is-win" : ""}`);
+    board.append(element("p", "scratch-board-title", `${kind.icon} ${kind.name} · ${card.settled ? "đã cào xong" : "chạm từng ô để cào"}`));
+    const grid = element("div", "scratch-grid");
+    card.cells.forEach((amount, index) => {
+      const open = card.revealed[index];
+      const match = card.settled && card.prize === amount;
+      const cell = button(`scratch-cell${open ? " is-revealed" : ""}${match ? " is-match" : ""}`, open ? formatMoneyAmount(amount) : "?", () => scratch([index]));
+      cell.dataset.index = index;
+      cell.disabled = open || card.settled;
+      cell.setAttribute("aria-label", open ? `Ô ${index + 1}: ${formatMoney(amount)}` : `Cào ô ${index + 1}`);
+      grid.append(cell);
+    });
+    board.append(grid);
+    if (!card.settled) board.append(button("shop-back scratch-all", "🪙 Cào hết", () => scratch(card.cells.map((_, index) => index))));
+    else board.append(element("p", `scratch-result${card.prize ? " is-win" : ""}`, card.prize
+      ? `Ba ô ${formatMoney(card.prize)}: trúng ${formatMoney(card.prize)}, tiền đã vào ví.`
+      : "Không có ba ô trùng nhau. Vé này không trúng."));
+    return board;
+  }
+
   function prizeTable(rows) {
     const list = element("ul", "dialog-entries lottery-prizes");
     for (const [name, prize] of rows) {
@@ -274,7 +328,7 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
     const wallet = element("p", "shop-wallet", `Ví hiện có: ${formatMoney(player.money)}`);
     const info = element("p", "game-motto lottery-info", tooYoung
       ? `🔒 Cần đủ ${LOTTERY_MIN_AGE} tuổi để mua vé số.`
-      : `Giá ${formatMoney(TICKET_PRICE)}/vé · Đã mua ${bought.length}/${MAX_TICKETS_PER_YEAR} vé năm nay. ` +
+      : `Giá ${formatMoney(TICKET_PRICE)}/vé · Đã mua ${ticketsUsedThisYear(player)}/${MAX_TICKETS_PER_YEAR} vé năm nay (tính cả vé cào). ` +
         "Nhấn + Tuổi để quay thưởng; tiền thưởng tự cộng vào ví.");
 
      
@@ -362,18 +416,39 @@ export function initLottery(state, { renderMoney, renderLogEntry, updateLogEntry
       ]));
     update();
 
+    // Vé số cào: chọn mức rủi ro, cào ngay; cào xong vé này mới mua vé tiếp.
+    const scratchCard = element("section", "dialog-card scratch-section");
+    const openCard = getOpenScratchCard(player);
+    scratchCard.append(element("h3", "", "🪙 Vé số cào"),
+      element("p", "side-job-intro", "Mua là cào ngay. Ba ô cùng số tiền thì trúng đúng số tiền đó. Tiền thưởng vào ví khi cào hết vé; cào xong vé đang cầm mới mua được vé tiếp."));
+    const kinds = element("div", "scratch-kinds");
+    for (const card of SCRATCH_CARDS) {
+      const choice = button(`shop-buy scratch-buy scratch-${card.id}`, "", () => buyScratchCard(card.id));
+      choice.dataset.card = card.id;
+      choice.append(element("span", "scratch-kind-name", `${card.icon} ${card.name} · ${formatMoney(card.price)}`),
+        element("span", "scratch-kind-odds", `Giải cao nhất ${formatMoney(scratchTopPrize(card))} · khoảng 1/${Math.round(1 / scratchWinChance(card))} vé có thưởng`));
+      choice.disabled = !canBuyScratch(player, card.id, scratchRules(player));
+      kinds.append(choice);
+    }
+    scratchCard.append(kinds);
+    const shownCard = openCard ?? (player.scratchCard?.settled ? player.scratchCard : null);
+    if (shownCard && getScratchCard(shownCard.type)) scratchCard.append(scratchBoard(shownCard));
+    else if (openCard === null && player.age >= LOTTERY_MIN_AGE) scratchCard.append(element("p", "lottery-empty", "Chọn một loại vé để bắt đầu cào."));
+
     const owned = element("section", "dialog-card");
-    owned.append(element("h3", "", `🧾 Vé đã mua năm nay (${bought.length}/${MAX_TICKETS_PER_YEAR})`));
+    owned.append(element("h3", "", `🧾 Vé đã mua năm nay (${ticketsUsedThisYear(player)}/${MAX_TICKETS_PER_YEAR})`));
     const list = element("ul", "dialog-entries lottery-owned");
     for (const ticket of bought) {
       list.append(element("li", "", ticket.type === "vietlott"
         ? `🎰 Vietlott: ${formatVietlott(ticket.numbers)}`
         : `🎟️ Kiến thiết: ${ticket.number}`));
     }
-    if (!bought.length) list.append(element("li", "lottery-empty", "Chưa mua vé nào."));
+    const scratchYear = player.scratchYear?.age === player.age ? player.scratchYear : null;
+    if (scratchYear?.bought) list.append(element("li", "", `🪙 Vé cào: ${scratchYear.bought} vé · ${scratchYear.won ? `trúng ${formatMoney(scratchYear.won)}` : "chưa trúng"}`));
+    if (!bought.length && !scratchYear?.bought) list.append(element("li", "lottery-empty", "Chưa mua vé nào."));
     owned.append(list);
 
-    body.replaceChildren(back, wallet, info, kienThiet, vietlott, owned);
+    body.replaceChildren(back, wallet, info, scratchCard, kienThiet, vietlott, owned);
     if (focusSelector) {
       const target = body.querySelector(focusSelector);
       (target && !target.disabled ? target : back).focus({ preventScroll: true });

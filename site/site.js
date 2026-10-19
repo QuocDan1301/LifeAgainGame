@@ -87,7 +87,8 @@ if (get("install-button")) {
   } catch {
     /* Instructions remain usable when storage is disabled. */
   }
-  get("download-browser-backup").addEventListener("click", async () => {
+  // Khối sao lưu đã được gỡ khỏi trang cài đặt; chỉ gắn khi nút còn, để phần đăng ký chơi offline bên dưới vẫn chạy.
+  get("download-browser-backup")?.addEventListener("click", async () => {
     const status = get("browser-backup-status");
     try {
       const { createTransferPackage, backupFileName } =

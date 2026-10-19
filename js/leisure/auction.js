@@ -219,7 +219,7 @@ export function initAuction(state, { body, playsLeft, usePlay, minAge, renderMon
     list.dataset.empty = String(items.length === 0);
     for (const item of items) {
       const row = node('li', '', 'shop-owned');
-      row.append(node('span', `${item.icon} ${item.name} · ${AUTHENTICITY[item.authenticity]} · ${RARITY[item.rarity]} · ${CONDITION[item.condition]} · ${item.age} năm. Mua lúc ${item.receivedAtAge} tuổi với giá ${formatMoney(item.paid)}.`));
+      row.append(node('span', `${item.icon} ${item.name} · ${AUTHENTICITY[item.authenticity]} · ${RARITY[item.rarity]} · ${CONDITION[item.condition]} · ${item.age} năm. ${item.inherited ? `Thừa kế năm ${item.receivedAtAge} tuổi.` : `Mua lúc ${item.receivedAtAge} tuổi với giá ${formatMoney(item.paid)}.`}`));
       row.append(button(`Bán · ${formatMoney(item.value)}`, () => askConfirm(`Bán ${item.name}?`, `Nhận ${formatMoney(item.value)} và đưa món đồ ra khỏi bộ sưu tập.`, 'Xác nhận bán', () => {
         if (isSavePaused() || state.player.isAlive === false || !(state.player.auctionItems ?? []).some(entry => entry.uid === item.uid)) return;
         state.player.auctionItems = state.player.auctionItems.filter(entry => entry.uid !== item.uid);

@@ -36,7 +36,9 @@ let browser;
 let page;
 try {
   browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe', headless: true, args: ['--host-resolver-rules=MAP fonts.googleapis.com ~NOTFOUND, MAP fonts.gstatic.com ~NOTFOUND, MAP cdnjs.cloudflare.com ~NOTFOUND'] });
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  // Chỉ ứng dụng đã cài trên điện thoại mới vào thẳng game (entry.js); máy tính dùng bản Windows.
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce',
+    userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36' });
   // Exercise native service-worker networking without request interception.
   // External font hosts are disabled by the launch-time resolver rules above.
   await context.addInitScript(() => {

@@ -29,6 +29,15 @@
     Object.assign(restored,getChildProposalUpdates(restored,person,37,'decline'));
     assert(restored.partner && restored.childProposalStopped && !createChildProposalEvent(restored,50), 'Second refusal stops requests without ending the marriage');
     assert(restored.partner.stats.happiness===Math.max(0,person.stats.happiness-5),'Second refusal makes the spouse sad');
+    const parents = married();
+    Object.assign(parents,getChildProposalUpdates(parents,person,35,'accept',()=>0.4));
+    assert(!createChildProposalEvent(parents,39) && createChildProposalEvent(parents,40).id.endsWith('-child-2'), 'Spouse asks about a second child five years after the first');
+    assert(createChildProposalEvent(parents,40).choices.map(c=>c.childDecision).join()==='birth,adopt,decline', 'Second child can be born or adopted');
+    Object.assign(parents,getChildProposalUpdates(parents,person,40,'adopt',()=>0.4));
+    assert(parents.children.length===2 && parents.children[1].initialAge===5 && !createChildProposalEvent(parents,44) && createChildProposalEvent(parents,45), 'Each new child schedules another question five years later');
+    Object.assign(parents,getChildProposalUpdates(parents,person,45,'decline'));
+    assert(parents.childProposalStopped && !createChildProposalEvent(parents,50), 'Declining a later child closes the topic');
+    assert(!createChildProposalEvent({...married(),nextChildProposalAge:91},91), 'No child proposals after 90');
     const born = married();
     const birth = getChildProposalUpdates(born,person,35,'accept',()=>0.4);
     completeLifeYear(born,35,birth);

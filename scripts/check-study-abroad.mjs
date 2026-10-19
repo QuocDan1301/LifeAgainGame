@@ -39,7 +39,10 @@ test('All seven countries have explicit cost previews and saved country data', (
   for (const [i, c] of event.choices.entries()) {
     assert.equal(c.careerPath.school.countryId, studyAbroadCountries[i].id);
     assert.ok(c.label.includes('Học phí') && c.label.includes('sinh hoạt'));
-    assert.ok(c.text.includes('Bốn năm'));
+    // Chọn nước đi thẳng sang chọn chuyên ngành; thời gian học 18–21 và chi phí năm đầu nằm ở bước chuyên ngành.
+    assert.equal(c.text, '');
+    const major = createStudyAbroadMajorEvent(c.careerPath, player()).choices[0].text;
+    assert.ok(major.includes('18–21') && major.includes('Tổng chi phí năm đầu'));
     assert.equal(getAnnualTuition(c.careerPath), studyAbroadCountries[i].tuition);
   }
 });

@@ -40,7 +40,7 @@ const success = (label, money, happiness, text) => ({
 const steps = {
   1: {
     title: "🏗️ Tiếng kêu sau hàng rào",
-    text: "Trên đường về nhà, tôi thấy một người đàn ông bị kẹt chân dưới thanh sắt trong công trình, phía trên là giàn giáo nguy hiểm.\n\nNgay trước mặt tôi có tấm biển ‘Nền yếu — nguy cơ sụt lún’.",
+    text: "Trên đường về nhà, tôi thấy một người đàn ông bị kẹt chân dưới thanh sắt trong công trình, phía trên là giàn giáo đang nghiêng.\n\nNgay trước mặt tôi có tấm biển ‘Nền yếu — nguy cơ sụt lún’.",
     warningPhrases: ["Nền yếu — nguy cơ sụt lún", "giàn giáo đang nghiêng"],
     ...art("1F6A7", "Biển cảnh báo tại công trường bỏ hoang"),
     choices: [
@@ -86,7 +86,7 @@ const steps = {
   },
   3: {
     title: "⏳ Tiếng kim loại rạn nứt",
-    text: "Tôi đến bên người đàn ông. Thanh sắt đè lên phần ống quần. Ông đã rút được chân ra khỏi chiếc giày mắc kẹt, nhưng vẫn cố với lấy túi tài liệu nằm dưới giàn giáo.\n\nPhía trên một thanh sắc khác vừa bung khỏi mối nối.",
+    text: "Tôi đến bên người đàn ông. Thanh sắt đè lên phần ống quần. Ông đã rút được chân ra khỏi chiếc giày mắc kẹt, nhưng vẫn cố với lấy túi tài liệu nằm dưới giàn giáo.\n\nPhía trên vang lên tiếng rắc. Một thanh giằng vừa bung khỏi mối nối.",
     warningPhrases: [
       "Phía trên vang lên tiếng rắc. Một thanh giằng vừa bung khỏi mối nối.",
     ],

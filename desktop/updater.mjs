@@ -88,7 +88,9 @@ export async function downloadUpdate(update, directory, fetcher) {
 // Quote literal PowerShell strings; no release text is used as executable code.
 const psLiteral = value => "'" + String(value).replaceAll("'", "''") + "'";
 
-export function replacementScript({ target, file, sha256, pid, log }) {
+// relaunch=false installs silently after the player closes the game; a failure is
+// not logged because the verified download stays cached and is retried next time.
+export function replacementScript({ target, file, sha256, pid, log, relaunch = true }) {
   if (!path.isAbsolute(target) || !path.isAbsolute(file) || path.dirname(target) !== path.dirname(file) ||
       target === file || !/^[a-f0-9]{64}$/.test(sha256) || !Number.isSafeInteger(pid) || pid < 1) {
     throw new Error('Đường dẫn thay bản cập nhật không hợp lệ.');
@@ -97,7 +99,8 @@ export function replacementScript({ target, file, sha256, pid, log }) {
 $target = ${psLiteral(target)}
 $staged = ${psLiteral(file)}
 $backup = ${psLiteral(file + '.previous')}
-$logFile = ${psLiteral(log)}
+$logFile = ${log ? psLiteral(log) : '$null'}
+$relaunch = ${relaunch ? '$true' : '$false'}
 $moved = $false
 $installed = $false
 try {
@@ -114,39 +117,65 @@ try {
   }
   Move-Item -LiteralPath $staged -Destination $target -ErrorAction Stop
   $installed = $true
-  Start-Process -FilePath $target -WorkingDirectory ([IO.Path]::GetDirectoryName($target)) -ErrorAction Stop
+  if ($relaunch) { Start-Process -FilePath $target -WorkingDirectory ([IO.Path]::GetDirectoryName($target)) -ErrorAction Stop }
   Remove-Item -LiteralPath $backup -ErrorAction SilentlyContinue
-  Remove-Item -LiteralPath $logFile -ErrorAction SilentlyContinue
+  if ($logFile) { Remove-Item -LiteralPath $logFile -ErrorAction SilentlyContinue }
 } catch {
   if ($moved -and (Test-Path -LiteralPath $backup)) {
     if ($installed) { Remove-Item -LiteralPath $target -ErrorAction SilentlyContinue }
     Move-Item -LiteralPath $backup -Destination $target -ErrorAction SilentlyContinue
   }
-  $_.Exception.Message | Set-Content -LiteralPath $logFile -Encoding UTF8
+  if ($logFile) { $_.Exception.Message | Set-Content -LiteralPath $logFile -Encoding UTF8 }
 }
 `;
 }
 
 export function createDesktopUpdater({ app, dialog, net, getWindow, executable = process.env.PORTABLE_EXECUTABLE_FILE,
-  launch = spawn }) {
+  launch = spawn, onReady = () => {} }) {
   let busy = false;
   let ready = null;
+  let installing = false;
   const enabled = app.isPackaged && process.platform === 'win32' && executable && path.isAbsolute(executable);
   const log = path.join(app.getPath('userData'), 'update-error.txt');
   const message = options => dialog.showMessageBox(getWindow(), { title: 'Cập nhật Life Again', ...options });
+  function launchHelper(relaunch) {
+    const script = replacementScript({ ...ready, target: executable, pid: process.pid, log: relaunch ? log : null, relaunch });
+    // The helper outlives Electron and waits for a normal shutdown before replacing the portable EXE.
+    const powershell = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
+    return launch(powershell, ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-EncodedCommand',
+      Buffer.from(script, 'utf16le').toString('base64')], { detached: true, windowsHide: true, stdio: 'ignore' });
+  }
+  // Used by the in-game update button: the player already chose to update.
+  async function restartAndInstall() {
+    if (!ready || installing) return false;
+    installing = true;
+    try {
+      const child = launchHelper(true);
+      await new Promise((resolve, reject) => { child.once('spawn', resolve); child.once('error', reject); });
+      child.unref();
+    } catch (error) {
+      installing = false;
+      throw error;
+    }
+    app.quit();
+    return true;
+  }
   async function install() {
     const { response } = await message({ type: 'info', message: 'Phiên bản ' + ready.version + ' đã sẵn sàng.',
       detail: 'Khởi động lại để cập nhật. Bản lưu cuộc đời được giữ nguyên.',
       buttons: ['Khởi động lại và cập nhật', 'Để sau'], defaultId: 1, cancelId: 1 });
     if (response !== 0) return;
-    const script = replacementScript({ ...ready, target: executable, pid: process.pid, log });
-    // The helper outlives Electron and waits for a normal shutdown before replacing the portable EXE.
-    const powershell = path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
-    const child = launch(powershell, ['-NoProfile', '-NonInteractive', '-WindowStyle', 'Hidden', '-EncodedCommand',
-      Buffer.from(script, 'utf16le').toString('base64')], { detached: true, windowsHide: true, stdio: 'ignore' });
-    await new Promise((resolve, reject) => { child.once('spawn', resolve); child.once('error', reject); });
-    child.unref();
-    app.quit();
+    await restartAndInstall();
+  }
+  // A downloaded update the player never applied is installed when the game closes.
+  function installOnQuit() {
+    if (!ready || installing) return;
+    installing = true;
+    try {
+      const child = launchHelper(false);
+      child.once('error', () => {});
+      child.unref?.();
+    } catch { /* The verified download is retried on the next quit. */ }
   }
   async function check(manual = false) {
     if (busy) {
@@ -159,7 +188,7 @@ export function createDesktopUpdater({ app, dialog, net, getWindow, executable =
     }
     busy = true;
     try {
-      if (ready) { await install(); return; }
+      if (ready) { if (manual) await install(); return; }
       const response = await responseFor(net.fetch.bind(net), RELEASE_API, 30000);
       const update = releaseUpdate(await response.json(), app.getVersion());
       if (!update) {
@@ -167,7 +196,9 @@ export function createDesktopUpdater({ app, dialog, net, getWindow, executable =
         return;
       }
       ready = await downloadUpdate(update, path.dirname(executable), net.fetch.bind(net));
-      await install();
+      onReady(ready.version);
+      // Background checks only reveal the in-game update button; the menu check asks right away.
+      if (manual) await install();
     } catch (error) {
       if (manual) await message({ type: 'warning', message: 'Chưa cập nhật được. Bạn vẫn có thể chơi bình thường.', detail: error.message });
       else console.warn('Life Again update: ' + error.message);
@@ -182,9 +213,12 @@ export function createDesktopUpdater({ app, dialog, net, getWindow, executable =
       await fs.unlink(log).catch(() => {});
     }
     void check();
-    const interval = setInterval(() => void check(), 6 * 60 * 60 * 1000);
+    const interval = setInterval(() => void check(), 60 * 60 * 1000);
     interval.unref();
-    app.once('will-quit', () => clearInterval(interval));
+    app.once('will-quit', () => {
+      clearInterval(interval);
+      installOnQuit();
+    });
   }
-  return { check, start };
+  return { check, start, restartAndInstall, readyVersion: () => ready?.version ?? null };
 }

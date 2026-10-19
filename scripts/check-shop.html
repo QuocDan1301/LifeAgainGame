@@ -19,9 +19,9 @@
     assert(shopCatalog.filter(item => ["realestate", "business", "cattle", "poultry"].includes(item.group) && !item.id.startsWith("story-") && item.id !== "noodle-cart" && item.id !== "starter-apartment").every(item => item.profit > 0),
       "Real estate, businesses and animals earn yearly");
     const expected = ["own-house", "own-resort", "own-hotel", "own-restaurant", "own-cafe", "own-noodle-cart", "own-motorbike",
-      "own-big-bike", "own-car", "own-lamborghini", "own-porsche", "own-rolls-royce", "own-private-jet"];
+      "own-big-bike", "own-car", "own-lamborghini", "own-porsche", "own-rolls-royce", "own-private-jet", "own-tesla-roadster"];
     assert(expected.every(id => shopCatalog.some(item => item.achievement === id) && achievements.some(a => a.id === id)),
-      "All 13 shopping items unlock their existing achievement");
+      "All 14 shopping items unlock their existing achievement");
     assert(getSellPrice({ price: 150_000 }) === 75_000, "Sell price is half the purchase price");
     const pigeon = shopCatalog.find(item => item.id === "pigeon");
     assert(getSellPrice(pigeon) === 90_000, "New animals sell for 90%");

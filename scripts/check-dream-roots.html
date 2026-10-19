@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Dream roots checks</title>
+<pre id="dream-roots-result">Running…</pre>
+<script type="module">
+const result = document.getElementById("dream-roots-result");
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainLifeArchive"];
+const saved = keys.map(key => localStorage.getItem(key));
+try {
+  const { createInitialState, state } = await import("../js/core/state.js");
+  const { createLifeStoryEvents } = await import("../js/events/life-stories.js");
+  const { archiveLife } = await import("../js/core/life-archive.js");
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  localStorage.setItem("lifeAgainAchievements", "{}");
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  localStorage.removeItem("lifeAgainLifeArchive");
+  document.getElementById("game-screen").hidden = false;
+  document.getElementById("lobby-screen").hidden = true;
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { name: "Thử Mầm", gender: "female", province: "Huế", age: 9, health: 80, happiness: 60,
+    intelligence: 50, appearance: 50, money: 0, studyBlock: null,
+    relatives: [
+      { id: "father", role: "Bố", name: "Nguyễn Quốc Dân", alive: false, diedAtAge: 5, ageAtPlayerBirth: 28, bond: 70 },
+      { id: "mother", role: "Mẹ", name: "Trần Thu Hà", alive: true, ageAtPlayerBirth: 26, bond: 75 },
+    ],
+    dreams: { seed: { offers: 0, passed: ["trip", "homecoming"], lastAge: null } } });
+  const event = createLifeStoryEvents(10, state.player).find(item => item.dreamId === "music");
+  assert(event?.dreamStep === "root-seed" && event.text.includes("mẹ Hà"), "Age-10 seed names the living mother");
+  state.pendingEvent = { stage: "choice", id: event.id, kind: event.kind, catalogVersion: event.catalogVersion, category: event.category,
+    age: 10, title: event.title, text: event.text, image: event.image, imageAlt: event.imageAlt, choices: event.choices };
+  await import("../js/main.js");
+  const $ = id => document.getElementById(id);
+  assert($("event-dialog").open && $("event-category").textContent.includes("Ước mơ"), "Seed opens as a dream event");
+  const eager = state.pendingEvent.choices.findIndex(choice => choice.dream?.interest === "eager");
+  document.querySelectorAll("#event-choices button")[eager].click();
+  $("event-confirm").click();
+  const root = state.player.dreams.roots;
+  assert(root?.id === "music" && root.sourceId === "mother" && root.seedAge === 10, "Seed stored with its source and age");
+  assert(!state.player.storyFlags.includes("seen:dream-music-root-seed"), "Root steps use dream state, not one-time flags");
+  document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+
+  state.player.age = 20;
+  $("assets").click();
+  $("life-dreams-panel-tab").click();
+  const entry = () => $("life-dreams").querySelector(".dream-root");
+  assert(entry().textContent.includes("10 tuổi: mẹ Hà dạy tôi đoạn đàn đầu tiên"), "Panel shows the seed milestone");
+  entry().querySelector(".dream-toggle").click();
+  assert(state.player.dreams.roots.status === "paused" && entry().textContent.includes("Đang tạm gác"), "Pause from the panel");
+  assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.dreams.roots.status === "paused", "Pause is saved");
+  entry().querySelector(".dream-toggle").click();
+  assert(state.player.dreams.roots.status === "growing", "Resume from the panel");
+  document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+
+  Object.assign(state.player, { age: 80, isAlive: false });
+  assert(archiveLife(state, localStorage, "old-age").status === "saved", "Life is archived");
+  const { readLifeArchive } = await import("../js/core/life-archive.js");
+  assert(readLifeArchive(localStorage).at(-1).dreamJourney[0].includes("mẹ Hà"), "Archive stores the journey");
+  const { initLifeArchive } = await import("../js/ui/life-archive.js");
+  if (!window.__archiveReady) { initLifeArchive(); window.__archiveReady = true; }
+  $("open-life-archive").click();
+  assert($("life-archive-body").textContent.includes("Từ tuổi nhỏ · Âm nhạc"), "Life archive shows the dream journey");
+  $("life-archive-dialog").close();
+  result.textContent = "PASS: age-10 seed with the living mother, saved source, panel milestones, pause/resume saved, life archive journey";
+} catch (error) {
+  result.textContent = `FAIL: ${error.stack}`;
+} finally {
+  keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+}
+</script>

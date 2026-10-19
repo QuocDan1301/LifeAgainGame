@@ -111,16 +111,12 @@ try {
       ).search,
       "?nhan=ABC234",
     );
-    assert.equal(await page.locator("#transfer-pending").isVisible(), true);
+    // Khối sao lưu và thông báo mã chuyển dữ liệu đã được gỡ khỏi trang cài đặt (commit fc85fe4e).
+    assert.equal(await page.locator("#transfer-pending, #download-browser-backup").count(), 0);
     await page.evaluate(() =>
       localStorage.setItem("lifeAgainSave", "test-save-kept"),
     );
     await page.reload();
-    const downloadPromise = page.waitForEvent("download");
-    await page.locator("#download-browser-backup").click();
-    const download = await downloadPromise;
-    const contents = JSON.parse(fs.readFileSync(await download.path(), "utf8"));
-    assert.equal(contents.data.lifeAgainSave, "test-save-kept");
     assert.equal(
       await page.evaluate(() => localStorage.getItem("lifeAgainSave")),
       "test-save-kept",
@@ -272,7 +268,7 @@ try {
   rows.push({ nativeServiceWorkerOfflineEntry: true, savedLifeRetained: true });
   await offlineContext.close();
   console.log(
-    "PASS installation UI: three device layouts; platform tabs and keyboard; desktop/Android install prompt; browser shortcuts and immediate post-install entry; backup download preserves data; installed PWA root migration; real offline worker retains saved life.",
+    "PASS installation UI: three device layouts; platform tabs and keyboard; desktop/Android install prompt; browser shortcuts and immediate post-install entry; removed backup block stays absent and saves survive reload; installed PWA root migration; real offline worker retains saved life.",
   );
 } finally {
   fs.writeFileSync(`${out}/results.json`, JSON.stringify(rows, null, 2));

@@ -1,0 +1,82 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Scratch card checks</title>
+<pre id="scratch-result">Running…</pre>
+<script type="module">
+const result = document.getElementById("scratch-result");
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+const saved = keys.map(key => localStorage.getItem(key));
+const nativeRandom = Math.random;
+const $ = id => document.getElementById(id);
+try {
+  const { state, createInitialState } = await import("../js/core/state.js");
+  const { SCRATCH_CARDS } = await import("../js/leisure/scratch-cards.js");
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  localStorage.setItem("lifeAgainAchievements", "{}");
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  $("game-screen").hidden = false;
+  $("lobby-screen").hidden = true;
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { name: "Thử", age: 30, money: 1_000_000, health: 80, happiness: 60, intelligence: 60, appearance: 60, studyBlock: "A00" });
+  localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  await import("../js/main.js");
+  const body = () => $("lottery-body");
+  const open = () => { document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close()); $("activity-lottery").click(); };
+  const cells = () => [...body().querySelectorAll(".scratch-cell")];
+  const buys = () => [...body().querySelectorAll(".scratch-buy")];
+  // Lượt rút đầu tiên quyết định giải: 0,001 trúng giải nhỏ nhất, 0,99 là vé trượt.
+  const forceRoll = roll => { let first = true; Math.random = () => first ? (first = false, roll) : nativeRandom(); };
+
+  open();
+  assert($("lottery-dialog").open && buys().length === SCRATCH_CARDS.length && buys().every(button => !button.disabled), "Three scratch cards on sale");
+  assert(body().textContent.includes("tính cả vé cào") && body().textContent.includes("khoảng 1/5 vé có thưởng"), "Shared quota and odds are explained");
+  forceRoll(0.001);
+  body().querySelector(".scratch-loc").click();
+  Math.random = nativeRandom;
+  assert(state.player.money === 990_000 && cells().length === 9 && cells().every(cell => !cell.disabled), "Buying deducts the price and shows nine covered cells");
+  assert(buys().every(button => button.disabled), "Finish the card in hand before buying another");
+  assert(document.activeElement?.classList.contains("scratch-cell"), "Focus moves to the card");
+  assert(state.logs.at(-1).content.includes("Vé số cào: 1 vé"), "Diary line for scratch cards");
+  cells()[0].click();
+  assert(cells()[0].classList.contains("is-revealed") && state.player.money === 990_000, "One cell scratched, no money yet");
+  // Tải lại: dữ liệu đã lưu giữ đúng ô đã cào và đúng vận may.
+  const before = JSON.parse(localStorage.getItem("lifeAgainSave")).player.scratchCard;
+  assert(before.revealed[0] && !before.revealed[1], "Scratched cell is saved");
+  Object.assign(state, JSON.parse(localStorage.getItem("lifeAgainSave")));
+  open();
+  assert(cells()[0].classList.contains("is-revealed") && cells().filter(cell => !cell.disabled).length === 8, "Reopening keeps the scratched cell");
+  body().querySelector(".scratch-all").click();
+  assert(state.player.money === 1_000_000 && body().querySelectorAll(".scratch-cell.is-match").length === 3, "Three matching cells pay exactly 10k");
+  assert(body().querySelector(".scratch-result.is-win") && buys().every(button => !button.disabled), "Win shown and next card can be bought");
+  assert(state.player.achievementFlags["first-lottery-win"], "Scratch win unlocks the lottery achievement");
+  assert(state.logs.filter(log => log.scratchLog).length === 1 && state.logs.at(-1).content.includes("Trúng tổng cộng +10k"), "One updated diary line");
+  // Vé trượt.
+  forceRoll(0.99);
+  body().querySelector(".scratch-dai-cat").click();
+  Math.random = nativeRandom;
+  body().querySelector(".scratch-all").click();
+  assert(state.player.money === 950_000 && !body().querySelector(".scratch-cell.is-match") && body().querySelector(".scratch-result:not(.is-win)"), "Losing card keeps the price and pays nothing");
+  assert(state.logs.at(-1).content.includes("2 vé") && state.logs.at(-1).content.includes("-60k"), "Diary totals two cards");
+  assert(body().querySelector(".lottery-owned").textContent.includes("Vé cào: 2 vé"), "Bought list shows scratch cards");
+  // Giới hạn chung 30 vé mỗi năm.
+  state.player.lotteryTickets = Array.from({ length: 28 }, (_, index) => ({ type: "kien-thiet", number: String(200000 + index), age: 30 }));
+  open();
+  assert(body().textContent.includes("30/30") && buys().every(button => button.disabled) &&
+    [...body().querySelectorAll(".lottery-kien-thiet")].every(button => button.disabled), "Thirty tickets in total lock every kind");
+  // Dưới 18 tuổi.
+  Object.assign(state.player, { age: 17, lotteryTickets: [], scratchYear: null });
+  open();
+  assert(buys().every(button => button.disabled), "Locked under 18");
+  result.textContent = "PASS scratch cards: three kinds, nine-cell card, scratch one / all, reload keeps progress, exact 10k win once, losing card, diary, shared 30-ticket limit, under-18 lock";
+} catch (error) {
+  result.textContent = `FAIL: ${error.stack}`;
+} finally {
+  Math.random = nativeRandom;
+  keys.forEach((key, index) => saved[index] == null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+}
+</script>

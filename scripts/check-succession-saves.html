@@ -1,0 +1,151 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Succession save checks</title>
+<pre id="saves-result">Running…</pre>
+<script type="module">
+// Save cũ và tải lại trang thật nhiều lần: không chia bù cho người đã mất trước bản cập nhật,
+// save cũ còn sống dùng được di chúc, mỗi lần tải lại không sinh thêm tài sản hay đổi trạng thái kết thúc.
+const result = document.getElementById("saves-result");
+const KEY = "savesCheck";
+const storageKeys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainLifeArchive"];
+let run = JSON.parse(sessionStorage.getItem(KEY) ?? "null");
+if (!run) run = { step: "old-dead", restore: storageKeys.map(key => localStorage.getItem(key)), seen: {} };
+const persist = () => sessionStorage.setItem(KEY, JSON.stringify(run));
+const restore = () => {
+  storageKeys.forEach((key, index) => run.restore[index] == null ? localStorage.removeItem(key) : localStorage.setItem(key, run.restore[index]));
+  sessionStorage.removeItem(KEY);
+};
+const assert = (condition, message) => { if (!condition) throw new Error(`${message} [${run.step}]`); };
+const $ = id => document.getElementById(id);
+const next = step => { run.step = step; persist(); location.reload(); };
+// Bản lưu kiểu cũ: không có lineage, will, estate, storyLoans, parentWish.
+const legacyPlayer = extra => ({ name: "Hoàng Văn Cũ", gender: "male", province: "Huế", age: 55, money: 400_000_000, health: 60, happiness: 50,
+  intelligence: 50, appearance: 50, isAlive: true, employmentStatus: "employed", studyBlock: "A00", careerPath: { id: "programming" }, careerLevel: 2,
+  partner: { id: "p1", name: "Lê Minh Thư", gender: "female", relationship: 80, ageAtMeeting: 25, metAtAge: 25 }, marriedAtAge: 27,
+  children: [{ id: "c1", name: "Gia Bảo", gender: "male", initialAge: 0, joinedAtAge: 30, relationship: 80, coParent: { id: "p1", name: "Lê Minh Thư" } }],
+  purchases: [{ uid: "house-1", id: "house", boughtAtAge: 40 }], dreams: { active: null, entries: {}, later: {}, offers: {} }, ...extra });
+async function mount() {
+  const { state, createInitialState } = await import("../js/core/state.js");
+  const saved = JSON.parse(localStorage.getItem("lifeAgainSave"));
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  $("game-screen").hidden = false;
+  $("lobby-screen").hidden = true;
+  Object.assign(state, createInitialState(), saved, { player: { ...createInitialState().player, ...saved.player } });
+  await import("../js/main.js");
+  await new Promise(resolve => setTimeout(resolve, 50));
+  return state;
+}
+// Mảng còn thiếu ở save cũ được chuẩn hóa thành mảng rỗng khi lưu lại; đó không phải thay đổi tài sản.
+const holdings = player => JSON.stringify([player.money, player.purchases ?? [], player.livestock ?? [], player.auctionItems ?? [], player.homeLoans ?? [],
+  player.storyLoans ?? [], player.estate ?? null, player.isAlive, player.lineage ?? null, player.will ?? null]);
+try {
+  const { readSavedGame, canContinue, hasPendingSuccession } = await import("../js/core/ticket-store.js");
+  if (run.step === "old-dead") {
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    // Nhân vật đã mất ở bản trước: không có estate. Sảnh không cho tiếp tục, không chia bù.
+    localStorage.setItem("lifeAgainSave", JSON.stringify({ player: legacyPlayer({ age: 78, isAlive: false, health: 0 }), logs: [{ age: 78, content: "Hành trình khép lại." }], pendingEvent: null }));
+    const saved = readSavedGame();
+    assert(saved && !canContinue(saved) && !hasPendingSuccession(saved), "save cũ đã mất không mở màn chọn người con");
+    run.seen.oldDead = holdings(saved.player);
+    const state = await mount();
+    assert(!state.player.estate && state.player.money === 400_000_000 && !$("death-dialog").open, "nạp vào game cũng không tự chia bù");
+    next("old-dead-reload");
+  } else if (run.step === "old-dead-reload") {
+    assert(holdings(readSavedGame().player) === run.seen.oldDead, `tải lại không đổi save cũ đã mất: ${run.seen.oldDead} → ${holdings(readSavedGame().player)}`);
+    const state = await mount();
+    assert(!state.player.estate, "lần nạp thứ hai vẫn không chia bù");
+    assert(holdings(JSON.parse(localStorage.getItem("lifeAgainSave")).player) === run.seen.oldDead, "save cũ đã mất giữ nguyên sau hai lần nạp");
+    // Save cũ còn sống ở tuổi 55: dùng được di chúc.
+    localStorage.setItem("lifeAgainSave", JSON.stringify({ player: legacyPlayer(), logs: [{ age: 55, content: "Năm 55 tuổi." }], pendingEvent: null }));
+    next("old-alive");
+  } else if (run.step === "old-alive") {
+    assert(canContinue(readSavedGame()), "save cũ còn sống vẫn tiếp tục được");
+    const state = await mount();
+    $("assets").click();
+    assert(!$("open-will").hidden, "save cũ 55 tuổi thấy nút di chúc");
+    document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+    $("open-will").click();
+    const share = document.querySelector('#will-body input[data-share="child:c1"]');
+    share.value = "70"; share.dispatchEvent(new Event("change"));
+    document.querySelector("#will-body .will-save").click();
+    assert(state.player.will?.shares["child:c1"] === 70, "lưu được di chúc trên save cũ");
+    run.seen.alive = holdings(JSON.parse(localStorage.getItem("lifeAgainSave")).player);
+    run.seen.reloads = 0;
+    next("alive-reload");
+  } else if (run.step === "alive-reload") {
+    const state = await mount();
+    assert(holdings(state.player) === run.seen.alive, "tải lại không đổi tiền, tài sản hay di chúc");
+    run.seen.reloads++;
+    if (run.seen.reloads < 3) { next("alive-reload"); } else {
+      // Qua đời qua luồng xác nhận thật, rồi tải lại nhiều lần ở màn chọn người con.
+      state.pendingEvent = { stage: "result", age: 56, title: "Khép lại", content: "Hành trình khép lại.", confirmText: "Tiếp tục",
+        updates: { age: 56, isAlive: false }, achievementIds: [], logSummary: "Khép lại." };
+      $("event-confirm").click();
+      assert(state.player.estate?.settled && $("death-dialog").open, "chia thừa kế khi qua đời");
+      assert(state.player.estate.usedWill && state.player.estate.allocations.find(item => item.key === "child:c1").cash >= 280_000_000, "theo di chúc trên save cũ");
+      run.seen.dead = holdings(JSON.parse(localStorage.getItem("lifeAgainSave")).player);
+      run.seen.deadReloads = 0;
+      next("dead-reload");
+    }
+  } else if (run.step === "dead-reload") {
+    const state = await mount();
+    await new Promise(resolve => setTimeout(resolve, 50));
+    assert($("death-dialog").open && document.querySelector('.heir-card[data-heir="c1"]'), "mở lại đúng màn chọn người con");
+    assert(holdings(JSON.parse(localStorage.getItem("lifeAgainSave")).player) === run.seen.dead, "tải lại không chia lần hai, không sinh tài sản");
+    run.seen.deadReloads++;
+    if (run.seen.deadReloads < 3) { next("dead-reload"); } else {
+      run.step = "ended"; persist();
+      $("return-after-death").click();  // Kết thúc lượt chơi; trang tự tải lại.
+    }
+  } else if (run.step === "ended") {
+    const saved = readSavedGame();
+    assert(saved.player.lineage?.declined === true && !canContinue(saved) && !hasPendingSuccession(saved), "kết thúc lượt chơi được giữ");
+    run.seen.ended = holdings(saved.player);
+    run.seen.endedReloads = (run.seen.endedReloads ?? 0) + 1;
+    if (run.seen.endedReloads < 3) { next("ended"); } else {
+      const state = await mount();
+      assert(!document.querySelector(".heir-card") && holdings(JSON.parse(localStorage.getItem("lifeAgainSave")).player) === run.seen.ended, "nạp lại sau khi kết thúc không mở lại lựa chọn");
+      // Người con 23 tuổi tiếp quản: xu hướng đã chọn lúc tiếp quản, tuổi 24 không hỏi lại.
+      const { createInitialState } = await import("../js/core/state.js");
+      const { applyEstateOnce } = await import("../js/core/inheritance.js");
+      const { buildSuccessor } = await import("../js/core/succession.js");
+      const founder = { ...createInitialState().player, name: "Hoàng Văn Cũ", gender: "male", age: 60, isAlive: false, lifeSeed: 31, lifeId: "young",
+        money: 100_000_000, children: [{ id: "y", name: "Bảo Ngọc", gender: "female", initialAge: 0, joinedAtAge: 37, relationship: 80 }] };
+      applyEstateOnce(founder);
+      const built = buildSuccessor({ player: founder, logs: [] }, "y");
+      localStorage.setItem("lifeAgainSave", JSON.stringify({ ...createInitialState(), player: built.player, logs: built.logs }));
+      run.seen.orientation = built.player.orientation;
+      next("young-heir");
+    }
+  } else if (run.step === "young-heir") {
+    const state = await mount();
+    assert(state.player.age === 23 && state.player.orientation === run.seen.orientation, "người con 23 tuổi có xu hướng từ lúc tiếp quản");
+    const kinds = [];
+    for (let guard = 0; guard < 300 && state.player.age < 25; guard++) {
+      const open = [...document.querySelectorAll("dialog[open]")];
+      if (open.some(dialog => dialog.id === "event-dialog")) {
+        kinds.push(state.pendingEvent?.kind);
+        const choice = [...document.querySelectorAll("#event-choices button")].find(button => !button.disabled && !button.hidden);
+        if (state.pendingEvent?.stage === "choice" && choice) choice.click(); else $("event-confirm").click();
+      } else if (open.some(dialog => dialog.id === "health-check-dialog")) {
+        [...$("health-check-dialog").querySelectorAll("button")].filter(button => !button.disabled && !button.hidden).at(-1).click();
+      } else {
+        open.forEach(dialog => dialog.close());
+        $("age-up").click();
+      }
+    }
+    assert(state.player.age >= 25, "đã qua tuổi 24");
+    assert(!kinds.includes("orientation-chain") && state.player.orientation === run.seen.orientation, `tuổi 24 không hỏi lại xu hướng: ${kinds}`);
+    restore();
+    result.textContent = `PASS: old dead save never settled (loaded twice), old living save at 55 writes a will, 3 real reloads alive / at heir choice / after ending change nothing, heir taking over at 23 keeps random orientation (${run.seen.orientation}) past 24`;
+  }
+} catch (error) {
+  restore();
+  result.textContent = `FAIL: ${error.stack}`;
+}
+</script>

@@ -151,7 +151,7 @@ test('Actual game choice handler resolves discovery exactly once after reload', 
   const state = { player: p, pendingEvent: { ...createConcurrentDatingEvent(p, 27, () => 0), stage: 'choice', age: 27 } };
   const ctx = vm.createContext({ state, canAffordChoice: () => true, softenSetback: (_, c) => c,
     statNames: { happiness: 'Hạnh phúc' }, createSchoolEntryReward: () => null,
-    createEventLogSummary: ({ changes }) => changes.join(' '), getChoiceOutcome: () => null,
+    createEventLogSummary: ({ changes }) => changes.join(' '), getChoiceOutcome: () => null, getEventTags: () => [],
     saveEventProgress() {}, showPendingEvent() {}, createDatingDramaStep });
   vm.runInContext(handler, ctx);
   for (const index of [0, 0, 1]) {

@@ -30,9 +30,30 @@ export function getAnnualChildcareCost(age) {
   return Number.isInteger(age) && age >= 0 && age <= 18 ? 12_000_000 + age * 2_000_000 : 0;
 }
 
+// No one in the family raises the topic of a new child after the player turns 90.
+export const CHILD_PROPOSAL_MAX_AGE = 90;
+const NEXT_CHILD_DELAY = 5;
+
+const getSharedChildren = (player, person = player.partner) =>
+  (player.children ?? []).filter(child => child.coParent?.id === person?.id);
+
+export const getChildcareTotal = fromAge => Array.from({ length: 19 - fromAge }, (_, index) =>
+  getAnnualChildcareCost(fromAge + index)).reduce((sum, amount) => sum + amount, 0);
+
+function createChild(person, age, adopted, random, takenNames = []) {
+  const gender = random() < 0.5 ? "male" : "female";
+  const allNames = gender === "female" ? femaleNames : maleNames;
+  const freeNames = allNames.filter(name => !takenNames.includes(name));
+  const names = freeNames.length ? freeNames : allNames;
+  return { id: `child-${person.id}-${age}`, name: names[Math.floor(random() * names.length)],
+    gender, adopted, relationship: 80, initialAge: adopted ? 5 : 0, joinedAtAge: age,
+    coParent: { id: person.id, name: person.name }, lastCarePaidAtAge: null };
+}
+
 export function createChildProposalEvent(player, age) {
   if (!player.partner || player.marriedAtAge == null || player.isAlive === false ||
-      player.childProposalStopped || player.childProposalCompleted) return null;
+      player.childProposalStopped || age > CHILD_PROPOSAL_MAX_AGE) return null;
+  if (player.childProposalCompleted) return createNextChildProposalEvent(player, age);
   if (age < (player.nextChildProposalAge ?? player.marriedAtAge + 5)) return null;
   const adopted = player.gender === player.partner.gender;
   const retry = (player.childProposalDeclines ?? 0) > 0;
@@ -62,17 +83,54 @@ export function createChildProposalEvent(player, age) {
   };
 }
 
+// Every five years after the couple's latest child arrives, the spouse asks about one more.
+function createNextChildProposalEvent(player, age) {
+  const siblings = getSharedChildren(player);
+  if (!siblings.length) return null;
+  const latest = siblings.reduce((last, child) => child.joinedAtAge >= last.joinedAtAge ? child : last);
+  if (age < (player.nextChildProposalAge ?? latest.joinedAtAge + NEXT_CHILD_DELAY)) return null;
+  const partner = player.partner;
+  const canBirth = player.gender !== partner.gender;
+  const latestAge = getChildAge(latest, age);
+  const count = siblings.length;
+  const currentCost = siblings.reduce((sum, child) => sum + getAnnualChildcareCost(getChildAge(child, age)), 0);
+  const image = new URL("../img/events/openmoji/color/svg/1F9F8.svg", import.meta.url).href;
+  const costs = [
+    currentCost ? `Năm nay nuôi ${count === 1 ? latest.name : `${count} đứa con`} đã tốn ${formatSalary(currentCost)}.` : "",
+    canBirth ? `Sinh thêm: bắt đầu từ ${formatSalary(getAnnualChildcareCost(0))}/năm, tổng khoảng ${formatSalary(getChildcareTotal(0))} đến khi con 18 tuổi.` : "",
+    `Nhận nuôi bé 5 tuổi: bắt đầu từ ${formatSalary(getAnnualChildcareCost(5))}/năm, tổng khoảng ${formatSalary(getChildcareTotal(5))}.`,
+    `Nếu tôi từ chối, ${partner.name} sẽ không nhắc lại chuyện này.`,
+  ].filter(Boolean).join(" ");
+  return {
+    id: `child-proposal-${partner.id}-child-${count + 1}`,
+    kind: "child-proposal", person: partner,
+    title: "🧸 Mình có thêm một đứa nữa không?",
+    text: `Tối hôm ấy, khi ${latest.name} đã ngủ, ${partner.name} hỏi tôi: “${latest.name} ${latestAge} tuổi rồi. Mình có muốn cho con thêm một đứa em không?” ${canBirth ? "Người ấy nói cả hai cách đều được: sinh thêm một em bé, hoặc nhận nuôi một bé 5 tuổi đang cần gia đình." : "Hai người tính đến việc nhận con nuôi thêm lần nữa: một bé 5 tuổi đang cần gia đình."}\n\n${costs}`,
+    image, imageAlt: "Trò chuyện về việc có thêm con", imageFallback: image,
+    imageFallbackAlt: "Trò chuyện về việc có thêm con",
+    choices: [
+      canBirth && { label: "Sinh thêm một em bé", childDecision: "birth", title: "👶 Nhà có thêm em bé",
+        text: `Tôi và ${partner.name} quyết định sinh thêm con. ${latest.name} có thêm một đứa em, và những đêm thức trông em bé lại bắt đầu.`,
+        effects: { happiness: 4 }, achievementIds: [], confirmText: "Chào đón em bé!" },
+      { label: "Nhận nuôi thêm một bé", childDecision: "adopt", title: "🧸 Đón thêm con nuôi về nhà",
+        text: `Tôi và ${partner.name} làm thủ tục nhận con nuôi và đón một bé 5 tuổi về nhà. ${latest.name} có thêm một đứa em; cả nhà tập quen dần với một đứa trẻ đã có thói quen và nỗi nhớ riêng.`,
+        effects: { happiness: 4 }, achievementIds: [], confirmText: "Đón con về nhà" },
+      { label: count === 1 ? "Một đứa là đủ rồi" : `${count} đứa là đủ rồi`, childDecision: "decline", title: "💬 Gia đình đã đủ đầy",
+        text: `Tôi nói rằng mình muốn dồn sức cho ${count === 1 ? latest.name : `${count} đứa con đang có`}. ${partner.name} im lặng một lúc rồi gật đầu. Người ấy hơi buồn, nhưng không nhắc lại chuyện này nữa.`,
+        effects: { happiness: -1 }, achievementIds: [], confirmText: "Tôn trọng quyết định của nhau" },
+    ].filter(Boolean).map(branch => ({ ...branch, image, imageAlt: "Quyết định về việc có thêm con",
+      imageFallback: image, imageFallbackAlt: "Quyết định về việc có thêm con" })),
+  };
+}
+
 export function getChildProposalUpdates(player, person, age, decision, random = Math.random) {
   if (!player.partner || player.partner.id !== person?.id || player.marriedAtAge == null ||
-      player.childProposalStopped || player.childProposalCompleted) return {};
+      player.childProposalStopped) return {};
+  if (player.childProposalCompleted) return getNextChildUpdates(player, person, age, decision, random);
   const history = [...(player.relationshipHistory ?? [])];
   if (decision === "accept") {
     const adopted = player.gender === person.gender;
-    const gender = random() < 0.5 ? "male" : "female";
-    const names = gender === "female" ? femaleNames : maleNames;
-    const child = { id: `child-${person.id}-${age}`, name: names[Math.floor(random() * names.length)],
-      gender, adopted, relationship: 80, initialAge: adopted ? 5 : 0, joinedAtAge: age,
-      coParent: { id: person.id, name: person.name }, lastCarePaidAtAge: null };
+    const child = createChild(person, age, adopted, random);
     history.push({ age, type: adopted ? "adopted-child" : "child-born", person,
       text: `${adopted ? "Gia đình nhận nuôi" : "Gia đình chào đón"} con ${child.name}${adopted ? ", 5 tuổi" : ", mới sinh"}.` });
     return { children: [...(player.children ?? []), child], childProposalCompleted: true,
@@ -87,6 +145,28 @@ export function getChildProposalUpdates(player, person, age, decision, random = 
     nextChildProposalAge: stopped ? null : age + 2, relationshipHistory: history,
     ...(stopped ? { partner: { ...person, stats: { ...person.stats,
       happiness: Math.max(0, (person.stats?.happiness ?? 50) - 5) } } } : {}) };
+}
+
+// Welcoming a child schedules the next question five years later; declining closes the topic.
+function getNextChildUpdates(player, person, age, decision, random) {
+  const siblings = getSharedChildren(player, person);
+  if (!siblings.length) return {};
+  const history = [...(player.relationshipHistory ?? [])];
+  if (decision === "birth" || decision === "adopt") {
+    if (decision === "birth" && player.gender === person.gender) return {};
+    const adopted = decision === "adopt";
+    const child = createChild(person, age, adopted, random, siblings.map(sibling => sibling.name));
+    history.push({ age, type: adopted ? "adopted-child" : "child-born", person,
+      text: `${adopted ? "Gia đình nhận nuôi thêm" : "Gia đình chào đón thêm"} con ${child.name}${adopted ? ", 5 tuổi" : ", mới sinh"}.` });
+    return { children: [...(player.children ?? []), child],
+      nextChildProposalAge: null, relationshipHistory: history };
+  }
+  if (decision !== "decline") return {};
+  history.push({ age, type: "child-discussion", person,
+    text: `Tôi muốn dừng ở ${siblings.length} con. ${person.name} hơi buồn nhưng tôn trọng quyết định.` });
+  return { childProposalStopped: true, nextChildProposalAge: null, relationshipHistory: history,
+    partner: { ...person, stats: { ...person.stats,
+      happiness: Math.max(0, (person.stats?.happiness ?? 50) - 3) } } };
 }
 
 export function getChildcareExpenses(player, age, updates = {}) {

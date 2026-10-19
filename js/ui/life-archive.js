@@ -46,6 +46,8 @@ export function initLifeArchive() {
         node('p', `Chuỗi đã gặp: ${names(entry.specialSeen ?? []) || 'Chưa có'}`),
         node('p', `Chuỗi hoàn thành: ${names(entry.specialCompleted ?? []) || 'Chưa có'}`),
         node('p', `Thành tựu mở trong đời: ${(entry.achievements ?? []).map(id => achievements.find(a => a.id === id)?.title ?? id).join(', ') || 'Chưa có'}`));
+      if (entry.lineage?.generation === 2) details.append(node('p', `🌱 Đời con của ${entry.lineage.founderRole ?? ''} ${entry.lineage.founderName ?? ''}, tiếp quản năm ${entry.lineage.takeoverAge ?? '?'} tuổi`));
+      for (const line of entry.dreamJourney ?? []) details.append(node('p', line));
       body.append(details);
     }
     dialog.showModal(); dialog.scrollTop = 0;

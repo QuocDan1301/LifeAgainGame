@@ -47,7 +47,7 @@ export const stage60To69 = [
     ],
   },
   {
-    id: 'ls60-chua-co-luong-huu', age: 60, needs: ['notEmployed'],
+    id: 'ls60-chua-co-luong-huu', age: 60, needs: ['notEmployed'], maxMoney: 100000000,
     title: 'Trợ cấp tuổi già',
     text: 'Tôi không có lương hưu, tiền dành dụm sắp cạn. Phường hướng dẫn làm hồ sơ xin trợ cấp người cao tuổi khó khăn. Tôi thấy ngại, cả đời chưa xin ai thứ gì.',
     choices: [

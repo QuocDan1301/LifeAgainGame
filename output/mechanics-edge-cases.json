@@ -32,9 +32,9 @@
     ]
   },
   {
-    "id": "one-child-per-marriage",
+    "id": "children-every-five-years",
     "severity": "design-note",
     "confirmed": true,
-    "description": "Mỗi hôn nhân dừng đề nghị con cái sau người con đầu tiên. Có thêm con bằng hôn nhân mới; danh hiệu đại gia đình không mở theo lộ trình một hôn nhân thông thường."
+    "description": "Sau con đầu, cứ 5 năm kể từ đứa con gần nhất, bạn đời hỏi sinh thêm hoặc nhận nuôi thêm cho tới khi người chơi từ chối. Không có đề nghị sau 90 tuổi."
   }
 ]

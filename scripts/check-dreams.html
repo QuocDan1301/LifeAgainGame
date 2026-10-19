@@ -1,0 +1,79 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Dream checks</title>
+<pre id="dream-check-result">Running…</pre>
+<script type="module">
+const result = document.getElementById("dream-check-result");
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+const saved = keys.map(key => localStorage.getItem(key));
+try {
+  const { createInitialState, state } = await import("../js/core/state.js");
+  const { createLifeStoryEvents } = await import("../js/events/life-stories.js");
+  const { renderLifeSummary } = await import("../js/core/life-profile.js");
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  localStorage.setItem("lifeAgainAchievements", "{}");
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  document.getElementById("game-screen").hidden = false;
+  document.getElementById("lobby-screen").hidden = true;
+  Object.assign(state, createInitialState());
+  Object.assign(state.player, { name: "Thử Ước Mơ", gender: "female", province: "Huế", age: 58, health: 80, happiness: 60,
+    intelligence: 60, appearance: 50, money: 50_000_000, employmentStatus: "unemployed", studyBlock: "A00",
+    dreams: { active: "trip", later: { music: 200, homecoming: 200 }, offers: { trip: 1 },
+      entries: { trip: { status: "active", step: 1, spent: 0, startedAtAge: 57, lastStepAge: 57, companion: "friend", companionName: "Bình" } } } });
+  const event = createLifeStoryEvents(59, state.player).find(item => item.dreamId === "trip");
+  assert(event && event.dreamStep === "prepare", "The prepare step is in the year's pool");
+  state.pendingEvent = { stage: "choice", id: event.id, kind: event.kind, catalogVersion: event.catalogVersion, category: event.category,
+    age: 59, title: event.title, text: event.text, image: event.image, imageAlt: event.imageAlt, choices: event.choices };
+  await import("../js/main.js");
+  const $ = id => document.getElementById(id);
+  const buttons = () => [...document.querySelectorAll("#event-choices button")];
+  assert($("event-dialog").open && $("event-category").textContent.includes("Ước mơ"), "Dream step opens with its tag");
+  const largeIndex = state.pendingEvent.choices.findIndex(choice => choice.dream?.scale === "large");
+  const smallIndex = state.pendingEvent.choices.findIndex(choice => choice.dream?.scale === "small");
+  assert(buttons()[largeIndex].textContent.includes("240 triệu"), "Cost is shown before choosing");
+  buttons()[largeIndex].click();
+  assert(state.pendingEvent.stage === "choice" && state.player.money === 50_000_000 && state.player.dreams.entries.trip.step === 1,
+    "Unaffordable scale is refused without charging");
+  buttons()[smallIndex].click();
+  assert(state.pendingEvent.stage === "result" && state.player.money === 50_000_000, "Preview does not charge yet");
+  const reloaded = JSON.parse(localStorage.getItem("lifeAgainSave"));
+  assert(reloaded.pendingEvent.updates.dreams.entries.trip.step === 2, "Saved preview keeps the next dream state");
+  assert(state.pendingEvent.content.includes("Tiền -36 triệu"), "Result shows the exact charge");
+  assert(state.pendingEvent.updates.money === 50_000_000 - 36_000_000, "The charge is applied to the wallet once");
+  $("event-confirm").click();
+  assert(state.player.dreams.entries.trip.step === 2 && state.player.dreams.entries.trip.spent === 36_000_000 &&
+    state.player.money <= 14_000_000, "Confirm advances one step and records the spending");
+  assert(state.logs.filter(log => /Tiền -36 triệu/.test(log.content)).length === 1, "Diary records the charge once");
+  document.querySelectorAll("dialog[open]").forEach(dialog => dialog.close());
+  assert(state.player.age === 59 && !state.player.storyFlags.includes("seen:dream-trip-prepare"), "Dream steps do not use one-time flags");
+
+  $("assets").click();
+  $("life-dreams-panel-tab").click();
+  const entry = () => $("life-dreams").querySelector(".dream-entry");
+  assert(entry().textContent.includes("Bước 2/3") && entry().textContent.includes("Đã chi 36 triệu"), "Dream panel shows progress and spending");
+  entry().querySelector(".dream-toggle").click();
+  assert(state.player.dreams.active === null && state.player.dreams.entries.trip.status === "paused", "Pause from the panel");
+  assert(entry().querySelector(".dream-toggle").textContent.includes("Tiếp tục") && state.logs.at(-1).content.includes("tạm gác"), "Panel and diary update");
+  assert(JSON.parse(localStorage.getItem("lifeAgainSave")).player.dreams.entries.trip.status === "paused", "Pause is saved");
+  entry().querySelector(".dream-toggle").click();
+  assert(state.player.dreams.active === "trip", "Resume from the panel");
+  window.__dreamReady = true;
+
+  state.player.dreams.entries.trip = { ...state.player.dreams.entries.trip, status: "done", step: 3, finishedAtAge: 61,
+    summary: "Chuyến đi đã hẹn cùng Bình: chuyến ngắn trong nước, phiên chợ ở thị trấn lạ." };
+  state.player.dreams.active = null;
+  renderLifeSummary(state);
+  assert($("death-summary").textContent.includes("Ước mơ dang dở") && $("death-summary").textContent.includes("phiên chợ"), "Life summary tells the dream");
+  $("death-dialog").close();
+  result.textContent = "PASS: dream step in the event dialog, cost shown, refused when short, charged once on confirm, saved preview, panel pause/resume, life summary";
+} catch (error) {
+  result.textContent = `FAIL: ${error.stack}`;
+} finally {
+  keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+}
+</script>

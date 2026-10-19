@@ -43,6 +43,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `ban_quan_com` | ls31-don-nha-mot-minh (31) | **chưa nối** |
 | `ban_than_cham_mo` | ls42-mot-minh-o-vien (42) | **chưa nối** |
 | `ban_thu_vien` | ls13-ban-thu-vien (13) | **chưa nối** |
+| `ban_tra_duong_sinh` | le-ban-moi-duong-sinh (65) | **chưa nối** |
 | `ban_tra_on` | ls-ban-bi-cat-giam-giup (40) | **chưa nối** |
 | `ban_tu` | ls-tu-gap (4) | ls-tu-khac-lop (từ 6), ls-tu-chuyen-di (từ 9) |
 | `ban_ve_ai_di_truoc` | ls54-ban-doi-noi-chuyen-cuoi-doi (54) | **chưa nối** |
@@ -105,9 +106,11 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `chay_bo_lai` | ls45-di-hoc-lai-dan (45) | **chưa nối** |
 | `chay_xe` | ls37-thue-xe-cho (37) | **chưa nối** |
 | `che_dong_nghiep` | ls33-dong-nghiep-sai (33) | **chưa nối** |
+| `chia_buoi_ca_xom` | le-cay-buoi-sau-nha (75) | **chưa nối** |
 | `chia_doi_thua_ke` | ls73-mot-minh-lam-di-chuc (73) | **chưa nối** |
 | `chia_hoa_quan` | ls05-bo-hoa (5) | ls-quan-tiem-hoa (từ 30) |
 | `chia_mot_phan` | ls64-chia-tai-san (64) | **chưa nối** |
+| `chia_rau_hang_xom` | le-rau-ban-cong (55) | **chưa nối** |
 | `chia_xoai_cuoi` | ls-cay-xoai-tham-lai (80) | **chưa nối** |
 | `chieu_ra_hien` | ls100-buoi-chieu (100) | **chưa nối** |
 | `cho_anh_ho_tien` | ls36-vay-nong (36) | **chưa nối** |
@@ -139,6 +142,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `chua_ngay` | ls43-ban-doi-ngu-rieng (43) | **chưa nối** |
 | `chua_vang` | ls-vang-gia (12) | **chưa nối** |
 | `chuc_ngu_ngon` | ls103-ban-doi (103) | **chưa nối** |
+| `chup_anh_moi_sang` | le-may-anh-cu (55) | le-trien-lam-anh (từ 65) |
 | `chuyen_can_ho_nho` | ls68-con-meo-hoang (68) | **chưa nối** |
 | `chuyen_di_30` | ls30-ban-cu-cuoi (30) | **chưa nối** |
 | `chuyen_giao_khach` | ls58-khach-hang-cu (58) | **chưa nối** |
@@ -169,6 +173,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `da_giay_thao` | ls12-to-giay-duoi-chan (12) | **chưa nối** |
 | `dam_noi` | ls06-doc-bai (6) | **chưa nối** |
 | `dan_cau_tinh_nguyen` | ls97-mot-minh-nguoi-tre-ghe (97) | **chưa nối** |
+| `dan_khan_vung_nui` | le-dan-khan-tu-thien (75) | **chưa nối** |
 | `dang_ky_hien_tang` | ls56-di-hien-tang (56) | **chưa nối** |
 | `danh_sach_50` | ls50-mot-minh-nam-muoi (50) | **chưa nối** |
 | `danh_sach_nguoi_tre` | ls88-mot-minh-noi-nho (88) | **chưa nối** |
@@ -257,10 +262,12 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `ghep_cay_xoai` | ls-cay-xoai-nha-cu (50) | ls-cay-xoai-tham-lai (từ 80) |
 | `ghi_am_doi_hai_nguoi` | ls74-ban-doi-hoi-ky (74) | **chưa nối** |
 | `ghi_chu_hop_ky_niem` | ls83-mot-minh-cho-lai-do (83) | **chưa nối** |
+| `ghi_so_quy_khu_pho` | le-quy-nha-van-hoa (65) | **chưa nối** |
 | `gia_chu_ky` | ls07-chu-ky (7) | ls-vo-chu-ky (từ 12) |
 | `gia_dau_bung` | ls-bien-khong-boi (12) | ls-con-hoc-boi (từ 33) |
 | `gia_ngu` | ls05-sau-vach (5) | **chưa nối** |
 | `giai_cau_long` | ls58-di-thi-the-thao (58) | **chưa nối** |
+| `gian_hang_gay_quy` | le-hoi-cho-cuoi-nam (65) | **chưa nối** |
 | `giao_keo_ban_than` | ls36-bao-hiem-tuoi-gia (36) | **chưa nối** |
 | `giau_benh_70` | ls70-giau-benh (70) | **chưa nối** |
 | `giau_chuyen` | ls04-nhanh-xoai (4) | ls-xoai-lua-dau (từ 8) |
@@ -293,6 +300,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `giu_nha_cu` | ls44-tien-ke-thua (44) | ls-nha-cu-giu-lai (từ 50) |
 | `giu_nhan_ba` | ls-ba-trao-nhan (11) | ls-nhan-cua-ba (từ 30) |
 | `giu_nhom_ban` | ls32-ban-than-xa (32) | **chưa nối** |
+| `giu_quy_lop` | le-hop-lop (56) | **chưa nối** |
 | `giu_rieng_tu` | ls20-mat-khau (20) | **chưa nối** |
 | `giu_so_lixi` | ls-so-lixi (17) | ls-so-lixi-me (từ 30) |
 | `giu_tam_anh` | ls98-cuoi-cung-cua-mot-nghe (98) | **chưa nối** |
@@ -318,8 +326,10 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `goi_nguoi_lon` | ls-bien-cuu-ban (12) | ls-khoa-bac-si (từ 30) |
 | `goi_nguoi_than` | ls37-dong-nghiep-qua-doi (37) | **chưa nối** |
 | `goi_ten_nhau` | ls102-ban-doi (102) | **chưa nối** |
+| `gom_qua_bao_ve` | le-bao-ve-nghi-huu (57) | **chưa nối** |
 | `gop_cho_me` | ls10-heo-dat (10) | **chưa nối** |
 | `gop_mo_to` | ls65-ve-que-to-tien (65) | **chưa nối** |
+| `gop_quy_nha_van_hoa` | le-quy-nha-van-hoa (65) | **chưa nối** |
 | `gop_theo_kha_nang` | ls41-tien-ho-hang (41) | **chưa nối** |
 | `gop_von_quan` | ls35-gop-von (35) | **chưa nối** |
 | `gop_y_sep_tre` | ls41-sep-moi-tre (41) | **chưa nối** |
@@ -378,6 +388,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `ke_chuyen_bien_voi_khoa` | ls-khoa-gia (80) | **chưa nối** |
 | `ke_chuyen_binh_hoa` | ls-phong-hop-lop (60) | **chưa nối** |
 | `ke_chuyen_cho_nguoi_tre` | ls77-nguoi-tre-hoi-y-kien (77) | **chưa nối** |
+| `ke_chuyen_cho_tre` | le-tre-hoi-chuyen-xua (75) | **chưa nối** |
 | `ke_chuyen_dem_canh` | ls-canh-dem-cuoi (60) | **chưa nối** |
 | `ke_chuyen_doi` | ls66-ke-chuyen-chien-tranh (66) | **chưa nối** |
 | `ke_chuyen_kem_cho_con_ban` | ls94-nguoi-hang-xom-tre-lon (94) | **chưa nối** |
@@ -457,6 +468,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `mo_tuyen_tren` | ls47-ban-doi-benh-nang (47) | **chưa nối** |
 | `mo_xuong_dui` | ls77-te-gay-xuong (77) | **chưa nối** |
 | `moi_ban_moi_thang` | ls69-ban-doi-ky-niem-bon-muoi (69) | **chưa nối** |
+| `moi_nguoi_mot_mon` | le-bua-com-chu-nhat (55) | **chưa nối** |
 | `moi_nguoi_tung_giup` | ls100-mot-minh-tram (100) | **chưa nối** |
 | `mot_tieng_buoi_trua` | ls87-ban-doi-ngu-nhieu (87) | **chưa nối** |
 | `mua_bao_hiem_ban` | ls28-bao-hiem-ban (28) | **chưa nối** |
@@ -506,7 +518,6 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `nguoi_qua_cau` | ls-cay-cau-nam-ay (64) | **chưa nối** |
 | `nha_chung_ban` | ls46-mot-minh-mua-nha (46) | **chưa nối** |
 | `nha_cu_co_nguoi_o` | ls-nha-cu-giu-lai (50) | **chưa nối** |
-| `nha_nho_xa` | ls28-mua-nha (28) | **chưa nối** |
 | `nha_rieng` | ls28-mua-nha-mot-minh (28) | **chưa nối** |
 | `nhac_binh_hoa` | ls-phong-gap-lai (27) | ls-phong-hop-lop (từ 60) |
 | `nhac_dem` | ls85-dem-dai (85) | **chưa nối** |
@@ -531,6 +542,8 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `nhay_viec_39` | ls39-cong-viec-chan (39) | **chưa nối** |
 | `nhin_an` | ls06-tien-an-sang (6) | **chưa nối** |
 | `nho_ban_clb` | ls64-mot-minh-o-vien (64) | **chưa nối** |
+| `nho_be_nha_ben` | le-bong-den-hanh-lang (75) | **chưa nối** |
+| `nho_nguoi_quen_don_nha` | le-thue-don-nha (65) | **chưa nối** |
 | `nhom_bao_binh_an` | ls65-mot-minh-ban-cung-tuoi (65) | ls-nhom-binh-an-vang (từ 72) |
 | `nhom_ghe_da_moi` | ls71-ban-gia-ra-di (71) | **chưa nối** |
 | `nhom_nau_an` | ls53-mot-minh-hoc-nau (53) | **chưa nối** |
@@ -591,7 +604,9 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `phong_ve_tranh` | ls64-ban-doi-di-hoc (64) | **chưa nối** |
 | `quan_nuoc_gia` | ls59-chua-co-viec-on-dinh (59) | **chưa nối** |
 | `quay_phim_hai_nguoi` | ls90-ban-doi-chin-muoi (90) | **chưa nối** |
+| `quen_hang_xom_tre` | le-hang-xom-moi (55) | **chưa nối** |
 | `quen_lan` | ls-gap-lai-lan (19) | **chưa nối** |
+| `quen_tho_moc` | le-ghe-hien (55) | le-tho-moc-nho-viec (từ 66) |
 | `quyet_chia_dat` | ls70-con-cai-tranh-dat (70) | **chưa nối** |
 | `ra_ngoai_moi_chieu` | ls78-ngu-nhieu (78) | **chưa nối** |
 | `sang_nay_mot_tram` | ls101-ban-doi (101) | **chưa nối** |
@@ -667,6 +682,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `tim_nguoi_gui_thiep` | ls84-mot-minh-nguoi-gui-thu (84) | **chưa nối** |
 | `tinh_nguyen_48` | ls48-mot-minh-di-tinh-nguyen (48) | **chưa nối** |
 | `tinh_nguyen_benh_vien` | ls62-mot-minh-nghi-huu (62) | **chưa nối** |
+| `tinh_nguyen_thu_vien` | le-ghe-thu-vien-luu-dong (76) | **chưa nối** |
 | `to_truong_che` | ls21-to-truong (21) | **chưa nối** |
 | `to_truong_dung` | ls21-to-truong (21) | **chưa nối** |
 | `toi_khong_dien_thoai` | ls35-ky-niem-cuoi (35) | **chưa nối** |
@@ -688,6 +704,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `trao_do_tan_tay` | ls69-mot-minh-chuyen-hau-su (69) | **chưa nối** |
 | `trao_vuon_nguoi_tre` | ls-vuon-rau-trao-lai (70) | **chưa nối** |
 | `tre_doc_sach` | ls81-mot-minh-tre-hang-xom (81) | **chưa nối** |
+| `tre_nha_ben_day_dien_thoai` | le-lop-dien-thoai (55) | **chưa nối** |
 | `tre_thoi_nen` | ls90-mot-minh-chin-muoi (90) | **chưa nối** |
 | `tre_trong_phong` | ls93-tieng-cuoi-tre (93) | **chưa nối** |
 | `trien_lam_tuoi_gia` | ls68-mot-minh-hoc-ve (68) | **chưa nối** |
@@ -728,6 +745,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `tu_nhat` | ls-tu-khac-lop (6) | **chưa nối** |
 | `tu_noi_lai` | ls-tu-so-cu (12), ls-tu-mang-xa-hoi (19) | chặn ls-tu-mang-xa-hoi (từ 19), ls-tu-o-nho (từ 19), ls-tu-cuoi (từ 26), ls-tu-vay-tien (từ 33), ls-tu-cuoc-goi-cuoi (từ 70) |
 | `tu_o_nho` | ls-tu-o-nho (19) | ls-tu-toc-bac (từ 50) |
+| `tu_sua_ghe_hien` | le-ghe-hien (55) | **chưa nối** |
 | `tu_than` | ls-tu-khac-lop (6) | **chưa nối** |
 | `tu_tim_tro` | ls-tu-o-nho (19) | **chưa nối** |
 | `tu_trao` | ls39-mang-xa-hoi (39) | **chưa nối** |
@@ -741,6 +759,7 @@ Dấu "chưa nối" là chỗ có thể viết sự kiện quay lại ở giai �
 | `ung_ho_hoc_lai` | ls41-ban-doi-nho-con (41) | **chưa nối** |
 | `ung_ho_tiem_banh` | ls33-ban-doi-nghi-viec (33) | ls-tiem-banh-sau-nay (từ 40) |
 | `vang_cuoi_tu` | ls-tu-cuoi (26) | **chưa nối** |
+| `vao_nhom_co_tuong` | le-ban-co-cong-vien (65) | **chưa nối** |
 | `vao_vien_duong_lao` | ls67-mot-minh-o-vien-duong-lao (67) | **chưa nối** |
 | `vay_mua_nha` | ls28-mua-nha (28) | **chưa nối** |
 | `ve_cong_ty_nguoi_cu` | ls48-cho-o-viec-moi (48) | **chưa nối** |

@@ -78,6 +78,8 @@ export function createInitialState() {
       isAlive: true,
       achievementFlags: {},
       keepsakes: [],
+      dreams: null,
+      elderThemes: [],
       memories: [],
       unlockedActivities: [],
       lastRepairLessonAge: null,

@@ -415,9 +415,6 @@
         <p class="lobby-links">
           <button type="button" data-open-community>🌐 Cộng đồng</button>
           <button type="button" id="open-transfer">📲 Chuyển thiết bị</button>
-          <a href="./gioi-thieu.html#cai-dat" id="install-link"
-            >⬇️ Cài game vào máy</a
-          >
         </p>
         <div class="game-update-controls" hidden>
           <button type="button" data-game-update hidden>
@@ -1374,6 +1371,7 @@
       <h2 id="death-title" tabindex="-1" autofocus>Hành trình đã khép lại</h2>
       <p id="death-content"></p>
       <div id="death-summary"></div>
+      <div id="death-succession"></div>
       <button type="button" id="return-after-death" class="lobby-primary">
         Về bến xe
       </button>
@@ -1531,6 +1529,7 @@
             />
           </button>
           <h2 id="player-name"></h2>
+          <p id="player-lineage" class="character-lineage" hidden></p>
           <p id="player-gender" class="character-gender"></p>
           <p class="character-age"><span id="player-age">0</span> tuổi</p>
           <p id="player-province"></p>
@@ -1823,6 +1822,15 @@
             ></span
           >
         </button>
+        <button type="button" id="activity-orphanage">
+          <span class="activity-icon" aria-hidden="true">🏡</span
+          ><span class="activity-text"
+            ><span class="activity-title">Cô nhi viện</span
+            ><span class="activity-note"
+              >Có những đứa trẻ vẫn đang chờ một mái nhà!</span
+            ></span
+          >
+        </button>
         <button type="button" id="activity-degrees">
           <span class="activity-icon" aria-hidden="true">🪪</span
           ><span class="activity-text"
@@ -1855,7 +1863,7 @@
           ><span class="activity-text"
             ><span class="activity-title">Dạy sửa đồ miễn phí</span
             ><span class="activity-note"
-              >Mỗi năm một buổi cho hàng xóm: Trí tuệ +1, Hạnh phúc +1.</span
+              >Miễn phí, không tốn lượt rảnh: Trí tuệ +1, Hạnh phúc +1.</span
             ></span
           >
         </button>
@@ -2156,6 +2164,34 @@
       </div>
       <div id="travel-body"></div>
     </dialog>
+    <dialog id="will-dialog" aria-labelledby="will-title">
+      <div class="dialog-heading">
+        <h2 id="will-title">📜 Di chúc</h2>
+        <button
+          type="button"
+          class="dialog-close"
+          id="close-will"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
+      </div>
+      <div id="will-body"></div>
+    </dialog>
+    <dialog id="orphanage-dialog" aria-labelledby="orphanage-title">
+      <div class="dialog-heading">
+        <h2 id="orphanage-title">🏡 Cô nhi viện</h2>
+        <button
+          type="button"
+          class="dialog-close"
+          id="close-orphanage"
+          aria-label="Đóng"
+        >
+          ✕
+        </button>
+      </div>
+      <div id="orphanage-body"></div>
+    </dialog>
     <dialog id="game-center-dialog" aria-labelledby="game-center-title">
       <div class="dialog-heading">
         <h2 id="game-center-title">🕹️ Game Center</h2>
@@ -2345,6 +2381,20 @@
       >
         <h3 id="life-collection-title">🧸 Bộ sưu tập thú bông &amp; quà</h3>
         <ul id="life-collection" class="dialog-entries"></ul>
+      </section>
+      <section
+        class="dialog-card life-panel"
+        id="life-dreams-panel"
+        data-icon="🌟"
+        data-tab="Ước mơ"
+        aria-labelledby="life-dreams-title"
+      >
+        <h3 id="life-dreams-title">🌟 Ước mơ dang dở</h3>
+        <ul id="life-dreams" class="dialog-entries dream-list" data-tab-count></ul>
+        <p id="life-dreams-hint" class="dream-hint">
+          Từ khoảng 55 tuổi, một chuyện thường ngày có thể gợi lại điều mình
+          từng muốn làm. Mỗi lúc chỉ theo đuổi một ước mơ, và có thể tạm gác.
+        </p>
       </section>
       <section
         class="dialog-card life-panel"

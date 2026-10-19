@@ -429,8 +429,13 @@ function shuffledAnswers(question, random) {
 const capitalize = (text) => `${text[0].toLocaleUpperCase("vi-VN")}${text.slice(1)}`;
  
  
+// The age-16 mentor offers two interviews in total; after a second failure the promise closes
+// and later applications are ordinary interviews.
+export const MILESTONE_INTERVIEW_ATTEMPTS = 2;
+const milestoneFailures = player => Number.isInteger(player?.milestoneInterviewFailures) ? player.milestoneInterviewFailures : 0;
+export const isMilestonePromiseClosed = player => hasCareerMilestone(player) && milestoneFailures(player) >= MILESTONE_INTERVIEW_ATTEMPTS;
 function getMilestoneMentor(player) {
-  if (!hasCareerMilestone(player)) return null;
+  if (!hasCareerMilestone(player) || isMilestonePromiseClosed(player)) return null;
   const data = careerMilestones[player.careerPath.id];
   return { name: data.mentor, Name: capitalize(data.mentor), challenge: data.spark.title.replace(/^\S+\s/u, "") };
 }
@@ -449,6 +454,9 @@ export function createJobInterview(player, random = Math.random) {
       kind: "job-interview",
       interviewCareerId: career.id,
       title: "📞 Lời hẹn từ năm 16 tuổi",
+      interviewer: mentor.Name, place: context.place, round: context.round,
+      intro: `${mentor.Name} giữ lời hẹn từ thử thách “${mentor.challenge}” năm 16 tuổi và mời bạn đến ${context.place} dự buổi ${context.round}.`,
+      question: capitalize(question.text),
       text: `Bạn vừa khép lại chặng học tập thì nhận được cuộc gọi từ ${mentor.name}, người đã cùng bạn đi qua thử thách “${mentor.challenge}” năm 16 tuổi. “Tôi vẫn nhớ lời hẹn năm ấy. Em đến ${context.place} dự buổi ${context.round} nhé, tôi sẽ ngồi hội đồng.”\n\nTrong buổi ${context.round}, ${mentor.name} lật hồ sơ của bạn rồi hỏi:\n\n“${capitalize(question.text)}”`,
       ...art("1F4DE", `Cuộc gọi từ ${mentor.name}`),
       choices: shuffledAnswers(question, random),
@@ -459,9 +467,14 @@ export function createJobInterview(player, random = Math.random) {
     kind: "job-interview",
     interviewCareerId: career.id,
     title: isEsports ? "🎮 Đánh giá năng lực lên đội 1" : `📄 Vòng ${context.round}`,
+    interviewer: isEsports ? "Huấn luyện viên" : capitalize(context.interviewer),
+    place: isEsports ? academy : context.place,
+    round: isEsports ? "đánh giá lên đội 1" : context.round,
+    intro: isEsports ? `${academy} mở buổi đánh giá cuối để chọn tuyển thủ lên đội 1. Huấn luyện viên vừa xem lại quá trình scrim của bạn.` : `Bạn ${context.apply}.`,
+    question: question.text,
     text: isEsports
       ? `${academy} mở buổi đánh giá cuối để chọn tuyển thủ được đưa lên đội 1. Huấn luyện viên xem lại quá trình scrim rồi hỏi bạn:\n\n“${question.text}”`
-      : `Bạn ${context.apply}. ${context.interviewer} xem hồ sơ, mỉm cười rồi hỏi:\n\n“${question.text}”`,
+      : `Bạn ${context.apply}. ${capitalize(context.interviewer)} xem hồ sơ, mỉm cười rồi hỏi:\n\n“${question.text}”`,
     ...art(isEsports ? "1F3AF" : "1F4CB", isEsports ? "Buổi đánh giá tuyển thủ lên đội 1" : `Buổi ${context.round} ngành ${career.field}`),
     choices: shuffledAnswers(question, random),
   };
@@ -496,13 +509,15 @@ export function createInterviewResult(player, passed, age, assessment = null) {
     assessment ? `📊 ${assessment.note}` : "",
     !hired ? "Bước tiếp theo: học bổ sung (Phát triển bản thân → Trí tuệ), luyện phỏng vấn (Xin việc) hoặc tìm công việc phù hợp hơn." : "",
   ].filter(Boolean);
-  if (!notes.length && !tail.length) return result;
+  if (!notes.length && !tail.length) return { ...result, mainContent: result.content };
   const head = notes.length ? `${notes.join("\n")}\n` : "";
   const foot = tail.length ? `\n${tail.join("\n")}` : "";
   return {
     ...result,
     ...(unfit ? { title: "🏃 Chưa đạt thể lực" } : {}),
     content: `${head}${result.content}${foot}`,
+    // The Xin việc dialog shows the assessment and next steps as their own blocks.
+    mainContent: `${head}${result.content}`,
     logContent: `${head}${result.logContent}${assessment ? `\n📊 ${assessment.note}` : ""}`,
     logSummary: `${head}${result.logSummary}`,
     updates: { ...result.updates, interviewPrepAge: null },
@@ -529,17 +544,29 @@ function createAnsweredInterviewResult(player, passed, age) {
       logSummary: `Giữ lời hẹn với ${mentor.name} từ năm 16 tuổi.\nBắt đầu ở bậc ${profile.ranks[0]}.\n${salaryText}`,
       logContent: `${mentor.Name} giữ lời hẹn từ năm 16 tuổi và mời bạn dự buổi ${context.round}. Bạn vượt qua và bắt đầu làm việc tại ${context.place} ở vị trí ${profile.ranks[0]}.\n${salaryText}`,
       ...art("1F91D", `Giữ lời hẹn với ${mentor.name}`),
+    } : milestoneFailures(player) + 1 >= MILESTONE_INTERVIEW_ATTEMPTS ? {
+      stage: "result",
+      age,
+      title: "📋 Lời hẹn khép lại",
+      content: `${mentor.Name} im lặng một lúc rồi nói: “Hai lần rồi, tôi nghĩ em cần tìm con đường của riêng mình, không phải con đường tôi vẽ năm em 16 tuổi.” ${capitalize(context.place)} không nhận bạn, và ${mentor.name} sẽ không gọi lại nữa. Bạn vẫn có thể tự nộp hồ sơ ở Hoạt động → Xin việc.`,
+      confirmText: "Tự tìm đường mới",
+      updates: { age, job: isEsports ? `🎮 Tuyển thủ ${academy}` : "Thất nghiệp", employmentStatus: "unemployed", careerLevel: 0,
+        milestoneInterviewFailures: milestoneFailures(player) + 1 },
+      achievementIds: [],
+      logSummary: `Trượt lần thứ hai buổi ${context.round} do ${mentor.name} mời; lời hẹn năm 16 tuổi khép lại.\nCó thể tự xin việc ở Hoạt động → Xin việc.`,
+      logContent: `Bạn trượt lần thứ hai buổi ${context.round} do ${mentor.name} mời. ${mentor.Name} khép lại lời hẹn năm 16 tuổi và sẽ không gọi lại nữa.`,
+      ...art("1F4CB", `${mentor.Name} khép lại lời hẹn`),
     } : {
       stage: "result",
       age,
       title: "📋 Lời hẹn chưa trọn",
-      content: `${mentor.Name} khẽ lắc đầu: “Câu trả lời này chưa giống người tôi gặp năm 16 tuổi.” ${capitalize(context.place)} chưa thể nhận bạn lần này, nhưng ${mentor.name} vẫn để ngỏ cánh cửa: năm sau có thể dự buổi ${context.round} lại.`,
+      content: `${mentor.Name} khẽ lắc đầu: “Câu trả lời này chưa giống người tôi gặp năm 16 tuổi.” ${capitalize(context.place)} chưa thể nhận bạn lần này, nhưng ${mentor.name} vẫn để ngỏ cánh cửa: năm sau có thể dự buổi ${context.round} lại. Đây là cơ hội cuối cùng của lời hẹn.`,
       confirmText: "Năm sau thử lại!",
-       
-      updates: { age, job: isEsports ? `🎮 Tuyển thủ ${academy}` : "Thất nghiệp", employmentStatus: "unemployed", careerLevel: 0 },
+      updates: { age, job: isEsports ? `🎮 Tuyển thủ ${academy}` : "Thất nghiệp", employmentStatus: "unemployed", careerLevel: 0,
+        milestoneInterviewFailures: milestoneFailures(player) + 1 },
       achievementIds: [],
-      logSummary: `Chưa vượt qua buổi ${context.round} do ${mentor.name} mời.\nTạm thời thất nghiệp; có thể thử lại vào năm sau.`,
-      logContent: `Bạn chưa vượt qua buổi ${context.round} do ${mentor.name} mời và tạm thời thất nghiệp. ${mentor.Name} hẹn bạn thử lại vào năm sau.`,
+      logSummary: `Chưa vượt qua buổi ${context.round} do ${mentor.name} mời.\nTạm thời thất nghiệp; còn một lần thử lại vào năm sau.`,
+      logContent: `Bạn chưa vượt qua buổi ${context.round} do ${mentor.name} mời và tạm thời thất nghiệp. ${mentor.Name} hẹn bạn thử lại một lần nữa vào năm sau.`,
       ...art("1F4CB", `${mentor.Name} hẹn năm sau`),
     };
   }
@@ -583,12 +610,12 @@ function createAnsweredInterviewResult(player, passed, age) {
     stage: "result",
     age,
     title: `📭 Chưa vượt qua vòng ${context.round}`,
-    content: `${context.interviewer} cảm ơn bạn đã tham gia nhưng ${context.place} chưa thể nhận bạn lần này. Bạn tạm thời thất nghiệp và có thể đăng ký thử lại vào năm sau.`,
+    content: `${capitalize(context.interviewer)} cảm ơn bạn đã tham gia nhưng ${context.place} chưa thể nhận bạn lần này. Bạn tạm thời thất nghiệp và có thể đăng ký thử lại vào năm sau.`,
     confirmText: "Năm sau thử lại!",
     updates: { age, job: "Thất nghiệp", employmentStatus: "unemployed", careerLevel: 0 },
     achievementIds: [],
     logSummary: `Chưa vượt qua vòng ${context.round} ngành ${career.field}.\nTạm thời thất nghiệp; có thể thử lại vào năm sau.`,
-    logContent: `Bạn chưa vượt qua vòng ${context.round} ngành ${career.field} và tạm thời thất nghiệp. ${context.interviewer} hẹn bạn thử lại vào năm sau.`,
+    logContent: `Bạn chưa vượt qua vòng ${context.round} ngành ${career.field} và tạm thời thất nghiệp. ${capitalize(context.interviewer)} hẹn bạn thử lại vào năm sau.`,
       ...art("1F4F1", `Thông báo chưa vượt qua vòng ${context.round}`),
   };
 }
@@ -849,7 +876,9 @@ export function createEmploymentEvent(player, age) {
   if ((milestone || overseas) && age === 22 && player.employmentStatus !== "employed") {
     return createJobInterview(player);
   }
-  if ((milestone || overseas) && age > 22 && player.employmentStatus === "unemployed") {
+  // A closed age-16 promise no longer calls back; overseas graduates keep their yearly retry.
+  if ((milestone || overseas) && age > 22 && player.employmentStatus === "unemployed" &&
+      (overseas || !isMilestonePromiseClosed(player))) {
     return createInterviewRetryPrompt(player);
   }
   const level = Number(player.careerLevel) || 0;

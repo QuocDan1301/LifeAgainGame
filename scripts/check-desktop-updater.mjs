@@ -124,5 +124,62 @@ if (process.platform === 'win32') {
     } });
   await failedHelper.check(true);
   assert.equal(app.quits, 1, 'Failed helper spawn never closes the game');
+
+  // Closing the game installs silently: no relaunch and no failure dialog next time.
+  await fs.writeFile(target, 'old working executable');
+  await fs.writeFile(staged, bytes);
+  await fs.unlink(marker).catch(() => {});
+  await fs.unlink(log).catch(() => {});
+  const quietScript = `function Start-Process { param($FilePath, $WorkingDirectory, $ErrorAction) [IO.File]::WriteAllText(${quote(marker)}, 'x') }\n` +
+    replacementScript({ target, file: staged, sha256, pid: 2147483000, log: null, relaunch: false });
+  const quiet = spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-EncodedCommand',
+    Buffer.from(quietScript, 'utf16le').toString('base64')], { encoding: 'utf8', windowsHide: true, timeout: 30000 });
+  assert.equal(quiet.status, 0, quiet.stderr);
+  assert.deepEqual(await fs.readFile(target), bytes, 'Quit install replaces the EXE');
+  await assert.rejects(fs.stat(marker), { code: 'ENOENT' }, 'Quit install does not reopen the game');
+  await assert.rejects(fs.stat(log), { code: 'ENOENT' });
+
+  const decode = args => Buffer.from(args.at(-1), 'base64').toString('utf16le');
+  function backgroundUpdater() {
+    const gameApp = new EventEmitter();
+    Object.assign(gameApp, { isPackaged: true, getVersion: () => '1.0.1', getPath: () => directory,
+      quit: () => { gameApp.quits = (gameApp.quits ?? 0) + 1; } });
+    const result = { app: gameApp, dialogs: 0, ready: [], scripts: [] };
+    result.updater = createDesktopUpdater({ app: gameApp, executable: target, getWindow: () => ({}),
+      dialog: { showMessageBox: async () => { result.dialogs++; return { response: 1 }; } },
+      net: { fetch: async url => url.includes('api.github.com') ? Response.json(release) : fetcher(url) },
+      onReady: version => result.ready.push(version),
+      launch: (_exe, args) => {
+        result.scripts.push(decode(args));
+        const child = new EventEmitter();
+        child.unref = () => {};
+        process.nextTick(() => child.emit('spawn'));
+        return child;
+      } });
+    return result;
+  }
+  const background = backgroundUpdater();
+  await background.updater.check();
+  assert.deepEqual(background.ready, ['1.0.2'], 'Background download reveals the in-game button');
+  assert.equal(background.dialogs, 0, 'Background download never interrupts play with a dialog');
+  assert.equal(background.updater.readyVersion(), '1.0.2');
+  await background.updater.check();
+  assert.equal(background.dialogs, 0);
+  assert.equal(await background.updater.restartAndInstall(), true);
+  assert.equal(background.app.quits, 1, 'In-game button restarts into the new version');
+  assert.match(background.scripts[0], /\$relaunch = \$true/);
+  assert.equal(await background.updater.restartAndInstall(), false, 'Only one install at a time');
+
+  const closing = backgroundUpdater();
+  await closing.updater.check();
+  await closing.updater.start();
+  closing.app.emit('will-quit');
+  assert.equal(closing.scripts.length, 1, 'Unapplied update installs when the game closes');
+  assert.match(closing.scripts[0], /\$relaunch = \$false/);
+  assert.match(closing.scripts[0], /\$logFile = \$null/);
+  const current = backgroundUpdater();
+  await current.updater.start();
+  current.app.emit('will-quit');
+  assert.equal(current.scripts.length, 0, 'Nothing to install without a verified download');
 }
-console.log('PASS updater: version selection, trusted release URLs, integrity, partial downloads, cached download, portable replacement, rollback, restart consent.');
+console.log('PASS updater: version selection, trusted release URLs, integrity, partial downloads, cached download, portable replacement, rollback, restart consent, in-game button, install on quit.');

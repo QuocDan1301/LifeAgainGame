@@ -69,6 +69,29 @@ const firstDownload = await app({ controlled: false, waiting: false });
 firstDownload.registration.installing = events({ state: 'installing' });
 await firstDownload.registration.emit('updatefound');
 assert.equal(firstDownload.buttons[0].hidden, true, 'first installation is not an update');
+const desktopWindow = events();
+let desktopReady, desktopInstalls = 0, desktopResult = true;
+desktopWindow.lifeAgainDesktop = { onUpdateReady: callback => { desktopReady = callback; },
+  installUpdate: async () => { desktopInstalls++; return desktopResult; } };
+const desktopButtons = [events({})], desktopNotices = [{}];
+let desktopSaves = 0;
+const desktopContext = vm.createContext({ navigator: {}, window: desktopWindow, URL, AbortSignal, setTimeout, setInterval,
+  document: { readyState: 'complete', querySelectorAll: selector => selector === '[data-game-update]' ? desktopButtons :
+    selector === '.game-update-controls' ? [{}] : desktopNotices, getElementById: () => null,
+    documentElement: { hasAttribute: () => false } } });
+vm.runInContext(source + '\nthis.start = initOffline;', desktopContext);
+desktopContext.start(() => true, { beforeUpdate: () => { desktopSaves++; } });
+assert.equal(desktopButtons[0].hidden, true, 'desktop shows no button before a verified download');
+desktopReady('1.0.2');
+assert.equal(desktopButtons[0].hidden, false, 'desktop reveals the same update button');
+desktopResult = false;
+await desktopButtons[0].emit('click');
+assert.match(desktopNotices[0].textContent, /thử lại/, 'desktop reports a failed restart');
+desktopResult = true;
+await desktopButtons[0].emit('click');
+assert.equal(desktopInstalls, 2);
+assert.equal(desktopSaves, 2, 'desktop saves before restarting');
+
 const completed = await app({ pending: true, waiting: false });
 completed.registration.active = { state: 'activating' };
 completed.serviceWorker.controller = completed.registration.active;

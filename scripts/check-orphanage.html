@@ -1,0 +1,64 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Orphanage checks</title>
+<pre id="orphanage-check-result">Running…</pre>
+<script>
+(async () => {
+  const result = document.getElementById("orphanage-check-result");
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const keys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue"];
+  const saved = keys.map(key => localStorage.getItem(key));
+  try {
+    const { createInitialState, state } = await import("../js/core/state.js");
+    const html = await (await fetch("../index.html")).text();
+    const parsed = new DOMParser().parseFromString(html, "text/html");
+    parsed.querySelectorAll("script").forEach(element => element.remove());
+    parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+    document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    localStorage.setItem("lifeAgainAchievementQueue", "[]");
+    document.getElementById("game-screen").hidden = false;
+    document.getElementById("lobby-screen").hidden = true;
+    Object.assign(state, createInitialState());
+    const spouse = { id: "p1", name: "An", gender: "female", relationship: 80, stats: { happiness: 80 } };
+    Object.assign(state.player, { name: "Test", gender: "male", age: 35, health: 80, happiness: 50, intelligence: 50,
+      appearance: 50, money: 100_000_000, studyBlock: "A00", employmentStatus: "declined", nextPromotionAge: null,
+      lifeSeed: 12345, partner: spouse, marriedAtAge: 33, nextChildProposalAge: 38 });
+    await import("../js/main.js");
+    const $ = id => document.getElementById(id);
+    const buttons = () => [...$("orphanage-body").querySelectorAll(".orphanage-adopt")];
+
+    $("activities").click();
+    $("activity-orphanage").click();
+    assert($("orphanage-dialog").open && buttons().length === 3, "Orphanage lists three children");
+    const names = [...$("orphanage-body").querySelectorAll(".orphanage-kid h4")].map(node => node.textContent);
+    assert(new Set(names).size === 3, "Children have different names");
+    const ages = [...$("orphanage-body").querySelectorAll(".orphanage-kid-age")].map(node => parseInt(node.textContent, 10));
+    assert(ages.every(age => age >= 5 && age <= 10), "Children are 5 to 10 years old");
+    const first = buttons()[0];
+    const firstCost = 12_000_000 + ages[0] * 2_000_000;
+    first.click();
+    assert($("shop-confirm-dialog").open && $("shop-confirm-text").textContent.includes("An sẽ cùng bạn"), "Adoption asks for confirmation");
+    $("shop-confirm").click();
+    assert(state.player.children.length === 1 && state.player.children[0].name === names[0], "Confirmed child joins the family");
+    assert(state.player.money === 100_000_000 - firstCost, "First year of childcare is paid at once");
+    assert(state.player.children[0].coParent?.id === "p1" && state.player.childProposalCompleted, "Spouse becomes co-parent");
+    assert(state.player.achievementFlags["first-child"], "First child achievement is recorded");
+    assert(state.logs.at(-1).content.includes("cô nhi viện"), "Diary records the adoption");
+    assert($("orphanage-body").querySelector(".orphanage-kid.is-home") && buttons().every(button => button.disabled), "Only one adoption per year");
+    assert(buttons()[1].textContent.includes("Mỗi năm chỉ nhận nuôi một bé"), "Other children explain the yearly limit");
+    $("close-orphanage").click();
+    state.player.age = 36;
+    $("activities").click();
+    $("activity-orphanage").click();
+    const nextNames = [...$("orphanage-body").querySelectorAll(".orphanage-kid h4")].map(node => node.textContent);
+    assert(nextNames.join() !== names.join() && buttons().some(button => !button.disabled), "A new group arrives next year");
+    $("close-orphanage").click();
+    result.textContent = "PASS: three children aged 5-10; confirmation; first-year cost; spouse co-parent; one adoption per year; new group yearly";
+  } catch (error) {
+    result.textContent = `FAIL: ${error.stack}`;
+  } finally {
+    keys.forEach((key, index) => saved[index] === null ? localStorage.removeItem(key) : localStorage.setItem(key, saved[index]));
+  }
+})();
+</script>

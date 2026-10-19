@@ -7,6 +7,7 @@ import { prepareStoryChoice, canAffordChoice, collectHomeLoanYear, collectStoryL
 import { getAnnualSalaryPayment, completeCareerYear, retirePlayer } from '../js/career/career-salary.js';
 import { createWorkProblemEvent, createJobReviewEvent, createLayoffNoticeEvent, createContractNoticeEvent } from '../js/career/job-loss.js';
 import { getShopItem } from '../js/leisure/shop.js';
+import { getHomeFinancing } from '../js/core/housing.js';
 import { getChildAge, completeLifeYear, forecastNextYear } from '../js/relationships/family.js';
 
 let checks = 0;
@@ -55,21 +56,26 @@ test('Explicit prices, two months salary and affordability', () => {
     });
   }
 });
-test('Mortgage owns a real asset and finishes exactly 15 payments', () => {
+test('Mortgage owns a real asset and finishes exactly one payment per contract year', () => {
+  // Điều khoản lấy từ hợp đồng thật của game (housing.js), khớp lời kể “vay hai mươi năm”.
+  const terms = getHomeFinancing('story-home');
   const p = worker(27);
   const c = prepareStoryChoice(story('ls28-mua-nha').choices[0], p, 28);
-  assert.match(c.label, /trả trước.*vay.*15 năm/);
+  assert.match(c.label, new RegExp(`trả trước.*vay.*${terms.years} năm`));
+  assert.match(story('ls28-mua-nha').title, /hai mươi năm/);
+  assert.equal(terms.years, 20);
   Object.assign(p, c.playerUpdates, { money: 10_000_000_000 + c.money });
   assert.equal(getShopItem(p.purchases[0].id).group, 'realestate');
   assert.equal(collectHomeLoanYear(p, 28), null);
   const before = p.money;
-  for (let age = 29; age <= 43; age++) {
+  for (let age = 29; age <= 28 + terms.years; age++) {
     assert.ok(collectHomeLoanYear(p, age));
     assert.equal(collectHomeLoanYear(p, age), null);
     p.homeLoans = JSON.parse(JSON.stringify(p.homeLoans));
   }
   assert.equal(p.homeLoans[0].outstanding, 0);
-  assert.equal(before - p.money, 2_280_000_000);
+  assert.equal(before - p.money, terms.total, 'trả đúng tổng hợp đồng, không hơn không kém');
+  assert.equal(collectHomeLoanYear(p, 29 + terms.years), null, 'hết hợp đồng thì không thu thêm');
   assert.equal(collectHomeLoanYear(p, 44), null);
 });
 test('Loans persist and repayments cannot invent legacy credit', () => {
@@ -110,7 +116,7 @@ test('Actual handler: insufficient funds, log, reload and double click', () => {
   const ctx = vm.createContext({ state, canAffordChoice, eligibilityFeedback: {},
     softenSetback: (_, c) => c, statNames: { happiness: 'Hạnh phúc' },
     formatMoneyAmount: String, createSchoolEntryReward: () => null,
-    createEventLogSummary: ({ changes }) => changes.join(' '), getChoiceOutcome: () => null,
+    createEventLogSummary: ({ changes }) => changes.join(' '), getChoiceOutcome: () => null, getEventTags: () => [],
     saveEventProgress() {}, showPendingEvent() {} });
   vm.runInContext(handler, ctx);
   p.money = 1;
@@ -156,6 +162,6 @@ test('Scheduled repayments and stale retirement results', () => {
   assert.equal(forecastNextYear(retired).income, 120_000_000);
   const borrower = worker(28);
   Object.assign(borrower, prepareStoryChoice(story('ls28-mua-nha').choices[0], borrower, 28).playerUpdates);
-  assert.equal(forecastNextYear(borrower).costs - forecastNextYear({ ...borrower, homeLoans: [] }).costs, 152_000_000);
+  assert.equal(forecastNextYear(borrower).costs - forecastNextYear({ ...borrower, homeLoans: [] }).costs, getHomeFinancing('story-home').annualPayment, 'dự báo năm tới tính đúng một kỳ trả góp');
 });
 console.log(`${checks} regression groups passed.`);

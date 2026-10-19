@@ -1,0 +1,317 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Lineage play checks</title>
+<pre id="lineage-result">Running…</pre>
+<script type="module">
+// Chơi thật qua main.js: đời đầu đến khi qua đời, chia thừa kế, chọn người con trên màn hình,
+// tải lại trang, chơi đời con đến khi qua đời. Mỗi kịch bản dựng sẵn hoàn cảnh ban đầu,
+// còn mọi năm sau đó do bộ chọn sự kiện và luồng xử lý của game quyết định.
+const result = document.getElementById("lineage-result");
+const KEY = "lineagePlayCheck";
+const storageKeys = ["lifeAgainSave", "lifeAgainAchievements", "lifeAgainAchievementQueue", "lifeAgainLifeArchive"];
+const params = new URLSearchParams(location.search);
+let run = JSON.parse(sessionStorage.getItem(KEY) ?? "null");
+if (!run) run = { index: Number(params.get("start") ?? 0), phase: "founder", restore: storageKeys.map(key => localStorage.getItem(key)), lives: [], events: {}, heirReloaded: false };
+const persist = () => sessionStorage.setItem(KEY, JSON.stringify(run));
+const restore = () => {
+  storageKeys.forEach((key, index) => run.restore[index] == null ? localStorage.removeItem(key) : localStorage.setItem(key, run.restore[index]));
+  sessionStorage.removeItem(KEY);
+  sessionStorage.removeItem("lifeAgainAutoContinue");
+};
+const mulberry = seed => () => {
+  seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+  let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+  return ((t ^ t >>> 14) >>> 0) / 4294967296;
+};
+const errors = [];
+window.addEventListener("error", event => errors.push(String(event.error?.stack ?? event.message)));
+window.addEventListener("unhandledrejection", event => errors.push(String(event.reason?.stack ?? event.reason)));
+let where = "";
+const fail = message => { throw new Error(`${message} [${where}]`); };
+const assert = (condition, message) => { if (!condition) fail(message); };
+
+const kid = (id, name, gender, joinedAtAge, extra = {}) => ({ id, name, gender, initialAge: 0, joinedAtAge, relationship: 78,
+  coParent: { id: "p1", name: "Lê Minh Thư" }, lastCarePaidAtAge: null, ...extra });
+const spouse = (extra = {}) => ({ id: "p1", name: "Lê Minh Thư", gender: "female", relationship: 80, ageAtMeeting: 26, metAtAge: 26,
+  birthDay: 3, birthMonth: 4, zodiac: "Bạch Dương", personality: "điềm tĩnh, chu đáo", reason: "", workplace: "trường học",
+  stats: { health: 70, intelligence: 60, happiness: 60, appearance: 60 }, ...extra });
+const base = { province: "Huế", studyBlock: "A00", employmentStatus: "retired", retiredJob: "Kỹ sư", intelligence: 60, appearance: 50, happiness: 60,
+  relatives: [{ id: "father", role: "Bố", name: "Nguyễn Văn Cả", alive: false, ageAtPlayerBirth: 25, diedAtAge: 50 },
+    { id: "mother", role: "Mẹ", name: "Trần Thị Hai", alive: false, ageAtPlayerBirth: 23, diedAtAge: 55 }] };
+const SCENARIOS = [
+  { name: "Nhà được chỉ định, việc tốt của bố, ba người con (một con nuôi)", seed: 11, heir: "a", recall: null,
+    player: { ...base, name: "Nguyễn Quốc Dân", gender: "male", age: 72, lifeSeed: 101, health: 45, money: 1_200_000_000,
+      partner: spouse({ ageAtMeeting: 24, metAtAge: 25 }), marriedAtAge: 26,
+      children: [kid("a", "Gia Bảo", "male", 30, { dreamSeed: { id: "music", interest: "eager", age: 9, text: "xin bố cho đi học đàn." } }),
+        kid("b", "Minh Anh", "female", 35, { adopted: true, initialAge: 5 }), kid("c", "Khánh Linh", "female", 50)],
+      purchases: [{ uid: "house-1", id: "house", boughtAtAge: 45 }], storyFlags: ["xay_cau"],
+      keepsakes: [{ id: "watch", name: "Chiếc đồng hồ của ông", receivedAtAge: 40 }],
+      will: { shares: { "child:a": 40 }, assets: { "purchase:house-1": "child:a" }, keepsakes: { watch: "child:a" }, messages: { "child:a": "Giữ nhà cho cả nhà về." }, createdAtAge: 70, updatedAtAge: 70 } } },
+  { name: "Mẹ góa, một người con, không nhà, hồi tưởng không chọn ước mơ", seed: 23, heir: "a", recall: "",
+    player: { ...base, name: "Trần Thu Hà", gender: "female", age: 68, lifeSeed: 202, health: 40, money: 300_000_000,
+      partner: null, marriedAtAge: null, widowedAtAge: 55,
+      relationshipHistory: [{ age: 55, type: "widowed", person: spouse({ id: "p0", name: "Đỗ Văn Lâm", gender: "male" }), text: "Bạn đời qua đời." }],
+      children: [kid("a", "An Khang", "male", 38, { coParent: { id: "p0", name: "Đỗ Văn Lâm" } })] } },
+  { name: "Bạn đời trong di chúc mất trước, nợ vay nhà, khoản cho vay chưa thu", seed: 37, heir: "b", recall: "trip",
+    player: { ...base, name: "Phạm Văn Long", gender: "male", age: 80, lifeSeed: 303, health: 75, money: 60_000_000,
+      partner: spouse({ ageAtMeeting: 81, metAtAge: 60, condition: "severe" }), marriedAtAge: 61,
+      children: [kid("a", "Hoàng Nam", "male", 40), kid("b", "Thảo Nhi", "female", 45)],
+      storyLoans: [{ id: "tu", principal: 30_000_000, outstanding: 30_000_000, lentAtAge: 79, repaymentYears: 6, lastRepaidAge: 79, amountRepaid: 0 }],
+      will: { shares: { "partner:p1": 60, "child:a": 40 }, assets: {}, keepsakes: {}, messages: {}, createdAtAge: 79, updatedAtAge: 79 } },
+    loan: true },
+  { name: "Lịch sử đời đầu: đám cưới của con và cháu ở xa", seed: 41, heir: "a", recall: "homecoming",
+    player: { ...base, name: "Lê Văn Tâm", gender: "male", age: 74, lifeSeed: 404, health: 40, money: 700_000_000,
+      partner: spouse(), marriedAtAge: 24, storyFlags: ["seen:ls50-con-cuoi", "seen:ls68-chat-nho"],
+      children: [kid("a", "Đức Minh", "male", 25), kid("b", "Ngọc Hân", "female", 30)] } },
+  { name: "Người con trẻ 22 tuổi, có anh chị", seed: 53, heir: "a", recall: null,
+    player: { ...base, name: "Võ Thị Lan", gender: "female", age: 76, lifeSeed: 505, health: 35, money: 500_000_000,
+      partner: spouse({ id: "p1", name: "Võ Minh Quân", gender: "male" }), marriedAtAge: 25,
+      children: [kid("a", "Bảo Ngọc", "female", 54, { coParent: { id: "p1", name: "Võ Minh Quân" },
+        dreamSeed: { id: "trip", interest: "eager", age: 10, text: "trải bản đồ ra sàn, đánh dấu những nơi muốn tới." } }),
+        kid("b", "Tuấn Kiệt", "male", 50, { coParent: { id: "p1", name: "Võ Minh Quân" } })] } },
+  // Hạt giống 605: buildSuccessor suy ra người con 54 tuổi độc thân, không con (tìm bằng find-seed, không cấy tay).
+  { name: "Người con độc thân không con, mẹ góa", seed: 67, heir: "a", recall: "music",
+    player: { ...base, name: "Đinh Thị Mai", gender: "female", age: 84, lifeSeed: 605, health: 40, money: 400_000_000,
+      partner: null, marriedAtAge: null, widowedAtAge: 70,
+      relationshipHistory: [{ age: 70, type: "widowed", person: spouse({ id: "p0", name: "Hà Văn Sơn", gender: "male" }), text: "Bạn đời qua đời." }],
+      children: [kid("a", "Quang Huy", "male", 30, { coParent: { id: "p0", name: "Hà Văn Sơn" } })] } },
+];
+const LINEAGE_IDS = ["ls-the-he-don-nha", "ls-the-he-la-thu", "ls-the-he-anh-chi-em", "ls-the-he-ke-cho-con", "ls-the-he-viet-chuyen", "ls-the-he-gio-dau", "ls-the-he-nguoi-duoc-giup"];
+
+async function mount(prepare) {
+  const html = await (await fetch("../index.html")).text();
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  parsed.querySelectorAll("script").forEach(element => element.remove());
+  parsed.querySelectorAll("[src]").forEach(element => element.removeAttribute("src"));
+  document.body.insertAdjacentHTML("beforeend", parsed.body.innerHTML);
+  const { state, createInitialState } = await import("../js/core/state.js");
+  const { trackSavedGame } = await import("../js/core/save-store.js");
+  localStorage.setItem("lifeAgainAchievementQueue", "[]");
+  document.getElementById("game-screen").hidden = false;
+  document.getElementById("lobby-screen").hidden = true;
+  const next = prepare(createInitialState());
+  Object.assign(state, next);
+  localStorage.setItem("lifeAgainSave", JSON.stringify(state));
+  trackSavedGame();
+  await import("../js/main.js");
+  return state;
+}
+const $ = id => document.getElementById(id);
+const openDialogs = () => [...document.querySelectorAll("dialog[open]")];
+const enabled = root => [...root.querySelectorAll("button")].filter(button => !button.disabled && !button.hidden && button.offsetParent !== null);
+const KEEP = ["event-dialog", "death-dialog", "study-block-dialog", "health-check-dialog"];
+
+// Một vòng chơi tới khi nhân vật mất. Theo dõi sự kiện liên thế hệ: mở (đủ điều kiện), được bốc, được xử lý.
+async function playUntilDeath(state, life) {
+  const { isLifeStoryEligible, seenFlag } = await import("../js/events/life-stories.js");
+  const { lineageStories } = await import("../js/events/life-stories/lineage-stories.js");
+  const { readSavedGame } = await import("../js/core/ticket-store.js");
+  const shownThisLife = new Set();
+  let guard = 0, lastAge = state.player.age, eligibleCheckedAge = null;
+  while (state.player.isAlive !== false && guard++ < 6000) {
+    where = `${life.label}, tuổi ${state.player.age}, bước ${guard}`;
+    if (guard % 25 === 0 || params.has("trace")) {
+      console.log(`PROGRESS ${where} dialogs=${openDialogs().map(dialog => dialog.id)} pending=${state.pendingEvent?.id ?? "-"}:${state.pendingEvent?.stage ?? "-"}`);
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    if (errors.length) fail("lỗi trang: " + errors[0]);
+    const dialogs = openDialogs();
+    const eventDialog = dialogs.find(dialog => dialog.id === "event-dialog");
+    if (eventDialog) {
+      const pending = state.pendingEvent;
+      assert(pending, "hộp sự kiện mở mà không có sự kiện");
+      if (pending.stage === "choice") {
+        const buttons = enabled($("event-choices"));
+        assert(buttons.length, `không có lựa chọn: ${pending.title}`);
+        const pick = Math.floor(Math.random() * buttons.length);
+        if (LINEAGE_IDS.includes(pending.id)) {
+          assert(!shownThisLife.has(pending.id), `${pending.id} lặp lại trong cùng một đời`);
+          shownThisLife.add(pending.id);
+          const record = run.events[pending.id] ??= { eligibleYears: 0, shown: 0, processed: 0, lives: [] };
+          record.shown++;
+          const before = JSON.parse(JSON.stringify(state.player));
+          const index = [...$("event-choices").querySelectorAll("button")].indexOf(buttons[pick]);
+          const choice = pending.choices[index];
+          // Nhãn trong danh mục có thể có chỗ điền tên; game cũng có thể đổi thứ tự lựa chọn.
+          const fits = (label, shown) => {
+            let rest = shown;
+            for (const part of label.split(/\{[a-zA-Z]+\}/u).filter(Boolean)) {
+              const at = rest.indexOf(part);
+              if (at < 0) return false;
+              rest = rest.slice(at + part.length);
+            }
+            return true;
+          };
+          const raw = lineageStories.find(story => story.id === pending.id).choices.find(item => fits(item.label, choice.label));
+          assert(raw, `lựa chọn hiển thị khớp lựa chọn trong danh mục: "${choice?.label}" / "${buttons[pick].textContent}"`);
+          assert(!/\{[a-zA-Z]+\}/.test(pending.text + choice.text), "còn chỗ điền tên chưa thay");
+          buttons[pick].click();
+          const result = state.pendingEvent;
+          assert(result?.stage === "result", "chọn xong phải sang bước kết quả");
+          for (const [stat, value] of Object.entries(raw.effects ?? {})) {
+            assert(result.updates[stat] === Math.max(0, Math.min(100, before[stat] + value)), `${pending.id}: hiệu ứng ${stat} sai`);
+          }
+          if (raw.money) assert(result.updates.money === before.money + raw.money, `${pending.id}: tiền sai`);
+          $("event-confirm").click();
+          const flags = state.player.storyFlags ?? [];
+          assert(flags.includes(seenFlag(pending.id)), `${pending.id}: chưa ghi dấu đã gặp`);
+          for (const flag of raw.flags ?? []) assert(flags.includes(flag), `${pending.id}: thiếu dấu ${flag}`);
+          assert(state.logs.some(log => log.age === pending.age && String(log.content ?? "").includes(choice.text.slice(0, 30))), `${pending.id}: nhật ký không ghi kết quả`);
+          const saved = readSavedGame();
+          assert(saved.player.storyFlags.includes(seenFlag(pending.id)), `${pending.id}: kết quả chưa lưu`);
+          record.processed++;
+          record.lives.push(`${life.label}@${pending.age}`);
+          life.lineageEvents.push(`${pending.id}@${pending.age}`);
+        } else {
+          buttons[pick].click();
+        }
+      } else {
+        $("event-confirm").click();
+      }
+    } else if (dialogs.some(dialog => dialog.id === "study-block-dialog")) {
+      const buttons = enabled($("study-block-dialog"));
+      buttons[Math.floor(Math.random() * buttons.length)].click();
+    } else if (dialogs.some(dialog => dialog.id === "health-check-dialog")) {
+      const target = enabled($("health-check-dialog")).at(-1);
+      if (params.has("trace")) console.log("HEALTH " + JSON.stringify({ buttons: enabled($("health-check-dialog")).map(b => b.id + ":" + b.textContent.trim().slice(0, 40)),
+        text: $("health-check-dialog").textContent.replace(/\s+/g, " ").slice(0, 300), age: state.player.age, health: state.player.health, illnesses: state.player.illnesses }));
+      target.click();
+      if (params.has("trace")) console.log("HEALTH clicked");
+    } else if (dialogs.some(dialog => dialog.id === "death-dialog")) {
+      break;
+    } else if (dialogs.length) {
+      for (const dialog of dialogs) dialog.close();
+    } else {
+      // Mỗi năm: ghi những sự kiện liên thế hệ đủ điều kiện mở cho năm tới.
+      if (eligibleCheckedAge !== state.player.age) {
+        eligibleCheckedAge = state.player.age;
+        for (const story of lineageStories) {
+          if (!isLifeStoryEligible(story, state.player.age + 1, state.player)) continue;
+          (run.events[story.id] ??= { eligibleYears: 0, shown: 0, processed: 0, lives: [] }).eligibleYears++;
+        }
+      }
+      if ((state.player.illnesses ?? []).length && Math.random() < 0.7) {
+        $("activities").click(); $("activity-hospital")?.click();
+        const treat = document.querySelector(".hospital-illness .shop-buy:not(:disabled)");
+        if (treat) { treat.click(); $("shop-confirm").click(); }
+        for (const dialog of openDialogs()) if (!KEEP.includes(dialog.id)) dialog.close();
+      }
+      $("age-up").click();
+    }
+    const p = state.player;
+    for (const stat of ["health", "happiness", "intelligence", "appearance"]) assert(Number.isInteger(p[stat]) && p[stat] >= 0 && p[stat] <= 100, `${stat} ngoài khoảng`);
+    assert(Number.isFinite(p.money), "tiền không hợp lệ");
+    assert(p.age >= lastAge, "tuổi đi lùi");
+    lastAge = p.age;
+  }
+  assert(guard < 6000, "đời không kết thúc trong 6000 bước");
+  assert(state.player.isAlive === false && $("death-dialog").open, "kết thúc bằng màn tổng kết");
+}
+
+try {
+  const end = Number(params.get("end") ?? SCENARIOS.length);
+  const scenario = run.index < end ? SCENARIOS[run.index] : null;
+  if (!scenario) {
+    // Tổng hợp sau mọi kịch bản.
+    for (const id of params.has("end") ? [] : LINEAGE_IDS) {
+      const record = run.events[id];
+      if (!record?.processed) throw new Error(`${id}: chưa được bốc và xử lý trong lúc chơi thật (${JSON.stringify(record ?? {})})`);
+    }
+    const report = { lives: run.lives.map(life => ({ label: life.label, start: life.startAge, death: life.deathAge, events: life.lineageEvents,
+      family: life.family, heirs: life.heirsOffered, partnerDiedFirst: life.partnerDiedFirst, willRecipientDied: life.willRecipientDied, debt: life.debt })), events: Object.fromEntries(LINEAGE_IDS.map(id => [id, { eligibleYears: run.events[id]?.eligibleYears ?? 0, shown: run.events[id]?.shown ?? 0, processed: run.events[id]?.processed ?? 0 }])) };
+    restore();
+    result.textContent = `PASS lineage play: ${JSON.stringify(report)}`;
+  } else if (run.phase === "founder") {
+    Math.random = mulberry(scenario.seed);
+    localStorage.setItem("lifeAgainAchievements", "{}");
+    if (run.index === 0) localStorage.removeItem("lifeAgainLifeArchive");
+    const housing = await import("../js/core/housing.js");
+    const state = await mount(initial => {
+      const player = { ...initial.player, ...JSON.parse(JSON.stringify(scenario.player)), isAlive: true, lifeId: `play-${run.index}` };
+      if (scenario.loan) {
+        const purchase = housing.prepareHomePurchase(player, "story-home", 78, "home-loan-1");
+        const loan = { ...purchase.playerUpdates.homeLoans[0] };
+        Object.assign(loan, { outstanding: loan.outstanding - loan.annualPayment * 2, paymentsMade: 2, lastPaidAge: 80 });
+        Object.assign(player, { purchases: purchase.playerUpdates.purchases, homeLoans: [loan] });
+      }
+      return { ...initial, player, logs: [{ age: player.age, content: `Kịch bản: ${scenario.name}.` }] };
+    });
+    const life = { label: `kịch bản ${run.index + 1} đời đầu`, scenario: scenario.name, startAge: state.player.age, lineageEvents: [] };
+    const partnerAtStart = state.player.partner?.id ?? null;
+    await playUntilDeath(state, life);
+    const founder = state.player;
+    life.deathAge = founder.age;
+    const estate = founder.estate;
+    assert(estate?.settled, "chia thừa kế ngay khi qua đời");
+    assert(founder.money === 0 && (founder.purchases ?? []).length === 0, "người mất không còn giữ tài sản");
+    assert($("death-succession").textContent.includes("Chia thừa kế"), "hiện kết quả chia");
+    const partnerDied = partnerAtStart && !founder.partner;
+    life.partnerDiedFirst = Boolean(partnerDied);
+    if (founder.will && partnerDied && founder.will.shares?.[`partner:${partnerAtStart}`]) {
+      assert(estate.notes.some(note => note.includes("Người nhận đã mất")), "phần của người nhận đã mất chia theo quy tắc mặc định");
+      assert(!estate.allocations.some(item => item.key === `partner:${partnerAtStart}`), "không chia cho người đã mất");
+      life.willRecipientDied = true;
+    }
+    if (scenario.loan) {
+      assert(estate.debt > 0 && estate.debtPaid + estate.debtWrittenOff === estate.debt, "nợ vay nhà được xử lý trước khi chia");
+      assert(estate.notes.some(note => note.includes("Khoản cho vay chưa thu")) || !(estate.before.storyLoans ?? []).some(loan => loan.outstanding > 0), "khoản cho vay khép lại khi qua đời");
+      life.debt = { debt: estate.debt, paid: estate.debtPaid, writtenOff: estate.debtWrittenOff, liquidated: estate.liquidated.length };
+    }
+    const cards = [...document.querySelectorAll(".heir-card")].map(card => card.dataset.heir);
+    life.heirsOffered = cards;
+    assert(cards.includes(scenario.heir), `người con ${scenario.heir} có trong danh sách: ${cards}`);
+    const moneyAfter = founder.money;
+    life.allocations = estate.allocations.map(item => [item.name, item.cash, item.assets.map(asset => asset.name)]);
+    run.lives.push(life);
+    run.phase = "heir";
+    run.heirReloaded = false;
+    run.expectHeir = { childId: scenario.heir, name: founder.children.find(child => child.id === scenario.heir).name };
+    persist();
+    document.querySelector(`.heir-card[data-heir="${scenario.heir}"] .heir-choose`).click();
+    if (document.querySelector(".heir-recall")) {
+      const recall = document.querySelector(`.heir-recall-option[data-recall="${scenario.recall ?? ""}"]`);
+      assert(recall, `không có lựa chọn hồi tưởng "${scenario.recall}"`);
+      recall.click();
+    }
+    assert(moneyAfter === 0, "chọn người con không đổi phần đã chia");
+    // Trang tự tải lại sau khi tiếp quản.
+  } else if (run.phase === "heir") {
+    Math.random = mulberry(scenario.seed * 7 + (run.heirReloaded ? 1 : 0));
+    const saved = JSON.parse(localStorage.getItem("lifeAgainSave"));
+    const state = await mount(initial => ({ ...initial, ...saved, player: { ...initial.player, ...saved.player } }));
+    const badge = $("player-lineage").textContent;
+    assert(badge.includes("Đời con") && state.player.name === run.expectHeir.name, `nhãn đời sau ${run.heirReloaded ? "khi tải lại" : "khi chuyển"}: ${badge}`);
+    const core = player => JSON.stringify([player.name, player.age, player.money, player.purchases, player.partner, player.children, player.lineage, player.relationshipHistory, player.dreams?.roots]);
+    if (!run.heirReloaded) {
+      run.heirSnapshot = core(state.player);
+      run.heirReloaded = true;
+      persist();
+      location.reload();
+    } else {
+      assert(core(state.player) === run.heirSnapshot, "tải lại không làm đổi dữ liệu người con");
+      const heir = state.player;
+      const life = { label: `kịch bản ${run.index + 1} đời con`, scenario: scenario.name, startAge: heir.age, lineageEvents: [],
+        family: heir.lineage.inferred.family, inherited: heir.lineage.inheritance };
+      assert(heir.lineage.generation === 2 && heir.achievementFlags["heir-takeover"], "đời con có cờ tiếp nối");
+      await playUntilDeath(state, life);
+      life.deathAge = state.player.age;
+      assert($("death-succession").textContent.includes("Hai cuộc đời"), "tổng kết hai đời");
+      assert(!document.querySelector(".heir-card"), "không có đời cháu");
+      assert($("return-after-death").textContent === "Về bến xe", "chỉ còn về bến xe");
+      assert(state.player.achievementFlags["two-lives"], "cờ Hai cuộc đời");
+      const { hasPendingSuccession, readSavedGame, canContinue } = await import("../js/core/ticket-store.js");
+      assert(!hasPendingSuccession(readSavedGame()) && !canContinue(readSavedGame()), "sảnh không cho tiếp tục sau đời con");
+      run.lives.push(life);
+      run.index++;
+      run.phase = "founder";
+      persist();
+      location.reload();
+    }
+  }
+} catch (error) {
+  const report = JSON.stringify({ lives: run.lives.map(life => [life.label, life.startAge, life.deathAge, life.lineageEvents]), events: run.events });
+  restore();
+  result.textContent = `FAIL: ${error.message}\n${error.stack}\n${report}`;
+}
+</script>

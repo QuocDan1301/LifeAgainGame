@@ -136,6 +136,7 @@ import {
 } from "./relationships/relationships.js";
 import { getAgeEvents, isPriorityEvent } from "./events/events.js";
 import { pickWeightedStory, fillStoryText } from "./events/life-stories.js";
+import { getDreamChoiceUpdates } from "./events/dreams.js";
 import { careerEvent } from "./career/career-event.js";
 import { academyLogos, createSchoolEvent } from "./career/career-schools.js";
 import {
@@ -144,6 +145,9 @@ import {
 } from "./special-events/special-chain.js";
 import { reviewPendingMedia } from "./media/semantic-event-media.js";
 import { initLifeProfile, renderLifeSummary } from "./core/life-profile.js";
+import { initWill } from "./core/will-ui.js";
+import { renderSuccession, renderLineageBadge } from "./core/succession-ui.js";
+import { buildSuccessor, canOfferSuccession, getLineage } from "./core/succession.js";
 import { initShop } from "./leisure/shop.js";
 import { initLicenses } from "./career/licenses.js";
 import {
@@ -167,6 +171,7 @@ import { initFood } from "./stats/food.js";
 import { initBeauty } from "./stats/beauty.js";
 import { initLottery, mergeLotteryPurchaseLogs } from "./leisure/lottery.js";
 import { initTravel } from "./leisure/travel.js";
+import { initOrphanage } from "./relationships/orphanage-ui.js";
 import { initGameCenter } from "./leisure/game-center.js";
 import { initTarot } from "./leisure/tarot.js";
 import { initDetective } from "./leisure/detective.js";
@@ -204,6 +209,7 @@ const nameElement = document.getElementById("player-name");
 const ageElement = document.getElementById("player-age");
 
 nameElement.textContent = state.player.name;
+renderLineageBadge(state.player);
 renderAvatar(state.player);
 ageElement.textContent = state.player.age;
 document.getElementById("player-province").textContent =
@@ -1948,6 +1954,13 @@ function chooseEventAction(index) {
   if (choice.careerPath) updates.careerPath = choice.careerPath;
 
   if (choice.playerUpdates) Object.assign(updates, choice.playerUpdates);
+  if (choice.dream) {
+    const dreamUpdates = getDreamChoiceUpdates(state.player, choice.dream, pending.age, choice.money ?? 0);
+    // A stale step (already finished, paused or replaced) neither charges nor rewards again.
+    if (dreamUpdates) Object.assign(updates, dreamUpdates);
+    else choice = { ...choice, money: 0, effects: {}, keepsake: null,
+      text: "Kế hoạch ấy đã thay đổi từ trước, nên tôi để chuyện này lại." };
+  }
   if (typeof choice.careerSpark === "string")
     updates.careerSpark = choice.careerSpark;
   if (typeof choice.job === "string") updates.job = choice.job;
@@ -2185,7 +2198,9 @@ ageButton.addEventListener("click", () => {
         )
       : null;
   const orientationEvent =
-    nextAge === 24 ? createOrientationEvent(state.player) : null;
+    // Người con tiếp quản đã có xu hướng từ lúc tiếp quản nên không được hỏi lại ở tuổi 24.
+    nextAge === 24 && !(state.player.lineage?.generation === 2 && state.player.orientation)
+      ? createOrientationEvent(state.player) : null;
   const employmentEvent =
     nextAge === 25 ? null : createEmploymentEvent(state.player, nextAge);
   const promotionEvent =
@@ -2620,7 +2635,13 @@ if (state.pendingEvent) {
   showPendingEvent();
 }
 initAchievements(state);
+// Bản lưu dừng ở màn chọn người con (đã chia thừa kế) mở lại đúng màn ấy.
+if (state.player.isAlive === false && state.player.estate?.settled && canOfferSuccession(state.player)) {
+  ageButton.disabled = true;
+  queueMicrotask(showLifeSummary);
+}
 initLifeProfile(state, { renderStats, renderLogEntry, checkAchievements });
+initWill(state, { renderLogEntry });
 const budgetButton = document.createElement("button");
 budgetButton.type = "button";
 budgetButton.id = "open-family-budget";
@@ -2689,6 +2710,12 @@ const lotteryUi = initLottery(state, {
 
 lotteryUi.showResults();
 initTravel(state, { renderMoney, renderStats, renderLogEntry });
+initOrphanage(state, {
+  renderMoney,
+  renderStats,
+  renderLogEntry,
+  checkAchievements,
+});
 initGameCenter(state, {
   renderMoney,
   renderStats,
@@ -2763,6 +2790,8 @@ closeFortuneButton.addEventListener("click", () => {
 const deathDialog = document.getElementById("death-dialog");
 
 function showLifeSummary() {
+  // Đời con khép lại thì lượt chơi hai đời hoàn thành.
+  if (getLineage(state.player).generation === 2) recordAchievementFlags(state, ["two-lives"]);
   checkAchievements();
   const archived = archiveLife(
     state,
@@ -2772,6 +2801,12 @@ function showLifeSummary() {
   if (archived.status === "saved" || archived.status === "duplicate")
     saveEventProgress();
   renderLifeSummary(state);
+  const succession = renderSuccession(state, {
+    save: saveEventProgress,
+    cause: describeDeathCause(state.player),
+    onTakeover: takeOverChild,
+  });
+  document.getElementById("return-after-death").textContent = succession.offer ? "Kết thúc lượt chơi" : "Về bến xe";
   if (archived.status === "error") {
     const note = document.createElement("p");
     note.textContent =
@@ -2785,7 +2820,30 @@ function showLifeSummary() {
 deathDialog.addEventListener("cancel", (event) => event.preventDefault());
 document
   .getElementById("return-after-death")
-  .addEventListener("click", () => window.location.reload());
+  .addEventListener("click", () => {
+    // Chọn kết thúc thì không hỏi tiếp nối lần nữa, kể cả khi tải lại.
+    if (canOfferSuccession(state.player)) {
+      state.player.lineage = { ...getLineage(state.player), declined: true };
+      saveEventProgress();
+    }
+    window.location.reload();
+  });
+
+// Tiếp quản người con: thay nhân vật đang chơi trong một lần ghi, rồi mở lại game với người con.
+function takeOverChild(childId, recall) {
+  if (!canOfferSuccession(state.player)) return;
+  const next = buildSuccessor(state, childId, { cause: describeDeathCause(state.player), recall });
+  if (!next) return;
+  state.player = next.player;
+  state.logs = next.logs;
+  state.pendingEvent = null;
+  state.followUpEvent = null;
+  state.annualNoticesShown = {};
+  recordAchievementFlags(state, ["heir-takeover"]);
+  saveEventProgress();
+  try { sessionStorage.setItem("lifeAgainAutoContinue", "1"); } catch { /* Lobby still shows Continue. */ }
+  window.location.reload();
+}
 
 function endLifeAfterYear() {
   const log = {

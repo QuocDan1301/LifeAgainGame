@@ -7,7 +7,10 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
   const toast = document.getElementById("game-update-toast");
   let pendingUpdate = false;
   try { pendingUpdate = Boolean(sessionStorage.getItem("lifeAgainUpdatePending")); } catch { /* Optional UI state. */ }
-  const supported = "serviceWorker" in navigator && document.documentElement.hasAttribute("data-offline");
+  // The Windows app exposes its own updater; the web uses the service worker.
+  const desktop = window.lifeAgainDesktop;
+  const supported = Boolean(desktop) ||
+    ("serviceWorker" in navigator && document.documentElement.hasAttribute("data-offline"));
   let registration;
   let updating = false;
   let reloaded = false;
@@ -53,6 +56,17 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
     if (updating || !supported || !available) return;
     updating = true;
     show("", true);
+    if (desktop) {
+      try {
+        await beforeUpdate();
+        // The app swaps in the verified EXE and restarts; this page closes.
+        if (!(await desktop.installUpdate())) throw new Error("not-ready");
+      } catch {
+        updating = false;
+        show("Chưa cập nhật được. Bấm thử lại hoặc chọn Life Again → Kiểm tra cập nhật. Bản lưu vẫn được giữ nguyên.");
+      }
+      return;
+    }
     try {
       // The worker deliberately passes /health through to the network.
       // Verify connectivity before touching the offline cache.
@@ -88,6 +102,13 @@ export function initOffline(isIdle, { beforeUpdate = () => {} } = {}) {
   }
   for (const button of buttons) button.addEventListener("click", updateNow);
   show("");
+  if (desktop) {
+    desktop.onUpdateReady(() => {
+      available = true;
+      if (!updating) show("");
+    });
+    return;
+  }
   if (!("serviceWorker" in navigator)) return;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
     if (pendingUpdate) { completeUpdate(); return; }

@@ -10,7 +10,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
-    if (url.hostname !== 'game.test') return route.abort();
+    if (url.hostname !== 'localhost') return route.abort();
     const file = path.resolve('.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
     if (!file.startsWith(process.cwd() + path.sep)) return route.abort();
     const types = { '.js': 'text/javascript; charset=utf-8', '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg' };
@@ -18,7 +18,7 @@ try {
     catch { await route.fulfill({ status: 404, body: '' }); }
   });
   const first = await context.newPage();
-  await first.goto('https://game.test/index.html');
+  await first.goto('http://localhost:5599/index.html');
   await first.evaluate(async () => {
     const { createInitialState } = await import('/js/core/state.js');
     const { achievements } = await import('/js/achievements/achievements-data.js');
@@ -34,7 +34,7 @@ try {
   await first.locator('#game-screen').waitFor({ state: 'visible' });
   await first.locator('#app-loader').waitFor({ state: 'hidden' });
   const second = await context.newPage();
-  await second.goto('https://game.test/index.html');
+  await second.goto('http://localhost:5599/index.html');
   await second.locator('#continue-button').click();
   await second.waitForFunction(() => document.getElementById('lobby-message').textContent.includes('tab khác'));
   results.push('PASS two real browser tabs: concurrent play is blocked.');

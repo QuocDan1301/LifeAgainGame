@@ -181,7 +181,7 @@
       "id": "own-porsche",
       "item": "porsche",
       "price": 8000000000,
-      "reachableRoutes": 131,
+      "reachableRoutes": 132,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
@@ -209,11 +209,11 @@
         },
         "deductions": 2093520000
       },
-      "routesBeforeRetirement": 50,
+      "routesBeforeRetirement": 63,
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 74
+          "earliestAge": 68
         },
         {
           "path": "rank-2",
@@ -229,7 +229,7 @@
       "id": "own-lamborghini",
       "item": "lamborghini",
       "price": 10000000000,
-      "reachableRoutes": 106,
+      "reachableRoutes": 125,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
@@ -262,11 +262,11 @@
         },
         "deductions": 2658720000
       },
-      "routesBeforeRetirement": 20,
+      "routesBeforeRetirement": 21,
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 83
+          "earliestAge": 77
         },
         {
           "path": "rank-2",
@@ -282,7 +282,7 @@
       "id": "own-rolls-royce",
       "item": "rolls-royce",
       "price": 12000000000,
-      "reachableRoutes": 99,
+      "reachableRoutes": 121,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
@@ -319,11 +319,11 @@
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 83
+          "earliestAge": 77
         },
         {
           "path": "rank-2",
-          "earliestAge": 72
+          "earliestAge": 69
         },
         {
           "path": "rank-3",
@@ -335,7 +335,7 @@
       "id": "own-private-jet",
       "item": "private-jet",
       "price": 15000000000,
-      "reachableRoutes": 85,
+      "reachableRoutes": 106,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
@@ -376,11 +376,11 @@
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 85
+          "earliestAge": 79
         },
         {
           "path": "rank-2",
-          "earliestAge": 74
+          "earliestAge": 70
         },
         {
           "path": "rank-3",
@@ -457,15 +457,15 @@
         },
         "deductions": 1726080000
       },
-      "routesBeforeRetirement": 123,
+      "routesBeforeRetirement": 140,
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 53
+          "earliestAge": 49
         },
         {
           "path": "rank-2",
-          "earliestAge": 45
+          "earliestAge": 44
         },
         {
           "path": "rank-3",
@@ -477,7 +477,7 @@
       "id": "own-restaurant",
       "item": "restaurant",
       "price": 8000000000,
-      "reachableRoutes": 131,
+      "reachableRoutes": 132,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
@@ -505,11 +505,11 @@
         },
         "deductions": 2093520000
       },
-      "routesBeforeRetirement": 50,
+      "routesBeforeRetirement": 63,
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 74
+          "earliestAge": 68
         },
         {
           "path": "rank-2",
@@ -525,7 +525,7 @@
       "id": "own-hotel",
       "item": "hotel",
       "price": 15000000000,
-      "reachableRoutes": 85,
+      "reachableRoutes": 106,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
@@ -566,11 +566,11 @@
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 85
+          "earliestAge": 79
         },
         {
           "path": "rank-2",
-          "earliestAge": 74
+          "earliestAge": 70
         },
         {
           "path": "rank-3",
@@ -582,46 +582,46 @@
       "id": "own-resort",
       "item": "resort",
       "price": 30000000000,
-      "reachableRoutes": 38,
+      "reachableRoutes": 50,
       "totalRoutes": 174,
       "earliest": {
         "career": "medicine",
         "path": "rank-3",
         "invest": true,
         "family": false,
-        "achievedAt": 78,
+        "achievedAt": 76,
         "moneyMilestones": {
           "money-1m": 23,
           "money-10m": 23,
           "money-100m": 24,
-          "millionaire": 29,
+          "millionaire": 28,
           "billionaire": 30,
-          "money-5b": 43,
-          "money-10b": 65
+          "money-5b": 42,
+          "money-10b": 63
         },
         "balances": {
           "30": {
-            "cash": 1030187000,
+            "cash": 1274136000,
             "grossAssets": 482350000
           },
           "40": {
-            "cash": 2879097000,
+            "cash": 3813886000,
             "grossAssets": 3482350000
           },
           "50": {
-            "cash": 2892927000,
+            "cash": 4850556000,
             "grossAssets": 13482350000
           },
           "62": {
-            "cash": 3794563000,
+            "cash": 8387600000,
             "grossAssets": 34482350000
           },
           "75": {
-            "cash": 17394062000,
+            "cash": 25948791000,
             "grossAssets": 64482350000
           }
         },
-        "deductions": 9014063000
+        "deductions": 8975086000
       },
       "routesBeforeRetirement": 0,
       "paths": [
@@ -631,11 +631,11 @@
         },
         {
           "path": "rank-2",
-          "earliestAge": 86
+          "earliestAge": 82
         },
         {
           "path": "rank-3",
-          "earliestAge": 78
+          "earliestAge": 76
         }
       ]
     },
@@ -705,7 +705,7 @@
       "paths": [
         {
           "path": "entry",
-          "earliestAge": 35
+          "earliestAge": 33
         },
         {
           "path": "rank-2",
@@ -4525,35 +4525,35 @@
       "family": false,
       "achievedAt": null,
       "moneyMilestones": {
-        "money-1m": 23,
-        "money-10m": 23,
-        "money-100m": 24,
-        "millionaire": 29,
-        "billionaire": 36
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 35
       },
       "balances": {
         "30": {
-          "cash": 588544000,
+          "cash": 669600000,
           "grossAssets": 0
         },
         "40": {
-          "cash": 1332544000,
+          "cash": 1413600000,
           "grossAssets": 0
         },
         "50": {
-          "cash": 2076544000,
+          "cash": 2157600000,
           "grossAssets": 0
         },
         "62": {
-          "cash": 2918944000,
+          "cash": 3000000000,
           "grossAssets": 0
         },
         "75": {
-          "cash": 3230944000,
+          "cash": 3312000000,
           "grossAssets": 0
         },
         "90": {
-          "cash": 3590944000,
+          "cash": 3672000000,
           "grossAssets": 0
         }
       },
@@ -4566,35 +4566,35 @@
       "family": true,
       "achievedAt": null,
       "moneyMilestones": {
-        "money-1m": 23,
-        "money-10m": 23,
-        "money-100m": 24,
-        "millionaire": 29,
-        "billionaire": 41
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 38
       },
       "balances": {
         "30": {
-          "cash": 576544000,
+          "cash": 657600000,
           "grossAssets": 0
         },
         "40": {
-          "cash": 990544000,
+          "cash": 1071600000,
           "grossAssets": 0
         },
         "50": {
-          "cash": 1206544000,
+          "cash": 1287600000,
           "grossAssets": 0
         },
         "62": {
-          "cash": 2008944000,
+          "cash": 2090000000,
           "grossAssets": 0
         },
         "75": {
-          "cash": 2320944000,
+          "cash": 2402000000,
           "grossAssets": 0
         },
         "90": {
-          "cash": 2680944000,
+          "cash": 2762000000,
           "grossAssets": 0
         }
       },
@@ -4607,36 +4607,36 @@
       "family": false,
       "achievedAt": null,
       "moneyMilestones": {
-        "money-1m": 23,
-        "money-10m": 23,
-        "money-100m": 24,
-        "millionaire": 29,
-        "billionaire": 33,
-        "money-5b": 75
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 32,
+        "money-5b": 74
       },
       "balances": {
         "30": {
-          "cash": 715840000,
+          "cash": 796896000,
           "grossAssets": 0
         },
         "40": {
-          "cash": 1884160000,
+          "cash": 1965216000,
           "grossAssets": 0
         },
         "50": {
-          "cash": 3052480000,
+          "cash": 3133536000,
           "grossAssets": 0
         },
         "62": {
-          "cash": 4385632000,
+          "cash": 4466688000,
           "grossAssets": 0
         },
         "75": {
-          "cash": 5009632000,
+          "cash": 5090688000,
           "grossAssets": 0
         },
         "90": {
-          "cash": 5729632000,
+          "cash": 5810688000,
           "grossAssets": 0
         }
       },
@@ -4649,35 +4649,35 @@
       "family": true,
       "achievedAt": null,
       "moneyMilestones": {
-        "money-1m": 23,
-        "money-10m": 23,
-        "money-100m": 24,
-        "millionaire": 29,
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
         "billionaire": 33
       },
       "balances": {
         "30": {
-          "cash": 705568000,
+          "cash": 786624000,
           "grossAssets": 0
         },
         "40": {
-          "cash": 1561168000,
+          "cash": 1642224000,
           "grossAssets": 0
         },
         "50": {
-          "cash": 2215312000,
+          "cash": 2296368000,
           "grossAssets": 0
         },
         "62": {
-          "cash": 3508464000,
+          "cash": 3589520000,
           "grossAssets": 0
         },
         "75": {
-          "cash": 4132464000,
+          "cash": 4213520000,
           "grossAssets": 0
         },
         "90": {
-          "cash": 4852464000,
+          "cash": 4933520000,
           "grossAssets": 0
         }
       },
@@ -4690,37 +4690,37 @@
       "family": false,
       "achievedAt": null,
       "moneyMilestones": {
-        "money-1m": 23,
-        "money-10m": 23,
-        "money-100m": 24,
-        "millionaire": 29,
-        "billionaire": 33,
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
+        "billionaire": 32,
         "money-5b": 50,
         "money-10b": 74
       },
       "balances": {
         "30": {
-          "cash": 715840000,
+          "cash": 796896000,
           "grossAssets": 0
         },
         "40": {
-          "cash": 2360224000,
+          "cash": 2441280000,
           "grossAssets": 0
         },
         "50": {
-          "cash": 5115424000,
+          "cash": 5196480000,
           "grossAssets": 0
         },
         "62": {
-          "cash": 8290144000,
+          "cash": 8371200000,
           "grossAssets": 0
         },
         "75": {
-          "cash": 10162144000,
+          "cash": 10243200000,
           "grossAssets": 0
         },
         "90": {
-          "cash": 12322144000,
+          "cash": 12403200000,
           "grossAssets": 0
         }
       },
@@ -4733,37 +4733,37 @@
       "family": true,
       "achievedAt": null,
       "moneyMilestones": {
-        "money-1m": 23,
-        "money-10m": 23,
-        "money-100m": 24,
-        "millionaire": 29,
+        "money-1m": 22,
+        "money-10m": 22,
+        "money-100m": 23,
+        "millionaire": 28,
         "billionaire": 33,
         "money-5b": 53,
         "money-10b": 80
       },
       "balances": {
         "30": {
-          "cash": 705568000,
+          "cash": 786624000,
           "grossAssets": 0
         },
         "40": {
-          "cash": 2047528000,
+          "cash": 2128584000,
           "grossAssets": 0
         },
         "50": {
-          "cash": 4316008000,
+          "cash": 4397064000,
           "grossAssets": 0
         },
         "62": {
-          "cash": 7450728000,
+          "cash": 7531784000,
           "grossAssets": 0
         },
         "75": {
-          "cash": 9322728000,
+          "cash": 9403784000,
           "grossAssets": 0
         },
         "90": {
-          "cash": 11482728000,
+          "cash": 11563784000,
           "grossAssets": 0
         }
       },
