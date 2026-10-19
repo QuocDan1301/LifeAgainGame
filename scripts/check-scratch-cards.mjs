@@ -12,14 +12,14 @@ const test = (name, fn) => { fn(); passed++; console.log(`PASS ${name}`); };
 const seeded = (seed) => () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 2 ** 32; };
 const adult = (extra = {}) => ({ ...createInitialState().player, age: 30, money: 10_000_000, ...extra });
 
-test('Ba loại vé: giá tăng thì giải lớn hơn nhưng hiếm hơn; trung bình trả lại khoảng một nửa giá vé', () => {
+test('Ba loại vé: giá tăng thì giải lớn hơn nhưng hiếm hơn; trung bình trả lại khoảng hai phần ba giá vé (vẫn lỗ)', () => {
   assert.equal(SCRATCH_CARDS.length, 3);
   const [loc, phat, daiCat] = SCRATCH_CARDS;
   assert.ok(loc.price < phat.price && phat.price < daiCat.price);
   assert.ok(scratchWinChance(loc) > scratchWinChance(phat) && scratchWinChance(phat) > scratchWinChance(daiCat), 'vé đắt khó trúng hơn');
   for (const card of SCRATCH_CARDS) {
     const ev = scratchExpectedReturn(card);
-    assert.ok(ev > 0.4 && ev < 0.6, `${card.id}: trả lại trung bình ${ev}`);
+    assert.ok(ev > 0.6 && ev < 0.75, `${card.id}: trả lại trung bình ${ev}`);
     assert.ok(card.prizes.length >= 5 && card.prizes.every(([amount, chance]) => amount > 0 && chance > 0), `${card.id}: mọi mức giải đều có thật`);
   }
 });

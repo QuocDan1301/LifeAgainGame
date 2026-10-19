@@ -3,18 +3,18 @@ import { recordAchievementFlags } from "../achievements/achievements-data.js";
 // Vé số cào kiểu miền Nam: cào 2 ô "Số của bạn", rồi cào 6 ô dò bên dưới, mỗi ô có một con số và một mức tiền.
 // Ô nào có số trùng với số của bạn thì trúng đúng mức tiền in ở ô đó.
 // Kết quả được quyết định lúc mua và lưu lại, nên tải lại không đổi được vận may.
-// Tiền thưởng chỉ vào ví khi đã cào hết vé. Trung bình mỗi loại vé trả lại khoảng một nửa giá vé.
+// Tiền thưởng chỉ vào ví khi đã cào hết vé. Trung bình mỗi loại vé trả lại khoảng hai phần ba giá vé, nên chơi lâu vẫn lỗ.
 export const SCRATCH_LUCKY = 2;
 export const SCRATCH_SPOTS = 6;
 export const SCRATCH_CELLS = SCRATCH_LUCKY + SCRATCH_SPOTS;
 export const SCRATCH_NUMBER_MAX = 30;
 export const SCRATCH_CARDS = [
   { id: "loc", name: "Cào Lộc", icon: "🍀", price: 10_000,
-    prizes: [[10_000, 0.14], [20_000, 0.055], [50_000, 0.022], [100_000, 0.009], [1_000_000, 0.0008], [20_000_000, 0.00002]] },
+    prizes: [[10_000, 0.21], [20_000, 0.07], [50_000, 0.025], [100_000, 0.01], [1_000_000, 0.0008], [20_000_000, 0.00002]] },
   { id: "phat", name: "Cào Phát", icon: "🧧", price: 20_000,
-    prizes: [[20_000, 0.115], [50_000, 0.045], [200_000, 0.011], [2_000_000, 0.0008], [100_000_000, 0.00003]] },
+    prizes: [[20_000, 0.17], [50_000, 0.06], [200_000, 0.013], [2_000_000, 0.0008], [100_000_000, 0.00003]] },
   { id: "dai-cat", name: "Cào Đại Cát", icon: "🐉", price: 50_000,
-    prizes: [[50_000, 0.09], [200_000, 0.022], [1_000_000, 0.007], [10_000_000, 0.0005], [1_000_000_000, 0.000005]] },
+    prizes: [[50_000, 0.14], [200_000, 0.04], [1_000_000, 0.009], [10_000_000, 0.0005], [1_000_000_000, 0.000005]] },
 ];
 
 export const getScratchCard = (id) => SCRATCH_CARDS.find((card) => card.id === id) ?? null;
