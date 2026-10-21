@@ -15,7 +15,6 @@ export const TIEN_LEN_STAKES = [10_000, 50_000, 100_000, 500_000];
  
  
 export const TIEN_LEN_FEE_RATE = 0.2;
-export const TIEN_LEN_MAX_STAKE = 100_000_000;
 export const getTienLenPot = (stake) => Math.floor(stake * 4 * (1 - TIEN_LEN_FEE_RATE));
 export const TIEN_LEN_SEATS = [
   { name: "Bạn", icon: "🙂", place: "bottom" },
@@ -76,7 +75,7 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     card.classList.add("tl-lobby-intro");
     card.append(element("p", "tl-eyebrow", "Bàn bài bốn người"), element("h3", "", "Tiến lên miền Nam"),
       element("p", "game-tagline", "“Ai hết bài trước, người đó ăn cả bàn!”"),
-      element("p", "side-job-intro", `Bạn và 3 đối thủ máy, mỗi người 13 lá. Mỗi người góp một mức cược; ai đánh hết bài đầu tiên nhận cả bàn sau khi trừ ${Math.round(TIEN_LEN_FEE_RATE * 100)}% phí bàn (gấp ${String(4 * (1 - TIEN_LEN_FEE_RATE)).replace(".", ",")} lần mức góp). Người thua chỉ mất phần đã góp. Mức góp tối đa ${formatMoney(TIEN_LEN_MAX_STAKE)}.`));
+      element("p", "side-job-intro", `Bạn và 3 đối thủ máy, mỗi người 13 lá. Mỗi người góp một mức cược; ai đánh hết bài đầu tiên nhận cả bàn sau khi trừ ${Math.round(TIEN_LEN_FEE_RATE * 100)}% phí bàn (gấp ${String(4 * (1 - TIEN_LEN_FEE_RATE)).replace(".", ",")} lần mức góp). Người thua chỉ mất phần đã góp.`));
     const tables = element("div", "shop-groups tl-tables");
     for (const stake of TIEN_LEN_STAKES) {
       const blocker = startBlocker(stake);
@@ -88,11 +87,11 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
       tables.append(choice);
     }
      
-    const allInStake = Math.min(Math.floor(state.player.money), TIEN_LEN_MAX_STAKE);
+    const allInStake = Math.floor(state.player.money);
     const allIn = button("shop-group tl-table-pick tl-all-in", "💥 Bàn All in", () => sitDown(allInStake));
     allIn.dataset.stake = "all";
     allIn.disabled = allInStake < 1 || Boolean(startBlocker(allInStake));
-    allIn.append(element("span", "side-job-note", `Góp ${state.player.money > TIEN_LEN_MAX_STAKE ? "mức tối đa" : "cả ví"} ${formatMoney(allInStake)} · Thắng nhận ${formatMoney(getTienLenPot(allInStake))} (lời ${formatMoney(getTienLenPot(allInStake) - allInStake)})`));
+    allIn.append(element("span", "side-job-note", `Góp cả ví ${formatMoney(allInStake)} · Thắng nhận ${formatMoney(getTienLenPot(allInStake))} (lời ${formatMoney(getTienLenPot(allInStake) - allInStake)})`));
     tables.append(allIn);
     const rules = element("details", "tl-rules");
     rules.append(element("summary", "", "📜 Luật chơi tóm tắt"));
@@ -124,7 +123,6 @@ export function initTienLen(state, { dialog, body, minAge, playsLeft, usePlay, o
     const current = table();
     if (!current || hasActiveTienLen(state.player)) return;
      
-    current.stake = Math.min(current.stake, TIEN_LEN_MAX_STAKE);
     const blocker = startBlocker(current.stake);
     if (blocker) {
       status = blocker;

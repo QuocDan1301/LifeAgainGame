@@ -8,7 +8,7 @@ import { createInitialState } from '../js/core/state.js';
 import { shopCatalog, collectAssetIncome, getAssetYearProjection } from '../js/leisure/shop.js';
 import { completeLifeYear, forecastNextYear, getDebtInterest, getYearLivingCost, DEBT_INTEREST_RATE, FRUGAL_MAX_SAVING } from '../js/relationships/family.js';
 import { ACTIVITY_GAIN_CAP, applyActivityGain, collectStatWearYear, previewActivityGain } from '../js/core/stat-budget.js';
-import { getTienLenPot, TIEN_LEN_MAX_STAKE } from '../js/leisure/tien-len.js';
+import { getTienLenPot } from '../js/leisure/tien-len.js';
 import { ACTIVITY_SLOTS_PER_YEAR, getActivitySlotsLeft, useActivitySlot } from '../js/core/stat-budget.js';
 import { getPlayerAnnualSalary, getAnnualSalaryPayment, careerAnnualSalaries } from '../js/career/career-salary.js';
 import { getStudentJobBlocker, shiftTypes, collectSideJobYear } from '../js/career/side-jobs.js';
@@ -163,7 +163,7 @@ test('Activity gains are capped per stat per year from 70, and high stats wear d
 });
 test('Tien len charges a table fee and caps the stake', () => {
   assert.equal(getTienLenPot(100_000), 320_000);
-  assert.ok(getTienLenPot(TIEN_LEN_MAX_STAKE) < TIEN_LEN_MAX_STAKE * 4);
+  assert.ok(getTienLenPot(1_000_000) < 1_000_000 * 4);
    
   assert.ok(0.28 * getTienLenPot(1_000_000) / 1_000_000 < 0.95);
   assert.ok(0.35 * getTienLenPot(1_000_000) / 1_000_000 < 1.15);

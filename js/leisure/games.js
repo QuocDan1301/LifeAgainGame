@@ -13,7 +13,6 @@ import { initAuction } from "./auction.js";
 export const GAMES_MIN_AGE = 18;
 export const GAMES_PER_YEAR = 5;
 export const BET_MIN = 10_000;
-export const BET_MAX = 1_000_000_000;
 export const QUICK_BETS = [10_000, 100_000, 1_000_000];
 
 export const games = [
@@ -23,6 +22,7 @@ export const games = [
   { id: "box", icon: "🎁", name: "Hộp bí ẩn", tagline: "Mở hộp hay mở nỗi buồn?" },
   { id: "tower", icon: "🪜", name: "Leo tháp tài lộc", tagline: "Dừng đúng lúc" },
   { id: "blackjack", icon: "🃏", name: "Xì dách", tagline: "Thêm lá nữa hay thôi?" },
+  { id: "mines", icon: "💣", name: "Dò mìn", tagline: "Mỗi con số là một manh mối" },
    
   { id: "tienlen", icon: "♠️", name: "Tiến lên miền Nam", tagline: "Ai hết bài trước, người đó ăn cả bàn!" },
 ];
@@ -65,6 +65,54 @@ export const boxPrizes = [
 ];
 export const TOWER_MULTIPLIERS = [1.9, 3.8, 7.6, 15.2, 30.4];
 export const BLACKJACK_PAYOUTS = { lose: 0, draw: 1, normal: 2, five: 2, blackjack: 2.5, doubleAce: 3 };
+export const PERSISTENT_ROUNDS = ["tower", "blackjack", "mines"];
+
+// Dò mìn: bàn 6×6 giấu 7 mìn. Mỗi bước tự mở an toàn nhân tiền theo xác suất sống sót, trừ hao 10%.
+export const MINES_SIZE = 6;
+export const MINES_COUNT = 7;
+export const MINES_MAX_STEPS = 12;
+export const MINES_EDGE = 0.9;
+export const MINES_MULTIPLIERS = (() => {
+  const cells = MINES_SIZE * MINES_SIZE;
+  const safe = cells - MINES_COUNT;
+  let chance = 1;
+  return Array.from({ length: MINES_MAX_STEPS }, (_, step) => {
+    chance *= (safe - step) / (cells - step);
+    return Math.round((MINES_EDGE / chance) * 100) / 100;
+  });
+})();
+export function minesNeighbors(index) {
+  const row = Math.floor(index / MINES_SIZE);
+  const column = index % MINES_SIZE;
+  const result = [];
+  for (let dr = -1; dr <= 1; dr += 1) {
+    for (let dc = -1; dc <= 1; dc += 1) {
+      const r = row + dr;
+      const c = column + dc;
+      if ((dr || dc) && r >= 0 && r < MINES_SIZE && c >= 0 && c < MINES_SIZE) result.push(r * MINES_SIZE + c);
+    }
+  }
+  return result;
+}
+export const minesAround = (round, index) => minesNeighbors(index).filter((cell) => round.mines.includes(cell)).length;
+export const minesSafeTotal = () => MINES_SIZE * MINES_SIZE - MINES_COUNT;
+// Mở một ô: trúng mìn thì báo hit; ô an toàn tính một bước, ô số 0 tự lan sang ô lân cận (không tính thêm bước).
+export function minesOpen(round, index) {
+  if (round.mines.includes(index)) return { hit: true };
+  if (round.opened.includes(index)) return { hit: false, repeat: true };
+  round.steps += 1;
+  const opened = new Set(round.opened);
+  const queue = [index];
+  while (queue.length) {
+    const cell = queue.pop();
+    if (opened.has(cell)) continue;
+    opened.add(cell);
+    if (minesAround(round, cell) === 0) queue.push(...minesNeighbors(cell).filter((next) => !opened.has(next)));
+  }
+  round.opened = [...opened].sort((a, b) => a - b);
+  round.flags = round.flags.filter((flag) => !opened.has(flag));
+  return { hit: false };
+}
 
 const pickWeighted = (entries, random) => {
   let roll = random();
@@ -145,6 +193,17 @@ export function createRound(gameId, bet, choice, random = Math.random) {
     round.safeDoors = Array.from({ length: TOWER_MULTIPLIERS.length }, () => (random() < 0.5 ? 0 : 1));
     round.floor = 0;
     round.phase = "choose";
+  } else if (gameId === "mines") {
+    const cells = Array.from({ length: MINES_SIZE * MINES_SIZE }, (_, index) => index);
+    for (let index = cells.length - 1; index > 0; index -= 1) {
+      const swap = Math.floor(random() * (index + 1));
+      [cells[index], cells[swap]] = [cells[swap], cells[index]];
+    }
+    round.mines = cells.slice(0, MINES_COUNT).sort((a, b) => a - b);
+    round.opened = [];
+    round.flags = [];
+    round.steps = 0;
+    round.phase = "play";
   } else if (gameId === "blackjack") {
     const deck = createDeck(random);
     round.deck = deck;
@@ -211,7 +270,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
   function settle(round, payoutAmount, detail) {
     if (isSavePaused() || state.player.isAlive === false || round.settled ||
         !Number.isFinite(payoutAmount) || payoutAmount < 0) return false;
-    if (['tower', 'blackjack'].includes(round.game) && state.player.gameRound !== round) return false;
+    if (PERSISTENT_ROUNDS.includes(round.game) && state.player.gameRound !== round) return false;
     round.settled = true;
     const game = gameOf(round.game);
     state.player.money += payoutAmount;
@@ -241,7 +300,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     state.player.money -= bet;
     state.player.gamePlays = { age: state.player.age, count: playsUsed() + 1 };
     const round = { ...createRound(gameId, bet, choice), startedAtAge: state.player.age };
-    if (["tower", "blackjack"].includes(gameId)) {
+    if (PERSISTENT_ROUNDS.includes(gameId)) {
       state.player.gameRound = round;
       save();
       renderMoney();
@@ -374,6 +433,15 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       card.append(element("p", "game-hint", "Mỗi tầng có hai cánh cửa: một cửa đi tiếp, một cửa mất trắng. Qua mỗi tầng bạn có thể dừng để nhận tiền."), table);
       maxMultiplier = () => TOWER_MULTIPLIERS.at(-1);
       choice = "climb";
+    } else if (gameId === "mines") {
+      const ladder = element("ol", "mines-ladder");
+      MINES_MULTIPLIERS.forEach((multiplier, index) => ladder.append(element("li", "", `${index + 1}: ${formatMultiplier(multiplier)}`)));
+      card.append(element("p", "game-hint",
+        `Bàn ${MINES_SIZE}×${MINES_SIZE} giấu ${MINES_COUNT} mìn. Ô an toàn lộ số mìn trong 8 ô quanh nó; ô số 0 tự mở các ô lân cận mà không tính thêm bước. ` +
+        `Mỗi ô bạn tự mở an toàn là một bước và nhân tiền cược, tối đa ${MINES_MAX_STEPS} bước. Dừng lúc nào cũng được từ bước 1, nhưng chạm mìn là mất trắng. Dùng cờ 🚩 để ghi nhớ ô nghi có mìn.`),
+        element("p", "game-hint", "Tiền nhận về theo số bước:"), ladder);
+      maxMultiplier = () => MINES_MULTIPLIERS.at(-1);
+      choice = "sweep";
     } else if (gameId === "blackjack") {
       card.append(element("p", "game-hint",
         "Đấu với nhà cái. Dưới 16 điểm chưa được dừng; tối đa 5 lá. Thắng thường ×2 · Ngũ linh ×2 · Xì dách ×2,5 · Xì bàn ×3 · Hòa hoàn vốn."));
@@ -411,11 +479,11 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       card.append(element("p", "game-hint", "Tiền cược:"), quick, betInput);
     }
 
-    const allInBet = () => Math.min(Math.floor(state.player.money), BET_MAX);
+    const allInBet = () => Math.floor(state.player.money);
     const currentBet = () => (gameId === "box" ? boxTypes.find((box) => box.id === choice)?.price ?? 0 : bet);
     function valid() {
       const amount = currentBet();
-      return Boolean(choice) && amount >= (gameId === "box" ? 1 : BET_MIN) && amount <= BET_MAX &&
+      return Boolean(choice) && amount >= (gameId === "box" ? 1 : BET_MIN) &&
         amount <= state.player.money && playsLeft() > 0 && state.player.age >= GAMES_MIN_AGE;
     }
     function update() {
@@ -425,11 +493,11 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
       const allInButton = body.querySelector(".game-all-in");
       if (allInButton) allInButton.disabled = allInBet() < BET_MIN;
       const most = payout(amount, maxMultiplier());
-      const partial = ["box", "tower", "blackjack"].includes(gameId) ? "tối đa " : "";
+      const partial = ["box", "tower", "blackjack", "mines"].includes(gameId) ? "tối đa " : "";
       summary.textContent = !choice ? "Hãy chọn một lựa chọn để xem tiền có thể nhận."
         : amount > state.player.money ? `Không đủ tiền: cần ${formatMoney(amount)}.`
-          : gameId !== "box" && (amount < BET_MIN || amount > BET_MAX)
-            ? `Tiền cược từ ${formatMoney(BET_MIN)} đến ${formatMoney(BET_MAX)}.`
+          : gameId !== "box" && amount < BET_MIN
+            ? `Tiền cược tối thiểu ${formatMoney(BET_MIN)}.`
             : `Tiền cược: ${formatMoney(amount)} · Có thể nhận ${partial}${formatMoney(most)}`;
       start.disabled = !valid();
     }
@@ -489,11 +557,11 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
     const game = gameOf(round.game);
     const stage = element("section", `dialog-card game-stage game-stage-${round.game}`);
     stage.append(element("h3", "", `${game.icon} ${game.name}`));
-    const instant = !["tower", "blackjack"].includes(round.game);
+    const instant = !PERSISTENT_ROUNDS.includes(round.game);
     if (round.game === "box") storeBoxItem(round);
     if (instant) settle(round, round.game === "box" ? 0 : round.payout, describeInstant(round));
     body.replaceChildren(element("p", "shop-wallet", walletText(instant ? reveal?.payout ?? 0 : 0)), stage);
-    ({ coin: playCoin, dice: playDice, box: playBox, tower: playTower, blackjack: playBlackjack })[round.game](stage, round);
+    ({ coin: playCoin, dice: playDice, box: playBox, tower: playTower, blackjack: playBlackjack, mines: playMines })[round.game](stage, round);
   }
 
   function describeInstant(round) {
@@ -750,6 +818,120 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
   }
 
    
+  function playMines(stage, round) {
+    stage.classList.add("mines-stage");
+    const live = element("p", "game-hint game-live mines-status");
+    live.setAttribute("aria-live", "polite");
+    const summary = element("div", "tower-summary");
+    const total = element("strong", "tower-total");
+    const progress = element("span", "tower-progress");
+    summary.append(element("span", "tower-eyebrow", "Tiền có thể mang về"), total, progress);
+    const ladder = element("ol", "mines-ladder");
+    MINES_MULTIPLIERS.forEach((multiplier, index) => ladder.append(element("li", "", formatMultiplier(multiplier))));
+    const board = element("div", "mines-board");
+    board.style.setProperty("--mines-size", String(MINES_SIZE));
+    let flagMode = false;
+    const cells = Array.from({ length: MINES_SIZE * MINES_SIZE }, (_, index) => {
+      const cell = button("mines-cell", "", () => (flagMode ? toggleFlag(index) : open(index)));
+      cell.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+        toggleFlag(index);
+      });
+      board.append(cell);
+      return cell;
+    });
+    const modeOpen = button("license-answer mines-mode", "⛏️ Mở ô", () => setMode(false));
+    const modeFlag = button("license-answer mines-mode", "🚩 Cắm cờ", () => setMode(true));
+    const tools = element("div", "mines-tools");
+    tools.append(modeOpen, modeFlag);
+    const cashout = button("shop-buy game-primary mines-cashout", "", () => finish(false));
+    const actions = element("div", "license-actions");
+    actions.append(cashout);
+    stage.append(summary, ladder, board, tools, live, actions);
+
+    const playable = () => !isSavePaused() && state.player.isAlive !== false && state.player.gameRound === round && !round.settled;
+    const setMode = (flag) => {
+      flagMode = flag;
+      modeOpen.setAttribute("aria-pressed", String(!flag));
+      modeFlag.setAttribute("aria-pressed", String(flag));
+    };
+    const draw = (over = false, hitIndex = -1) => {
+      const mineSet = new Set(round.mines);
+      cells.forEach((cell, index) => {
+        const opened = round.opened.includes(index);
+        const flagged = round.flags.includes(index);
+        let text = "";
+        let label = `Ô ${index + 1}, chưa mở`;
+        let cls = "";
+        if (opened) {
+          const count = minesAround(round, index);
+          text = count ? String(count) : "";
+          label = `Ô ${index + 1}: ${count} mìn xung quanh`;
+          cls = `is-open n${count}`;
+        } else if (over && mineSet.has(index)) {
+          text = index === hitIndex ? "💥" : "💣";
+          label = index === hitIndex ? `Ô ${index + 1}: mìn nổ` : `Ô ${index + 1}: mìn`;
+          cls = index === hitIndex ? "is-hit" : "is-mine";
+        } else if (flagged) {
+          text = "🚩";
+          label = `Ô ${index + 1}: đã cắm cờ`;
+          cls = over ? "is-wrong" : "is-flag";
+        }
+        cell.textContent = text;
+        cell.className = `mines-cell ${cls}`.trim();
+        cell.setAttribute("aria-label", label);
+        cell.disabled = over || opened;
+      });
+      const amount = round.steps ? payout(round.bet, MINES_MULTIPLIERS[round.steps - 1]) : 0;
+      total.textContent = formatMoney(amount);
+      progress.textContent = `Bước ${round.steps}/${MINES_MAX_STEPS} · Cược ${formatMoney(round.bet)} · Cờ ${round.flags.length}/${MINES_COUNT}`;
+      ladder.querySelectorAll("li").forEach((node, index) => {
+        node.classList.toggle("is-done", index < round.steps);
+        node.classList.toggle("is-next", !over && index === round.steps);
+      });
+      cashout.hidden = over;
+      cashout.disabled = over || !round.steps;
+      cashout.textContent = round.steps ? `Nhận ${formatMoney(amount)} · Dừng lại` : "Mở ít nhất một ô để có thể dừng";
+      modeOpen.disabled = modeFlag.disabled = over;
+      setMode(flagMode);
+      if (!over) {
+        live.textContent = round.steps
+          ? `Bước kế tiếp nhắm ${formatMoney(payout(round.bet, MINES_MULTIPLIERS[round.steps]))} (${formatMultiplier(MINES_MULTIPLIERS[round.steps])}). Hãy đọc các con số trước khi mở.`
+          : `Bàn có ${MINES_COUNT} mìn. Chọn một ô để bắt đầu; ô lộ số cho biết số mìn ở 8 ô quanh nó.`;
+      }
+    };
+    function finish(hit, hitIndex = -1) {
+      const amount = hit || !round.steps ? 0 : payout(round.bet, MINES_MULTIPLIERS[round.steps - 1]);
+      if (!settle(round, amount, hit ? `nổ mìn sau ${round.steps} bước an toàn` : `dừng sau ${round.steps} bước an toàn`)) return;
+      round.phase = "over";
+      stage.classList.toggle("mines-boom", hit);
+      draw(true, hitIndex);
+      live.textContent = hit ? "💥 Bạn đã chạm phải mìn!" : `Mang về ${formatMoney(amount)}.`;
+      showResult(stage, round, !hit, hit ? "💥 Chạm mìn!" : round.steps >= MINES_MAX_STEPS ? "🏅 Gỡ mìn trọn vẹn!" : "💰 Mang tiền về!",
+        hit ? "Con số đã nhắc tôi, chỉ là tôi chọn tin vào may mắn." : "Biết dừng đúng lúc là biết đọc luôn cả những con số im lặng.");
+    }
+    function toggleFlag(index) {
+      if (!playable() || round.opened.includes(index)) return;
+      round.flags = round.flags.includes(index) ? round.flags.filter((flag) => flag !== index) : [...round.flags, index];
+      save();
+      draw();
+    }
+    function open(index) {
+      if (!playable()) return;
+      if (round.flags.includes(index)) {
+        live.textContent = "Ô đang cắm cờ. Gỡ cờ trước khi mở.";
+        return;
+      }
+      const result = minesOpen(round, index);
+      if (result.hit) return finish(true, index);
+      if (result.repeat) return;
+      if (round.steps >= MINES_MAX_STEPS || round.opened.length >= minesSafeTotal()) return finish(false);
+      save();
+      draw();
+    }
+    draw();
+  }
+
   const rankLabel = (rank) => ({ 1: "A", 11: "J", 12: "Q", 13: "K" })[rank] ?? String(rank);
    
   const faceMarks = { 11: "♞", 12: "♛", 13: "♚" };
@@ -986,7 +1168,7 @@ export function initGames(state, { renderMoney, renderLogEntry, checkAchievement
      
     if (state.player.tienLen) return tienLen.open();
     const active = state.player.gameRound;
-    if (active && ["tower", "blackjack"].includes(active.game)) renderPlay(active);
+    if (active && PERSISTENT_ROUNDS.includes(active.game)) renderPlay(active);
     else renderPicker();
     dialog.showModal();
     focusFirst();
